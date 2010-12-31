@@ -50,7 +50,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </organization>
 
   <dependencies>
-    <!-- Extends Jackson; requires Stax API (and implementation on deploy time)
+    <!-- Extends Jackson; requires Stax API (and implementation on deploy time), Stax2 API
       -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -66,7 +66,15 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <groupId>javax.xml.stream</groupId>
       <artifactId>stax-api</artifactId>
       <version>1.0-2</version>
+      <!--
       <scope>provided</scope>
+      -->
+    </dependency>
+    <!--  But Stax2 API must be included -->
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>stax2-api</artifactId>
+      <version>[3.0.4, 3.5.0)</version>
     </dependency>
 
      <!-- and for testing, JUnit is needed -->
