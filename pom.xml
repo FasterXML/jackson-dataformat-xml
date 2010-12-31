@@ -84,6 +84,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
+    <!--  as well as JAXB annotation introspector from Jackson/xc -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

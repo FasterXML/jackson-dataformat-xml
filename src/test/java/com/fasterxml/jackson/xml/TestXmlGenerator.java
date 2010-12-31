@@ -4,8 +4,8 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.xml.ToXmlGenerator;
-import org.codehaus.jackson.xml.XmlFactory;
+import com.fasterxml.jackson.xml.ToXmlGenerator;
+import com.fasterxml.jackson.xml.XmlFactory;
 
 public class TestXmlGenerator extends XmlTestBase
 {

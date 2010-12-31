@@ -4,9 +4,10 @@ import java.io.*;
 
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.xml.FromXmlParser;
-import org.codehaus.jackson.xml.XmlFactory;
-import org.codehaus.jackson.xml.XmlMapper;
+
+import com.fasterxml.jackson.xml.FromXmlParser;
+import com.fasterxml.jackson.xml.XmlFactory;
+import com.fasterxml.jackson.xml.XmlMapper;
 
 public class TestXmlParser extends XmlTestBase
 {

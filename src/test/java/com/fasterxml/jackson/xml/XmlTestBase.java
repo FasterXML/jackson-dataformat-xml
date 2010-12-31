@@ -2,11 +2,11 @@ package com.fasterxml.jackson.xml;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
-
-import junit.framework.TestCase;
 
 public abstract class XmlTestBase
     extends TestCase

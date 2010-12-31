@@ -3,7 +3,8 @@ package com.fasterxml.jackson.xml;
 import java.util.*;
 
 import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.xml.XmlMapper;
+
+import com.fasterxml.jackson.xml.XmlMapper;
 
 public class TestIndentation extends XmlTestBase
 {

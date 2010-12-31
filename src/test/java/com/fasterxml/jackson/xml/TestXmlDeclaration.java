@@ -1,7 +1,7 @@
 package com.fasterxml.jackson.xml;
 
-import org.codehaus.jackson.xml.ToXmlGenerator;
-import org.codehaus.jackson.xml.XmlMapper;
+import com.fasterxml.jackson.xml.ToXmlGenerator;
+import com.fasterxml.jackson.xml.XmlMapper;
 
 public class TestXmlDeclaration extends XmlTestBase
 {

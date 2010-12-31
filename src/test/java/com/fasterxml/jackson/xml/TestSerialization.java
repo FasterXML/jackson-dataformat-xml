@@ -3,9 +3,10 @@ package com.fasterxml.jackson.xml;
 import java.io.*;
 import java.util.*;
 
-import org.codehaus.jackson.xml.XmlMapper;
-import org.codehaus.jackson.xml.annotate.JacksonXmlElementWrapper;
-import org.codehaus.jackson.xml.annotate.JacksonXmlProperty;
+
+import com.fasterxml.jackson.xml.XmlMapper;
+import com.fasterxml.jackson.xml.annotate.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.xml.annotate.JacksonXmlProperty;
 
 public class TestSerialization extends XmlTestBase
 {
