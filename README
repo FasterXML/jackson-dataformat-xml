@@ -1,0 +1,3 @@
+Project to build data binding backend that uses standard Jackson data binding but reads and writes XML, similar to how JAXB works. Hence nickname "mini-JAXB".
+
+Implemented outside of core Jackson to allow faster development and release cycles; as well as to limit growth of core project code base.
