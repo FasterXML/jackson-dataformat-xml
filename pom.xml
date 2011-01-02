@@ -163,7 +163,14 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
               <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
               <Bundle-Vendor>fasterml.com</Bundle-Vendor>
               <Import-Package>
-org.codehaus.jackson.map
+javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.transform
+,org.codehaus.stax2, org.codehaus.stax2.io, org.codehaus.stax2.ri
+,org.codehaus.jackson, org.codehaus.jackson.annotate, org.codehaus.jackson.impl, org.codehaus.jackson.io
+,org.codehaus.jackson.type, org.codehaus.jackson.util
+,org.codehaus.jackson.map, org.codehaus.jackson.map.introspect
+,org.codehaus.jackson.map.jsontype, org.codehaus.jackson.map.jsontype.impl
+,org.codehaus.jackson.map.ser, org.codehaus.jackson.map.ser.impl
+,org.codehaus.jackson.map.type, org.codehaus.jackson.map.util
 ,org.codehaus.jackson.xc
 </Import-Package>
               <Private-Package>
