@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.xml.ser;
 
 import java.io.IOException;
 import javax.xml.namespace.QName;
@@ -28,13 +28,13 @@ public class XmlSerializerProvider extends StdSerializerProvider
     
     protected final XmlRootNameLookup _rootNameLookup;
     
-    protected XmlSerializerProvider(XmlRootNameLookup rootNames)
+    public XmlSerializerProvider(XmlRootNameLookup rootNames)
     {
         super();
         _rootNameLookup = rootNames;
     }
 
-    protected XmlSerializerProvider(SerializationConfig config, XmlSerializerProvider src,
+    public XmlSerializerProvider(SerializationConfig config, XmlSerializerProvider src,
             SerializerFactory f)
     {
         super(config, src, f);
@@ -42,9 +42,9 @@ public class XmlSerializerProvider extends StdSerializerProvider
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overridden methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override

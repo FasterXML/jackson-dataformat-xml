@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.xml.ser;
 
 import java.io.IOException;
 
@@ -10,6 +10,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.BeanSerializer;
+
 
 /**
  * Specific sub-class of {@link BeanSerializer} needed to take care

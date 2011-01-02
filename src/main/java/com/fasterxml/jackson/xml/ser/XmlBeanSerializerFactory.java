@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.xml.ser;
 
 import java.util.*;
 
@@ -14,6 +14,8 @@ import org.codehaus.jackson.map.ser.BeanSerializer;
 import org.codehaus.jackson.map.ser.BeanSerializerFactory;
 import org.codehaus.jackson.map.ser.PropertyBuilder;
 import org.codehaus.jackson.map.type.TypeBindings;
+
+import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 
 /**
  * Specialized version of {@link BeanSerializerFactory} which is used to
@@ -37,7 +39,7 @@ public class XmlBeanSerializerFactory extends BeanSerializerFactory
     /**********************************************************
      */
     
-    protected XmlBeanSerializerFactory(Config config)
+    public XmlBeanSerializerFactory(Config config)
     {
         super(config);
     }

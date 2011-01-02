@@ -4,6 +4,10 @@ import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.*;
 import org.codehaus.jackson.util.VersionUtil;
 
+import com.fasterxml.jackson.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.xml.ser.XmlBeanSerializerFactory;
+import com.fasterxml.jackson.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
 
 /**

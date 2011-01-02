@@ -6,7 +6,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.PrettyPrinter;
 
-import com.fasterxml.jackson.xml.ToXmlGenerator;
+import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
 
 /**
  * Indentation to use with XML is different from JSON, because JSON

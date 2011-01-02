@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.xml.ser;
 
 import javax.xml.namespace.QName;
 
@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.impl.PropertySerializerMap;
+
 
 /**
  * Property writer sub-class used for handling element wrapping needed for serializing

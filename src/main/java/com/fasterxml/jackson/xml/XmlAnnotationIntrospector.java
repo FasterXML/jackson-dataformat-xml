@@ -2,6 +2,7 @@ package com.fasterxml.jackson.xml;
 
 import javax.xml.namespace.QName;
 
+import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.introspect.Annotated;
 
 /**
@@ -37,4 +38,59 @@ public interface XmlAnnotationIntrospector
      * to using name (local name and namespace) of property itself.
      */
     public QName findWrapperElement(Annotated ann);
+
+    /*
+    /**********************************************************************
+    /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
+    /* (potential) XMLAnnotationIntrospector instance
+    /**********************************************************************
+     */
+
+    /**
+     * Extension of <code>AnnotationIntrospector.Pair</code> that can
+     * also dispatch 'XmlAnnotationIntrospector' methods.
+     */
+    public static class Pair extends AnnotationIntrospector.Pair
+        implements XmlAnnotationIntrospector
+    {
+        protected final XmlAnnotationIntrospector _xmlPrimary;
+        protected final XmlAnnotationIntrospector _xmlSecondary;
+        
+        public Pair(AnnotationIntrospector p, AnnotationIntrospector s)
+        {
+            super(p, s);
+            _xmlPrimary = (p instanceof XmlAnnotationIntrospector) ? (XmlAnnotationIntrospector) p : null;
+            _xmlSecondary = (s instanceof XmlAnnotationIntrospector) ? (XmlAnnotationIntrospector) s : null;
+        }
+
+        @Override
+        public String findNamespace(Annotated ann)
+        {
+            String value = (_xmlPrimary == null) ? null : _xmlPrimary.findNamespace(ann);
+            if (value == null && _xmlSecondary != null) {
+                value = _xmlSecondary.findNamespace(ann);
+            }
+            return value;
+        }
+
+        @Override
+        public QName findWrapperElement(Annotated ann)
+        {
+            QName value = (_xmlPrimary == null) ? null : _xmlPrimary.findWrapperElement(ann);
+            if (value == null && _xmlSecondary != null) {
+                value = _xmlSecondary.findWrapperElement(ann);
+            }
+            return value;
+        }
+
+        @Override
+        public Boolean isOutputAsAttribute(Annotated ann)
+        {
+            Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsAttribute(ann);
+            if (value == null && _xmlSecondary != null) {
+                value = _xmlSecondary.isOutputAsAttribute(ann);
+            }
+            return value;
+        }
+    }
 }

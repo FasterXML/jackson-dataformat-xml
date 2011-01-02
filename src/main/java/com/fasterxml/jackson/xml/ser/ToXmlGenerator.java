@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.xml.ser;
 
 import java.io.*;
 import java.math.BigDecimal;

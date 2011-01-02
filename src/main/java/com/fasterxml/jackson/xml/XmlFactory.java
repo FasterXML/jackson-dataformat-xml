@@ -9,6 +9,8 @@ import org.codehaus.stax2.io.Stax2ByteArraySource;
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.io.IOContext;
 
+import com.fasterxml.jackson.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.xml.util.StaxUtil;
 
 /**
