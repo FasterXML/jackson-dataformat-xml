@@ -50,7 +50,8 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </organization>
 
   <dependencies>
-    <!-- Extends Jackson; requires Stax API (and implementation on deploy time), Stax2 API
+    <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation on deploy time), Stax2 API.
+         Also requires jackson xc to support JAXB annotations.
       -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
@@ -59,8 +60,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <!--  .. but before 1.7.0 release, must use SNAPSHOT -->
       <version>1.7.0-SNAPSHOT</version>
     </dependency>
-    <!-- JDK 1.6 provides stax-api (javax.xml.stream); if running on 1.5, must be added
-         separately.
+    <!--  JAXB annotation introspector from Jackson/xc -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+    </dependency>
+    <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
     <dependency>
       <groupId>javax.xml.stream</groupId>
@@ -90,22 +96,17 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <version>4.1.0</version>
       <scope>test</scope>
     </dependency>
-    <!--  JAXB annotation introspector from Jackson/xc -->
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-xc</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
+        <!-- Let's require JDK 1.6; makes things easier wrt Stax API for one 
+          -->
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
       </plugin>
         <plugin>
@@ -133,8 +134,8 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                     <encoding>UTF-8</encoding>
                     <maxmemory>512m</maxmemory>
                     <links>
@@ -162,12 +163,16 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
               <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
               <Bundle-Vendor>fasterml.com</Bundle-Vendor>
               <Import-Package>
+org.codehaus.jackson.map
+,org.codehaus.jackson.xc
 </Import-Package>
               <Private-Package>
-com.fasterxml.classmate.util
 </Private-Package>
               <Export-Package>
-com.fasterxml.jackson.module.hibernate
+com.fasterxml.jackson.xml
+,com.fasterxml.jackson.xml.annotate
+,com.fasterxml.jackson.xml.jaxb
+,com.fasterxml.jackson.xml.util
 </Export-Package>
             </instructions>
           </configuration>

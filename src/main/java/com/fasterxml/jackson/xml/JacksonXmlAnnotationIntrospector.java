@@ -31,7 +31,7 @@ public class JacksonXmlAnnotationIntrospector
     /**********************************************************
      */
 
-    //@Override
+    @Override
     public Boolean isOutputAsAttribute(Annotated ann)
     {
         JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
@@ -41,7 +41,7 @@ public class JacksonXmlAnnotationIntrospector
         return null;
     }
 
-    //@Override
+    @Override
     public String findNamespace(Annotated ann)
     {
         JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
@@ -51,7 +51,7 @@ public class JacksonXmlAnnotationIntrospector
         return null;
     }
 
-    //@Override
+    @Override
     public QName findWrapperElement(Annotated ann)
     {
         JacksonXmlElementWrapper w = ann.getAnnotation(JacksonXmlElementWrapper.class);
