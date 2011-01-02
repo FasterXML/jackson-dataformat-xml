@@ -78,7 +78,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
+      <!-- 01-Jan-2010, Stupid Maven Release plug-in mandates a non-range
+            version
+        -->
+<!--
       <version>[3.0.4, 3.5.0)</version>
+-->
+      <version>3.1.0</version>
     </dependency>
 
      <!--  Test Dependencies -->
