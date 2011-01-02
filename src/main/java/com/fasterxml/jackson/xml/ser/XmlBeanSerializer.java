@@ -72,7 +72,7 @@ public class XmlBeanSerializer extends BeanSerializer
         } else {
             props = _props;
         }
-    
+        
         final int attrCount = _attributeCount;
         if (attrCount > 0) {
             jgen.setNextIsAttribute(true);

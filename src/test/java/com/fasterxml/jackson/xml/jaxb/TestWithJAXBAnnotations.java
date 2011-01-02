@@ -84,7 +84,7 @@ public class TestWithJAXBAnnotations extends XmlTestBase
     {
         AttrBean bean = new AttrBean();
         assertEquals("<AttrBean><attr>3</attr></AttrBean>", _nonJaxbMapper.writeValueAsString(bean));
-        assertEquals("<AttrBean attr=\"3\" />", _jaxbMapper.writeValueAsString(bean));
+        assertEquals("<AttrBean attr=\"3\"/>", _jaxbMapper.writeValueAsString(bean));
     }
 
     /*
