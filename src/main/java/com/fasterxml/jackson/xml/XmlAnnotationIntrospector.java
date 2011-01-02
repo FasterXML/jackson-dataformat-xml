@@ -38,7 +38,7 @@ public interface XmlAnnotationIntrospector
      * to using name (local name and namespace) of property itself.
      */
     public QName findWrapperElement(Annotated ann);
-
+    
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -63,6 +63,10 @@ public interface XmlAnnotationIntrospector
             _xmlSecondary = (s instanceof XmlAnnotationIntrospector) ? (XmlAnnotationIntrospector) s : null;
         }
 
+        public static XmlAnnotationIntrospector.Pair instance(AnnotationIntrospector a1, AnnotationIntrospector a2) {
+            return new XmlAnnotationIntrospector.Pair(a1, a2);
+        }
+        
         @Override
         public String findNamespace(Annotated ann)
         {

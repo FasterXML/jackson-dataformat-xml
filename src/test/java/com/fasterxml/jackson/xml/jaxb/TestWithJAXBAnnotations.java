@@ -1,10 +1,15 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.xml.jaxb;
 
 import javax.xml.bind.annotation.*;
 
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+
+import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
+import com.fasterxml.jackson.xml.XmlMapper;
+import com.fasterxml.jackson.xml.XmlTestBase;
+import com.fasterxml.jackson.xml.XmlAnnotationIntrospector.Pair;
+import com.fasterxml.jackson.xml.jaxb.XmlJaxbAnnotationIntrospector;
 
 /**
  * Although XML-backed data binding does not rely (or directly build) on JAXB
@@ -46,8 +51,9 @@ public class TestWithJAXBAnnotations extends XmlTestBase
         super.setUp();
         _jaxbMapper = new XmlMapper();
         _nonJaxbMapper = new XmlMapper();
-        AnnotationIntrospector intr = new AnnotationIntrospector.Pair(new JaxbAnnotationIntrospector(),
-                new JacksonAnnotationIntrospector());
+        // Use JAXB-then-Jackson annotation introspector
+        AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
+            (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
         _jaxbMapper.getDeserializationConfig().setAnnotationIntrospector(intr);
         _jaxbMapper.getSerializationConfig().setAnnotationIntrospector(intr);
     }
