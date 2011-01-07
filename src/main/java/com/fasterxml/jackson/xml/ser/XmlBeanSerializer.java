@@ -8,8 +8,10 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.ser.AnyGetterWriter;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.BeanSerializer;
+import org.codehaus.jackson.type.JavaType;
 
 
 /**
@@ -31,18 +33,18 @@ public class XmlBeanSerializer extends BeanSerializer
      */
     protected final QName[] _xmlNames;
     
-    public XmlBeanSerializer(Class<?> type, BeanPropertyWriter[] props,
-            BeanPropertyWriter[] filteredProps, Object filterId,
+    public XmlBeanSerializer(JavaType type, BeanPropertyWriter[] props, BeanPropertyWriter[] filteredProps,
+            AnyGetterWriter anyGetterWriter, Object filterId,
             int attrCount, QName[] xmlNames)
     {
-        super(type, props, filteredProps, filterId);
+        super(type, props, filteredProps, anyGetterWriter, filterId);
         _attributeCount = attrCount;
         _xmlNames = xmlNames;
     }
 
     protected XmlBeanSerializer(XmlBeanSerializer src, BeanPropertyWriter[] filtered)
     {
-        super(src, filtered);
+        super(src._handledType, src._props, filtered, src._anyGetterWriter, src._propertyFilterId);
         _attributeCount = src._attributeCount;
         _xmlNames = src._xmlNames;
     }

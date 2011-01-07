@@ -56,15 +56,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <!-- For now, assume module interface stable enough to support 1.x since 1.7 -->
-      <!--  .. but before 1.7.0 release, must use SNAPSHOT -->
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0</version>
     </dependency>
     <!--  JAXB annotation introspector from Jackson/xc -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.7.0</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->

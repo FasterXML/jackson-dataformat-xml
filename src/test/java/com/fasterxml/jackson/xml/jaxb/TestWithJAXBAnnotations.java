@@ -8,7 +8,6 @@ import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.xml.XmlMapper;
 import com.fasterxml.jackson.xml.XmlTestBase;
-import com.fasterxml.jackson.xml.XmlAnnotationIntrospector.Pair;
 import com.fasterxml.jackson.xml.jaxb.XmlJaxbAnnotationIntrospector;
 
 /**
@@ -92,10 +91,4 @@ public class TestWithJAXBAnnotations extends XmlTestBase
     /* Helper methods
     /**********************************************************************
      */
-
-    protected XmlMapper getJaxbAndJacksonMapper()
-    {
-        XmlMapper mapper = new XmlMapper();
-        return mapper;
-    }
 }

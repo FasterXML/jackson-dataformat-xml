@@ -9,11 +9,13 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.SerializerFactory;
 import org.codehaus.jackson.map.introspect.AnnotatedMember;
 import org.codehaus.jackson.map.introspect.BasicBeanDescription;
+import org.codehaus.jackson.map.ser.AnyGetterWriter;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.BeanSerializer;
 import org.codehaus.jackson.map.ser.BeanSerializerFactory;
 import org.codehaus.jackson.map.ser.PropertyBuilder;
 import org.codehaus.jackson.map.type.TypeBindings;
+import org.codehaus.jackson.type.JavaType;
 
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 
@@ -64,8 +66,7 @@ public class XmlBeanSerializerFactory extends BeanSerializerFactory
 
     @Override
     protected BeanSerializer instantiateBeanSerializer(SerializationConfig config,
-            BasicBeanDescription beanDesc,
-            List<BeanPropertyWriter> properties)
+            BasicBeanDescription beanDesc, List<BeanPropertyWriter> properties)
     {
         BeanPropertyWriter[] writers = properties.toArray(new BeanPropertyWriter[properties.size()]);
         // Ok: how many attributes do we have to write? namespaces?
@@ -84,8 +85,8 @@ public class XmlBeanSerializerFactory extends BeanSerializerFactory
             xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
             ++i;
         }
-        return new XmlBeanSerializer(beanDesc.getBeanClass(), writers, null,
-                findFilterId(config, beanDesc),
+        return new XmlBeanSerializer(beanDesc.getType(), writers, null,
+                null, findFilterId(config, beanDesc),
                 attrCount, xmlNames);
     }
 
