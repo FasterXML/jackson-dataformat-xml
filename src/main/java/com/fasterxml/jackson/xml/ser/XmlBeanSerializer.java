@@ -8,11 +8,10 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.SerializerProvider;
-import org.codehaus.jackson.map.ser.AnyGetterWriter;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.BeanSerializer;
-import org.codehaus.jackson.type.JavaType;
 
+import com.fasterxml.jackson.xml.util.XmlInfo;
 
 /**
  * Specific sub-class of {@link BeanSerializer} needed to take care
@@ -21,6 +20,13 @@ import org.codehaus.jackson.type.JavaType;
  */
 public class XmlBeanSerializer extends BeanSerializer
 {
+    /**
+     * Marker used for storing associated internal data with {@link BeanPropertyWriter}
+     * instances; to mark instances that are to be written out as attributes.
+     * Created as separate non-interned String to ensure there are no collisions.
+     */
+    public final static String KEY_XML_INFO = new String("xmlInfo");
+
     /**
      * Number of attributes to write; these will have been ordered to be the first
      * properties to write.
@@ -32,16 +38,37 @@ public class XmlBeanSerializer extends BeanSerializer
      * null if no namespace definitions have been assigned
      */
     protected final QName[] _xmlNames;
-    
-    public XmlBeanSerializer(JavaType type, BeanPropertyWriter[] props, BeanPropertyWriter[] filteredProps,
-            AnyGetterWriter anyGetterWriter, Object filterId,
-            int attrCount, QName[] xmlNames)
-    {
-        super(type, props, filteredProps, anyGetterWriter, filterId);
-        _attributeCount = attrCount;
-        _xmlNames = xmlNames;
-    }
 
+    public XmlBeanSerializer(BeanSerializer src)
+    {
+        super(src);
+
+        // Ok, first: collect namespace information
+        _xmlNames = new QName[_props.length];
+        // First, find namespace information
+        for (int i = 0, len = _props.length; i < len; ++i) {
+            BeanPropertyWriter bpw = _props[i];
+            XmlInfo info = (XmlInfo) bpw.getInternalSetting(KEY_XML_INFO);
+            String ns = null;
+            if (info != null) {
+                ns = info.getNamespace();
+            }
+            _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
+        }      
+        
+        /* Then make sure attributes are sorted before elements, keep track
+         * of how many there are altogether
+         */
+        int attrCount = 0;
+        for (BeanPropertyWriter bpw : _props) {
+            if (_isAttribute(bpw)) { // Yup: let's build re-ordered list then
+                attrCount = _orderAttributesFirst(_props, _filteredProps);
+                break;
+            }
+        }
+        _attributeCount = attrCount;
+    }
+    
     protected XmlBeanSerializer(XmlBeanSerializer src, BeanPropertyWriter[] filtered)
     {
         super(src._handledType, src._props, filtered, src._anyGetterWriter, src._propertyFilterId);
@@ -99,11 +126,7 @@ public class XmlBeanSerializer extends BeanSerializer
         } catch (Exception e) {
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
-        } catch (StackOverflowError e) {
-            /* 04-Sep-2009, tatu: Dealing with this is tricky, since we do not
-             *   have many stack frames to spare... just one or two; can't
-             *   make many calls.
-             */
+        } catch (StackOverflowError e) { // Bit tricky, can't do more calls as stack is full; so:
             JsonMappingException mapE = new JsonMappingException("Infinite recursion (StackOverflowError)");
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             mapE.prependPath(new JsonMappingException.Reference(bean, name));
@@ -111,4 +134,46 @@ public class XmlBeanSerializer extends BeanSerializer
         }
     }
 
+    /*
+    /**********************************************************
+    /* Helper methods
+    /**********************************************************
+     */
+
+    protected static boolean _isAttribute(BeanPropertyWriter bpw)
+    {
+        XmlInfo info = (XmlInfo) bpw.getInternalSetting(KEY_XML_INFO);
+        return (info != null) && info.isAttribute();
+    }
+
+    /**
+     * Method for re-sorting lists of bean properties such that attributes are strictly
+     * written before elements.
+     */
+    protected static int _orderAttributesFirst(BeanPropertyWriter[] properties,
+            BeanPropertyWriter[] filteredProperties)
+    {
+        int attrCount = 0;
+
+        for (int i = 0, len = properties.length; i < len; ++i) {
+            BeanPropertyWriter bpw = properties[i];
+            
+            if (!_isAttribute(bpw)) {
+                continue;
+            }
+            // Swap if attribute and there are preceding elements:
+            if (attrCount < i) {
+                properties[i] = properties[attrCount];
+                properties[attrCount] = bpw;
+                if (filteredProperties != null) {
+                    BeanPropertyWriter fbpw = filteredProperties[i];
+                    filteredProperties[i] = filteredProperties[attrCount];
+                    filteredProperties[attrCount] = fbpw;
+                }
+            }
+            ++attrCount;
+        }
+        return attrCount;
+    }
+    
 }

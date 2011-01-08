@@ -6,7 +6,6 @@ import org.codehaus.jackson.util.VersionUtil;
 
 import com.fasterxml.jackson.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.xml.ser.XmlBeanSerializerFactory;
 import com.fasterxml.jackson.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
 
@@ -21,8 +20,6 @@ import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
  */
 public class XmlMapper extends ObjectMapper
 {
-    private final static AnnotationIntrospector XML_ANNOTATION_INTROSPECTOR = new JacksonXmlAnnotationIntrospector();
-    
     /*
     /**********************************************************
     /* Life-cycle: construction, configuration
@@ -40,12 +37,8 @@ public class XmlMapper extends ObjectMapper
          * deserializer provider fine as is
          */
         super(xmlFactory, new XmlSerializerProvider(new XmlRootNameLookup()), null);
-        
-        // Bean serializers are somewhat customized as well:
-        _serializerFactory = new XmlBeanSerializerFactory(null);
-        // as is introspector
-        _deserializationConfig.setAnnotationIntrospector(XML_ANNOTATION_INTROSPECTOR);
-        _serializationConfig.setAnnotationIntrospector(XML_ANNOTATION_INTROSPECTOR);
+        // but all the rest is done via Module interface!
+        this.registerModule(new JacksonXmlModule());
     }
 
     /**
