@@ -8,7 +8,7 @@
   <groupId>com.fasterxml</groupId>
   <artifactId>jackson-xml-databind</artifactId>
   <name>Jackson-XML-databind</name>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.5.0</version>
   <packaging>bundle</packaging>
   <description>Extension for Jackson (http://jackson.codehaus.org) to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
@@ -171,7 +171,7 @@ javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.tran
 ,org.codehaus.stax2, org.codehaus.stax2.io, org.codehaus.stax2.ri
 ,org.codehaus.jackson, org.codehaus.jackson.annotate, org.codehaus.jackson.impl, org.codehaus.jackson.io
 ,org.codehaus.jackson.type, org.codehaus.jackson.util
-,org.codehaus.jackson.map, org.codehaus.jackson.map.introspect
+,org.codehaus.jackson.map, org.codehaus.jackson.map.introspect, org.codehaus.jackson.map.module
 ,org.codehaus.jackson.map.jsontype, org.codehaus.jackson.map.jsontype.impl
 ,org.codehaus.jackson.map.ser, org.codehaus.jackson.map.ser.impl
 ,org.codehaus.jackson.map.type, org.codehaus.jackson.map.util
