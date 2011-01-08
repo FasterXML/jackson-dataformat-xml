@@ -7,7 +7,7 @@ import org.codehaus.jackson.map.introspect.Annotated;
 
 /**
  * Additional extension interface used above and beyond
- * {@link org.codehaus.jackson.map.AnnotationIntrospector} to
+ * {@link AnnotationIntrospector} to
  * handle XML-specific configuration.
  * 
  * @since 1.7

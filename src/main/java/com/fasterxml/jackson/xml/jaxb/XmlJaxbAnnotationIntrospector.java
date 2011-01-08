@@ -13,7 +13,7 @@ import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 
 /**
- * Alternative {@link AnnotationIntrospector} implementation that
+ * Alternative {@link org.codehaus.jackson.map.AnnotationIntrospector} implementation that
  * builds on introspector from Jackson XC package that uses JAXB annotations,
  * not Jackson annotations.
  */

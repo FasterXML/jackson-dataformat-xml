@@ -183,8 +183,8 @@ javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.tran
 com.fasterxml.jackson.xml
 ,com.fasterxml.jackson.xml.annotate
 ,com.fasterxml.jackson.xml.deser
-,com.fasterxml.jackson.xml.ser
 ,com.fasterxml.jackson.xml.jaxb
+,com.fasterxml.jackson.xml.ser
 ,com.fasterxml.jackson.xml.util
 </Export-Package>
             </instructions>

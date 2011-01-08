@@ -109,8 +109,7 @@ public class XmlFactory extends JsonFactory
      */
 
     /**
-     * Method for enabling or disabling specified parser feature
-     * (check {@link FromXmlParser.Feature} for list of features)
+     * Method for enabling or disabling specified XML parser feature.
      */
     public final XmlFactory configure(FromXmlParser.Feature f, boolean state)
     {
@@ -123,8 +122,7 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * Method for enabling specified parser feature
-     * (check {@link FromXmlParser.Feature} for list of features)
+     * Method for enabling specified XML parser feature.
      */
     public XmlFactory enable(FromXmlParser.Feature f) {
         _xmlParserFeatures |= f.getMask();
@@ -132,8 +130,7 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * Method for disabling specified parser features
-     * (check {@link JsonParser.Feature} for list of features)
+     * Method for disabling specified XML parser feature.
      */
     public XmlFactory disable(FromXmlParser.Feature f) {
         _xmlParserFeatures &= ~f.getMask();
@@ -141,7 +138,7 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * Checked whether specified parser feature is enabled.
+     * Checked whether specified XML parser feature is enabled.
      */
     public final boolean isEnabled(FromXmlParser.Feature f) {
         return (_xmlParserFeatures & f.getMask()) != 0;
@@ -154,10 +151,7 @@ public class XmlFactory extends JsonFactory
      */
 
     /**
-     * Method for enabling or disabling specified generator feature
-     * (check {@link JsonGenerator.Feature} for list of features)
-     *
-     * @since 1.2
+     * Method for enabling or disabling specified XML generator feature.
      */
     public final XmlFactory configure(ToXmlGenerator.Feature f, boolean state) {
         if (state) {
@@ -170,8 +164,7 @@ public class XmlFactory extends JsonFactory
 
 
     /**
-     * Method for enabling specified generator features
-     * (check {@link JsonGenerator.Feature} for list of features)
+     * Method for enabling specified XML generator feature.
      */
     public XmlFactory enable(ToXmlGenerator.Feature f) {
         _xmlGeneratorFeatures |= f.getMask();
@@ -179,8 +172,7 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * Method for disabling specified generator feature
-     * (check {@link JsonGenerator.Feature} for list of features)
+     * Method for disabling specified XML generator feature.
      */
     public XmlFactory disable(ToXmlGenerator.Feature f) {
         _xmlGeneratorFeatures &= ~f.getMask();
@@ -188,7 +180,7 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * Check whether specified generator feature is enabled.
+     * Check whether specified XML generator feature is enabled.
      */
     public final boolean isEnabled(ToXmlGenerator.Feature f) {
         return (_xmlGeneratorFeatures & f.getMask()) != 0;

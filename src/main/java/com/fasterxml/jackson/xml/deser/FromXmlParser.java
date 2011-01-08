@@ -78,7 +78,7 @@ public class FromXmlParser
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link org.codehaus.jackson.smile.SmileGenerator.Feature}s
+     * {@link FromXmlParser.Feature}s
      * are enabled.
      */
     protected int _xmlFeatures;
@@ -695,20 +695,11 @@ public class FromXmlParser
 
     /**
      * Method called to release internal buffers owned by the base
-     * reader. This may be called along with {@link #_closeInput} (for
-     * example, when explicitly closing this reader instance), or
-     * separately (if need be).
+     * parser.
      */
     protected void _releaseBuffers() throws IOException
     {
-        /*
-        _textBuffer.releaseBuffers();
-        char[] buf = _nameCopyBuffer;
-        if (buf != null) {
-            _nameCopyBuffer = null;
-            _ioContext.releaseNameCopyBuffer(buf);
-        }
-        */
+        // anything we can/must release? Underlying parser should do all of it, for now?
     }
 
     protected ByteArrayBuilder _getByteArrayBuilder()

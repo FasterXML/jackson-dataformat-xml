@@ -100,7 +100,7 @@ public final class ToXmlGenerator
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link org.codehaus.jackson.smile.SmileGenerator.Feature}s
+     * {@link ToXmlGenerator.Feature}s
      * are enabled.
      */
     protected int _xmlFeatures;
