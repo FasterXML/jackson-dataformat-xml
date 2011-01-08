@@ -68,6 +68,18 @@ public class TestPolymorphic extends XmlTestBase
     {
         String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassProperty("Foobar"));
 
+        // Type info should be written as an attribute, so:
+        /* 08-Jan-2010, tatu: Alas, the simplest way to implement support requires a change
+         *   to Jackson (since BeanSerializer.serializeWithType() is final; shouldn't be!).
+         *   Need to wait...
+         */
+        final String exp = 
+            //"<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty\">"
+            "<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty</_class>"
+            +"<name>Foobar</name></SubTypeWithClassProperty>"
+                ;
+                assertEquals(exp, xml);
+        
         Object result = _xmlMapper.readValue(xml, BaseTypeWithClassProperty.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassProperty.class, result.getClass());
