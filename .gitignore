@@ -1,0 +1,2 @@
+# Skip maven 'target' directory
+target

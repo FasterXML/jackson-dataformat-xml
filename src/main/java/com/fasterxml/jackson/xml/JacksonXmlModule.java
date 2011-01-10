@@ -112,7 +112,8 @@ public class JacksonXmlModule extends SimpleModule
 
     /**
      * We need a {@link SerializerModifier} to replace default <code>BeanSerializer</code>
-     * with XML-specific one.
+     * with XML-specific one; mostly to ensure that attribute properties are output
+     * before element properties.
      */
     protected static class MySerializerModifier extends BeanSerializerModifier
     {
