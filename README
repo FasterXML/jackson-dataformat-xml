@@ -1,3 +1,5 @@
-Project to build data binding backend that uses standard Jackson data binding but reads and writes XML, similar to how JAXB works. Hence nickname "mini-JAXB".
+Project to build data binding backend that uses standard Jackson data binding but reads and writes XML, similar to how JAXB works (hence nicknames "mini-JAXB" and "XML4Jackson")
 
 Implemented outside of core Jackson to allow faster development and release cycles; as well as to limit growth of core project code base.
+
+Check out project at [http://fasterxml.github.com/jackson-xml-databind/]; contains javadocs and downloadable artifacts.
