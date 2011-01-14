@@ -31,6 +31,16 @@ public class TestPolymorphic extends XmlTestBase
         public SubTypeWithClassArray() { }
         public SubTypeWithClassArray(String s) { name = s; }
     }
+
+    @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+    static class BaseTypeWithClassObject { }
+
+    static class SubTypeWithClassObject extends BaseTypeWithClassObject {
+        public String name;
+    
+        public SubTypeWithClassObject() { }
+        public SubTypeWithClassObject(String s) { name = s; }
+    }
     
     /**
      * If not used as root element, need to use a wrapper
@@ -77,8 +87,8 @@ public class TestPolymorphic extends XmlTestBase
          *   inclusion, which allows use of attribute over element, so:
          */
         final String exp = 
-            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty\">"
-            //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty</_class>"
+            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.xml.TestPolymorphic..SubTypeWithClassProperty\">"
+            //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.TestPolymorphic..SubTypeWithClassProperty</_class>"
             +"<name>Foobar</name></SubTypeWithClassProperty>"
                 ;
         assertEquals(exp, xml);
@@ -112,43 +122,23 @@ System.err.println("XML/subtype-array == "+xml);
     public void testAsWrappedClassArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new ClassArrayWrapper("Foobar"));
-System.err.println("XML/wrapper-array == "+xml);
-        
         ClassArrayWrapper result = _xmlMapper.readValue(xml, ClassArrayWrapper.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.wrapped.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result.wrapped).name);
     }
-    /*
-
-    */
         
     // Only works if NOT an inner class ("$" in inner class throws a wrench)...
     /* 20-Dec-2010, tatu: Idiotic Eclipse-JUNIT tries to run tests on these.
      *   Better comment out for now.
      */
-    /*
     public void testAsClassObject() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassObject("Foobar"));
-
         Object result = _xmlMapper.readValue(xml, BaseTypeWithClassObject.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassObject.class, result.getClass());
         assertEquals("Foobar", ((SubTypeWithClassObject) result).name);
     }
-    */
 }
-
-/*
-@JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
-class BaseTypeWithClassObject {
-}
-
-class SubTypeWithClassObject extends BaseTypeWithClassObject {
-    public String name;
-
-    public SubTypeWithClassObject() { }
-    public SubTypeWithClassObject(String s) { name = s; }
-}
-*/
+   

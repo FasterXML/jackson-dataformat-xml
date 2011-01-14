@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.TypeSerializer;
@@ -146,12 +147,18 @@ public class XmlBeanSerializer extends BeanSerializer
             TypeSerializer typeSer)
         throws IOException, JsonGenerationException
     {
-        // Ok: let's serialize type id as attribute
-        ToXmlGenerator xgen = (ToXmlGenerator)jgen;
-        xgen.setNextIsAttribute(true);
-        super.serializeWithType(bean, jgen, provider, typeSer);
-        if (_attributeCount == 0) { // if no attributes, need to reset
-            xgen.setNextIsAttribute(false);
+        /* Ok: let's serialize type id as attribute, but if (and only if!)
+         * we are using AS_PROPERTY
+         */
+        if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
+            ToXmlGenerator xgen = (ToXmlGenerator)jgen;
+            xgen.setNextIsAttribute(true);
+            super.serializeWithType(bean, jgen, provider, typeSer);
+            if (_attributeCount == 0) { // if no attributes, need to reset
+                xgen.setNextIsAttribute(false);
+            }
+        } else {
+            super.serializeWithType(bean, jgen, provider, typeSer);
         }
     }
     

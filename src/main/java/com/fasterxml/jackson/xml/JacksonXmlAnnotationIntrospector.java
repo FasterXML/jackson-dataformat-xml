@@ -2,13 +2,11 @@ package com.fasterxml.jackson.xml;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.map.introspect.AnnotatedField;
 import org.codehaus.jackson.map.introspect.AnnotatedMethod;
 import org.codehaus.jackson.map.introspect.AnnotatedParameter;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.StdTypeResolverBuilder;
 
 import com.fasterxml.jackson.xml.annotate.*;
@@ -26,9 +24,9 @@ public class JacksonXmlAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {    
     /*
-    /**********************************************************
+    /**********************************************************************
     /* XmlAnnotationIntrospector
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -62,9 +60,9 @@ public class JacksonXmlAnnotationIntrospector
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overrides for name, property detection
-    /**********************************************************
+    /**********************************************************************
      */
     
     @Override
@@ -112,9 +110,9 @@ public class JacksonXmlAnnotationIntrospector
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overrides for non-public helper methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -125,73 +123,6 @@ public class JacksonXmlAnnotationIntrospector
     protected StdTypeResolverBuilder _constructStdTypeResolverBuilder()
     {
         return new XmlTypeResolverBuilder();
-    }
-    
-    /*
-    /**********************************************************
-    /* Internal helper methods
-    /**********************************************************
-     */
-
-    /**
-     * Since XML names can not contain all characters JSON names can, we may
-     * need to replace characters. Let's start with trivial replacement of
-     * ASCII characters that can not be included.
-     */
-    protected static String sanitizeXmlName(String name)
-    {
-        StringBuilder sb = new StringBuilder(name);
-        int changes = 0;
-        for (int i = 0, len = name.length(); i < len; ++i) {
-            char c = name.charAt(i);
-            if (c > 127) continue;
-            if (c >= 'a' && c <= 'z') continue;
-            if (c >= 'A' && c <= 'Z') continue;
-            if (c >= '0' && c <= '9') continue;
-            if (c == '_' || c == '.' || c == '-') continue;
-            // Ok, need to replace
-            ++changes;
-            sb.setCharAt(i, '_');
-        }
-        if (changes == 0) {
-            return name;
-        }
-        return sb.toString();
-    }
-
-    /*
-    /**********************************************************
-    /* Helper classes
-    /**********************************************************
-     */
-
-    /**
-     * Custom specialization of {@link StdTypeResolverBuilder}; needed so that
-     * type id property name can be modified as necessary to make it legal
-     * xml element or attribute name.
-     */
-    protected static class XmlTypeResolverBuilder extends StdTypeResolverBuilder
-    {
-        @Override
-        public StdTypeResolverBuilder init(JsonTypeInfo.Id idType, TypeIdResolver idRes)
-        {
-            super.init(idType, idRes);
-            if (_typeProperty != null) {
-                _typeProperty = sanitizeXmlName(_typeProperty);
-            }
-            return this;
-        }
-
-        @Override
-        public StdTypeResolverBuilder typeProperty(String typeIdPropName)
-        {
-            // ok to have null/empty; will restore to use defaults
-            if (typeIdPropName == null || typeIdPropName.length() == 0) {
-                typeIdPropName = _idType.getDefaultPropertyName();
-            }
-            _typeProperty = sanitizeXmlName(typeIdPropName);
-            return this;
-        }
     }
 }
 
