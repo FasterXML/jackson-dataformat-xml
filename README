@@ -2,4 +2,8 @@ Project to build data binding backend that uses standard Jackson data binding bu
 
 Implemented outside of core Jackson to allow faster development and release cycles; as well as to limit growth of core project code base.
 
-Check out project at [http://fasterxml.github.com/jackson-xml-databind/]; contains javadocs and downloadable artifacts.
+See wiki page -- https://github.com/FasterXML/jackson-xml-databind/wiki -- for more information
+
+(also, temporary home page at http://fasterxml.github.com/jackson-xml-databind/ has interesting stuff)
+ 
+
