@@ -52,17 +52,19 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   <dependencies>
     <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation on deploy time), Stax2 API.
          Also requires jackson xc to support JAXB annotations.
+         
+         Note: 1.7.1 is necessary; 1.7.0 had minor issues wrt overridability
       -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1</version>
     </dependency>
     <!--  JAXB annotation introspector from Jackson/xc -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->

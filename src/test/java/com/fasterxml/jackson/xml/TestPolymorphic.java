@@ -31,7 +31,7 @@ public class TestPolymorphic extends XmlTestBase
         public SubTypeWithClassArray() { }
         public SubTypeWithClassArray(String s) { name = s; }
     }
-
+    
     /**
      * If not used as root element, need to use a wrapper
      */
@@ -73,12 +73,15 @@ public class TestPolymorphic extends XmlTestBase
          *   to Jackson (since BeanSerializer.serializeWithType() is final; shouldn't be!).
          *   Need to wait...
          */
+        /* 13-Jan-2010, tatu: With Jackson 1.7.1, it is possible to override type information
+         *   inclusion, which allows use of attribute over element, so:
+         */
         final String exp = 
-            //"<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty\">"
-            "<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty</_class>"
+            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty\">"
+            //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.TestPolymorphic$SubTypeWithClassProperty</_class>"
             +"<name>Foobar</name></SubTypeWithClassProperty>"
                 ;
-                assertEquals(exp, xml);
+        assertEquals(exp, xml);
         
         Object result = _xmlMapper.readValue(xml, BaseTypeWithClassProperty.class);
         assertNotNull(result);
@@ -88,31 +91,37 @@ public class TestPolymorphic extends XmlTestBase
     
     /* 19-Dec-2010, tatu: Let's hold off these tests, due to issues with inclusions.
      */
-    /*
     // Does not work since array wrapping is not explicitly forced (unlike with collection
     // property of a bean
+    /*
     public void testAsClassArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassArray("Foobar"));
+
+System.err.println("XML/subtype-array == "+xml);
 
         Object result = _xmlMapper.readValue(xml, BaseTypeWithClassArray.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result).name);
     }
+    */
 
     // Hmmh. Does not yet quite work either, since we do not properly force
     // array context when writing...
     public void testAsWrappedClassArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new ClassArrayWrapper("Foobar"));
-
+System.err.println("XML/wrapper-array == "+xml);
+        
         ClassArrayWrapper result = _xmlMapper.readValue(xml, ClassArrayWrapper.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.wrapped.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result.wrapped).name);
     }
-        */
+    /*
+
+    */
         
     // Only works if NOT an inner class ("$" in inner class throws a wrench)...
     /* 20-Dec-2010, tatu: Idiotic Eclipse-JUNIT tries to run tests on these.

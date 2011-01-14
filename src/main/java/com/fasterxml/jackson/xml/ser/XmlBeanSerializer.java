@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.TypeSerializer;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.BeanSerializer;
 
@@ -85,6 +86,12 @@ public class XmlBeanSerializer extends BeanSerializer
         return new XmlBeanSerializer(this, filtered);
     }
 
+    /*
+    /**********************************************************
+    /* Overridden serialization methods
+    /**********************************************************
+     */
+    
     /**
      * Main serialization method needs to be overridden to allow XML-specific
      * extra handling, such as indication of whether to write attributes or
@@ -134,6 +141,20 @@ public class XmlBeanSerializer extends BeanSerializer
         }
     }
 
+    @Override
+    public void serializeWithType(Object bean, JsonGenerator jgen, SerializerProvider provider,
+            TypeSerializer typeSer)
+        throws IOException, JsonGenerationException
+    {
+        // Ok: let's serialize type id as attribute
+        ToXmlGenerator xgen = (ToXmlGenerator)jgen;
+        xgen.setNextIsAttribute(true);
+        super.serializeWithType(bean, jgen, provider, typeSer);
+        if (_attributeCount == 0) { // if no attributes, need to reset
+            xgen.setNextIsAttribute(false);
+        }
+    }
+    
     /*
     /**********************************************************
     /* Helper methods
