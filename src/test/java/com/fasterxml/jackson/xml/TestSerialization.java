@@ -47,6 +47,14 @@ public class TestSerialization extends XmlTestBase
         }
     }
 
+    static class MapBean
+    {
+        public Map<String,Integer> map;
+
+        public MapBean() { }
+        public MapBean(Map<String,Integer> m) { map = m; }
+    }
+    
     static class StringListBean
     {
         // to see what JAXB gives, uncomment:
@@ -161,6 +169,19 @@ public class TestSerialization extends XmlTestBase
                 +"<strings><text>b</text></strings>"
                 +"<strings><text>c</text></strings>"
                 +"</stringList></StringListBean>", xml);
+    }
+
+    public void testMap() throws IOException
+    {
+        LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>();
+        map.put("a", 1);
+        map.put("b", 2);
+        String xml = _xmlMapper.writeValueAsString(new MapBean(map));
+        assertEquals("<MapBean><map>"
+                +"<a>1</a>"
+                +"<b>1</b>"
+                +"</map></MapBean>",
+                xml);
     }
     
     // manual 'test' to see "what would JAXB do?"
