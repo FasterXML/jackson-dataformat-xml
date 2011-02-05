@@ -8,7 +8,7 @@
   <groupId>com.fasterxml</groupId>
   <artifactId>jackson-xml-databind</artifactId>
   <name>Jackson-XML-databind</name>
-  <version>0.5.3-SNAPSHOT</version>
+  <version>0.5.3</version>
   <packaging>bundle</packaging>
   <description>Extension for Jackson (http://jackson.codehaus.org) to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
