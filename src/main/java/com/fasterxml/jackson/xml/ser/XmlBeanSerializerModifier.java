@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.xml.ser;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -97,8 +98,14 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
     private static boolean _isContainerType(JavaType type)
     {
         if (type.isContainerType()) {
-            // Just one special case; byte[] will be serialized as base64-encoded String, not real array, so:
-            if (type.getRawClass() == byte[].class) {
+            Class<?> cls = type.getRawClass();
+            // One special case; byte[] will be serialized as base64-encoded String, not real array, so:
+            // (actually, ditto for char[]; thought to be a String)
+            if (cls == byte[].class || cls == byte[].class) {
+                return false;
+            }
+            // issue#5: also, should not add wrapping for Maps
+            if (Map.class.isAssignableFrom(cls)) {
                 return false;
             }
             return true;

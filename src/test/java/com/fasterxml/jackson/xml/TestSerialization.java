@@ -47,12 +47,20 @@ public class TestSerialization extends XmlTestBase
         }
     }
 
+    static class WrapperBean<T>
+    {
+        public T value;
+
+        public WrapperBean() { }
+        public WrapperBean(T v) { value = v; }
+    }
+
     static class MapBean
     {
         public Map<String,Integer> map;
 
         public MapBean() { }
-        public MapBean(Map<String,Integer> m) { map = m; }
+        public MapBean(Map<String,Integer> v) { map = v; }
     }
     
     static class StringListBean
@@ -104,17 +112,14 @@ public class TestSerialization extends XmlTestBase
     /* Unit tests
     /**********************************************************
      */
-    
-    /**
-     * Unit test to verify that root name is properly set
-     */
+
+    // Unit test to verify that root name is properly set
     public void testRootName() throws IOException
     {
         String xml = _xmlMapper.writeValueAsString(new StringBean());
         
-        /* Hmmh. Looks like JDK Stax adds bogus ns declaration. As such,
-         * let's just check that name starts ok...
-         */
+        // Hmmh. Looks like JDK Stax adds bogus ns declaration. As such,
+        // let's just check that name starts ok...
         if (xml.indexOf("<StringBean") != 0) {
             fail("Expected root name of 'StringBean'; but XML document is ["+xml+"]");
         }
@@ -173,13 +178,25 @@ public class TestSerialization extends XmlTestBase
 
     public void testMap() throws IOException
     {
+        // First, map in a general wrapper
         LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>();
         map.put("a", 1);
         map.put("b", 2);
-        String xml = _xmlMapper.writeValueAsString(new MapBean(map));
+
+        String xml;
+        
+        xml = _xmlMapper.writeValueAsString(new WrapperBean<Map<?,?>>(map));
+        assertEquals("<WrapperBean><value>"
+                +"<a>1</a>"
+                +"<b>2</b>"
+                +"</value></WrapperBean>",
+                xml);
+
+        // then as strongly typed
+        xml = _xmlMapper.writeValueAsString(new MapBean(map));
         assertEquals("<MapBean><map>"
                 +"<a>1</a>"
-                +"<b>1</b>"
+                +"<b>2</b>"
                 +"</map></MapBean>",
                 xml);
     }
