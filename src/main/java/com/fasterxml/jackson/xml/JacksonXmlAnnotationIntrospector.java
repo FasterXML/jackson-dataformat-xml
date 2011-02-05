@@ -58,6 +58,16 @@ public class JacksonXmlAnnotationIntrospector
         }
         return null;
     }
+
+    @Override
+    public QName findRootElement(Annotated ann)
+    {
+        JacksonXmlRootElement root = ann.getAnnotation(JacksonXmlRootElement.class);
+        if (root != null) {
+            return new QName(root.namespace(), root.localName());
+        }
+        return null;
+    }
     
     /*
     /**********************************************************************

@@ -86,17 +86,21 @@ public class XmlJaxbAnnotationIntrospector
     {
         XmlElementWrapper w = findAnnotation(XmlElementWrapper.class, ann, false, false, false);
         if (w != null) {
-            String ln = w.name();
-            String ns = w.namespace();
-            // if undefined, means "use property's name":
-            if (MARKER_FOR_DEFAULT.equals(ln)) {
-                ln = "";
-            }
-            return new QName(ns, ln);
+            return new QName(handleJaxbDefault(w.namespace()), handleJaxbDefault(w.name()));
         }
         return null;
     }
 
+    @Override
+    public QName findRootElement(Annotated ann)
+    {
+        XmlRootElement root = findAnnotation(XmlRootElement.class, ann, false, false, false);
+        if (root != null) {
+            return new QName(handleJaxbDefault(root.namespace()), handleJaxbDefault(root.name()));
+        }
+        return null;
+    }
+    
     /*
     /**********************************************************************
     /* Helper methods
@@ -108,4 +112,10 @@ public class XmlJaxbAnnotationIntrospector
         // Yes, check package, no class (already included), yes superclasses
         return findAnnotation(XmlRootElement.class, ac, true, false, true);
     }
+
+    private String handleJaxbDefault(String value)
+    {
+        return MARKER_FOR_DEFAULT.equals(value) ? "" : value;
+    }
+
 }

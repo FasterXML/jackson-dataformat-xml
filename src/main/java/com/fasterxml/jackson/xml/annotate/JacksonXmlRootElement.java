@@ -8,17 +8,15 @@ import java.lang.annotation.Target;
 import org.codehaus.jackson.annotate.JacksonAnnotation;
 
 /**
- * Annotation that can be used to provide XML-specific configuration
- * for properties, above and beyond what
- * {@link org.codehaus.jackson.annotate.JsonProperty} contains.
- * It is an alternative to using JAXB annotations.
+ * Annotation that can be used to define name of root element used
+ * for the root-level object when serialized, which normally uses
+ * name of the type (class). It is similar to JAXB <code>XmlRootElement</code>.
  */
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotation
-public @interface JacksonXmlProperty
+public @interface JacksonXmlRootElement
 {
-    boolean isAttribute() default false;
     String namespace() default "";
     String localName() default "";
 }

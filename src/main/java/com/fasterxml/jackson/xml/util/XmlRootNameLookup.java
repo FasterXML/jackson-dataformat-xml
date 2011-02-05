@@ -43,20 +43,33 @@ public class XmlRootNameLookup
                 BasicBeanDescription beanDesc = (BasicBeanDescription) config.introspectClassAnnotations(rootType);
                 AnnotationIntrospector intr = config.getAnnotationIntrospector();
                 AnnotatedClass ac = beanDesc.getClassInfo();
-                String localName = intr.findRootName(ac);
+                String localName = null;
+                String ns = null;
+
+                QName root = findRootElement(intr, ac);
+                if (root != null) {
+                    localName = root.getLocalPart();
+                    ns = root.getNamespaceURI();
+                }
+                if (localName == null || localName.length() == 0) {
+                    localName = intr.findRootName(ac);
+                }
+                
                 // No answer so far? Let's just default to using simple class name
-                if (localName == null) {
+                if (localName == null || localName.length() == 0) {
                     // Should we strip out enclosing class tho? For now, nope:
                     localName = rootType.getSimpleName();
                     name = new QName("", localName);
                 } else {
-                    // Otherwise let's see if there's namespace, too
-                    String ns = findNamespace(intr, ac);
-                    if (ns == null) { // some QName impls barf on nulls...
-                        ns = "";
+                    // Otherwise let's see if there's namespace, too (if we are missing it)
+                    if (ns == null || ns.length() == 0) {
+                        ns = findNamespace(intr, ac);
                     }
-                    name = new QName(ns, localName);
                 }
+                if (ns == null) { // some QName impls barf on nulls...
+                    ns = "";
+                }
+                name = new QName(ns, localName);
                 _rootNames.put(key, name);
             }
         }
@@ -70,6 +83,19 @@ public class XmlRootNameLookup
                 String ns = ((XmlAnnotationIntrospector) intr).findNamespace(ann);
                 if (ns != null) {
                     return ns;
+                }
+            }
+        }
+        return null;
+    }
+
+    private QName findRootElement(AnnotationIntrospector ai, AnnotatedClass ann)
+    {
+        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+            if (intr instanceof XmlAnnotationIntrospector) {
+                QName elem = ((XmlAnnotationIntrospector) intr).findRootElement(ann);
+                if (elem != null) {
+                    return elem;
                 }
             }
         }

@@ -8,13 +8,12 @@ import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.ClassNameIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.MinimalClassNameIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.StdTypeResolverBuilder;
-import org.codehaus.jackson.map.jsontype.impl.TypeNameIdResolver;
 import org.codehaus.jackson.type.JavaType;
 
 /**
  * Custom specialization of {@link StdTypeResolverBuilder}; needed so that
  * type id property name can be modified as necessary to make it legal
- * xml element or attribute name.
+ * XML element or attribute name.
  */
 public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
 {

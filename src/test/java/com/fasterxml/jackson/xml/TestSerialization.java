@@ -7,6 +7,7 @@ import java.util.*;
 import com.fasterxml.jackson.xml.XmlMapper;
 import com.fasterxml.jackson.xml.annotate.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.xml.annotate.JacksonXmlProperty;
+import com.fasterxml.jackson.xml.annotate.JacksonXmlRootElement;
 
 public class TestSerialization extends XmlTestBase
 {
@@ -92,6 +93,18 @@ public class TestSerialization extends XmlTestBase
         public String attr = "3";
     }
 
+    @JacksonXmlRootElement(localName="root")
+    static class RootBean
+    {
+        public String value = "123";
+    }
+
+    @JacksonXmlRootElement(localName="nsRoot", namespace="http://foo")
+    static class NsRootBean
+    {
+        public String value = "abc";
+    }
+    
     /*
     /**********************************************************
     /* Set up
@@ -118,10 +131,24 @@ public class TestSerialization extends XmlTestBase
     {
         String xml = _xmlMapper.writeValueAsString(new StringBean());
         
-        // Hmmh. Looks like JDK Stax adds bogus ns declaration. As such,
+        // Hmmh. Looks like JDK Stax may adds bogus ns declaration. As such,
         // let's just check that name starts ok...
-        if (xml.indexOf("<StringBean") != 0) {
+        if (!xml.startsWith("<StringBean")) {
             fail("Expected root name of 'StringBean'; but XML document is ["+xml+"]");
+        }
+
+        // and then see that basic non-namespace root is ok
+        xml = _xmlMapper.writeValueAsString(new RootBean());
+        assertEquals("<root><value>123</value></root>", xml);
+
+        // and namespace one too
+        xml = _xmlMapper.writeValueAsString(new NsRootBean());
+        if (xml.indexOf("nsRoot") < 0) { // verify localName
+            fail("Expected root name of 'nsRoot'; but XML document is ["+xml+"]");
+        }
+        // and NS declaration
+        if (xml.indexOf("http://foo") < 0) {
+            fail("Expected NS declaration for 'http://foo', not found, XML document is ["+xml+"]");
         }
     }
     
