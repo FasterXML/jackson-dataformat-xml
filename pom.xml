@@ -60,13 +60,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.8.0-SNAPSHOT</version>
+      <version>1.8.0</version>
     </dependency>
     <!--  JAXB annotation introspector from Jackson/xc -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
-      <version>1.8.0-SNAPSHOT</version>
+      <version>1.8.0</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
@@ -173,8 +173,8 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
               <Import-Package>
 javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.transform
 ,org.codehaus.stax2, org.codehaus.stax2.io, org.codehaus.stax2.ri
-,org.codehaus.jackson, org.codehaus.jackson.annotate, org.codehaus.jackson.impl, org.codehaus.jackson.io
-,org.codehaus.jackson.type, org.codehaus.jackson.util
+,org.codehaus.jackson, org.codehaus.jackson.annotate, org.codehaus.jackson.format, org.codehaus.jackson.impl
+,org.codehaus.jackson.io ,org.codehaus.jackson.type, org.codehaus.jackson.util
 ,org.codehaus.jackson.map, org.codehaus.jackson.map.introspect, org.codehaus.jackson.map.module
 ,org.codehaus.jackson.map.jsontype, org.codehaus.jackson.map.jsontype.impl
 ,org.codehaus.jackson.map.ser, org.codehaus.jackson.map.ser.impl

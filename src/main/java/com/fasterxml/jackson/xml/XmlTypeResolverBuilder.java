@@ -3,6 +3,7 @@ package com.fasterxml.jackson.xml;
 import java.util.Collection;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.map.MapperConfig;
 import org.codehaus.jackson.map.jsontype.NamedType;
 import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.ClassNameIdResolver;
@@ -39,7 +40,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     }
 
     @Override
-    protected TypeIdResolver idResolver(JavaType baseType, Collection<NamedType> subtypes,
+    protected TypeIdResolver idResolver(MapperConfig<?> config,
+            JavaType baseType, Collection<NamedType> subtypes,
             boolean forSer, boolean forDeser)
     {
         if (_customIdResolver != null) {
@@ -52,7 +54,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         case MINIMAL_CLASS:
             return new XmlMinimalClassNameIdResolver(baseType);
         }
-        return super.idResolver(baseType, subtypes, forSer, forDeser);
+        return super.idResolver(config, baseType, subtypes, forSer, forDeser);
     }
     
     /*
