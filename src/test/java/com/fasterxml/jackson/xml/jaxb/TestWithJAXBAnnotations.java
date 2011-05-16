@@ -53,8 +53,7 @@ public class TestWithJAXBAnnotations extends XmlTestBase
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
             (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
-        _jaxbMapper.getDeserializationConfig().setAnnotationIntrospector(intr);
-        _jaxbMapper.getSerializationConfig().setAnnotationIntrospector(intr);
+        _jaxbMapper.setAnnotationIntrospector(intr);
     }
     
     /*

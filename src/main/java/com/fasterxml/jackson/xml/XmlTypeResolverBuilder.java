@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.jsontype.TypeIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.ClassNameIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.MinimalClassNameIdResolver;
 import org.codehaus.jackson.map.jsontype.impl.StdTypeResolverBuilder;
+import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
 /**
@@ -50,9 +51,9 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         // Only override handlings of class, minimal class; name is good as is
         switch (_idType) {
         case CLASS:
-            return new XmlClassNameIdResolver(baseType);
+            return new XmlClassNameIdResolver(baseType, config.getTypeFactory());
         case MINIMAL_CLASS:
-            return new XmlMinimalClassNameIdResolver(baseType);
+            return new XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory());
         }
         return super.idResolver(config, baseType, subtypes, forSer, forDeser);
     }
@@ -137,9 +138,9 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlClassNameIdResolver
         extends ClassNameIdResolver
     {
-        public XmlClassNameIdResolver(JavaType baseType)
+        public XmlClassNameIdResolver(JavaType baseType, TypeFactory typeFactory)
         {
-            super(baseType);
+            super(baseType, typeFactory);
         }
 
         @Override
@@ -158,9 +159,9 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlMinimalClassNameIdResolver
         extends MinimalClassNameIdResolver
     {
-        public XmlMinimalClassNameIdResolver(JavaType baseType)
+        public XmlMinimalClassNameIdResolver(JavaType baseType, TypeFactory typeFactory)
         {
-            super(baseType);
+            super(baseType, typeFactory);
         }
 
         @Override

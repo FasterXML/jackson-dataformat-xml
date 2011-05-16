@@ -77,15 +77,6 @@ public class XmlBeanSerializer extends BeanSerializer
         _attributeCount = src._attributeCount;
         _xmlNames = src._xmlNames;
     }
-    
-    @Override
-    public BeanSerializer withFiltered(BeanPropertyWriter[] filtered)
-    {
-        if (filtered == _filteredProps) {
-            return this;
-        }
-        return new XmlBeanSerializer(this, filtered);
-    }
 
     /*
     /**********************************************************
