@@ -45,6 +45,10 @@ public class XmlBeanPropertyWriter
         super(wrapped);
         _wrapperName = wrapperName;
         _wrappedName = wrappedName;
+        // super-class SHOULD copy this, but just in case it didn't (as was the case with 1.8.0 and 1.8.1):
+        if (_includeInViews == null) {
+            _includeInViews = wrapped.getViews();
+        }
     }
 
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped, QName wrapperName, QName wrappedName,
@@ -53,6 +57,10 @@ public class XmlBeanPropertyWriter
         super(wrapped, serializer);
         _wrapperName = wrapperName;
         _wrappedName = wrappedName;
+        // super-class SHOULD copy this, but just in case it didn't (as was the case with 1.8.0 and 1.8.1):
+        if (_includeInViews == null) {
+            _includeInViews = wrapped.getViews();
+        }
     }
     
     @Override
@@ -117,8 +125,6 @@ public class XmlBeanPropertyWriter
         } else {
             ser.serializeWithType(value, jgen, prov, _typeSerializer);
         }
-
         xmlGen.finishWrappedValue(_wrapperName, _wrappedName);
     }
-    
 }
