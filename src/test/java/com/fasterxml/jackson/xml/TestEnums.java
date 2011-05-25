@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.xml;
 
 import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class TestEnums extends XmlTestBase
 {
@@ -46,7 +47,7 @@ public class TestEnums extends XmlTestBase
 
     public void testUntypedEnum() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
+        ObjectMapper mapper = new XmlMapper();
         String str = mapper.writeValueAsString(new UntypedEnumBean(TestEnum.B));
         UntypedEnumBean result = mapper.readValue(str, UntypedEnumBean.class);
         assertNotNull(result);
@@ -55,5 +56,4 @@ public class TestEnums extends XmlTestBase
         assertSame(TestEnum.class, ob.getClass());
         assertEquals(TestEnum.B, result.value);
     }
-    
 }
