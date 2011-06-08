@@ -161,9 +161,9 @@ public class XmlTokenStream
             // fall through
         case XML_START_ELEMENT: // attributes to return?
             if (_nextAttributeIndex < _attributeCount) {
-                _localName = _xmlReader.getAttributeLocalName(0);
-                _namespaceURI = _xmlReader.getAttributeNamespace(0);
-                _textValue = _xmlReader.getAttributeValue(0);
+                _localName = _xmlReader.getAttributeLocalName(_nextAttributeIndex);
+                _namespaceURI = _xmlReader.getAttributeNamespace(_nextAttributeIndex);
+                _textValue = _xmlReader.getAttributeValue(_nextAttributeIndex);
                 return (_currentState = XML_ATTRIBUTE_NAME);
             }
             // otherwise need to find START/END_ELEMENT or text
