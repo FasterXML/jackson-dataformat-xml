@@ -210,12 +210,35 @@ public class TestXmlParser extends XmlTestBase
         assertTrue(xp.getParsingContext().inRoot());
         xp.close();
     }
-    
+
     /*
     /**********************************************************
     /* Helper methods
     /**********************************************************
      */
+
+
+    public void testXmlAttributes() throws Exception
+    {
+        final String XML = "<data max=\"7\" offset=\"9\"/>";
+
+        FromXmlParser xp = (FromXmlParser) _xmlFactory.createJsonParser(new StringReader(XML));
+
+        // First: verify handling without forcing array handling:
+        assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <max>
+        assertEquals("max", xp.getCurrentName());
+        assertToken(JsonToken.VALUE_STRING, xp.nextToken());
+        assertEquals("7", xp.getText());
+
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <offset>
+        assertEquals("offset", xp.getCurrentName());
+        assertToken(JsonToken.VALUE_STRING, xp.nextToken());
+        assertEquals("9", xp.getText());
+
+        assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </data>
+        xp.close();
+    }
 
     private String _readXmlWriteJson(String xml) throws IOException
     {
