@@ -23,7 +23,9 @@ public class TestEnums extends XmlTestBase
     
     static class UntypedEnumBean
     {
-        @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="__type")
+       @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="__type")
+// this would actually work:
+//        @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
         public Object value;
 
         public UntypedEnumBean() { }

@@ -103,23 +103,17 @@ public class TestPolymorphic extends XmlTestBase
      */
     // Does not work since array wrapping is not explicitly forced (unlike with collection
     // property of a bean
-    /*
     public void testAsClassArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassArray("Foobar"));
-
-System.err.println("XML/subtype-array == "+xml);
-
         Object result = _xmlMapper.readValue(xml, BaseTypeWithClassArray.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result).name);
     }
-    */
 
     // Hmmh. Does not yet quite work either, since we do not properly force
     // array context when writing...
-    /*
     public void testAsWrappedClassArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new ClassArrayWrapper("Foobar"));
@@ -128,12 +122,7 @@ System.err.println("XML/subtype-array == "+xml);
         assertEquals(SubTypeWithClassArray.class, result.wrapped.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result.wrapped).name);
     }
-    */
         
-    // Only works if NOT an inner class ("$" in inner class throws a wrench)...
-    /* 20-Dec-2010, tatu: Idiotic Eclipse-JUNIT tries to run tests on these.
-     *   Better comment out for now.
-     */
     public void testAsClassObject() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassObject("Foobar"));
