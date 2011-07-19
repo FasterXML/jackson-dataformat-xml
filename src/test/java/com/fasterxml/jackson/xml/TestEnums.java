@@ -1,8 +1,5 @@
 package com.fasterxml.jackson.xml;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.ObjectMapper;
-
 public class TestEnums extends XmlTestBase
 {
     /*
@@ -20,17 +17,6 @@ public class TestEnums extends XmlTestBase
         public EnumBean() { }
         public EnumBean(TestEnum v) { value = v; }
     }
-    
-    static class UntypedEnumBean
-    {
-       @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="__type")
-// this would actually work:
-//        @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
-        public Object value;
-
-        public UntypedEnumBean() { }
-        public UntypedEnumBean(TestEnum v) { value = v; }
-    }
 
     /*
     /**********************************************************
@@ -44,18 +30,6 @@ public class TestEnums extends XmlTestBase
         String str = mapper.writeValueAsString(new EnumBean(TestEnum.B));
         EnumBean result = mapper.readValue(str, EnumBean.class);
         assertNotNull(result);
-        assertEquals(TestEnum.B, result.value);
-    }
-
-    public void testUntypedEnum() throws Exception
-    {
-        ObjectMapper mapper = new XmlMapper();
-        String str = mapper.writeValueAsString(new UntypedEnumBean(TestEnum.B));
-        UntypedEnumBean result = mapper.readValue(str, UntypedEnumBean.class);
-        assertNotNull(result);
-        assertNotNull(result.value);
-        Object ob = result.value;
-        assertSame(TestEnum.class, ob.getClass());
         assertEquals(TestEnum.B, result.value);
     }
 }
