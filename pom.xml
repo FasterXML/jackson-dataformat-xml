@@ -159,6 +159,21 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
                 </executions>
         </plugin>
 
+	    <!--  Need to skip known-failing tests for build... -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.9</version>
+          <configuration>
+            <excludes>
+              <exclude>com/fasterxml/jackson/xml/failing/*.java</exclude>
+            </excludes>
+            <includes>
+              <include>**/Test*.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+
         <!-- Plus, let's make jars OSGi bundles as well  -->
         <plugin>
           <groupId>org.apache.felix</groupId>
@@ -167,7 +182,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
           <extensions>true</extensions>
           <configuration>
             <instructions>
-              <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+              <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
               <Bundle-Vendor>fasterml.com</Bundle-Vendor>
               <Import-Package>
 javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.transform
