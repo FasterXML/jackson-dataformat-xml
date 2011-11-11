@@ -53,18 +53,19 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation on deploy time), Stax2 API.
          Also requires jackson xc to support JAXB annotations.
          
-         Note: current version is based on 1.8 API, thus minimum version
+         Note: current version is based on 1.8 API, and might work on it,
+         however, 1.9 has useful fixes so we will request that
       -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.8.3</version>
+      <version>1.9.2</version>
     </dependency>
     <!--  JAXB annotation introspector from Jackson/xc -->
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
-      <version>1.8.3</version>
+      <version>1.9.2</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
@@ -174,11 +175,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
           </configuration>
         </plugin>
 
-        <!-- Plus, let's make jars OSGi bundles as well  -->
+        <!-- Plus, let's make jars OSGi bundles as well 
+             2.3.4 used to get src and javadodc (2.3.5 has issues)
+            -->
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.3.5</version>
+          <version>2.3.4</version>
           <extensions>true</extensions>
           <configuration>
             <instructions>

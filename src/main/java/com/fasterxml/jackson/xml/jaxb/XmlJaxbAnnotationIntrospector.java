@@ -1,5 +1,9 @@
 package com.fasterxml.jackson.xml.jaxb;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -8,6 +12,7 @@ import javax.xml.namespace.QName;
 
 import org.codehaus.jackson.map.introspect.Annotated;
 import org.codehaus.jackson.map.introspect.AnnotatedClass;
+import org.codehaus.jackson.map.introspect.AnnotatedParameter;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
@@ -32,7 +37,6 @@ public class XmlJaxbAnnotationIntrospector
          *  currently this method is not needed, and when it is,
          *  this can be improved.
          */
-
         if (ann instanceof AnnotatedClass) {
             /* For classes, it must be @XmlRootElement. Also, we do
              * want to use defaults from package, base class
@@ -118,4 +122,53 @@ public class XmlJaxbAnnotationIntrospector
         return MARKER_FOR_DEFAULT.equals(value) ? "" : value;
     }
 
+    /* NOTE: copied verbatim from Jackson 1.9, since its visibility was
+     * lowered (accidentally...)
+     */
+    protected <A extends Annotation> A findAnnotation(Class<A> annotationClass, Annotated annotated,
+            boolean includePackage, boolean includeClass, boolean includeSuperclasses)
+    {
+        A annotation = annotated.getAnnotation(annotationClass);
+        if (annotation != null) {
+            return annotation;
+        }
+        Class<?> memberClass = null;
+        if (annotated instanceof AnnotatedParameter) {
+            memberClass = ((AnnotatedParameter) annotated).getDeclaringClass();
+        } else {
+            AnnotatedElement annType = annotated.getAnnotated();
+            if (annType instanceof Member) {
+                memberClass = ((Member) annType).getDeclaringClass();
+                if (includeClass) {
+                    annotation = (A) memberClass.getAnnotation(annotationClass);
+                    if (annotation != null) {
+                        return annotation;
+                    }
+                }
+            } else if (annType instanceof Class<?>) {
+                memberClass = (Class<?>) annType;
+            } else {
+                throw new IllegalStateException("Unsupported annotated member: " + annotated.getClass().getName());
+            }
+        }
+        if (memberClass != null) {
+            if (includeSuperclasses) {
+                Class<?> superclass = memberClass.getSuperclass();
+                while (superclass != null && superclass != Object.class) {
+                    annotation = (A) superclass.getAnnotation(annotationClass);
+                    if (annotation != null) {
+                        return annotation;
+                    }
+                    superclass = superclass.getSuperclass();
+                }
+            }
+            if (includePackage) {
+                Package pkg = memberClass.getPackage();
+                if (pkg != null) {
+                    return memberClass.getPackage().getAnnotation(annotationClass);
+                }
+            }
+        }
+        return null;
+    }
 }
