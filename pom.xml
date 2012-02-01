@@ -111,6 +111,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
         <!-- Let's require JDK 1.6; makes things easier wrt Stax API for one 
           -->
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
@@ -119,13 +120,14 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>2.0</version>
+            <version>2.1</version>
             <configuration>
                 <mavenExecutorId>forked-path</mavenExecutorId>
             </configuration>
         </plugin>
         <plugin><!-- plug-in to attach source bundle in repo -->
           <groupId>org.apache.maven.plugins</groupId>
+        <version>2.1.2</version>
           <artifactId>maven-source-plugin</artifactId>
           <executions>
             <execution>
