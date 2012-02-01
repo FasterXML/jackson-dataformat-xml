@@ -5,15 +5,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.introspect.AnnotatedMember;
-import org.codehaus.jackson.map.introspect.BasicBeanDescription;
-import org.codehaus.jackson.map.ser.BeanPropertyWriter;
-import org.codehaus.jackson.map.ser.BeanSerializer;
-import org.codehaus.jackson.map.ser.BeanSerializerModifier;
-import org.codehaus.jackson.type.JavaType;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
+import com.fasterxml.jackson.databind.ser.*;
 
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.xml.util.XmlInfo;
@@ -37,7 +31,7 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
      */
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config,
-            BasicBeanDescription beanDesc, List<BeanPropertyWriter> beanProperties)
+            BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties)
     {
         AnnotationIntrospector intr = config.getAnnotationIntrospector();
         for (int i = 0, len = beanProperties.size(); i < len; ++i) {
@@ -73,7 +67,7 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
     
     @Override
     public JsonSerializer<?> modifySerializer(SerializationConfig config,
-            BasicBeanDescription beanDesc, JsonSerializer<?> serializer)
+            BeanDescription beanDesc, JsonSerializer<?> serializer)
     {
         /* First things first: we can only handle real BeanSerializers; question
          * is, what to do if it's not one: throw exception or bail out?

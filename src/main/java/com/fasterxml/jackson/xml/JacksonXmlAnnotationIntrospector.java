@@ -2,12 +2,8 @@ package com.fasterxml.jackson.xml;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.map.introspect.Annotated;
-import org.codehaus.jackson.map.introspect.AnnotatedField;
-import org.codehaus.jackson.map.introspect.AnnotatedMethod;
-import org.codehaus.jackson.map.introspect.AnnotatedParameter;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.map.jsontype.impl.StdTypeResolverBuilder;
+import com.fasterxml.jackson.databind.introspect.*;
+import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 
 import com.fasterxml.jackson.xml.annotate.*;
 
@@ -16,8 +12,6 @@ import com.fasterxml.jackson.xml.annotate.*;
  * additional xml-specific annotation that Jackson provides. Note, however, that
  * there is no JAXB annotation support here; that is provided with
  * separate introspector (see {@link org.codehaus.jackson.xc.JaxbAnnotationIntrospector}).
- * 
- * @since 1.7
  */
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
@@ -76,37 +70,37 @@ public class JacksonXmlAnnotationIntrospector
      */
     
     @Override
-    public String findSerializablePropertyName(AnnotatedField af)
+    public String findSerializationName(AnnotatedField af)
     {
         JacksonXmlProperty pann = af.getAnnotation(JacksonXmlProperty.class);
         if (pann != null) {
             return pann.localName();
         }
-        return super.findSerializablePropertyName(af);
+        return super.findSerializationName(af);
     }
 
     @Override
-    public String findSettablePropertyName(AnnotatedMethod am)
+    public String findSerializationName(AnnotatedMethod am)
     {
         JacksonXmlProperty pann = am.getAnnotation(JacksonXmlProperty.class);
         if (pann != null) {
             return pann.localName();
         }
-        return super.findSettablePropertyName(am);
+        return super.findSerializationName(am);
     }
 
     @Override
-    public String findDeserializablePropertyName(AnnotatedField af)
+    public String findDeserializationName(AnnotatedField af)
     {
         JacksonXmlProperty pann = af.getAnnotation(JacksonXmlProperty.class);
         if (pann != null) {
             return pann.localName();
         }
-        return super.findDeserializablePropertyName(af);
+        return super.findDeserializationName(af);
     }
 
     @Override
-    public String findPropertyNameForParam(AnnotatedParameter ap)
+    public String findDeserializationName(AnnotatedParameter ap)
     {
         JacksonXmlProperty pann = ap.getAnnotation(JacksonXmlProperty.class);
         // can not return empty String here, so:
@@ -116,7 +110,7 @@ public class JacksonXmlAnnotationIntrospector
                 return name;
             }
         }
-        return super.findPropertyNameForParam(ap);
+        return super.findDeserializationName(ap);
     }
 
     /*

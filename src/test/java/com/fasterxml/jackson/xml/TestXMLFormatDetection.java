@@ -2,10 +2,8 @@ package com.fasterxml.jackson.xml;
 
 import java.io.ByteArrayInputStream;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.format.DataFormatDetector;
-import org.codehaus.jackson.format.DataFormatMatcher;
-import org.codehaus.jackson.format.MatchStrength;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.format.*;
 
 public class TestXMLFormatDetection extends XmlTestBase
 {

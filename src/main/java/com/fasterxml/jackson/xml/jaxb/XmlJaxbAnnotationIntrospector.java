@@ -10,10 +10,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.map.introspect.Annotated;
-import org.codehaus.jackson.map.introspect.AnnotatedClass;
-import org.codehaus.jackson.map.introspect.AnnotatedParameter;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.databind.introspect.*;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+
 
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 

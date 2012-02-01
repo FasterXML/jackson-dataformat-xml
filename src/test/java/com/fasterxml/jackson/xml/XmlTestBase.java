@@ -4,9 +4,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
+import com.fasterxml.jackson.core.*;
 
 public abstract class XmlTestBase
     extends TestCase

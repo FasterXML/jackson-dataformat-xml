@@ -2,15 +2,12 @@ package com.fasterxml.jackson.xml;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.introspect.Annotated;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.introspect.Annotated;
 
 /**
  * Additional extension interface used above and beyond
- * {@link AnnotationIntrospector} to
- * handle XML-specific configuration.
- * 
- * @since 1.7
+ * {@link AnnotationIntrospector} to handle XML-specific configuration.
  */
 public interface XmlAnnotationIntrospector
 {

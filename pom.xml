@@ -6,11 +6,11 @@
     <version>5</version>
   </parent>
   <groupId>com.fasterxml</groupId>
-  <artifactId>jackson-xml-databind</artifactId>
-  <name>Jackson-XML-databind</name>
-  <version>0.6.3-SNAPSHOT</version>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <name>Jackson-dataformat-XML</name>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  <description>Extension for Jackson (http://jackson.codehaus.org) to offer
+  <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
 Support implemented on top of Stax API (javax.xml.stream), by implementing core Jackson Streaming API types like JsonGenerator, JsonParser and JsonFactory.
 Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMapper).
@@ -57,15 +57,25 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
          however, 1.9 has useful fixes so we will request that
       -->
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <version>1.9.2</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
     </dependency>
-    <!--  JAXB annotation introspector from Jackson/xc -->
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-xc</artifactId>
-      <version>1.9.2</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+    </dependency>
+    <!--  JAXB annotation introspector is needed too? -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
@@ -106,6 +116,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </dependencies>
 
   <build>
+    <!--  need to enable filtering to add version info -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>  
+    </resources>
     <plugins>
       <plugin>
         <!-- Let's require JDK 1.6; makes things easier wrt Stax API for one 

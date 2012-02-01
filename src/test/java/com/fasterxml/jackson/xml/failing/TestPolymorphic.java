@@ -1,6 +1,6 @@
 package com.fasterxml.jackson.xml.failing;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.xml.*;
 

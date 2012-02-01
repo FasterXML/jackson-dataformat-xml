@@ -12,11 +12,10 @@ import javax.xml.stream.XMLStreamWriter;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.ri.Stax2WriterAdapter;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.impl.JsonGeneratorBase;
-import org.codehaus.jackson.impl.JsonWriteContext;
-import org.codehaus.jackson.io.IOContext;
-import org.codehaus.jackson.io.SerializedString;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.base.GeneratorBase;
+import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.json.JsonWriteContext;
 
 import com.fasterxml.jackson.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.xml.util.StaxUtil;
@@ -27,11 +26,9 @@ import com.fasterxml.jackson.xml.util.StaxUtil;
  * or in some cases (like <code>BeanSerializer</code>) customised ones) to do
  * additional configuration calls beyond regular {@link JsonGenerator} API,
  * mostly to pass namespace information.
- * 
- * @since 1.6
  */
 public final class ToXmlGenerator
-    extends JsonGeneratorBase
+    extends GeneratorBase
 {
     /**
      * If we support optional definition of element names, this is the element
@@ -385,13 +382,6 @@ public final class ToXmlGenerator
     /* Output method implementations, textual
     /**********************************************************
      */
-
-    @Override
-    public void writeFieldName(SerializedString name)
-        throws IOException, JsonGenerationException
-    {
-        writeFieldName(name.getValue());
-    }
 
     @Override
     public void writeFieldName(SerializableString name)

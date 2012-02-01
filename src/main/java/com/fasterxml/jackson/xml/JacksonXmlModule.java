@@ -1,8 +1,8 @@
 package com.fasterxml.jackson.xml;
 
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.module.SimpleModule;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import com.fasterxml.jackson.xml.ser.XmlBeanSerializerModifier;
 
@@ -13,13 +13,10 @@ import com.fasterxml.jackson.xml.ser.XmlBeanSerializerModifier;
 public class JacksonXmlModule extends SimpleModule
 {
     private final static AnnotationIntrospector XML_ANNOTATION_INTROSPECTOR = new JacksonXmlAnnotationIntrospector();
-
-    // !!! TODO: how to externalize version?
-    private final static Version VERSION = new Version(0, 1, 0, null);
     
     public JacksonXmlModule()
     {
-        super("JackxonXmlModule", VERSION);
+        super("JackxonXmlModule", ModuleVersion.instance.version());
     }
     
     @Override

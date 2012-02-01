@@ -7,27 +7,20 @@ import java.math.BigInteger;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.codehaus.jackson.Base64Variant;
-import org.codehaus.jackson.JsonLocation;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.ObjectCodec;
-import org.codehaus.jackson.impl.JsonParserMinimalBase;
-import org.codehaus.jackson.impl.JsonReadContext;
-import org.codehaus.jackson.io.IOContext;
-import org.codehaus.jackson.util.ByteArrayBuilder;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.base.ParserMinimalBase;
+import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.json.JsonReadContext;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 import com.fasterxml.jackson.xml.util.XmlTokenStream;
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as
  * set of JSON events that can be used for data binding.
- * 
- * @since 1.6
  */
 public class FromXmlParser
-    extends JsonParserMinimalBase
+    extends ParserMinimalBase
 {
     /**
      * Enumeration that defines all togglable features for XML parsers
@@ -472,7 +465,13 @@ public class FromXmlParser
     /* Public API, access to token information, binary
     /**********************************************************
      */
-    
+
+    @Override
+    public Object getEmbeddedObject() throws IOException, JsonParseException {
+        // no way to embed POJOs for now...
+        return null;
+    }
+
     @Override
     public byte[] getBinaryValue(Base64Variant b64variant)
         throws IOException, JsonParseException
@@ -711,5 +710,4 @@ public class FromXmlParser
         }
         return _byteArrayBuilder;
     }
-
 }

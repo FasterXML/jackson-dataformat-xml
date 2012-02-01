@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.codehaus.jackson.annotate.JacksonAnnotation;
-
 /**
  * Annotation that can be used to define name of root element used
  * for the root-level object when serialized, which normally uses
@@ -14,7 +12,6 @@ import org.codehaus.jackson.annotate.JacksonAnnotation;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@JacksonAnnotation
 public @interface JacksonXmlRootElement
 {
     String namespace() default "";

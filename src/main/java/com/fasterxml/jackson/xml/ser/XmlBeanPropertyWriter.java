@@ -2,18 +2,14 @@ package com.fasterxml.jackson.xml.ser;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
-import org.codehaus.jackson.map.ser.BeanPropertyWriter;
-import org.codehaus.jackson.map.ser.impl.PropertySerializerMap;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ser.*;
+import com.fasterxml.jackson.databind.ser.impl.PropertySerializerMap;
 
 /**
  * Property writer sub-class used for handling element wrapping needed for serializing
  * collection (array, Collection; possibly Map) types.
- * 
- * @since 1.7
  */
 public class XmlBeanPropertyWriter
     extends BeanPropertyWriter

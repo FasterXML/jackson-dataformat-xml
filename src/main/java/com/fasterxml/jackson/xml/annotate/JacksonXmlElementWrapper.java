@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.codehaus.jackson.annotate.JacksonAnnotation;
-
 /**
  * Annotation that is similar to JAXB <code>javax.xml.bind.annotation.XmlElementWrapper</code>,
  * to indicate wrapper element to use (if any) for Collection types (arrays,
@@ -19,7 +17,6 @@ import org.codehaus.jackson.annotate.JacksonAnnotation;
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@JacksonAnnotation
 public @interface JacksonXmlElementWrapper
 {
     String namespace() default "";

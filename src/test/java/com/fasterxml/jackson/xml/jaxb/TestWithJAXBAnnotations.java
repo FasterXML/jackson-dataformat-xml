@@ -2,9 +2,8 @@ package com.fasterxml.jackson.xml.jaxb;
 
 import javax.xml.bind.annotation.*;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.xml.XmlMapper;
 import com.fasterxml.jackson.xml.XmlTestBase;

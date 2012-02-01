@@ -2,21 +2,17 @@ package com.fasterxml.jackson.xml.util;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.MapperConfig;
-import org.codehaus.jackson.map.introspect.AnnotatedClass;
-import org.codehaus.jackson.map.introspect.BasicBeanDescription;
-import org.codehaus.jackson.map.type.ClassKey;
-import org.codehaus.jackson.map.util.LRUMap;
-import org.codehaus.jackson.type.JavaType;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
+import com.fasterxml.jackson.databind.type.ClassKey;
+import com.fasterxml.jackson.databind.util.LRUMap;
 
 import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 
 /**
  * Helper class used for efficiently finding root element name used with
  * XML serializations.
- * 
- * @since 1.7
  */
 public class XmlRootNameLookup
 {
@@ -40,7 +36,7 @@ public class XmlRootNameLookup
         synchronized (_rootNames) {
             name = _rootNames.get(key);
             if (name == null) {
-                BasicBeanDescription beanDesc = (BasicBeanDescription) config.introspectClassAnnotations(rootType);
+                BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
                 AnnotationIntrospector intr = config.getAnnotationIntrospector();
                 AnnotatedClass ac = beanDesc.getClassInfo();
                 String localName = null;

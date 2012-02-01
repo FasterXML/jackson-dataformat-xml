@@ -6,10 +6,10 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.io.Stax2ByteArraySource;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.format.InputAccessor;
-import org.codehaus.jackson.format.MatchStrength;
-import org.codehaus.jackson.io.IOContext;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.format.InputAccessor;
+import com.fasterxml.jackson.core.format.MatchStrength;
+import com.fasterxml.jackson.core.io.IOContext;
 
 import com.fasterxml.jackson.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
@@ -23,8 +23,6 @@ import com.fasterxml.jackson.xml.util.StaxUtil;
 * parsers and generators is quite similar to dealing with JSON.
 * 
 * @author tatu
-* 
-* @since 1.6
 */
 public class XmlFactory extends JsonFactory
 {
@@ -220,8 +218,6 @@ public class XmlFactory extends JsonFactory
      *<p>
      * Note: sub-classes should override this method; default
      * implementation will return null for all sub-classes
-     * 
-     * @since 1.8
      */
     public String getFormatName()
     {

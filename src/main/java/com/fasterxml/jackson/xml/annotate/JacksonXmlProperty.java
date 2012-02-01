@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.codehaus.jackson.annotate.JacksonAnnotation;
-
 /**
  * Annotation that can be used to provide XML-specific configuration
  * for properties, above and beyond what
@@ -15,7 +13,6 @@ import org.codehaus.jackson.annotate.JacksonAnnotation;
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@JacksonAnnotation
 public @interface JacksonXmlProperty
 {
     boolean isAttribute() default false;

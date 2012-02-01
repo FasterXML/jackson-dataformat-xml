@@ -3,20 +3,19 @@ package com.fasterxml.jackson.xml.ser;
 import java.io.IOException;
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.SerializerFactory;
-import org.codehaus.jackson.map.ser.StdSerializerProvider;
-import org.codehaus.jackson.type.JavaType;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
+import com.fasterxml.jackson.databind.ser.StdSerializerProvider;
 
 import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
 
 /**
  * We need to override some parts of {@link org.codehaus.jackson.map.SerializerProvider}
  * implementation to handle oddities of XML output, like "extra" root element.
- * 
- * @since 1.7
  */
 public class XmlSerializerProvider extends StdSerializerProvider
 {
