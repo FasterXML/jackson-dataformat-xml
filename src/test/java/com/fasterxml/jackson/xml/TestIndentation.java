@@ -2,7 +2,7 @@ package com.fasterxml.jackson.xml;
 
 import java.util.*;
 
-import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import com.fasterxml.jackson.xml.XmlMapper;
 
@@ -34,7 +34,7 @@ public class TestIndentation extends XmlTestBase
     public void setUp() throws Exception {
         super.setUp();
         _xmlMapper = new XmlMapper();
-        _xmlMapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        _xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
     }
 
     /*

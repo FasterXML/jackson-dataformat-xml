@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
-import com.fasterxml.jackson.databind.ser.StdSerializerProvider;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 
 import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
 
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
  * We need to override some parts of {@link org.codehaus.jackson.map.SerializerProvider}
  * implementation to handle oddities of XML output, like "extra" root element.
  */
-public class XmlSerializerProvider extends StdSerializerProvider
+public class XmlSerializerProvider extends DefaultSerializerProvider
 {
     /**
      * If all we get to serialize is a null, there's no way to figure out
@@ -47,7 +47,7 @@ public class XmlSerializerProvider extends StdSerializerProvider
      */
 
     @Override
-    protected StdSerializerProvider createInstance(SerializationConfig config, SerializerFactory jsf)
+    protected DefaultSerializerProvider createInstance(SerializationConfig config, SerializerFactory jsf)
     {
         return new XmlSerializerProvider(config, this, jsf);
     }

@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.xml;
 
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
