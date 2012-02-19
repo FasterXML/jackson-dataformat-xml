@@ -47,7 +47,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
      */
 
     @Override
-    protected DefaultSerializerProvider createInstance(SerializationConfig config, SerializerFactory jsf)
+    public DefaultSerializerProvider createInstance(SerializationConfig config, SerializerFactory jsf)
     {
         return new XmlSerializerProvider(config, this, jsf);
     }

@@ -3,7 +3,6 @@ package com.fasterxml.jackson.xml;
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
 
 public class TestViews extends XmlTestBase
 {
@@ -54,10 +53,10 @@ public class TestViews extends XmlTestBase
 
         ObjectMapper xmlMapper = new XmlMapper();
 
-        xmlMapper.configure(MapperConfig.Feature.AUTO_DETECT_FIELDS, false );
-        xmlMapper.configure(MapperConfig.Feature.AUTO_DETECT_GETTERS, false );
-        xmlMapper.configure(MapperConfig.Feature.AUTO_DETECT_IS_GETTERS, false );
-        xmlMapper.configure(MapperConfig.Feature.DEFAULT_VIEW_INCLUSION, false );
+        xmlMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, false );
+        xmlMapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false );
+        xmlMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false );
+        xmlMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false );
 
         String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);
 
