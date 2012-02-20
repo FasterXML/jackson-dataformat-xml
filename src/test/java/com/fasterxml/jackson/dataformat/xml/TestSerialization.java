@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
 import java.util.*;

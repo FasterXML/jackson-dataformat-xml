@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.jaxb;
+package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import javax.xml.bind.annotation.*;
 
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
-import com.fasterxml.jackson.xml.XmlTestBase;
 
 /**
  * Although XML-backed data binding does not rely (or directly build) on JAXB

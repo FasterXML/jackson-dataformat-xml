@@ -1,9 +1,8 @@
-package com.fasterxml.jackson.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.failing;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.xml.XmlTestBase;
 
 public class TestPolymorphic extends XmlTestBase
 {
