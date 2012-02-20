@@ -1,10 +1,10 @@
-package com.fasterxml.jackson.xml.util;
+package com.fasterxml.jackson.dataformat.xml.util;
 
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
-import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
 
 /**
  * Indentation to use with XML is different from JSON, because JSON

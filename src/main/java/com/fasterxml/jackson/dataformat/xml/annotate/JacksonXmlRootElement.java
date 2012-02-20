@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.annotate;
+package com.fasterxml.jackson.dataformat.xml.annotate;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

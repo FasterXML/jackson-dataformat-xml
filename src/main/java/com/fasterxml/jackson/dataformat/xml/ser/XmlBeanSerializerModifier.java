@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.ser;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.util.List;
 import java.util.Map;
@@ -8,9 +8,9 @@ import javax.xml.namespace.QName;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.ser.*;
+import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
-import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
-import com.fasterxml.jackson.xml.util.XmlInfo;
 
 /**
  * We need a {@link BeanSerializerModifier} to replace default <code>BeanSerializer</code>

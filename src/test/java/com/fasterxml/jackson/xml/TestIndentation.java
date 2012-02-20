@@ -3,8 +3,8 @@ package com.fasterxml.jackson.xml;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import com.fasterxml.jackson.xml.XmlMapper;
 
 public class TestIndentation extends XmlTestBase
 {

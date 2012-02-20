@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.util;
+package com.fasterxml.jackson.dataformat.xml.util;
 
 /**
  * Helper container class used to contain XML specific information

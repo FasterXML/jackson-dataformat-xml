@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.*;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 
 public class TestXMLFormatDetection extends XmlTestBase
 {

@@ -1,11 +1,11 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.dataformat.xml;
 
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
+import com.fasterxml.jackson.dataformat.xml.annotate.*;
 
-import com.fasterxml.jackson.xml.annotate.*;
 
 /**
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support

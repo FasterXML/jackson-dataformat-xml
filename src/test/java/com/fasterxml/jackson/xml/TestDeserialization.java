@@ -3,8 +3,8 @@ package com.fasterxml.jackson.xml;
 import java.util.List;
 
 
-import com.fasterxml.jackson.xml.XmlMapper;
-import com.fasterxml.jackson.xml.annotate.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotate.JacksonXmlProperty;
 
 public class TestDeserialization extends XmlTestBase
 {

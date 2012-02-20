@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.jaxb;
+package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -11,10 +11,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.introspect.*;
+import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 
-import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 
 /**
  * Alternative {@link org.codehaus.jackson.map.AnnotationIntrospector} implementation that

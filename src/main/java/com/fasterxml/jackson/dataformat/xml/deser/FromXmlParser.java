@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.deser;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -12,8 +12,8 @@ import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonReadContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import com.fasterxml.jackson.dataformat.xml.util.XmlTokenStream;
 
-import com.fasterxml.jackson.xml.util.XmlTokenStream;
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as

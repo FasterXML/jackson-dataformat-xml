@@ -5,10 +5,10 @@ import java.io.*;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
-import com.fasterxml.jackson.xml.XmlFactory;
-import com.fasterxml.jackson.xml.XmlMapper;
-import com.fasterxml.jackson.xml.deser.FromXmlParser;
 
 public class TestXmlParser extends XmlTestBase
 {

@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.util;
+package com.fasterxml.jackson.dataformat.xml.util;
 
 import javax.xml.namespace.QName;
 
@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.type.ClassKey;
 import com.fasterxml.jackson.databind.util.LRUMap;
+import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
-import com.fasterxml.jackson.xml.XmlAnnotationIntrospector;
 
 /**
  * Helper class used for efficiently finding root element name used with

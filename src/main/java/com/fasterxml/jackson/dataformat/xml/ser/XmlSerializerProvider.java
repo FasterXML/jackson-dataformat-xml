@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.ser;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 import javax.xml.namespace.QName;
@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
-import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
 
 /**
  * We need to override some parts of {@link org.codehaus.jackson.map.SerializerProvider}

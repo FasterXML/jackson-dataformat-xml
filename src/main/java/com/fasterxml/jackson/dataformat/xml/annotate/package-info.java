@@ -3,4 +3,4 @@
  * used to configure XML-specific aspects of serialization
  * and deserialization
  */
-package com.fasterxml.jackson.xml.annotate;
+package com.fasterxml.jackson.dataformat.xml.annotate;

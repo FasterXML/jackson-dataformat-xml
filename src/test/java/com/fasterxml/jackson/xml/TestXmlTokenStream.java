@@ -4,7 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.xml.util.XmlTokenStream;
+import com.fasterxml.jackson.dataformat.xml.util.XmlTokenStream;
 
 public class TestXmlTokenStream extends XmlTestBase
 {

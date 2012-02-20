@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
 
@@ -10,10 +10,10 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
-import com.fasterxml.jackson.xml.deser.FromXmlParser;
-import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.xml.util.StaxUtil;
 
 /**
 * Factory used for constructing {@link FromXmlParser} and {@link ToXmlGenerator}

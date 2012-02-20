@@ -4,10 +4,10 @@ import java.io.*;
 import java.util.*;
 
 
-import com.fasterxml.jackson.xml.XmlMapper;
-import com.fasterxml.jackson.xml.annotate.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.xml.annotate.JacksonXmlProperty;
-import com.fasterxml.jackson.xml.annotate.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotate.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotate.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotate.JacksonXmlRootElement;
 
 public class TestSerialization extends XmlTestBase
 {

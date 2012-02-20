@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.ser;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import javax.xml.namespace.QName;
 

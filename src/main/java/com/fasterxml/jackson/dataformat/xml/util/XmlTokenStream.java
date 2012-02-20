@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.util;
+package com.fasterxml.jackson.dataformat.xml.util;
 
 import java.io.IOException;
 import javax.xml.stream.*;

@@ -1,9 +1,9 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
-import com.fasterxml.jackson.xml.ser.XmlBeanSerializerModifier;
 
 /**
  * Module that implements most functionality needed to support producing and

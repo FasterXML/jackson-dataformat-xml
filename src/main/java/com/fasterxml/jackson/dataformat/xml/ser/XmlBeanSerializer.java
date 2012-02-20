@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.ser;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.util.NameTransformer;
+import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
-import com.fasterxml.jackson.xml.util.XmlInfo;
 
 /**
  * Specific sub-class of {@link BeanSerializer} needed to take care

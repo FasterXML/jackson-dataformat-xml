@@ -2,9 +2,9 @@ package com.fasterxml.jackson.xml;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import com.fasterxml.jackson.xml.XmlMapper;
-import com.fasterxml.jackson.xml.XmlFactory;
 
 public class TestVersions extends XmlTestBase
 {

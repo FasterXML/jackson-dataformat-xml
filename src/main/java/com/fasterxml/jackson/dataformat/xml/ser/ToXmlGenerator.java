@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.xml.ser;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -16,9 +16,9 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
+import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
-import com.fasterxml.jackson.xml.util.DefaultXmlPrettyPrinter;
-import com.fasterxml.jackson.xml.util.StaxUtil;
 
 /**
  * {@link JsonGenerator} that outputs JAXB-style XML output instead of JSON content.

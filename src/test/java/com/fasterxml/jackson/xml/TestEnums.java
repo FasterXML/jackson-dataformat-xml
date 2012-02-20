@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.xml;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 public class TestEnums extends XmlTestBase
 {
     /*

@@ -3,6 +3,7 @@ package com.fasterxml.jackson.xml;
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 public class TestViews extends XmlTestBase
 {

@@ -1,13 +1,13 @@
-package com.fasterxml.jackson.xml;
+package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
+import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
-import com.fasterxml.jackson.xml.deser.FromXmlParser;
-import com.fasterxml.jackson.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.xml.ser.XmlSerializerProvider;
-import com.fasterxml.jackson.xml.util.XmlRootNameLookup;
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,

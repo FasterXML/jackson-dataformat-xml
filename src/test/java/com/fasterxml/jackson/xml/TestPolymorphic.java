@@ -1,8 +1,8 @@
 package com.fasterxml.jackson.xml;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import com.fasterxml.jackson.xml.XmlMapper;
 
 public class TestPolymorphic extends XmlTestBase
 {

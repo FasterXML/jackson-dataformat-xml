@@ -1,11 +1,11 @@
 package com.fasterxml.jackson.xml.failing;
 
-import com.fasterxml.jackson.xml.XmlMapper;
 import com.fasterxml.jackson.xml.XmlTestBase;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 public class TestEnums extends XmlTestBase
 {
