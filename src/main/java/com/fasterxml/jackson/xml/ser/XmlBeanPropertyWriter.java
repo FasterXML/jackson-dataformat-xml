@@ -46,19 +46,11 @@ public class XmlBeanPropertyWriter
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped, QName wrapperName, QName wrappedName,
             JsonSerializer<Object> serializer)
     {
-        super(wrapped, serializer);
+        super(wrapped);
         _wrapperName = wrapperName;
         _wrappedName = wrappedName;
-    }
-    
-    @Override
-    public BeanPropertyWriter withSerializer(JsonSerializer<Object> ser)
-    {
-        // sanity check to ensure sub-classes override...
-        if (getClass() != XmlBeanPropertyWriter.class) {
-            throw new IllegalStateException("Sub-class does not override 'withSerializer()'; needs to!");
-        }
-        return new XmlBeanPropertyWriter(this, _wrapperName, _wrappedName, ser);
+
+        assignSerializer(serializer);
     }
 
     /*
@@ -80,25 +72,42 @@ public class XmlBeanPropertyWriter
          * it does; can change later if not.
          */
         if (value == null) {
-            if (!_suppressNulls) {
+            if (_nullSerializer != null) {
                 jgen.writeFieldName(_name);
-                prov.defaultSerializeNull(jgen);
+                _nullSerializer.serialize(null, jgen, prov);
             }
             return;
         }
-        // For non-nulls, first: simple check for direct cycles
-        if (value == bean) {
-            _reportSelfReference(bean);
+
+        // then find serializer to use
+        JsonSerializer<Object> ser = _serializer;
+        if (ser == null) {
+            Class<?> cls = value.getClass();
+            PropertySerializerMap map = _dynamicSerializers;
+            ser = map.serializerFor(cls);
+            if (ser == null) {
+                ser = _findAndAddDynamic(map, cls, prov);
+            }
         }
-        if (_suppressableValue != null && _suppressableValue.equals(value)) {
-            return;
+        // and then see if we must suppress certain values (default, empty)
+        if (_suppressableValue != null) {
+            if (MARKER_FOR_EMPTY == _suppressableValue) {
+                if (ser.isEmpty(value)) {
+                    return;
+                }
+            } else if (_suppressableValue.equals(value)) {
+                return;
+            }
+        }
+        // For non-nulls: simple check for direct cycles
+        if (value == bean) {
+            _handleSelfReference(bean, ser);
         }
 
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
         ToXmlGenerator xmlGen = (ToXmlGenerator) jgen;
         xmlGen.startWrappedValue(_wrapperName, _wrappedName);
         
-        JsonSerializer<Object> ser = _serializer;
         if (ser == null) {
             Class<?> cls = value.getClass();
             PropertySerializerMap map = _dynamicSerializers;

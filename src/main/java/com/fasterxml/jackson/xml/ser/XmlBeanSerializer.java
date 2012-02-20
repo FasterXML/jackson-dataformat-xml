@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
+import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
+import com.fasterxml.jackson.databind.util.NameTransformer;
 
 import com.fasterxml.jackson.xml.util.XmlInfo;
 
@@ -71,13 +73,40 @@ public class XmlBeanSerializer extends BeanSerializer
         _attributeCount = attrCount;
     }
     
+    /*
     protected XmlBeanSerializer(XmlBeanSerializer src, BeanPropertyWriter[] filtered)
     {
         super(src._handledType, src._props, filtered, src._anyGetterWriter, src._propertyFilterId);
         _attributeCount = src._attributeCount;
         _xmlNames = src._xmlNames;
     }
+    */
 
+    protected XmlBeanSerializer(XmlBeanSerializer src, ObjectIdWriter objectIdWriter)
+    {
+        super(src, objectIdWriter);
+        _attributeCount = src._attributeCount;
+        _xmlNames = src._xmlNames;
+    }
+
+    /*
+    /**********************************************************
+    /* Life-cycle: factory methods, fluent factories
+    /**********************************************************
+     */
+
+    @Override
+    public JsonSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
+        // 19-Feb-2012, tatu: Should support unwrapping for XML too... but not yet done
+//        return new UnwrappingBeanSerializer(this, unwrapper);
+        throw new UnsupportedOperationException("Unwrapping serialization not yet supported for XML");
+    }
+
+    @Override
+    protected BeanSerializer withObjectIdWriter(ObjectIdWriter objectIdWriter) {
+        return new XmlBeanSerializer(this, objectIdWriter);
+    }
+    
     /*
     /**********************************************************
     /* Overridden serialization methods

@@ -3,8 +3,6 @@ package com.fasterxml.jackson.xml.ser;
 import java.io.IOException;
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializationConfig;
@@ -33,10 +31,10 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         _rootNameLookup = rootNames;
     }
 
-    public XmlSerializerProvider(SerializationConfig config, XmlSerializerProvider src,
-            SerializerFactory f)
+    public XmlSerializerProvider(XmlSerializerProvider src,
+            SerializationConfig config, SerializerFactory f)
     {
-        super(config, src, f);
+        super(src, config, f);
         _rootNameLookup  = src._rootNameLookup;
     }
     
@@ -47,13 +45,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
      */
 
     @Override
-    public DefaultSerializerProvider createInstance(SerializationConfig config, SerializerFactory jsf)
+    public DefaultSerializerProvider createInstance(SerializationConfig config,
+            SerializerFactory jsf)
     {
-        return new XmlSerializerProvider(config, this, jsf);
+        return new XmlSerializerProvider(this, config, jsf);
     }
     
     @Override
-    protected  void _serializeValue(JsonGenerator jgen, Object value)
+    public void serializeValue(JsonGenerator jgen, Object value)
         throws IOException, JsonProcessingException
     {
         QName rootName = (value == null) ? ROOT_NAME_FOR_NULL
@@ -61,17 +60,17 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         ToXmlGenerator xgen = (ToXmlGenerator) jgen;
         xgen.setNextName(rootName);
         xgen.initGenerator();
-        super._serializeValue(jgen, value);
+        super.serializeValue(jgen, value);
     }
 
     @Override
-    protected  void _serializeValue(JsonGenerator jgen, Object value, JavaType rootType)
+    public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType)
         throws IOException, JsonProcessingException
     {
         QName rootName = _rootNameLookup.findRootName(rootType, _config);
         ToXmlGenerator xgen = (ToXmlGenerator) jgen;
         xgen.setNextName(rootName);
         xgen.initGenerator();
-        super._serializeValue(jgen, value, rootType);
+        super.serializeValue(jgen, value, rootType);
     }
 }
