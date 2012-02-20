@@ -4,7 +4,7 @@ import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
-import com.fasterxml.jackson.dataformat.xml.annotate.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 
 /**
