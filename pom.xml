@@ -209,23 +209,28 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
               <Import-Package>
 javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.transform
 ,org.codehaus.stax2, org.codehaus.stax2.io, org.codehaus.stax2.ri
-,org.codehaus.jackson, org.codehaus.jackson.annotate, org.codehaus.jackson.format, org.codehaus.jackson.impl
-,org.codehaus.jackson.io ,org.codehaus.jackson.type, org.codehaus.jackson.util
-,org.codehaus.jackson.map, org.codehaus.jackson.map.introspect, org.codehaus.jackson.map.module
-,org.codehaus.jackson.map.jsontype, org.codehaus.jackson.map.jsontype.impl
-,org.codehaus.jackson.map.ser, org.codehaus.jackson.map.ser.impl
-,org.codehaus.jackson.map.type, org.codehaus.jackson.map.util
-,org.codehaus.jackson.xc
+,com.fasterxml.jackson.annotation
+,com.fasterxml.jackson.core
+,com.fasterxml.jackson.core.base, com.fasterxml.jackson.core.format, com.fasterxml.jackson.core.json
+,com.fasterxml.jackson.core.io, com.fasterxml.jackson.core.type, com.fasterxml.jackson.core.util
+,com.fasterxml.jackson.databind
+,com.fasterxml.jackson.databind.cfg
+,com.fasterxml.jackson.databind.deser
+,com.fasterxml.jackson.databind.introspect, com.fasterxml.jackson.databind.module
+,com.fasterxml.jackson.databind.jsontype, com.fasterxml.jackson.databind.jsontype.impl
+,com.fasterxml.jackson.databind.ser, com.fasterxml.jackson.databind.ser.impl, com.fasterxml.jackson.databind.ser.std
+,com.fasterxml.jackson.databind.type, com.fasterxml.jackson.databind.util
+,com.fasterxml.jackson.module.jaxb
 </Import-Package>
               <Private-Package>
 </Private-Package>
               <Export-Package>
-com.fasterxml.jackson.xml
-,com.fasterxml.jackson.xml.annotate
-,com.fasterxml.jackson.xml.deser
-,com.fasterxml.jackson.xml.jaxb
-,com.fasterxml.jackson.xml.ser
-,com.fasterxml.jackson.xml.util
+com.fasterxml.jackson.dataformat.xml
+,com.fasterxml.jackson.dataformat.xml.annotation
+,com.fasterxml.jackson.dataformat.xml.deser
+,com.fasterxml.jackson.dataformat.xml.jaxb
+,com.fasterxml.jackson.dataformat.xml.ser
+,com.fasterxml.jackson.dataformat.xml.util
 </Export-Package>
             </instructions>
           </configuration>
