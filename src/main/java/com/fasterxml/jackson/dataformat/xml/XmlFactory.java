@@ -108,6 +108,11 @@ public class XmlFactory extends JsonFactory
         _xmlOutputFactory = xmlOut;
     }
 
+    @Override
+    public Version version() {
+        return ModuleVersion.instance.version();
+    }
+    
     /*
     /**********************************************************
     /* Configuration, parser settings

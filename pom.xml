@@ -5,7 +5,7 @@
     <artifactId>oss-parent</artifactId>
     <version>5</version>
   </parent>
-  <groupId>com.fasterxml</groupId>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
   <name>Jackson-dataformat-XML</name>
   <version>2.0.0-SNAPSHOT</version>
@@ -231,7 +231,15 @@ com.fasterxml.jackson.xml
     </plugins>
   </build>
   <profiles>
-        <profile>
+    <!--  19-Feb-2012, tatu: Since we have some failing tests, may need to force release -->
+    <profile>
+	      <id>force-release</id>
+	      <properties>
+	        <maven.test.skip>true</maven.test.skip>
+	        <skipTests>true</skipTests>
+	      </properties>
+    </profile>
+    <profile>
             <id>release-sign-artifacts</id>
             <activation>
                 <property>

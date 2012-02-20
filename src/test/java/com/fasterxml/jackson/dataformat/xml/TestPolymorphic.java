@@ -69,7 +69,7 @@ public class TestPolymorphic extends XmlTestBase
          *   inclusion, which allows use of attribute over element, so:
          */
         final String exp = 
-            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.xml.TestPolymorphic..SubTypeWithClassProperty\">"
+            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.dataformat.xml.TestPolymorphic..SubTypeWithClassProperty\">"
             //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.TestPolymorphic..SubTypeWithClassProperty</_class>"
             +"<name>Foobar</name></SubTypeWithClassProperty>"
                 ;

@@ -15,8 +15,8 @@ public class TestVersions extends XmlTestBase
     private final static int MINOR_VERSION = 0;
 
     // could inject using Maven filters as well...
-    private final static String GROUP_ID = "com.fasterxml.jackson.datatype";
-    private final static String ARTIFACT_ID = "jackson-datatype-hibernate";
+    private final static String GROUP_ID = "com.fasterxml.jackson.dataformat";
+    private final static String ARTIFACT_ID = "jackson-dataformat-xml";
     
     public void testMapperVersions()
     {
