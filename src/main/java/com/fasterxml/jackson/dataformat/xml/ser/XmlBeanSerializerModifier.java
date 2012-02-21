@@ -8,6 +8,7 @@ import javax.xml.namespace.QName;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.ser.*;
+import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
@@ -73,10 +74,10 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
          * is, what to do if it's not one: throw exception or bail out?
          * For now let's do latter.
          */
-        if (!(serializer instanceof BeanSerializer)) {
+        if (!(serializer instanceof BeanSerializerBase)) {
             return serializer;
         }
-        return new XmlBeanSerializer((BeanSerializer) serializer);
+        return new XmlBeanSerializer((BeanSerializerBase) serializer);
     }
 
     /*

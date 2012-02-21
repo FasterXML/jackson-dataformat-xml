@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +37,7 @@ public class TestEnums extends XmlTestBase
     {
         ObjectMapper mapper = new XmlMapper();
         String str = mapper.writeValueAsString(new UntypedEnumBean(TestEnum.B));
+        
         UntypedEnumBean result = mapper.readValue(str, UntypedEnumBean.class);
         assertNotNull(result);
         assertNotNull(result.value);

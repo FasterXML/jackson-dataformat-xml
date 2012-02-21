@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
+import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
@@ -43,7 +44,7 @@ public class XmlBeanSerializer extends BeanSerializer
      */
     protected final QName[] _xmlNames;
 
-    public XmlBeanSerializer(BeanSerializer src)
+    public XmlBeanSerializer(BeanSerializerBase src)
     {
         super(src);
 
@@ -72,15 +73,6 @@ public class XmlBeanSerializer extends BeanSerializer
         }
         _attributeCount = attrCount;
     }
-    
-    /*
-    protected XmlBeanSerializer(XmlBeanSerializer src, BeanPropertyWriter[] filtered)
-    {
-        super(src._handledType, src._props, filtered, src._anyGetterWriter, src._propertyFilterId);
-        _attributeCount = src._attributeCount;
-        _xmlNames = src._xmlNames;
-    }
-    */
 
     protected XmlBeanSerializer(XmlBeanSerializer src, ObjectIdWriter objectIdWriter)
     {

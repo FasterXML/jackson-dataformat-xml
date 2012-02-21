@@ -68,6 +68,7 @@ public class XmlBeanPropertyWriter
         throws Exception
     {
         Object value = get(bean);
+        
         /* Hmmh. Does the default null serialization work ok here? For now let's assume
          * it does; can change later if not.
          */
@@ -78,7 +79,7 @@ public class XmlBeanPropertyWriter
             }
             return;
         }
-
+        
         // then find serializer to use
         JsonSerializer<Object> ser = _serializer;
         if (ser == null) {
