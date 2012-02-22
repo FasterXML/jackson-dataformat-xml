@@ -58,7 +58,7 @@ public class TestViews extends XmlTestBase
         xmlMapper.configure( SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS, false );
         xmlMapper.configure( SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false );
 
-        String xml = xmlMapper.viewWriter(RestrictedView.class).writeValueAsString(foo);
+        String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);
 
         // views not used for deserialization
         Foo result = xmlMapper.readValue(xml, Foo.class);
