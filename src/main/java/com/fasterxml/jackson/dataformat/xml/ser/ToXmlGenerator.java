@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
+import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
@@ -102,6 +103,11 @@ public final class ToXmlGenerator
      */
     protected int _xmlFeatures;
 
+    /**
+     * We may need to use XML-specific indentation as well
+     */
+    protected XmlPrettyPrinter _xmlPrettyPrinter;
+    
     /*
     /**********************************************************
     /* XML Output state
@@ -140,6 +146,8 @@ public final class ToXmlGenerator
         _xmlFeatures = xmlFeatures;
         _ioContext = ctxt;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
+        _xmlPrettyPrinter = (_cfgPrettyPrinter instanceof XmlPrettyPrinter) ?
+        		(XmlPrettyPrinter) _cfgPrettyPrinter : null;
     }
 
     /**
@@ -401,9 +409,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) { // must write attribute name and value with one call
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeCharacters(text);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			text);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeCharacters(text);
+	                _xmlWriter.writeEndElement();
+                }
             } 
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -421,9 +435,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeCharacters(text, offset, len);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			text, offset, len);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeCharacters(text, offset, len);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -500,7 +520,9 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public void writeBinary(Base64Variant b64variant, byte[] data, int offset, int len) throws IOException, JsonGenerationException
+    public void writeBinary(Base64Variant b64variant,
+    		byte[] data, int offset, int len)
+        throws IOException, JsonGenerationException
     {
         if (data == null) {
             writeNull();
@@ -516,9 +538,15 @@ public final class ToXmlGenerator
                 byte[] fullBuffer = toFullBuffer(data, offset, len);
                 _xmlWriter.writeBinaryAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeBinary(data, offset, len);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			data, offset, len);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeBinary(data, offset, len);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -545,7 +573,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public void writeBoolean(boolean state) throws IOException, JsonGenerationException
+    public void writeBoolean(boolean value) throws IOException, JsonGenerationException
     {
         _verifyValueWrite("write boolean value");
         if (_nextName == null) {
@@ -553,11 +581,17 @@ public final class ToXmlGenerator
         }
         try {
             if (_nextIsAttribute) {
-                _xmlWriter.writeBooleanAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), state);
+                _xmlWriter.writeBooleanAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), value);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeBoolean(state);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			value);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeBoolean(value);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -571,14 +605,19 @@ public final class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
-        // !!! TODO: proper use of 'xsd:isNil'
+        // !!! TODO: proper use of 'xsd:isNil' ?
         try {
             if (_nextIsAttribute) {
                 /* With attributes, best just leave it out, right? (since there's no way
                  * to use 'xsi:nil')
                  */
             } else {
-                _xmlWriter.writeEmptyElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafNullElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                } else {
+	            	_xmlWriter.writeEmptyElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -596,9 +635,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeIntAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), i);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeInt(i);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			i);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeInt(i);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -616,9 +661,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeLongAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), l);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeLong(l);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			l);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeLong(l);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -636,9 +687,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeDoubleAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), d);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeDouble(d);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			d);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeDouble(d);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -656,9 +713,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeFloatAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), f);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeFloat(f);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			f);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeFloat(f);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -680,9 +743,15 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeDecimalAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), dec);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeDecimal(dec);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			dec);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeDecimal(dec);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -690,9 +759,10 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(BigInteger v) throws IOException, JsonGenerationException
+    public void writeNumber(BigInteger value)
+		throws IOException, JsonGenerationException
     {
-        if (v == null) {
+        if (value == null) {
             writeNull();
             return;
         }
@@ -702,11 +772,18 @@ public final class ToXmlGenerator
         }
         try {
             if (_nextIsAttribute) {
-                _xmlWriter.writeIntegerAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), v);
+                _xmlWriter.writeIntegerAttribute(null,
+                		_nextName.getNamespaceURI(), _nextName.getLocalPart(), value);
             } else {
-                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeInteger(v);
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                			value);
+                } else {
+	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+	                _xmlWriter.writeInteger(value);
+	                _xmlWriter.writeEndElement();
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -743,6 +820,14 @@ public final class ToXmlGenerator
     public final JsonGenerator useDefaultPrettyPrinter()
     {
         return setPrettyPrinter(new DefaultXmlPrettyPrinter());
+    }
+
+    @Override
+    public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
+        _cfgPrettyPrinter = pp;
+        _xmlPrettyPrinter = (pp instanceof XmlPrettyPrinter) ?
+        		(XmlPrettyPrinter) pp : null;
+        return this;
     }
     
     /*

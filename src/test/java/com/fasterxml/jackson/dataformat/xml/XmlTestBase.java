@@ -99,7 +99,7 @@ public abstract class XmlTestBase
         public StringBean() { this("foobar"); }
         public StringBean(String s) { text = s; }
     }
-
+    
     /**
      * Simple wrapper around String type, usually to test value
      * conversions or wrapping
@@ -112,7 +112,16 @@ public abstract class XmlTestBase
             str = value;
         }
     }
+    
+    protected static class IntWrapper {
+        public int i;
 
+        public IntWrapper() { }
+        public IntWrapper(int value) {
+            i = value;
+        }
+    }
+    
     /*
     /**********************************************************
     /* Some sample documents:
