@@ -54,9 +54,6 @@ public class TestListDeserialization extends XmlTestBase
     	p.notes.add("note 1");
     	p.notes.add("note 2");
     	String xml = MAPPER.writeValueAsString( p );
-
-System.out.println("XML == "+xml);    
-
     	Person result = MAPPER.readValue(xml, Person.class);
     	assertNotNull(result);
     	assertEquals("Name", result.name);
