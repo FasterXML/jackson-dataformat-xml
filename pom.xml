@@ -8,7 +8,7 @@
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
   <name>Jackson-dataformat-XML</name>
-  <version>2.0.0-RC2</version>
+  <version>2.0.0-RC2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
@@ -75,7 +75,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
-      <version>2.0.0-RC1</version>
+      <version>2.0.0-RC2</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
