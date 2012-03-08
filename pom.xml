@@ -8,7 +8,7 @@
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
   <name>Jackson-dataformat-XML</name>
-  <version>2.0.0-RC2</version>
+  <version>2.0.0-RC2-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
@@ -17,9 +17,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </description>
   <url>http://wiki.fasterxml.com/JacksonExtensionXmlDataBinding</url>
   <scm>
-    <connection>scm:git:git@github.com:FasterXML/jackson-xml-databind.git</connection>
-    <developerConnection>scm:git:git@github.com:FasterXML/jackson-xml-databind.git</developerConnection>
-    <url>http://github.com/FasterXML/jackson-xml-databind</url>    
+    <connection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</connection>
+    <developerConnection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</developerConnection>
+    <url>http://github.com/FasterXML/jackson-dataformat-xml</url>    
   </scm>
   <developers>
         <developer>
