@@ -210,8 +210,6 @@ public class FromXmlParser
      * Note: writer instance will always be of type
      * {@link org.codehaus.stax2.XMLStreamWriter2} (including
      * Typed Access API) so upcasts are safe.
-     * 
-     * @since 1.7
      */
     public XMLStreamReader getStaxReader() {
         return _xmlTokens.getXmlReader();
@@ -309,7 +307,7 @@ public class FromXmlParser
     @Override
     public boolean isExpectedStartArrayToken() {
         JsonToken t = _currToken;
-        if (t == JsonToken.START_OBJECT) {
+        if (t == JsonToken.START_OBJECT) {        	
             _currToken = JsonToken.START_ARRAY;
             // Ok: must replace current context with array as well
             _parsingContext = _parsingContext.getParent();

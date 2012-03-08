@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.Versioned;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-
 public class TestVersions extends XmlTestBase
 {
     /**

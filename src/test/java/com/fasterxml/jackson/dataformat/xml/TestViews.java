@@ -3,8 +3,12 @@ package com.fasterxml.jackson.dataformat.xml;
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+/*
+ * Tests for ('Json') Views, other filtering.
+ */
 public class TestViews extends XmlTestBase
 {
     /*
@@ -31,8 +35,15 @@ public class TestViews extends XmlTestBase
         @JsonView(RestrictedView.class)
         @JsonProperty
         public int restrictedBarProperty;
-    }    
+    }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    static class NonNullBean
+    {
+    	public String nullName = null;
+    	public String name = "Bob";
+    }
+    
     /*
     /**********************************************************
     /* Unit tests
@@ -69,5 +80,12 @@ public class TestViews extends XmlTestBase
         assertEquals(10, result.bars[0].restrictedBarProperty);
         assertEquals(11, result.bars[1].restrictedBarProperty);
         
+    }
+
+    public void testNullSuppression() throws Exception
+    {
+        ObjectMapper xmlMapper = new XmlMapper();
+        String xml = xmlMapper.writeValueAsString(new NonNullBean());
+        assertEquals("<NonNullBean><name>Bob</name></NonNullBean>", xml);
     }
 }

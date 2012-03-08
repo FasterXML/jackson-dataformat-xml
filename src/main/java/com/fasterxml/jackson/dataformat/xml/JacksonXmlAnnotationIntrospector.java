@@ -4,8 +4,8 @@ import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
-import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support
@@ -92,6 +92,12 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findDeserializationName(AnnotatedField af)
     {
+    	// Slightly more complicated if we have a wrapper:
+    	JacksonXmlElementWrapper wann = af.getAnnotation(JacksonXmlElementWrapper.class);
+    	if (wann != null) {
+    		return wann.localName();
+    	}
+    	// if not, use basic property name:
         JacksonXmlProperty pann = af.getAnnotation(JacksonXmlProperty.class);
         if (pann != null) {
             return pann.localName();
@@ -102,7 +108,16 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findDeserializationName(AnnotatedParameter ap)
     {
-        JacksonXmlProperty pann = ap.getAnnotation(JacksonXmlProperty.class);
+    	JacksonXmlElementWrapper wann = ap.getAnnotation(JacksonXmlElementWrapper.class);
+    	if (wann != null) {
+    		// empty name not acceptable...
+            String name = wann.localName();
+            if (name.length() > 0) {
+                return name;
+            }
+    	}
+
+    	JacksonXmlProperty pann = ap.getAnnotation(JacksonXmlProperty.class);
         // can not return empty String here, so:
         if (pann != null) {
             String name = pann.localName();
