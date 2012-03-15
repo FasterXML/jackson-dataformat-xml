@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.ser.*;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
 
@@ -34,20 +34,22 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config,
             BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties)
     {
-        AnnotationIntrospector intr = config.getAnnotationIntrospector();
+        final AnnotationIntrospector intr = config.getAnnotationIntrospector();
         for (int i = 0, len = beanProperties.size(); i < len; ++i) {
             BeanPropertyWriter bpw = beanProperties.get(i);
             final AnnotatedMember member = bpw.getMember();
-            String ns = findNamespaceAnnotation(intr, member);
-            Boolean isAttribute = findIsAttributeAnnotation(intr, member);
+            String ns = AnnotationUtil.findNamespaceAnnotation(intr, member);
+            Boolean isAttribute = AnnotationUtil.findIsAttributeAnnotation(intr, member);
             bpw.setInternalSetting(XmlBeanSerializer.KEY_XML_INFO, new XmlInfo(isAttribute, ns));
 
             // Actually: if we have a Collection type, easiest place to add wrapping would be here...
+            //  or: let's also allow wrapping of "untyped" (Object): assuming it is a dynamically
+            //   typed Collection...
             if (_isContainerType(bpw.getType())) {
                 String localName = null, wrapperNs = null;
 
                 QName wrappedName = new QName(ns, bpw.getName());
-                QName wrapperName = findWrapperName(intr, member);
+                QName wrapperName = AnnotationUtil.findWrapperName(intr, member);
                 if (wrapperName != null) {
                     localName = wrapperName.getLocalPart();
                     wrapperNs = wrapperName.getNamespaceURI();
@@ -106,45 +108,5 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
             return true;
         }
         return false;
-    }
-    
-    private static String findNamespaceAnnotation(AnnotationIntrospector ai, AnnotatedMember prop)
-    {
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                String ns = ((XmlAnnotationIntrospector) intr).findNamespace(prop);
-                if (ns != null) {
-                    return ns;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static Boolean findIsAttributeAnnotation(AnnotationIntrospector ai, AnnotatedMember prop)
-    {
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                Boolean b = ((XmlAnnotationIntrospector) intr).isOutputAsAttribute(prop);
-                if (b != null) {
-                    return b;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static QName findWrapperName(AnnotationIntrospector ai, AnnotatedMember prop)
-    {
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                QName n = ((XmlAnnotationIntrospector) intr).findWrapperElement(prop);
-                if (n != null) {
-                    return n;
-                }
-            }
-        }
-        return null;
-    }
-    
+    }    
 }

@@ -72,9 +72,9 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findSerializationName(AnnotatedField af)
     {
-        JacksonXmlProperty pann = af.getAnnotation(JacksonXmlProperty.class);
-        if (pann != null) {
-            return pann.localName();
+        String name = _findXmlName(af);
+        if (name != null) {
+            return name;
         }
         return super.findSerializationName(af);
     }
@@ -82,9 +82,9 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findSerializationName(AnnotatedMethod am)
     {
-        JacksonXmlProperty pann = am.getAnnotation(JacksonXmlProperty.class);
-        if (pann != null) {
-            return pann.localName();
+        String name = _findXmlName(am);
+        if (name != null) {
+            return name;
         }
         return super.findSerializationName(am);
     }
@@ -92,42 +92,43 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findDeserializationName(AnnotatedField af)
     {
-    	// Slightly more complicated if we have a wrapper:
-    	JacksonXmlElementWrapper wann = af.getAnnotation(JacksonXmlElementWrapper.class);
-    	if (wann != null) {
-    		return wann.localName();
-    	}
-    	// if not, use basic property name:
-        JacksonXmlProperty pann = af.getAnnotation(JacksonXmlProperty.class);
-        if (pann != null) {
-            return pann.localName();
+        String name = _findXmlName(af);
+        if (name != null) {
+            return name;
         }
         return super.findDeserializationName(af);
     }
 
     @Override
+    public String findDeserializationName(AnnotatedMethod am)
+    {
+        String name = _findXmlName(am);
+        if (name != null) {
+            return name;
+        }
+        return super.findDeserializationName(am);
+    }
+    
+    @Override
     public String findDeserializationName(AnnotatedParameter ap)
     {
-    	JacksonXmlElementWrapper wann = ap.getAnnotation(JacksonXmlElementWrapper.class);
-    	if (wann != null) {
-    		// empty name not acceptable...
-            String name = wann.localName();
-            if (name.length() > 0) {
-                return name;
-            }
-    	}
-
-    	JacksonXmlProperty pann = ap.getAnnotation(JacksonXmlProperty.class);
-        // can not return empty String here, so:
-        if (pann != null) {
-            String name = pann.localName();
-            if (name.length() > 0) {
-                return name;
-            }
+        String name = _findXmlName(ap);
+        // empty name not acceptable...
+        if (name != null && name.length() > 0) {
+            return name;
         }
         return super.findDeserializationName(ap);
     }
 
+    protected String _findXmlName(Annotated a)
+    {
+        JacksonXmlProperty pann = a.getAnnotation(JacksonXmlProperty.class);
+        if (pann != null) {
+            return pann.localName();
+        }
+        return null;
+    }
+    
     /*
     /**********************************************************************
     /* Overrides for non-public helper methods

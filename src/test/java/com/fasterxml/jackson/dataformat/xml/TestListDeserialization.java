@@ -22,7 +22,7 @@ public class TestListDeserialization extends XmlTestBase
 	   public int age;
 
 	   @JacksonXmlElementWrapper(localName = "notes")
-	   @JacksonXmlProperty( localName = "note" )
+	   @JacksonXmlProperty(localName = "note" )
 	   public List<String> notes = new ArrayList<String>();
 	   
 	   public Person() { }
@@ -31,7 +31,30 @@ public class TestListDeserialization extends XmlTestBase
 		   this.age = age;
 	   }
 	}
-	
+
+    public static class PersonWithGetters
+    {
+       @JacksonXmlProperty( isAttribute = true )
+       public String id;
+
+       private List<String> _notes = new ArrayList<String>();
+              
+       public PersonWithGetters() { }
+       public PersonWithGetters(String id) {
+           this.id = id;
+       }
+
+       @JacksonXmlElementWrapper(localName = "notes")
+       @JacksonXmlProperty( localName = "note" )
+       public List<String> getStuff() {
+           return _notes;
+       }
+
+       public void setStuff(List<String> n) {
+           _notes = n;
+       }
+    }
+
     /*
     /**********************************************************
     /* Unit tests
@@ -61,5 +84,19 @@ public class TestListDeserialization extends XmlTestBase
     	assertEquals(2, result.notes.size());
     	assertEquals("note 1", result.notes.get(0));
     	assertEquals("note 2", result.notes.get(1));
+    }
+
+    public void testWrappedListWithGetters() throws Exception
+    {
+        PersonWithGetters p = new PersonWithGetters("abc");
+        p._notes.add("note 1");
+        p._notes.add("note 2");
+        String xml = MAPPER.writeValueAsString( p );
+        PersonWithGetters result = MAPPER.readValue(xml, PersonWithGetters.class);
+        assertNotNull(result);
+        assertEquals("abc", result.id);
+        assertEquals(2, result._notes.size());
+        assertEquals("note 1", result._notes.get(0));
+        assertEquals("note 2", result._notes.get(1));
     }
 }
