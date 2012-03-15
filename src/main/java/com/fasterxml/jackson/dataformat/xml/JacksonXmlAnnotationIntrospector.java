@@ -11,7 +11,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support
  * additional xml-specific annotation that Jackson provides. Note, however, that
  * there is no JAXB annotation support here; that is provided with
- * separate introspector (see {@link org.codehaus.jackson.xc.JaxbAnnotationIntrospector}).
+ * separate introspector (see
+ * {@link com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector}).
  */
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector

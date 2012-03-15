@@ -12,14 +12,15 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 
 /**
- * We need to override some parts of {@link org.codehaus.jackson.map.SerializerProvider}
+ * We need to override some parts of
+ * {@link com.fasterxml.jackson.databind.SerializerProvider}
  * implementation to handle oddities of XML output, like "extra" root element.
  */
 public class XmlSerializerProvider extends DefaultSerializerProvider
 {
     /**
      * If all we get to serialize is a null, there's no way to figure out
-     * expected root name; so let's just default to something like "<null>"...
+     * expected root name; so let's just default to something like "&lt;null>"...
      */
     protected final static QName ROOT_NAME_FOR_NULL = new QName("null");
     

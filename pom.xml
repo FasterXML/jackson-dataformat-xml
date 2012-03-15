@@ -59,17 +59,17 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.0.0-RC3-SNAPSHOT</version>
+      <version>2.0.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.0.0-RC3-SNAPSHOT</version>
+      <version>2.0.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.0.0-RC3-SNAPSHOT</version>
+      <version>2.0.0-RC2</version>
     </dependency>
     <!--  JAXB annotation introspector is needed too? -->
     <dependency>

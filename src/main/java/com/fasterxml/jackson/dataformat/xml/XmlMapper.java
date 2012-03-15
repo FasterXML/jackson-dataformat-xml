@@ -11,7 +11,8 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
- * using XML-backed {@link JsonFactory} implementation ({@link XmlFactory}).
+ * using XML-backed {@link com.fasterxml.jackson.core.JsonFactory}
+ * implementation ({@link XmlFactory}).
  *<p>
  * Mapper itself overrides some aspects of functionality to try to handle
  * data binding aspects as similar to JAXB as possible.
