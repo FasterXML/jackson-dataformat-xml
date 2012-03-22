@@ -1,0 +1,20 @@
+Project: jackson-dataformat-xml
+
+Version: 2.0.0
+
+Release date:
+  xx-Mar-2012
+
+Description:
+  Jackson 2.0 by FasterXML, baked at GitHub.
+
+Fixes:
+
+* Issue-19: Strange behavior with namespace generation when using 'isAttribute = true'
+  (reported by Morten-Olav H)
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+[entries for version 1.x not retained)
