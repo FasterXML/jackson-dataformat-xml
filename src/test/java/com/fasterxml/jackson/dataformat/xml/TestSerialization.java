@@ -56,12 +56,6 @@ public class TestSerialization extends XmlTestBase
         public String text = "blah";
     }
 
-    static class NsAttrBean
-    {
-        @JacksonXmlProperty(namespace="http://foo", isAttribute=true)
-        public String attr = "3";
-    }
-
     @JacksonXmlRootElement(localName="root")
     static class RootBean
     {
@@ -141,14 +135,6 @@ public class TestSerialization extends XmlTestBase
         xml = removeSjsxpNamespace(xml);
         // here we assume woodstox automatic prefixes, not very robust but:
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
-    }
-
-    public void testSimpleNsAttr() throws IOException
-    {
-        String xml = _xmlMapper.writeValueAsString(new NsAttrBean());
-        xml = removeSjsxpNamespace(xml);
-        // here we assume woodstox automatic prefixes, not very robust but:
-        assertEquals("<NsAttrBean xmlns:wstxns1=\"http://foo\" wstxns1:attr=\"3\"/>", xml);
     }
 
     public void testMap() throws IOException

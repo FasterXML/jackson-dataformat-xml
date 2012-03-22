@@ -211,8 +211,6 @@ public final class ToXmlGenerator
      * Note: writer instance will always be of type
      * {@link org.codehaus.stax2.XMLStreamWriter2} (including
      * Typed Access API) so upcasts are safe.
-     * 
-     * @since 1.7
      */
     public XMLStreamWriter getStaxWriter() {
         return _xmlWriter;

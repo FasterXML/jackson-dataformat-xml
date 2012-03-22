@@ -47,19 +47,6 @@ public class XmlBeanSerializer extends BeanSerializer
     public XmlBeanSerializer(BeanSerializerBase src)
     {
         super(src);
-
-        // Ok, first: collect namespace information
-        _xmlNames = new QName[_props.length];
-        // First, find namespace information
-        for (int i = 0, len = _props.length; i < len; ++i) {
-            BeanPropertyWriter bpw = _props[i];
-            XmlInfo info = (XmlInfo) bpw.getInternalSetting(KEY_XML_INFO);
-            String ns = null;
-            if (info != null) {
-                ns = info.getNamespace();
-            }
-            _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
-        }      
         
         /* Then make sure attributes are sorted before elements, keep track
          * of how many there are altogether
@@ -72,6 +59,19 @@ public class XmlBeanSerializer extends BeanSerializer
             }
         }
         _attributeCount = attrCount;
+
+        // And then collect namespace information
+        _xmlNames = new QName[_props.length];
+        for (int i = 0, len = _props.length; i < len; ++i) {
+            BeanPropertyWriter bpw = _props[i];
+            XmlInfo info = (XmlInfo) bpw.getInternalSetting(KEY_XML_INFO);
+            String ns = null;
+            if (info != null) {
+                ns = info.getNamespace();
+            }
+            _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
+        }      
+    
     }
 
     protected XmlBeanSerializer(XmlBeanSerializer src, ObjectIdWriter objectIdWriter)
