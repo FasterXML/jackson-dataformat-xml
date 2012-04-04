@@ -108,15 +108,6 @@ public class XmlBeanPropertyWriter
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
         ToXmlGenerator xmlGen = (ToXmlGenerator) jgen;
         xmlGen.startWrappedValue(_wrapperName, _wrappedName);
-        
-        if (ser == null) {
-            Class<?> cls = value.getClass();
-            PropertySerializerMap map = _dynamicSerializers;
-            ser = map.serializerFor(cls);
-            if (ser == null) {
-                ser = _findAndAddDynamic(map, cls, prov);
-            }
-        }
         jgen.writeFieldName(_name);
         if (_typeSerializer == null) {
             ser.serialize(value, jgen, prov);

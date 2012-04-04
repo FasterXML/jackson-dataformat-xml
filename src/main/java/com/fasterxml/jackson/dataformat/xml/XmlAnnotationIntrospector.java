@@ -22,13 +22,6 @@ public interface XmlAnnotationIntrospector
     public String findNamespace(Annotated ann);
 
     /**
-     * Method used to check whether given annotated element
-     * (field, method, constructor parameter) has indicator that suggest
-     * it be output as an XML attribute or not (as element)
-     */
-    public Boolean isOutputAsAttribute(Annotated ann);
-
-    /**
      * Method used to check if specified property has annotation that indicates
      * that it should be wrapped in an element; and if so, name to use.
      * Note: local name of "" is used to indicate that name should default
@@ -42,6 +35,20 @@ public interface XmlAnnotationIntrospector
      * this overrides default name based on type of object.
      */
     public QName findRootElement(Annotated ann);
+
+    /**
+     * Method used to check whether given annotated element
+     * (field, method, constructor parameter) has indicator that suggests
+     * it be output as an XML attribute or not (as element)
+     */
+    public Boolean isOutputAsAttribute(Annotated ann);
+
+    /**
+     * Method used to check whether given annotated element
+     * (field, method, constructor parameter) has indicator that suggests
+     * it should be serialized as text, without element wrapper.
+     */
+    public Boolean isOutputAsText(Annotated ann);
     
     /*
     /**********************************************************************
@@ -110,5 +117,16 @@ public interface XmlAnnotationIntrospector
             }
             return value;
         }
+
+        @Override
+        public Boolean isOutputAsText(Annotated ann)
+        {
+            Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsText(ann);
+            if (value == null && _xmlSecondary != null) {
+                value = _xmlSecondary.isOutputAsText(ann);
+            }
+            return value;
+        }
+    
     }
 }

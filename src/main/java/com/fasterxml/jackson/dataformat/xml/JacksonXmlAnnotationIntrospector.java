@@ -17,22 +17,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
     implements XmlAnnotationIntrospector
-{    
+{
     /*
     /**********************************************************************
-    /* XmlAnnotationIntrospector
+    /* XmlAnnotationIntrospector, findXxx
     /**********************************************************************
      */
-
-    @Override
-    public Boolean isOutputAsAttribute(Annotated ann)
-    {
-        JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
-        if (prop != null) {
-            return prop.isAttribute() ? Boolean.TRUE : Boolean.FALSE;
-        }
-        return null;
-    }
 
     @Override
     public String findNamespace(Annotated ann)
@@ -60,6 +50,32 @@ public class JacksonXmlAnnotationIntrospector
         JacksonXmlRootElement root = ann.getAnnotation(JacksonXmlRootElement.class);
         if (root != null) {
             return new QName(root.namespace(), root.localName());
+        }
+        return null;
+    }
+
+    /*
+    /**********************************************************************
+    /* XmlAnnotationIntrospector, isXxx methods
+    /**********************************************************************
+     */
+    
+    @Override
+    public Boolean isOutputAsAttribute(Annotated ann)
+    {
+        JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
+        if (prop != null) {
+            return prop.isAttribute() ? Boolean.TRUE : Boolean.FALSE;
+        }
+        return null;
+    }
+    
+    @Override
+    public Boolean isOutputAsText(Annotated ann)
+    {
+    	JacksonXmlText prop = ann.getAnnotation(JacksonXmlText.class);
+        if (prop != null) {
+            return prop.value() ? Boolean.TRUE : Boolean.FALSE;
         }
         return null;
     }

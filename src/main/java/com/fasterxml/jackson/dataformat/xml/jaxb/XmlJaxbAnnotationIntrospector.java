@@ -8,13 +8,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
-
 
 /**
  * Alternative {@link com.fasterxml.jackson.databind.AnnotationIntrospector}
@@ -65,6 +64,26 @@ public class XmlJaxbAnnotationIntrospector
         return ns;
     }
 
+    @Override
+    public QName findWrapperElement(Annotated ann)
+    {
+        XmlElementWrapper w = findAnnotation(XmlElementWrapper.class, ann, false, false, false);
+        if (w != null) {
+            return new QName(handleJaxbDefault(w.namespace()), handleJaxbDefault(w.name()));
+        }
+        return null;
+    }
+
+    @Override
+    public QName findRootElement(Annotated ann)
+    {
+        XmlRootElement root = findAnnotation(XmlRootElement.class, ann, false, false, false);
+        if (root != null) {
+            return new QName(handleJaxbDefault(root.namespace()), handleJaxbDefault(root.name()));
+        }
+        return null;
+    }
+
     /**
      * Here we assume fairly simple logic; if there is <code>XmlAttribute</code> to be found,
      * we consider it an attibute; if <code>XmlElement</code>, not-an-attribute; and otherwise
@@ -84,23 +103,13 @@ public class XmlJaxbAnnotationIntrospector
         }
         return null;
     }
-
+    
     @Override
-    public QName findWrapperElement(Annotated ann)
+    public Boolean isOutputAsText(Annotated ann)
     {
-        XmlElementWrapper w = findAnnotation(XmlElementWrapper.class, ann, false, false, false);
-        if (w != null) {
-            return new QName(handleJaxbDefault(w.namespace()), handleJaxbDefault(w.name()));
-        }
-        return null;
-    }
-
-    @Override
-    public QName findRootElement(Annotated ann)
-    {
-        XmlRootElement root = findAnnotation(XmlRootElement.class, ann, false, false, false);
-        if (root != null) {
-            return new QName(handleJaxbDefault(root.namespace()), handleJaxbDefault(root.name()));
+    	XmlValue attr = findAnnotation(XmlValue.class, ann, false, false, false);
+        if (attr != null) {
+            return Boolean.TRUE;
         }
         return null;
     }
