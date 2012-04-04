@@ -15,9 +15,11 @@ public class TestTextValue extends XmlTestBase
 	static class Simple
 	{
 		@JacksonXmlProperty(isAttribute=true)
+		// same as: @javax.xml.bind.annotation.XmlAttribute
 		public int a = 13;
 
 		@JacksonXmlText
+		// about same as: @javax.xml.bind.annotation.XmlValue
 		public String text = "something";
 	}
 	
@@ -34,4 +36,12 @@ public class TestTextValue extends XmlTestBase
     	assertEquals("<Simple a=\"13\">something</Simple>", xml);
     }
 
+    /* // Uncomment to see how JAXB works here:
+    public void testJAXB() throws Exception
+    {
+        java.io.StringWriter sw = new java.io.StringWriter();
+        javax.xml.bind.JAXB.marshal(new Simple(), sw);
+        System.out.println("JAXB -> "+sw);
+    }
+    */
 }
