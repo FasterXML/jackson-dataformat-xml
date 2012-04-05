@@ -76,6 +76,17 @@ Similar to serialization, deserialization is not very different from JSON deseri
     ObjectMapper xmlMapper = new XmlMapper();
     Simple value = xmlMapper.readValue("<Simple><x>1</x><y>2</y></Simple>", Simple.class);
 
+## Additional annotations
+
+In addition to standard [Jackson annotations](jackson-annotations) and optional JAXB (`javax.xml.bind.annotation`), this project also adds couple of its own annotations for convenience, to support XML-specific details:
+
+ * `@JacksonXmlElementWrapper` allows specifying XML element to use for wrapping `List` and `Map` properties
+ * `@JacksonXmlProperty` allows specifying XML namespace and local name for a property; as well as whether property is to be written as an XML element or attribute.
+ * `@JacksonXmlRootElement` allows specifying XML element to use for wrapping the root element (default uses 'simple name' of the value class)
+ * `@JacksonXmlText` allows specifying that value of one property is to be serialized as "unwrapped" text, and not in an element.
+
+for longer description, check out [XML module annotations](jackson-dataformat/wiki/JacksonXmlAnnotations).
+
 # See Also
 
 See [wiki page](jackson-dataformat-xml/wiki) for more information
