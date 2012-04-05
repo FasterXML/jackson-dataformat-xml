@@ -29,11 +29,20 @@ public class TestTextValue extends XmlTestBase
     /**********************************************************
      */
 
-    public void testSimpleAsText() throws IOException
+    public void testSerializeAsText() throws IOException
     {
     	XmlMapper mapper = new XmlMapper();
     	String xml = mapper.writeValueAsString(new Simple());
     	assertEquals("<Simple a=\"13\">something</Simple>", xml);
+    }
+
+    public void testDeserializeAsText() throws IOException
+    {
+    	XmlMapper mapper = new XmlMapper();
+    	Simple result = mapper.readValue("<Simple a='99'>else</Simple>",
+    			Simple.class);
+    	assertEquals(99, result.a);
+    	assertEquals("else", result.text);
     }
     
     /* // Uncomment to see how JAXB works here:

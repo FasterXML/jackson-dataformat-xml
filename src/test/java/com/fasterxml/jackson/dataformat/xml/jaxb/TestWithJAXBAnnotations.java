@@ -103,7 +103,14 @@ public class TestWithJAXBAnnotations extends XmlTestBase
      */
     public void testAsTextWithJAXB() throws IOException
     {
+    	// first: serialize
     	String xml = _jaxbMapper.writeValueAsString(new WithXmlValue());
     	assertEquals("<Simple a=\"13\">something</Simple>", xml);
+
+    	// and then deserialize back...
+    	WithXmlValue result = _jaxbMapper.readValue("<Simple a='99'>else</Simple>",
+    			WithXmlValue.class);
+    	assertEquals(99, result.a);
+    	assertEquals("else", result.text);
     }
 }
