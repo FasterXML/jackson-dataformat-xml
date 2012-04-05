@@ -1,7 +1,21 @@
-# Skip maven 'target' directory
+# use glob syntax.
+syntax: glob
+*.class
+*~
+*.bak
+*.off
+*.old
+.DS_Store
+
+# building
 target
 
-# plus eclipse crap
+# Eclipse
 .classpath
 .project
 .settings
+
+# IDEA
+*.iml
+*.ipr
+*.iws
