@@ -39,6 +39,12 @@ public class XmlBeanSerializer extends BeanSerializer
     protected final int _attributeCount;
 
     /**
+     * Index of "text value" property we have, if any; can have at most
+     * one such property.
+     */
+    protected final int _textPropertyIndex;
+
+    /**
      * Array that contains namespace URIs associated with properties, if any;
      * null if no namespace definitions have been assigned
      */
@@ -62,22 +68,27 @@ public class XmlBeanSerializer extends BeanSerializer
 
         // And then collect namespace information
         _xmlNames = new QName[_props.length];
+        int textIndex = -1;
         for (int i = 0, len = _props.length; i < len; ++i) {
             BeanPropertyWriter bpw = _props[i];
             XmlInfo info = (XmlInfo) bpw.getInternalSetting(KEY_XML_INFO);
             String ns = null;
             if (info != null) {
                 ns = info.getNamespace();
+                if (textIndex < 0 && info.isText()) {
+                	textIndex = i;
+                }
             }
             _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
-        }      
-    
+        }
+        _textPropertyIndex = textIndex;
     }
 
     protected XmlBeanSerializer(XmlBeanSerializer src, ObjectIdWriter objectIdWriter)
     {
         super(src, objectIdWriter);
         _attributeCount = src._attributeCount;
+        _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;
     }
 
@@ -114,34 +125,39 @@ public class XmlBeanSerializer extends BeanSerializer
     protected void serializeFields(Object bean, JsonGenerator jgen0, SerializerProvider provider)
         throws IOException, JsonGenerationException
     {
-        final ToXmlGenerator jgen = (ToXmlGenerator) jgen0;
+        final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         final BeanPropertyWriter[] props;
         if (_filteredProps != null && provider.getSerializationView() != null) {
             props = _filteredProps;
         } else {
             props = _props;
         }
-        
-        final int attrCount = _attributeCount;
+
+		final int attrCount = _attributeCount;
         if (attrCount > 0) {
-            jgen.setNextIsAttribute(true);
+        	xgen.setNextIsAttribute(true);
         }
+        final int textIndex = _textPropertyIndex;
         final QName[] xmlNames = _xmlNames;
         
         int i = 0;
         try {
             for (final int len = props.length; i < len; ++i) {
                 if (i == attrCount) {
-                    jgen.setNextIsAttribute(false);
+                	xgen.setNextIsAttribute(false);
                 }
-                jgen.setNextName(xmlNames[i]);
+                // also: if this is property to write as text ("unwrap"), need to:
+                if (i == textIndex) {
+					xgen.setNextIsUnwrapped(true);
+                }
+                xgen.setNextName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
-                    prop.serializeAsField(bean, jgen, provider);
+                    prop.serializeAsField(bean, xgen, provider);
                 }
             }
             if (_anyGetterWriter != null) {
-                _anyGetterWriter.getAndSerialize(bean, jgen, provider);
+                _anyGetterWriter.getAndSerialize(bean, xgen, provider);
             }
         } catch (Exception e) {
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();

@@ -1,9 +1,12 @@
 package com.fasterxml.jackson.dataformat.xml.jaxb;
 
+import java.io.IOException;
+
 import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -34,6 +37,16 @@ public class TestWithJAXBAnnotations extends XmlTestBase
         public String attr = "3";
     }
 
+	@javax.xml.bind.annotation.XmlRootElement(name="Simple")
+	static class WithXmlValue
+	{
+		@javax.xml.bind.annotation.XmlAttribute
+		public int a = 13;
+
+		@javax.xml.bind.annotation.XmlValue
+		public String text = "something";
+	}
+	
     /*
     /**********************************************************************
     /* Set up
@@ -63,7 +76,7 @@ public class TestWithJAXBAnnotations extends XmlTestBase
 
     /**
      * Unit test for verifying that root element name can be overridden
-     * with <code>@XmlRootElement</code> annotation.
+     * with {@link XmlRootElement} annotation.
      */
     public void testRootName() throws Exception
     {
@@ -74,13 +87,23 @@ public class TestWithJAXBAnnotations extends XmlTestBase
     }
 
     /**
-     * Unit test for verifying that a propery defaults to being written as
-     * element, but can be redefined with <code>@XmlAttribute</code> annotation.
+     * Unit test for verifying that a property defaults to being written as
+     * element, but can be redefined with {@link XmlAttribute} annotation.
      */
     public void testSerializeAsAttr() throws Exception
     {
         AttrBean bean = new AttrBean();
         assertEquals("<AttrBean><attr>3</attr></AttrBean>", _nonJaxbMapper.writeValueAsString(bean));
         assertEquals("<AttrBean attr=\"3\"/>", _jaxbMapper.writeValueAsString(bean));
+    }
+
+    /**
+     * Unit test for verifying correct handling of
+     * {@link XmlValue} annotation.
+     */
+    public void testAsTextWithJAXB() throws IOException
+    {
+    	String xml = _jaxbMapper.writeValueAsString(new WithXmlValue());
+    	assertEquals("<Simple a=\"13\">something</Simple>", xml);
     }
 }

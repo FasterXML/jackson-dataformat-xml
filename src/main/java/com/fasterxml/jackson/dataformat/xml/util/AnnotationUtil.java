@@ -36,6 +36,20 @@ public class AnnotationUtil
         return null;
     }
 
+    public static Boolean findIsTextAnnotation(AnnotationIntrospector ai,
+            AnnotatedMember prop)
+    {
+        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+            if (intr instanceof XmlAnnotationIntrospector) {
+                Boolean b = ((XmlAnnotationIntrospector) intr).isOutputAsText(prop);
+                if (b != null) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
+    
     public static QName findWrapperName(AnnotationIntrospector ai, AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {

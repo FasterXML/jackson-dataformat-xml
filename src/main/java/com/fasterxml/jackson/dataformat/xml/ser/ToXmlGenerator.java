@@ -126,6 +126,14 @@ public final class ToXmlGenerator
      * implies an attribute (true) or element (false)
      */
     protected boolean _nextIsAttribute = false;
+
+    /**
+     * Marker flag used to indicate that the next write of a (property)
+     * value should be done without using surrounding start/end
+     * elements. Flag is to be cleared once unwrapping has been triggered
+     * once.
+     */
+    protected boolean _nextIsUnwrapped = false;
     
     /**
      * To support proper serialization of arrays it is necessary to keep
@@ -227,6 +235,11 @@ public final class ToXmlGenerator
         _nextIsAttribute = isAttribute;
     }
 
+    public void setNextIsUnwrapped(boolean isUnwrapped)
+    {
+    	_nextIsUnwrapped = isUnwrapped;
+    }
+    
     public final void setNextName(QName name)
     {
         _nextName = name;
@@ -411,6 +424,8 @@ public final class ToXmlGenerator
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                 			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
                 			text);
+                } else if (checkNextIsUnwrapped()) {
+	                _xmlWriter.writeCharacters(text);
                 } else {
 	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
 	                _xmlWriter.writeCharacters(text);
@@ -432,6 +447,9 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
+            } else if (checkNextIsUnwrapped()) {
+            	// should we consider pretty-printing or not?
+                _xmlWriter.writeCharacters(text, offset, len);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -535,6 +553,9 @@ public final class ToXmlGenerator
                 // Stax2 API only has 'full buffer' write method:
                 byte[] fullBuffer = toFullBuffer(data, offset, len);
                 _xmlWriter.writeBinaryAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
+            } else if (checkNextIsUnwrapped()) {
+            	// should we consider pretty-printing or not?
+                _xmlWriter.writeBinary(data, offset, len);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -580,6 +601,9 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeBooleanAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), value);
+            } else if (checkNextIsUnwrapped()) {
+            	// should we consider pretty-printing or not?
+                _xmlWriter.writeBoolean(value);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -609,6 +633,8 @@ public final class ToXmlGenerator
                 /* With attributes, best just leave it out, right? (since there's no way
                  * to use 'xsi:nil')
                  */
+            } else if (checkNextIsUnwrapped()) {
+            	// as with above, best left unwritten?
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafNullElement(_xmlWriter,
@@ -632,6 +658,9 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeIntAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), i);
+            } else if (checkNextIsUnwrapped()) {
+            	// should we consider pretty-printing or not?
+                _xmlWriter.writeInt(i);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -658,6 +687,8 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeLongAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), l);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeLong(l);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -684,6 +715,8 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeDoubleAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), d);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeDouble(d);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -710,6 +743,8 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeFloatAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), f);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeFloat(f);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -740,6 +775,8 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeDecimalAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), dec);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeDecimal(dec);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -772,6 +809,8 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeIntegerAttribute(null,
                 		_nextName.getNamespaceURI(), _nextName.getLocalPart(), value);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeInteger(value);
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -898,6 +937,20 @@ public final class ToXmlGenerator
     /**********************************************************
      */
 
+    /**
+     * Method called to see if unwrapping is required; and if so,
+     * clear the flag (so further calls will return 'false' unless
+     * state is re-set)
+     */
+    protected boolean checkNextIsUnwrapped()
+    {
+    	if (_nextIsUnwrapped) {
+    		_nextIsUnwrapped = false;
+    		return true;
+    	}
+    	return false;
+    }
+    
     protected void handleMissingName()
     {
         throw new IllegalStateException("No element/attribute name specified when trying to output element");
