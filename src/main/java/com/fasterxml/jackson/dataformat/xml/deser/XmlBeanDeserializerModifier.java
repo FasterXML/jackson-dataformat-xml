@@ -30,22 +30,33 @@ public class XmlBeanDeserializerModifier
             if (acc == null) {
                 continue;
             }
+            // first: do we need to handle wrapping (for Lists)?
             QName wrapperName = AnnotationUtil.findWrapperName(intr, acc);
-            if (wrapperName == null) {
-                continue;
+            if (wrapperName != null) {
+                String localName = wrapperName.getLocalPart();
+                if ((localName != null && localName.length() >= 0)
+                        && !localName.equals(prop.getName())) {
+                    // make copy-on-write as necessary
+                    if (changed == 0) {
+                        propDefs = new ArrayList<BeanPropertyDefinition>(propDefs);
+                    }
+                    ++changed;
+                    propDefs.set(i, prop.withName(localName));
+                    continue;
+                }
+            } else {
+                /* If not, how about "as text" unwrapping? Such properties
+                 * are exposed as values of 'unnamed' fields; so one way to
+                 * map them is to rename property to have name ""... (and
+                 * hope this does not break other parts...)
+                 */
+                Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
+                if (b != null && b.booleanValue()) {
+                    // unwrapped properties will appear as 'unnamed' (empty String)
+                    propDefs.set(i, prop.withName(""));
+                    continue;
+                }
             }
-            String localName = wrapperName.getLocalPart();
-            if ((localName == null || localName.length() == 0)
-                   || localName.equals(prop.getName())) {
-                continue;
-            }
-            // make copy-on-write as necessary
-            if (changed == 0) {
-                propDefs = new ArrayList<BeanPropertyDefinition>(propDefs);
-            }
-            ++changed;
-            // Also, must do upcast unfortunately
-            propDefs.set(i, prop.withName(localName));
         }
         return propDefs;
     }
