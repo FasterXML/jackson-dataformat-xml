@@ -78,4 +78,4 @@ Similar to serialization, deserialization is not very different from JSON deseri
 
 # See Also
 
-See [wiki page](./wiki) for more information
+See [wiki page](jackson-dataformat-xml/wiki) for more information
