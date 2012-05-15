@@ -1,22 +1,22 @@
 Project: jackson-dataformat-xml
 
-Version: 2.0.1
+Version: 2.0.2
 
 Release date:
-  xx-Mar-2012
+  14-May-2012
 
 Description:
-  First patch release for 2.0.0
-
-Fixes:
-
-* Issue-23: Add @JacksonXmlText annotation (alias for JAXB @XmlValue), to
-  support case of text value with attributes
- (requested by Sebastian D)
+  Another patch release for 2.0.0; no fixes, updates dependencies.
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.0.1 [14-Apr-2012]
+
+* Issue-23: Add @JacksonXmlText annotation (alias for JAXB @XmlValue), to
+  support case of text value with attributes
+ (requested by Sebastian D)
 
 2.0.0 [25-Mar-2012]
 
