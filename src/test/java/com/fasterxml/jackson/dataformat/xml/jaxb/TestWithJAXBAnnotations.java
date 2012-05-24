@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import java.io.IOException;
+import java.util.*;
 
 import javax.xml.bind.annotation.*;
 
@@ -37,16 +38,16 @@ public class TestWithJAXBAnnotations extends XmlTestBase
         public String attr = "3";
     }
 
-	@javax.xml.bind.annotation.XmlRootElement(name="Simple")
-	static class WithXmlValue
-	{
-		@javax.xml.bind.annotation.XmlAttribute
-		public int a = 13;
+    @javax.xml.bind.annotation.XmlRootElement(name="Simple")
+    static class WithXmlValue
+    {
+        @javax.xml.bind.annotation.XmlAttribute
+        public int a = 13;
 
-		@javax.xml.bind.annotation.XmlValue
-		public String text = "something";
-	}
-	
+        @javax.xml.bind.annotation.XmlValue
+        public String text = "something";
+    }
+    
     /*
     /**********************************************************************
     /* Set up
