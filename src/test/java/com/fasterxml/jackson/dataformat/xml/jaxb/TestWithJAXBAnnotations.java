@@ -1,7 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import java.io.IOException;
-import java.util.*;
 
 import javax.xml.bind.annotation.*;
 
@@ -46,6 +45,39 @@ public class TestWithJAXBAnnotations extends XmlTestBase
 
         @javax.xml.bind.annotation.XmlValue
         public String text = "something";
+    }
+
+    @XmlRootElement(name = "Individual")
+    static class MyPerson {
+        @XmlAttribute(name = "identifier")
+        public Long id;
+
+        @XmlElement(name = "givenName")
+        public String firstName;
+    
+        @XmlElement(name = "surName")
+        public String lastName;
+
+        public Long getId() {
+            return id;
+        }
+        public void setId(final Long id) {
+            this.id = id;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+        public void setFirstName(final String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+        public void setLastName(final String lastName) {
+            this.lastName = lastName;
+        }
     }
     
     /*
@@ -113,5 +145,19 @@ public class TestWithJAXBAnnotations extends XmlTestBase
     			WithXmlValue.class);
     	assertEquals(99, result.a);
     	assertEquals("else", result.text);
+    }
+
+    public void testPersonAsXml() throws Exception {
+        MyPerson person = new MyPerson();
+        person.id = 1L;
+        person.firstName = "Jay";
+        person.lastName = "Unit";
+    
+        String json = _jaxbMapper.writeValueAsString(person);
+        System.out.println("Person: " + json);
+    
+        String expected = "<Individual identifier=\"1\"><givenName>Jay</givenName>"
+                +"<surName>Unit</surName></Individual>";
+        assertEquals(expected, json);
     }
 }
