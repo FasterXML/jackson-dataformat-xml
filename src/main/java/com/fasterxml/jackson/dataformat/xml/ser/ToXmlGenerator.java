@@ -244,7 +244,7 @@ public final class ToXmlGenerator
     {
         _nextName = name;
     }
-
+    
     /**
      * Methdod called when a structured (collection, array, map) is being
      * output.

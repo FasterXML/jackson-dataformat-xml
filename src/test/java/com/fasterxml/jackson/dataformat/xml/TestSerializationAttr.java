@@ -62,8 +62,8 @@ public class TestSerializationAttr extends XmlTestBase
         xml = removeSjsxpNamespace(xml);
         xml = xml.replaceAll("\"", "'");
         // as with above, assumes exact NS allocation strategy, not optimal:
-        assertEquals("<wstxns1:test xmlns:wstxns1='http://root' id='abc'>"
-        		+"<wstxns2:booleanA xmlns:wstxns2='http://my.ns'>true</wstxns2:booleanA></wstxns1:test>",
+        assertEquals("<test xmlns='http://root' id='abc'>"
+        		+"<wstxns1:booleanA xmlns:wstxns1='http://my.ns'>true</wstxns1:booleanA></test>",
         	xml);
     }
     

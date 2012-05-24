@@ -47,8 +47,6 @@ public class TestElementWrapper extends XmlTestBase
         person.children.add(child);
 
         String xml = _jaxbMapper.writer().writeValueAsString(person);
-
-System.err.println("XML == "+xml);        
         
         String expected = "<Individual><name>Jay</name>"
                 + "<offspring><kid><name>Junior</name><offspring/></kid></offspring></Individual>";

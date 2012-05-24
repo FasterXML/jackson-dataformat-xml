@@ -2,12 +2,14 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 
@@ -58,9 +60,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     {
         QName rootName = (value == null) ? ROOT_NAME_FOR_NULL
                 : _rootNameLookup.findRootName(value.getClass(), _config);
-        ToXmlGenerator xgen = (ToXmlGenerator) jgen;
-        xgen.setNextName(rootName);
-        xgen.initGenerator();
+        _initWithRootName(jgen, rootName);
         super.serializeValue(jgen, value);
     }
 
@@ -69,9 +69,27 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         throws IOException, JsonProcessingException
     {
         QName rootName = _rootNameLookup.findRootName(rootType, _config);
+        _initWithRootName(jgen, rootName);
+        super.serializeValue(jgen, value, rootType);
+    }
+
+    protected void _initWithRootName(JsonGenerator jgen, QName rootName)
+            throws IOException, JsonProcessingException
+    {
         ToXmlGenerator xgen = (ToXmlGenerator) jgen;
         xgen.setNextName(rootName);
         xgen.initGenerator();
-        super.serializeValue(jgen, value, rootType);
+        String ns = rootName.getNamespaceURI();
+        /* [Issue-26] If we just try writing root element with namespace,
+         * we will get an explicit prefix. But we'd rather use the default
+         * namespace, so let's try to force that.
+         */
+        if (ns != null && ns.length() > 0) {
+            try {
+                xgen.getStaxWriter().setDefaultNamespace(ns);
+            } catch (XMLStreamException e) {
+                StaxUtil.throwXmlAsIOException(e);
+            }
+        }
     }
 }
