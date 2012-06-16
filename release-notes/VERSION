@@ -1,16 +1,24 @@
 Project: jackson-dataformat-xml
 
-Version: 2.0.2
+Version: 2.0.3
 
 Release date:
-  14-May-2012
+  15-Jun-2012
 
 Description:
-  Another patch release for 2.0.0; no fixes, updates dependencies.
+  Another patch release for 2.0.
+
+Fixes:
+
+* [Issue-26]: Root element should use 'default namespace'
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.0.2 [14-Mayr-2012]
+
+ No fixes, updates dependencies.
 
 2.0.1 [14-Apr-2012]
 
