@@ -64,7 +64,7 @@ public class TestDeserialization extends XmlTestBase
         assertEquals(Integer.valueOf(2), bean.values.get(1));
         assertEquals(Integer.valueOf(3), bean.values.get(2));
     }
-
+    
     // Issue#14:
     public void testMapWithAttr() throws Exception
     {
