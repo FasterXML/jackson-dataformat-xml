@@ -8,7 +8,7 @@
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
   <name>Jackson-dataformat-XML</name>
-  <version>2.0.4-SNAPSHOT</version>
+  <version>2.0.4</version>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
