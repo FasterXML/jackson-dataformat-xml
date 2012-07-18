@@ -10,9 +10,17 @@ Description:
 
 Fixes:
 
+* [Issue-29]: Binary value not cleared, leading to duplicated binary data
+  for POJOs.
+ (reported by 'farfalena'@git)
+
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.0.4 (26-Jun-2012)
+
+no new fixes, dependencies to core components updated.
 
 2.0.3 (15-Jun-2012)
 

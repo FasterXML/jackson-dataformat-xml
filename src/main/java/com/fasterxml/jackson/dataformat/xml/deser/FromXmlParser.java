@@ -322,6 +322,7 @@ public class FromXmlParser
     @Override
     public JsonToken nextToken() throws IOException, JsonParseException
     {
+        _binaryValue = null; // to fix [Issue-29]
         if (_nextToken != null) {
             JsonToken t = _nextToken;
             _currToken = t;
@@ -345,7 +346,6 @@ public class FromXmlParser
             }
             return t;
         }
-
         int token = _xmlTokens.next();
         
         /* Need to have a loop just because we may have to eat/convert
