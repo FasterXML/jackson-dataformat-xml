@@ -22,12 +22,12 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 * Implements {@link JsonFactory} since interface for constructing XML backed
 * parsers and generators is quite similar to dealing with JSON.
 * 
-* @author tatu
+* @author Tatu Saloranta (tatu.saloranta@iki.fi)
 */
 public class XmlFactory extends JsonFactory
 {
     /**
-     * Name used to identify JSON format
+     * Name used to identify XML format
      * (and returned by {@link #getFormatName()}
      */
     public final static String FORMAT_NAME_XML = "XML";
@@ -233,13 +233,47 @@ public class XmlFactory extends JsonFactory
     {
         return hasXMLFormat(acc);
     }
-    
+
     /*
     /**********************************************************
-    /* Overridden parts of public API
+    /* Upcoming parts of public API (for 2.1)
     /**********************************************************
      */
 
+    // @Override
+    public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
+    {
+        // false -> we won't manage the stream unless explicitly directed to
+        return new ToXmlGenerator(_createContext(out, false),
+                _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, _createXmlWriter(out));
+    }
+
+    // @Override
+    public ToXmlGenerator createGenerator(Writer out) throws IOException
+    {
+        return new ToXmlGenerator(_createContext(out, false),
+                _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, _createXmlWriter(out));
+    }
+
+    // @Override
+    public ToXmlGenerator createGenerator(File f, JsonEncoding enc) throws IOException
+    {
+        OutputStream out = new FileOutputStream(f);
+        // true -> yes, we have to manage the stream since we created it
+        IOContext ctxt = _createContext(out, true);
+        ctxt.setEncoding(enc);
+        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, _createXmlWriter(out));
+    }
+    
+    /*
+    /**********************************************************
+    /* Overridden parts of public API for generator creation
+    /**********************************************************
+     */
+    
     /**
      *<p>
      * note: co-variant return type
@@ -249,8 +283,8 @@ public class XmlFactory extends JsonFactory
         throws IOException
     {
         // false -> we won't manage the stream unless explicitly directed to
-        IOContext ctxt = _createContext(out, false);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        return new ToXmlGenerator(_createContext(out, false),
+                _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
 
@@ -258,8 +292,8 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createJsonGenerator(Writer out)
         throws IOException
     {
-        IOContext ctxt = _createContext(out, false);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        return new ToXmlGenerator(_createContext(out, false),
+                _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
 
@@ -274,10 +308,37 @@ public class XmlFactory extends JsonFactory
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
+
+    /*
+    /**********************************************************
+    /* Upcoming parts of public API (for 2.1)
+    /**********************************************************
+     */
+
+//  @Override
+    protected FromXmlParser _createParser(InputStream in, IOContext ctxt)
+        throws IOException, JsonParseException
+    {
+        return _createJsonParser(in, ctxt);
+    }
+
+//    @Override
+    protected FromXmlParser _createParser(Reader r, IOContext ctxt)
+        throws IOException, JsonParseException
+    {
+        return _createJsonParser(r, ctxt);
+    }
+
+//  @Override
+    protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt)
+        throws IOException, JsonParseException
+    {
+        return _createJsonParser(data, offset, len, ctxt);
+    }
     
     /*
     /**********************************************************
-    /* Overridden internal factory methods
+    /* Overridden internal factory methods for parser creation
     /**********************************************************
      */
 
