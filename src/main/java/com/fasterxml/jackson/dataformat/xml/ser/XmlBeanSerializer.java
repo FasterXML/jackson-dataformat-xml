@@ -106,7 +106,7 @@ public class XmlBeanSerializer extends BeanSerializer
     }
 
     @Override
-    protected BeanSerializer withObjectIdWriter(ObjectIdWriter objectIdWriter) {
+    public BeanSerializer withObjectIdWriter(ObjectIdWriter objectIdWriter) {
         return new XmlBeanSerializer(this, objectIdWriter);
     }
     
