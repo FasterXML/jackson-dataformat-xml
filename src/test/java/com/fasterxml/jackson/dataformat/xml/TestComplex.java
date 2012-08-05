@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.StringWriter;
+
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
@@ -19,10 +21,19 @@ public class TestComplex extends XmlTestBase
         input.addPhoto(new MediaItem.Photo("http://b", "title2", 640, 480, MediaItem.Size.SMALL));
 
         ObjectWriter w = MAPPER.writerWithType(MediaItem.class);
+
+        /*
+        StringWriter sw = new StringWriter();
+        try {
+        w.writeValue(sw, input);
+        } finally {
+            System.err.println("So far -> ["+sw+"]");
+        }
+        */
         
         String xml = w.writeValueAsString(input);
 
-System.err.println("DEBUG: Xml == "+xml);
+//System.err.println("DEBUG: Xml == "+xml);
 
         ObjectReader r = MAPPER.reader(MediaItem.class);
         MediaItem result = r.readValue(xml);
