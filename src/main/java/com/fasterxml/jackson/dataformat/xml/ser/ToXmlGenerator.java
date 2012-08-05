@@ -386,6 +386,9 @@ public final class ToXmlGenerator
     public final void _handleEndObject() throws IOException, JsonGenerationException
     {
         // We may want to repeat same element, so:
+        if (_elementNameStack.isEmpty()) {
+            throw new JsonGenerationException("Can not write END_ELEMENT without open START_ELEMENT");
+        }
         _nextName = _elementNameStack.removeLast();
         try {
             // note: since attributes don't nest, can only have one attribute active, so:
