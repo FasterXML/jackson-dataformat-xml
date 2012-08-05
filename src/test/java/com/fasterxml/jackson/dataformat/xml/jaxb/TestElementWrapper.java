@@ -16,7 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 public class TestElementWrapper extends XmlTestBase
 {
     @XmlRootElement(name = "Individual")
-    private class MyPerson {
+    static class MyPerson {
           public String name;
 
           @XmlElementWrapper(name = "offspring")

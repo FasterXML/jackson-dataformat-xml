@@ -588,6 +588,7 @@ public class FromXmlParser
      * @param bindex Relative index within base64 character unit; between 0
      *   and 3 (as unit has exactly 4 characters)
      */
+    @Override
     protected void _reportInvalidBase64(Base64Variant b64variant, char ch, int bindex, String msg)
         throws JsonParseException
     {
@@ -608,6 +609,7 @@ public class FromXmlParser
         throw new JsonParseException(base, JsonLocation.NA);
     }
 
+    @Override
     protected void _reportBase64EOF()
         throws JsonParseException
     {

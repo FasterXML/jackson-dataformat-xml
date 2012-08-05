@@ -19,6 +19,7 @@ public class TestComplex extends XmlTestBase
         input.addPhoto(new MediaItem.Photo("http://b", "title2", 640, 480, MediaItem.Size.SMALL));
 
         ObjectWriter w = MAPPER.writerWithType(MediaItem.class);
+        
         String xml = w.writeValueAsString(input);
 
 System.err.println("DEBUG: Xml == "+xml);

@@ -60,6 +60,11 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************
      */
 
+    @Override
+    public XmlFactory getJsonFactory() {
+        return (XmlFactory) _jsonFactory;
+    }
+    
     public ObjectMapper configure(ToXmlGenerator.Feature f, boolean state) {
         ((XmlFactory)_jsonFactory).configure(f, state);
         return this;

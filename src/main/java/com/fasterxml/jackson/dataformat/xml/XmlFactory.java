@@ -240,11 +240,13 @@ public class XmlFactory extends JsonFactory
      * Note: sub-classes should override this method; default
      * implementation will return null for all sub-classes
      */
+    @Override
     public String getFormatName()
     {
         return FORMAT_NAME_XML;
     }
 
+    @Override
     public MatchStrength hasFormat(InputAccessor acc) throws IOException
     {
         return hasXMLFormat(acc);

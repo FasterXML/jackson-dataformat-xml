@@ -153,15 +153,15 @@ public class DefaultXmlPrettyPrinter
     /* Object values
     /**********************************************************
      */
-    
-	@Override
+
+    @Override
     public void beforeObjectEntries(JsonGenerator jgen)
         throws IOException, JsonGenerationException
     {
 		// never called for ToXmlGenerator
     }
 
-	@Override
+    @Override
     public void writeStartObject(JsonGenerator jgen) throws IOException, JsonGenerationException
     {
 		if (!_objectIndenter.isInline()) {
@@ -173,19 +173,19 @@ public class DefaultXmlPrettyPrinter
         ((ToXmlGenerator) jgen)._handleStartObject();
     }
 
-	@Override
+    @Override
     public void writeObjectEntrySeparator(JsonGenerator jgen)
     		throws IOException, JsonGenerationException
     {
 		// never called for ToXmlGenerator
     }
 
-	@Override
+    @Override
     public void writeObjectFieldValueSeparator(JsonGenerator jgen) throws IOException, JsonGenerationException {
 		// never called for ToXmlGenerator
     }
     
-	@Override
+    @Override
     public void writeEndObject(JsonGenerator jgen, int nrOfEntries) throws IOException, JsonGenerationException
     {
         if (!_objectIndenter.isInline()) {
@@ -204,7 +204,7 @@ public class DefaultXmlPrettyPrinter
     /**********************************************************
      */
 
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, String text)
   		throws XMLStreamException
@@ -217,6 +217,7 @@ public class DefaultXmlPrettyPrinter
 		sw.writeEndElement();
     }
 
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName,
     		char[] buffer, int offset, int len)
@@ -230,56 +231,56 @@ public class DefaultXmlPrettyPrinter
 		sw.writeEndElement();
     }
 	
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, boolean value)
   		throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeBoolean(value);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeBoolean(value);
+        sw.writeEndElement();
+    }
+    
+    @Override
+    public void writeLeafElement(XMLStreamWriter2 sw,
+            String nsURI, String localName, int value)
+                    throws XMLStreamException
+    {
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
+        }
+        sw.writeStartElement(nsURI, localName);
+        sw.writeInt(value);
+        sw.writeEndElement();
     }
 
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName, int value)
-  		throws XMLStreamException
+            String nsURI, String localName, long value)
+                    throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeInt(value);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeLong(value);
+        sw.writeEndElement();
     }
 
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName, long value)
+            String nsURI, String localName, double value)
   		throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeLong(value);
-		sw.writeEndElement();
-    }
-
-	@Override
-    public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName, double value)
-  		throws XMLStreamException
-    {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
-        }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeDouble(value);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeDouble(value);
+        sw.writeEndElement();
     }
 
 	@Override
@@ -308,41 +309,42 @@ public class DefaultXmlPrettyPrinter
 		sw.writeEndElement();
     }
 
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, BigDecimal value)
   		throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeDecimal(value);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeDecimal(value);
+        sw.writeEndElement();
     }
 
-	@Override
-	public void writeLeafElement(XMLStreamWriter2 sw,
+    @Override
+    public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName,
     		byte[] data, int offset, int len)
         throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeBinary(data, offset, len);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeBinary(data, offset, len);
+        sw.writeEndElement();
     }
 
+    @Override
     public void writeLeafNullElement(XMLStreamWriter2 sw,
     		String nsURI, String localName)
         throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeEmptyElement(nsURI, localName);
+        sw.writeEmptyElement(nsURI, localName);
     }
     
     /*
