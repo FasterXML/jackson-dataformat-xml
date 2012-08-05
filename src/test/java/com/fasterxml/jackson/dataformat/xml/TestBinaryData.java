@@ -19,7 +19,7 @@ public class TestBinaryData extends XmlTestBase
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+//    private final XmlMapper MAPPER = new XmlMapper();
     
     // for [https://github.com/FasterXML/jackson-dataformat-xml/issues/29]
     public void testTwoBinaryProps() throws Exception

@@ -108,6 +108,22 @@ public class XmlFactory extends JsonFactory
         _xmlOutputFactory = xmlOut;
     }
 
+    /**
+     * Note: compared to base implementation by {@link ObjectMapper},
+     * here the copy will actually share underlying XML input and
+     * output factories, as there is no way to make copies of those.
+     * 
+     * @since 2.1
+     */
+    @Override
+    public XmlFactory copy()
+    {
+        _checkInvalidCopy(XmlFactory.class);
+        // note: as with base class, must NOT copy mapper reference
+        // as to XML factories... must pass as-is, unfortunately?
+        return new XmlFactory(_xmlInputFactory, _xmlOutputFactory);
+    }
+
     @Override
     public Version version() {
         return ModuleVersion.instance.version();
@@ -240,7 +256,7 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
-    // @Override
+    @Override
     public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
     {
         // false -> we won't manage the stream unless explicitly directed to
@@ -249,7 +265,7 @@ public class XmlFactory extends JsonFactory
                 _objectCodec, _createXmlWriter(out));
     }
 
-    // @Override
+    @Override
     public ToXmlGenerator createGenerator(Writer out) throws IOException
     {
         return new ToXmlGenerator(_createContext(out, false),
@@ -257,7 +273,7 @@ public class XmlFactory extends JsonFactory
                 _objectCodec, _createXmlWriter(out));
     }
 
-    // @Override
+    @Override
     public ToXmlGenerator createGenerator(File f, JsonEncoding enc) throws IOException
     {
         OutputStream out = new FileOutputStream(f);
@@ -315,21 +331,21 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
-//  @Override
+    @Override
     protected FromXmlParser _createParser(InputStream in, IOContext ctxt)
         throws IOException, JsonParseException
     {
         return _createJsonParser(in, ctxt);
     }
 
-//    @Override
+    @Override
     protected FromXmlParser _createParser(Reader r, IOContext ctxt)
         throws IOException, JsonParseException
     {
         return _createJsonParser(r, ctxt);
     }
 
-//  @Override
+    @Override
     protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt)
         throws IOException, JsonParseException
     {
@@ -507,7 +523,7 @@ public class XmlFactory extends JsonFactory
             }
             b = (byte) ch;
             // If we did not get an LT, shouldn't be valid XML (minus encoding issues etc)
-            if (b != BYTE_LT) {
+           if (b != BYTE_LT) {
                 return MatchStrength.NO_MATCH;
             }
         }

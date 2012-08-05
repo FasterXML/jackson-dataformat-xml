@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
+import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 
@@ -40,6 +41,14 @@ public class XmlMapper extends ObjectMapper
         this.registerModule(new JacksonXmlModule());
     }
 
+    // @since 2.1
+    @Override
+    public XmlMapper copy()
+    {
+        _checkInvalidCopy(XmlMapper.class);
+        return new XmlMapper((XmlFactory) _jsonFactory.copy());
+    }
+    
     @Override
     public Version version() {
         return ModuleVersion.instance.version();
@@ -73,6 +82,6 @@ public class XmlMapper extends ObjectMapper
      */
     @Override
     protected PrettyPrinter _defaultPrettyPrinter() {
-        return null; // new DefaultPrettyPrinter();
+        return new DefaultXmlPrettyPrinter();
     }
 }

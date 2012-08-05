@@ -154,7 +154,7 @@ public class TestWithJAXBAnnotations extends XmlTestBase
         person.lastName = "Unit";
     
         String json = _jaxbMapper.writeValueAsString(person);
-        System.out.println("Person: " + json);
+// System.out.println("Person: " + json);
     
         String expected = "<Individual identifier=\"1\"><givenName>Jay</givenName>"
                 +"<surName>Unit</surName></Individual>";

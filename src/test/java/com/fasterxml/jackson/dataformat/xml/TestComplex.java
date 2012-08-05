@@ -21,7 +21,7 @@ public class TestComplex extends XmlTestBase
         ObjectWriter w = MAPPER.writerWithType(MediaItem.class);
         String xml = w.writeValueAsString(input);
 
-//System.err.println("DEBUG: Xml == "+xml);
+System.err.println("DEBUG: Xml == "+xml);
 
         ObjectReader r = MAPPER.reader(MediaItem.class);
         MediaItem result = r.readValue(xml);

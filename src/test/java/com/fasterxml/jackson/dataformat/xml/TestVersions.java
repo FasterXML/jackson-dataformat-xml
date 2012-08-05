@@ -2,6 +2,8 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
@@ -11,7 +13,7 @@ public class TestVersions extends XmlTestBase
      * Not a good to do this, but has to do, for now...
      */
     private final static int MAJOR_VERSION = 2;
-    private final static int MINOR_VERSION = 0;
+    private final static int MINOR_VERSION = 1;
 
     // could inject using Maven filters as well...
     private final static String GROUP_ID = "com.fasterxml.jackson.dataformat";
@@ -23,6 +25,17 @@ public class TestVersions extends XmlTestBase
         assertVersion(new XmlFactory());
     }
 
+    // @since 2.1
+    // [Issue#28]: ObjectMapper.copy()
+    public void testMapperCopy()
+    {
+        XmlMapper mapper1 = new XmlMapper();
+        ObjectMapper mapper2 = mapper1.copy();
+        assertNotSame(mapper1, mapper2);
+        assertNotSame(mapper1.getJsonFactory(), mapper2.getJsonFactory());
+        assertEquals(XmlFactory.class, mapper2.getJsonFactory().getClass());
+    }
+    
     /*
     /**********************************************************
     /* Helper methods
