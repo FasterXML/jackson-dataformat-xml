@@ -6,6 +6,7 @@ import javax.xml.stream.XMLStreamException;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
@@ -73,6 +74,17 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         super.serializeValue(jgen, value, rootType);
     }
 
+    // @since 2.1
+    @Override
+    public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType,
+            JsonSerializer<Object> ser)
+        throws IOException, JsonGenerationException
+    {
+        QName rootName = _rootNameLookup.findRootName(rootType, _config);
+        _initWithRootName(jgen, rootName);
+        super.serializeValue(jgen, value, rootType, ser);
+    }
+    
     protected void _initWithRootName(JsonGenerator jgen, QName rootName)
             throws IOException, JsonProcessingException
     {
