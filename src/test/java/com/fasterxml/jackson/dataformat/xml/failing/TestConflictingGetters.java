@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class TestElementWrapper extends XmlTestBase
+public class TestConflictingGetters extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "output")
     static class Bean {
