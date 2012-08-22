@@ -52,15 +52,19 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
 
                 QName wrappedName = new QName(ns, bpw.getName());
                 QName wrapperName = AnnotationUtil.findWrapperName(intr, member);
+                
                 if (wrapperName != null) {
                     localName = wrapperName.getLocalPart();
                     wrapperNs = wrapperName.getNamespaceURI();
                 }
-                /* Empty/missing localName means "use property name as wrapper"; later on
-                 * should probably make missing (null) mean "don't add a wrapper"
+                /* 21-Aug-2012, tatu: Missing localName means "use property name as wrapper",
+                 *   empty "no wrapper"
                  */
-                if (localName == null || localName.length() == 0) {
+                if (localName == null) {
                     wrapperName = wrappedName;
+                } else if (localName.length() == 0) {
+                    // Empty wrapper name is explicit "DO NOT wrap" Lists indicator, so:
+                    continue;
                 } else {
                     wrapperName = new QName((wrapperNs == null) ? "" : wrapperNs, localName);
                 }
