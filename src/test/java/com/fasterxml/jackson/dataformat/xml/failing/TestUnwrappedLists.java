@@ -48,13 +48,17 @@ public class TestUnwrappedLists extends XmlTestBase
         WrappedList list = new WrappedList();
         list.value = new Value[] { new Value("a"), new Value("b") };
 
+        // First, serialize:
+        
         String json = mapper.writeValueAsString(list);
-        
-        System.out.println("Wrapped   == "+json);
-        
 //      withJAXB(list);
-
         assertEquals("<list><WRAP><value><v>a</v></value><value><v>b</v></value></WRAP></list>", json);
+
+        // then deserialize back
+        WrappedList output = mapper.readValue(json, WrappedList.class);
+        assertNotNull(output);
+        assertNotNull(output.value);
+        assertEquals(2, output.value.length);
     }
     
     public void testUnwrappedLists() throws Exception
@@ -66,10 +70,15 @@ public class TestUnwrappedLists extends XmlTestBase
         String json = mapper.writeValueAsString(list);
         
         System.out.println("Unwrapped == "+json);
-
 //        withJAXB(list);
-        
         assertEquals("<list><value><v>c</v></value><value><v>d</v></value></list>", json);
+
+        // then deserialize back
+        UnwrappedList output = mapper.readValue(json, UnwrappedList.class);
+        assertNotNull(output);
+        assertNotNull(output.value);
+        assertEquals(2, output.value.length);
+    
     }
 
     void withJAXB(Object ob) throws Exception
@@ -84,5 +93,6 @@ public class TestUnwrappedLists extends XmlTestBase
             xml = xml.substring(xml.indexOf("?>")+2);
         }
         System.out.println(xml);
-    }
+
+   }
 }
