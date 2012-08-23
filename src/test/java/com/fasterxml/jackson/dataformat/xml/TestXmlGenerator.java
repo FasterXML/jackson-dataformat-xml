@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
@@ -90,5 +91,17 @@ public class TestXmlGenerator extends XmlTestBase
         String xml = removeSjsxpNamespace(out.toString());
         assertEquals("<root attr=\"-3\"><elem>13</elem></root>", xml);
     }
-    
+
+    // [Issue#6], missing overrides for File-backed generator
+    public void testWriteToFile() throws Exception
+    {
+        ObjectMapper mapper = new XmlMapper();
+        File f = File.createTempFile("test", ".tst");
+        mapper.writeValue(f, new IntWrapper(42));
+
+        String xml = readAll(f).trim();
+
+        assertEquals("<IntWrapper><i>42</i></IntWrapper>", xml);
+        f.delete();
+    }    
 }

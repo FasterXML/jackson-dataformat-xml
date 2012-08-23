@@ -60,8 +60,17 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************
      */
 
+    /**
+     * @deprecated Since 2.1, use {@link #getFactory} instead
+     */
     @Override
+    @Deprecated
     public XmlFactory getJsonFactory() {
+        return (XmlFactory) _jsonFactory;
+    }
+
+    @Override
+    public XmlFactory getFactory() {
         return (XmlFactory) _jsonFactory;
     }
     

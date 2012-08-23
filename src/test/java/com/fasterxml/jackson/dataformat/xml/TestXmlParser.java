@@ -73,7 +73,7 @@ public class TestXmlParser extends XmlTestBase
         // Former could be worked around; latter less so at this point.
 
         // So, for now, let's just do sort of minimal verification, manually
-        JsonParser jp = _xmlMapper.getJsonFactory().createJsonParser(xml);
+        JsonParser jp = _xmlMapper.getFactory().createJsonParser(xml);
         
         assertToken(JsonToken.START_OBJECT, jp.nextToken()); // main object
 

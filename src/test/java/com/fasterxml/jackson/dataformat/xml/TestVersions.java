@@ -32,7 +32,7 @@ public class TestVersions extends XmlTestBase
         XmlMapper mapper1 = new XmlMapper();
         ObjectMapper mapper2 = mapper1.copy();
         assertNotSame(mapper1, mapper2);
-        assertNotSame(mapper1.getJsonFactory(), mapper2.getFactory());
+        assertNotSame(mapper1.getFactory(), mapper2.getFactory());
         assertEquals(XmlFactory.class, mapper2.getFactory().getClass());
     }
     

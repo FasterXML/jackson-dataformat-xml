@@ -1,6 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import java.io.IOException;
+import java.io.*;
 
 import junit.framework.TestCase;
 
@@ -231,5 +231,18 @@ public abstract class XmlTestBase
             xml = xml.substring(0, ix) + xml.substring(ix+match.length());
         }
         return xml;
+    }
+
+    protected String readAll(File f) throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+        String line;
+        
+        while ((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        br.close();
+        return sb.toString();
     }
 }

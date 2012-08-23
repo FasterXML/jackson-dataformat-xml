@@ -277,7 +277,7 @@ public class XmlFactory extends JsonFactory
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
-
+    
     @Override
     public ToXmlGenerator createGenerator(Writer out) throws IOException
     {
@@ -378,6 +378,7 @@ public class XmlFactory extends JsonFactory
      * parser.
      */
     @Override
+    @Deprecated
     protected FromXmlParser _createJsonParser(InputStream in, IOContext ctxt)
         throws IOException, JsonParseException
     {
@@ -397,6 +398,7 @@ public class XmlFactory extends JsonFactory
      * parser.
      */
     @Override
+    @Deprecated
     protected FromXmlParser _createJsonParser(Reader r, IOContext ctxt)
         throws IOException, JsonParseException
     {
@@ -416,6 +418,7 @@ public class XmlFactory extends JsonFactory
      * parser.
      */
     @Override
+    @Deprecated
     protected FromXmlParser _createJsonParser(byte[] data, int offset, int len, IOContext ctxt)
         throws IOException, JsonParseException
     {

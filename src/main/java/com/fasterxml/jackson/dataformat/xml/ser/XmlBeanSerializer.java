@@ -133,9 +133,9 @@ public class XmlBeanSerializer extends BeanSerializer
             props = _props;
         }
 
-		final int attrCount = _attributeCount;
+        final int attrCount = _attributeCount;
         if (attrCount > 0) {
-        	xgen.setNextIsAttribute(true);
+            xgen.setNextIsAttribute(true);
         }
         final int textIndex = _textPropertyIndex;
         final QName[] xmlNames = _xmlNames;
@@ -231,5 +231,4 @@ public class XmlBeanSerializer extends BeanSerializer
         }
         return attrCount;
     }
-    
 }
