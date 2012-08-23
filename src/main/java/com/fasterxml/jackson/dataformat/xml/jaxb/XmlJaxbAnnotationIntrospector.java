@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.introspect.*;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
@@ -25,6 +26,17 @@ public class XmlJaxbAnnotationIntrospector
     extends JaxbAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
+    @Deprecated
+    public XmlJaxbAnnotationIntrospector() {
+        super();
+    }
+
+    public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory,
+            boolean firstXmlidRefAsId)
+    {
+        super(typeFactory, firstXmlidRefAsId);
+    }
+    
     @Override
     public String findNamespace(Annotated ann)
     {

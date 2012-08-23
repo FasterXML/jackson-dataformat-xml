@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonReadContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.util.XmlTokenStream;
 
 
@@ -166,6 +167,17 @@ public class FromXmlParser
         _objectCodec = c;
     }
 
+    /**
+     * XML format does require support from custom {@link ObjectCodec}
+     * (that is, {@link XmlMapper}), so need to return true here.
+     * 
+     * @return True since XML format does require support from codec
+     */
+    @Override
+    public boolean requiresCustomCodec() {
+        return false;
+    }
+    
     /*
     /**********************************************************
     /* Extended API, configuration

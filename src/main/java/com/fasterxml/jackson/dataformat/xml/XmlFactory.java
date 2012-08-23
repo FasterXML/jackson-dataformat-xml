@@ -252,6 +252,17 @@ public class XmlFactory extends JsonFactory
         return hasXMLFormat(acc);
     }
 
+    /**
+     * XML format does require support from custom {@link ObjectCodec}
+     * (that is, {@link XmlMapper}), so need to return true here.
+     * 
+     * @return True since XML format does require support from codec
+     */
+    @Override
+    public boolean requiresCustomCodec() {
+        return false;
+    }
+    
     /*
     /**********************************************************
     /* Upcoming parts of public API (for 2.1)
