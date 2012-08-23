@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -97,7 +98,7 @@ public class TestWithJAXBAnnotations extends XmlTestBase
         _nonJaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-            (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
+            (new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()), new JacksonAnnotationIntrospector());
         _jaxbMapper.setAnnotationIntrospector(intr);
     }
     
@@ -149,7 +150,7 @@ public class TestWithJAXBAnnotations extends XmlTestBase
 
     public void testPersonAsXml() throws Exception {
         MyPerson person = new MyPerson();
-        person.id = 1L;
+        person.id = Long.valueOf(1L);
         person.firstName = "Jay";
         person.lastName = "Unit";
     

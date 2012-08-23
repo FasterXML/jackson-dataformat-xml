@@ -112,7 +112,7 @@ public class DefaultXmlPrettyPrinter
     /**********************************************************
      */
 
-	@Override
+    @Override
     public void writeRootValueSeparator(JsonGenerator jgen) throws IOException, JsonGenerationException {
         // Not sure if this should ever be applicable; but if multiple roots were allowed, we'd use linefeed
         jgen.writeRaw('\n');
@@ -124,24 +124,24 @@ public class DefaultXmlPrettyPrinter
     /**********************************************************
      */
     
-	@Override
+    @Override
     public void beforeArrayValues(JsonGenerator jgen) throws IOException, JsonGenerationException {
 		// never called for ToXmlGenerator
     }
 
-	@Override
+    @Override
     public void writeStartArray(JsonGenerator jgen)
     		throws IOException, JsonGenerationException
     {
 		// anything to do here?
     }
 
-	@Override
+    @Override
     public void writeArrayValueSeparator(JsonGenerator jgen)  throws IOException, JsonGenerationException {
 		// never called for ToXmlGenerator
     }
 
-	@Override
+    @Override
     public void writeEndArray(JsonGenerator jgen, int nrOfValues)
     		throws IOException, JsonGenerationException
     {

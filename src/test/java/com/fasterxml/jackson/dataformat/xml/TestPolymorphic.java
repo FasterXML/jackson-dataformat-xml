@@ -26,7 +26,7 @@ public class TestPolymorphic extends XmlTestBase
     static class BaseTypeWithClassArray { }
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
-    private static class BaseTypeWithClassObject { }
+    protected static class BaseTypeWithClassObject { }
 
     protected static class SubTypeWithClassObject extends BaseTypeWithClassObject {
         public String name;

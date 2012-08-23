@@ -37,7 +37,7 @@ public class TestListDeserialization extends XmlTestBase
        @JacksonXmlProperty( isAttribute = true )
        public String id;
 
-       private List<String> _notes = new ArrayList<String>();
+       protected List<String> _notes = new ArrayList<String>();
               
        public PersonWithGetters() { }
        public PersonWithGetters(String id) {

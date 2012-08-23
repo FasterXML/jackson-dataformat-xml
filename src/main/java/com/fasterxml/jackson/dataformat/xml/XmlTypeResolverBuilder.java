@@ -55,8 +55,9 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
             return new XmlClassNameIdResolver(baseType, config.getTypeFactory());
         case MINIMAL_CLASS:
             return new XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory());
+        default:
+            return super.idResolver(config, baseType, subtypes, forSer, forDeser);
         }
-        return super.idResolver(config, baseType, subtypes, forSer, forDeser);
     }
     
     /*

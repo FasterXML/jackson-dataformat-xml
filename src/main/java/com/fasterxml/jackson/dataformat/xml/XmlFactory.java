@@ -103,7 +103,7 @@ public class XmlFactory extends JsonFactory
         // Better ensure namespaces get built properly, so:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         // and for parser, force coalescing as well (much simpler to use)
-        xmlIn.setProperty(XMLInputFactory.IS_COALESCING, true);
+        xmlIn.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
         _xmlInputFactory = xmlIn;
         _xmlOutputFactory = xmlOut;
     }

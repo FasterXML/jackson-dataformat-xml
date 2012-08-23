@@ -445,13 +445,17 @@ public class FromXmlParser
     @Override
     public String getText() throws IOException, JsonParseException
     {
+        if (_currToken == null) {
+            return null;
+        }
         switch (_currToken) {
         case FIELD_NAME:
             return getCurrentName();
         case VALUE_STRING:
             return _currText;
+        default:
+            return _currToken.asString();
         }
-        return (_currToken == null) ? null : _currToken.asString();
     }
 
     @Override

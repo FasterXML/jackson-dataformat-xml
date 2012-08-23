@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import java.io.StringWriter;
-
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 

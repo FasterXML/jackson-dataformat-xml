@@ -31,6 +31,10 @@ public class XmlJaxbAnnotationIntrospector
         super();
     }
 
+    public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory) {
+        super(typeFactory);
+    }
+    
     public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory,
             boolean firstXmlidRefAsId)
     {

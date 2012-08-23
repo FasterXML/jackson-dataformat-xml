@@ -137,6 +137,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
     }
 
+    @SuppressWarnings("boxing")
     public void testMap() throws IOException
     {
         // First, map in a general wrapper

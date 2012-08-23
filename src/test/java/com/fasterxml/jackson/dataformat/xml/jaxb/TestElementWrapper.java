@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -36,7 +38,8 @@ public class TestElementWrapper extends XmlTestBase
         XmlMapper _jaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-            (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
+            (new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()),
+                    new JacksonAnnotationIntrospector());
         _jaxbMapper.setAnnotationIntrospector(intr);
 
         MyPerson person = new MyPerson();
