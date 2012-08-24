@@ -10,11 +10,9 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.json.JsonReadContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.util.XmlTokenStream;
-
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as
@@ -104,7 +102,7 @@ public class FromXmlParser
      * Information about parser context, context in which
      * the next token is to be parsed (root, array, object).
      */
-    protected JsonReadContext _parsingContext;
+    protected XmlReadContext _parsingContext;
     
     protected final XmlTokenStream _xmlTokens;
 
@@ -151,7 +149,7 @@ public class FromXmlParser
         _xmlFeatures = xmlFeatures;
         _ioContext = ctxt;
         _objectCodec = codec;
-        _parsingContext = JsonReadContext.createRootContext(-1, -1);
+        _parsingContext = XmlReadContext.createRootContext(-1, -1);
         // and thereby start a scope
         _nextToken = JsonToken.START_OBJECT;
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference());
@@ -243,7 +241,7 @@ public class FromXmlParser
     {
         // [JACKSON-395]: start markers require information from parent
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
-            JsonReadContext parent = _parsingContext.getParent();
+            XmlReadContext parent = _parsingContext.getParent();
             return parent.getCurrentName();
         }
         return _parsingContext.getCurrentName();
@@ -253,7 +251,7 @@ public class FromXmlParser
     public void overrideCurrentName(String name)
     {
         // Simple, but need to look for START_OBJECT/ARRAY's "off-by-one" thing:
-        JsonReadContext ctxt = _parsingContext;
+        XmlReadContext ctxt = _parsingContext;
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             ctxt = ctxt.getParent();
         }
@@ -283,7 +281,7 @@ public class FromXmlParser
     public boolean isClosed() { return _closed; }
 
     @Override
-    public JsonReadContext getParsingContext()
+    public XmlReadContext getParsingContext()
     {
         return _parsingContext;
     }

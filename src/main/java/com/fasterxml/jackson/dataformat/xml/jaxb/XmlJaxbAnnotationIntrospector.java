@@ -35,12 +35,6 @@ public class XmlJaxbAnnotationIntrospector
         super(typeFactory);
     }
     
-    public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory,
-            boolean firstXmlidRefAsId)
-    {
-        super(typeFactory, firstXmlidRefAsId);
-    }
-    
     @Override
     public String findNamespace(Annotated ann)
     {

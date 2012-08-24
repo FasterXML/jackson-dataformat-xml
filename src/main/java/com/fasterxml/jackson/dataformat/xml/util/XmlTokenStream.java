@@ -15,8 +15,6 @@ import com.fasterxml.jackson.core.JsonLocation;
  * stream with no "fluff" tokens (comments, processing instructions, mixed
  * content) all of which is just to simplify
  * actual higher-level conversion to JSON tokens
- * 
- * @since 1.7
  */
 public class XmlTokenStream
 {
