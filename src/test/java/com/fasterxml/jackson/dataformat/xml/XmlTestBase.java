@@ -217,6 +217,14 @@ public abstract class XmlTestBase
     /* Helper methods, other
     /**********************************************************
      */
+
+    protected byte[] utf8Bytes(String str) {
+        try {
+            return str.getBytes("UTF-8");
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
     
     /**
      * Helper method that tries to remove unnecessary namespace

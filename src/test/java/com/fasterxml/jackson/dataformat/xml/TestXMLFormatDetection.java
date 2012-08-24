@@ -1,13 +1,40 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.ByteArrayInputStream;
+import java.util.*;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
 public class TestXMLFormatDetection extends XmlTestBase
 {
+    static class POJO {
+        public int x, y;
+        
+        public POJO() { }
+        public POJO(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static class ListPOJO {
+        @JacksonXmlElementWrapper(localName="list")
+        public List<POJO> v = new ArrayList<POJO>();
+    }
+    
+    /*
+    /**********************************************************
+    /* Test methods, success
+    /**********************************************************
+     */
+    
     public void testSimpleValidXmlDecl() throws Exception
     {
         XmlFactory f = new XmlFactory();
@@ -87,6 +114,41 @@ public class TestXMLFormatDetection extends XmlTestBase
         assertToken(JsonToken.START_OBJECT, jp.nextToken());
         jp.close();
     }
+
+    public void testSimpleViaObjectReader() throws Exception
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        XmlMapper xmlMapper = new XmlMapper();
+
+        ObjectReader detecting = mapper.reader(POJO.class)
+                .withFormatDetection(new JsonFactory(), xmlMapper.getFactory());
+        POJO pojo = detecting.readValue(utf8Bytes("<POJO><y>3</y><x>1</x></POJO>"));
+        assertNotNull(pojo);
+        assertEquals(1, pojo.x);
+        assertEquals(3, pojo.y);
+    }
+    
+    public void testListViaObjectReader() throws Exception
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        XmlMapper xmlMapper = new XmlMapper();
+        ListPOJO list = new ListPOJO();
+        list.v.add(new POJO(1, 2));
+        list.v.add(new POJO(3, 4));
+        String xml = xmlMapper.writeValueAsString(list);
+
+        ListPOJO resultList = mapper.reader(ListPOJO.class)
+                .withFormatDetection(new JsonFactory(), xmlMapper.getFactory())
+                .readValue(utf8Bytes(xml));
+        assertNotNull(resultList);
+        assertEquals(2, resultList.v.size());
+    }
+
+    /*
+    /**********************************************************
+    /* Test methods, error handling
+    /**********************************************************
+     */
     
     public void testSimpleInvalid() throws Exception
     {
