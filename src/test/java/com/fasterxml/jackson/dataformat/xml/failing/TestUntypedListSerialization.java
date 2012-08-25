@@ -17,10 +17,10 @@ public class TestUntypedListSerialization extends XmlTestBase
     	
     	public UntypedListBean()
     	{
-    		ArrayList<String> l= new ArrayList<String>();
-    		l.add("first");
-    		l.add("second");
-    		list = l;
+    	    ArrayList<String> l= new ArrayList<String>();
+    	    l.add("first");
+    	    l.add("second");
+    	    list = l;
     	}
     }
 
@@ -31,10 +31,10 @@ public class TestUntypedListSerialization extends XmlTestBase
     	
     	public TypedListBean()
     	{
-    		ArrayList<String> l= new ArrayList<String>();
-    		l.add("first");
-    		l.add("second");
-    		list = l;
+    	    ArrayList<String> l= new ArrayList<String>();
+    	    l.add("first");
+    	    l.add("second");
+    	    list = l;
     	}
     }
     

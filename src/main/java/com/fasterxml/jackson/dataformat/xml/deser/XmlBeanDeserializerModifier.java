@@ -34,7 +34,7 @@ public class XmlBeanDeserializerModifier
             QName wrapperName = AnnotationUtil.findWrapperName(intr, acc);
             if (wrapperName != null) {
                 String localName = wrapperName.getLocalPart();
-                if ((localName != null && localName.length() >= 0)
+                if ((localName != null && localName.length() > 0)
                         && !localName.equals(prop.getName())) {
                     // make copy-on-write as necessary
                     if (changed == 0) {
@@ -57,6 +57,8 @@ public class XmlBeanDeserializerModifier
                     continue;
                 }
             }
+            // Unwrapped. Ok -- requires special handling
+            // !!! TODO
         }
         return propDefs;
     }
