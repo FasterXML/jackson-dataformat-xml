@@ -120,8 +120,9 @@ public class TestXMLFormatDetection extends XmlTestBase
         ObjectMapper mapper = new ObjectMapper();
         XmlMapper xmlMapper = new XmlMapper();
 
-        ObjectReader detecting = mapper.reader(POJO.class)
-                .withFormatDetection(new JsonFactory(), xmlMapper.getFactory());
+        ObjectReader detecting = mapper.reader(POJO.class);
+        detecting = detecting
+                .withFormatDetection(detecting, xmlMapper.reader(POJO.class));
         POJO pojo = detecting.readValue(utf8Bytes("<POJO><y>3</y><x>1</x></POJO>"));
         assertNotNull(pojo);
         assertEquals(1, pojo.x);
@@ -137,8 +138,9 @@ public class TestXMLFormatDetection extends XmlTestBase
         list.v.add(new POJO(3, 4));
         String xml = xmlMapper.writeValueAsString(list);
 
-        ListPOJO resultList = mapper.reader(ListPOJO.class)
-                .withFormatDetection(new JsonFactory(), xmlMapper.getFactory())
+        ObjectReader detecting = mapper.reader(ListPOJO.class);
+        ListPOJO resultList = detecting
+                .withFormatDetection(detecting, xmlMapper.reader(ListPOJO.class))
                 .readValue(utf8Bytes(xml));
         assertNotNull(resultList);
         assertEquals(2, resultList.v.size());
