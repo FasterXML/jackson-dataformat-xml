@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 
@@ -18,6 +19,28 @@ public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
+    /*
+    /**********************************************************************
+    /* Overrides of JacksonAnnotationIntrospector impls
+    /**********************************************************************
+     */
+
+    @Override
+    public PropertyName findRootName(AnnotatedClass ac)
+    {
+        JacksonXmlRootElement root = ac.getAnnotation(JacksonXmlRootElement.class);
+        if (root != null) {
+            String local = root.localName();
+            String ns = root.namespace();
+            
+            if (local.length() == 0 && ns.length() == 0) {
+                return PropertyName.USE_DEFAULT;
+            }
+            return new PropertyName(local, ns);
+        }
+        return super.findRootName(ac);
+    }
+
     /*
     /**********************************************************************
     /* XmlAnnotationIntrospector, findXxx
@@ -40,16 +63,6 @@ public class JacksonXmlAnnotationIntrospector
         JacksonXmlElementWrapper w = ann.getAnnotation(JacksonXmlElementWrapper.class);
         if (w != null) {
             return new QName(w.namespace(), w.localName());
-        }
-        return null;
-    }
-
-    @Override
-    public QName findRootElement(Annotated ann)
-    {
-        JacksonXmlRootElement root = ann.getAnnotation(JacksonXmlRootElement.class);
-        if (root != null) {
-            return new QName(root.namespace(), root.localName());
         }
         return null;
     }

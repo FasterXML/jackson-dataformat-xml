@@ -4,6 +4,7 @@ import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 
 /**
  * Additional extension interface used above and beyond
@@ -29,12 +30,12 @@ public interface XmlAnnotationIntrospector
      */
     public QName findWrapperElement(Annotated ann);
 
-    /**
-     * Method used to find out name to use for the outermost (root) XML element
-     * name when serializing (since there is no property that would define it);
-     * this overrides default name based on type of object.
-     */
-    public QName findRootElement(Annotated ann);
+    // Method used to find out name to use for the outermost (root) XML element
+    // name when serializing (since there is no property that would define it);
+    // this overrides default name based on type of object.
+    //
+    // Removed in 2.1
+//    public QName findRootElement(Annotated ann);
 
     /**
      * Method used to check whether given annotated element
@@ -61,7 +62,7 @@ public interface XmlAnnotationIntrospector
      * Extension of <code>AnnotationIntrospector.Pair</code> that can
      * also dispatch 'XmlAnnotationIntrospector' methods.
      */
-    public static class Pair extends AnnotationIntrospector.Pair
+    public static class Pair extends AnnotationIntrospectorPair
         implements XmlAnnotationIntrospector
     {
         protected final XmlAnnotationIntrospector _xmlPrimary;
@@ -98,6 +99,7 @@ public interface XmlAnnotationIntrospector
             return value;
         }
 
+        /*
         @Override
         public QName findRootElement(Annotated ann)
         {
@@ -107,6 +109,7 @@ public interface XmlAnnotationIntrospector
             }
             return value;
         }
+        */
         
         @Override
         public Boolean isOutputAsAttribute(Annotated ann)

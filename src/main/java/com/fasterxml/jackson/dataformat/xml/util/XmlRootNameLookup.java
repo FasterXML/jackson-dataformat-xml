@@ -42,15 +42,11 @@ public class XmlRootNameLookup
                 String localName = null;
                 String ns = null;
 
-                QName root = findRootElement(intr, ac);
+                PropertyName root = intr.findRootName(ac);
                 if (root != null) {
-                    localName = root.getLocalPart();
-                    ns = root.getNamespaceURI();
+                    localName = root.getSimpleName();
+                    ns = root.getNamespace();
                 }
-                if (localName == null || localName.length() == 0) {
-                    localName = intr.findRootName(ac);
-                }
-                
                 // No answer so far? Let's just default to using simple class name
                 if (localName == null || localName.length() == 0) {
                     // Should we strip out enclosing class tho? For now, nope:
@@ -79,19 +75,6 @@ public class XmlRootNameLookup
                 String ns = ((XmlAnnotationIntrospector) intr).findNamespace(ann);
                 if (ns != null) {
                     return ns;
-                }
-            }
-        }
-        return null;
-    }
-
-    private QName findRootElement(AnnotationIntrospector ai, AnnotatedClass ann)
-    {
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                QName elem = ((XmlAnnotationIntrospector) intr).findRootElement(ann);
-                if (elem != null) {
-                    return elem;
                 }
             }
         }

@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
@@ -34,6 +35,29 @@ public class XmlJaxbAnnotationIntrospector
     public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory) {
         super(typeFactory);
     }
+
+    /*
+    /**********************************************************************
+    /* Basic AnnotationIntrospector overrides
+    /**********************************************************************
+     */
+    
+    @Override
+    public PropertyName findRootName(AnnotatedClass ac)
+    {
+        XmlRootElement root = findAnnotation(XmlRootElement.class, ac, false, false, false);
+        if (root != null) {
+            return PropertyName.construct(handleJaxbDefault(root.name()),
+                    handleJaxbDefault(root.namespace()));
+        }
+        return null;
+    }
+    
+    /*
+    /**********************************************************************
+    /* XmlAnnotationIntrospector overrides
+    /**********************************************************************
+     */
     
     @Override
     public String findNamespace(Annotated ann)
@@ -73,23 +97,13 @@ public class XmlJaxbAnnotationIntrospector
         }
         return ns;
     }
-
+    
     @Override
     public QName findWrapperElement(Annotated ann)
     {
         XmlElementWrapper w = findAnnotation(XmlElementWrapper.class, ann, false, false, false);
         if (w != null) {
             return new QName(handleJaxbDefault(w.namespace()), handleJaxbDefault(w.name()));
-        }
-        return null;
-    }
-
-    @Override
-    public QName findRootElement(Annotated ann)
-    {
-        XmlRootElement root = findAnnotation(XmlRootElement.class, ann, false, false, false);
-        if (root != null) {
-            return new QName(handleJaxbDefault(root.namespace()), handleJaxbDefault(root.name()));
         }
         return null;
     }
