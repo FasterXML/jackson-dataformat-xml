@@ -20,7 +20,7 @@ Specifically:
  
 # Status
 
-Version 2.0.0-RC1 works for significant number of XML/JAXB use cases.
+Version 2.0 works for significant number of XML/JAXB use cases.
 Missing functionality is tracked via [Issue tracker](./issues).
 
 There are older versions (1.9.2)  available, which work with older Jackson versions (0.6.2): this is maintained on "1.9" branch,
@@ -33,7 +33,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.0.0-RC1</version>
+      <version>2.0.5</version>
     </dependency>
 
 (or whatever version is most up-to-date at the moment)
