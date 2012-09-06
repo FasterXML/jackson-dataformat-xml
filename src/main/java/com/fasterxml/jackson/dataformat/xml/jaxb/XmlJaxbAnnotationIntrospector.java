@@ -6,12 +6,9 @@ import java.lang.reflect.Member;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
-import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
@@ -34,23 +31,6 @@ public class XmlJaxbAnnotationIntrospector
 
     public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory) {
         super(typeFactory);
-    }
-
-    /*
-    /**********************************************************************
-    /* Basic AnnotationIntrospector overrides
-    /**********************************************************************
-     */
-    
-    @Override
-    public PropertyName findRootName(AnnotatedClass ac)
-    {
-        XmlRootElement root = findAnnotation(XmlRootElement.class, ac, false, false, false);
-        if (root != null) {
-            return PropertyName.construct(handleJaxbDefault(root.name()),
-                    handleJaxbDefault(root.namespace()));
-        }
-        return null;
     }
     
     /*
@@ -97,16 +77,6 @@ public class XmlJaxbAnnotationIntrospector
         }
         return ns;
     }
-    
-    @Override
-    public QName findWrapperElement(Annotated ann)
-    {
-        XmlElementWrapper w = findAnnotation(XmlElementWrapper.class, ann, false, false, false);
-        if (w != null) {
-            return new QName(handleJaxbDefault(w.namespace()), handleJaxbDefault(w.name()));
-        }
-        return null;
-    }
 
     /**
      * Here we assume fairly simple logic; if there is <code>XmlAttribute</code> to be found,
@@ -150,10 +120,12 @@ public class XmlJaxbAnnotationIntrospector
         return findAnnotation(XmlRootElement.class, ac, true, false, true);
     }
 
+    /*
     private String handleJaxbDefault(String value)
     {
         return MARKER_FOR_DEFAULT.equals(value) ? "" : value;
     }
+    */
 
     /* NOTE: copied verbatim from Jackson 1.9, since its visibility was
      * lowered (accidentally...)

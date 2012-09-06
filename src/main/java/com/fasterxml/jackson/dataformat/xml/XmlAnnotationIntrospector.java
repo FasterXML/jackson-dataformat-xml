@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import javax.xml.namespace.QName;
-
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
@@ -22,13 +20,13 @@ public interface XmlAnnotationIntrospector
      */
     public String findNamespace(Annotated ann);
 
-    /**
-     * Method used to check if specified property has annotation that indicates
-     * that it should be wrapped in an element; and if so, name to use.
-     * Note: local name of "" is used to indicate that name should default
-     * to using name (local name and namespace) of property itself.
-     */
-    public QName findWrapperElement(Annotated ann);
+    // Method used to check if specified property has annotation that indicates
+    // that it should be wrapped in an element; and if so, name to use.
+    // Note: local name of "" is used to indicate that name should default
+    // to using name (local name and namespace) of property itself.
+    //
+    // Removed in 2.1
+//    public QName findWrapperElement(Annotated ann);
 
     // Method used to find out name to use for the outermost (root) XML element
     // name when serializing (since there is no property that would define it);
@@ -89,6 +87,8 @@ public interface XmlAnnotationIntrospector
             return value;
         }
 
+        // These were removed in 2.1
+        /*
         @Override
         public QName findWrapperElement(Annotated ann)
         {
@@ -99,7 +99,6 @@ public interface XmlAnnotationIntrospector
             return value;
         }
 
-        /*
         @Override
         public QName findRootElement(Annotated ann)
         {

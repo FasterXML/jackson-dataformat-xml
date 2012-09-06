@@ -3,15 +3,12 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.ser.*;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
-
 
 /**
  * We need a {@link BeanSerializerModifier} to replace default <code>BeanSerializer</code>
@@ -50,12 +47,12 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
             if (_isContainerType(bpw.getType())) {
                 String localName = null, wrapperNs = null;
 
-                QName wrappedName = new QName(ns, bpw.getName());
-                QName wrapperName = AnnotationUtil.findWrapperName(intr, member);
+                PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
+                PropertyName wrapperName = intr.findWrapperName(member);
                 
                 if (wrapperName != null) {
-                    localName = wrapperName.getLocalPart();
-                    wrapperNs = wrapperName.getNamespaceURI();
+                    localName = wrapperName.getSimpleName();
+                    wrapperNs = wrapperName.getNamespace();
                 }
                 /* 21-Aug-2012, tatu: Missing localName means "use property name as wrapper",
                  *   empty "no wrapper"
@@ -66,7 +63,7 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
                     // Empty wrapper name is explicit "DO NOT wrap" Lists indicator, so:
                     continue;
                 } else {
-                    wrapperName = new QName((wrapperNs == null) ? "" : wrapperNs, localName);
+                    wrapperName = PropertyName.construct(localName, (wrapperNs == null) ? "" : wrapperNs);
                 }
                 beanProperties.set(i, new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName));
             }

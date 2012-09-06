@@ -36,23 +36,33 @@ public class XmlBeanPropertyWriter
     /**********************************************************
      */
 
-    public XmlBeanPropertyWriter(BeanPropertyWriter wrapped, QName wrapperName, QName wrappedName)
-    {
-        super(wrapped);
-        _wrapperName = wrapperName;
-        _wrappedName = wrappedName;
+    public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
+            PropertyName wrapperName, PropertyName wrappedName) {
+        this(wrapped, wrapperName, wrappedName, null);
     }
 
-    public XmlBeanPropertyWriter(BeanPropertyWriter wrapped, QName wrapperName, QName wrappedName,
+    public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
+            PropertyName wrapperName, PropertyName wrappedName,
             JsonSerializer<Object> serializer)
     {
         super(wrapped);
-        _wrapperName = wrapperName;
-        _wrappedName = wrappedName;
+        _wrapperName = _qname(wrapperName);
+        _wrappedName = _qname(wrappedName);
 
-        assignSerializer(serializer);
+        if (serializer != null) {
+            assignSerializer(serializer);
+        }
     }
 
+    private QName _qname(PropertyName n)
+    {
+        String ns = n.getNamespace();
+        if (ns == null) {
+            ns = "";
+        }
+        return new QName(ns, n.getSimpleName());
+    }
+    
     /*
     /**********************************************************
     /* Overridden methods

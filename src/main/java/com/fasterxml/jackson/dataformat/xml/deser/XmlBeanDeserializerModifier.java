@@ -2,8 +2,6 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
-import javax.xml.namespace.QName;
-
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
@@ -31,9 +29,9 @@ public class XmlBeanDeserializerModifier
                 continue;
             }
             // first: do we need to handle wrapping (for Lists)?
-            QName wrapperName = AnnotationUtil.findWrapperName(intr, acc);
+            PropertyName wrapperName = intr.findWrapperName(acc);
             if (wrapperName != null) {
-                String localName = wrapperName.getLocalPart();
+                String localName = wrapperName.getSimpleName();
                 if ((localName != null && localName.length() > 0)
                         && !localName.equals(prop.getName())) {
                     // make copy-on-write as necessary
@@ -57,10 +55,20 @@ public class XmlBeanDeserializerModifier
                     continue;
                 }
             }
-            // Unwrapped. Ok -- requires special handling
-            // !!! TODO
+            // otherwise unwrapped; needs handling but later on
         }
         return propDefs;
     }
 
+    @Override
+    public BeanDeserializerBuilder updateBuilder(DeserializationConfig config,
+            BeanDescription beanDesc, BeanDeserializerBuilder builder)
+    {
+        Iterator<SettableBeanProperty> it = builder.getProperties();
+        while (it.hasNext()) {
+            SettableBeanProperty prop = it.next();
+            System.out.println("Builder, prop '"+prop.getName()+"', type "+prop.getType()+", hasSer "+prop.hasValueDeserializer());
+        }
+        return builder;
+    }
 }
