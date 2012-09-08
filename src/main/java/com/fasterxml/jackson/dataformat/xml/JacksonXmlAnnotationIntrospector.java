@@ -96,65 +96,78 @@ public class JacksonXmlAnnotationIntrospector
     /* Overrides for name, property detection
     /**********************************************************************
      */
-    
+
+    @Override
+    public PropertyName findNameForSerialization(Annotated a)
+    {
+        PropertyName name = _findXmlName(a);
+        return (name == null) ? super.findNameForSerialization(a) : name;
+    }
+
+    @Deprecated
     @Override
     public String findSerializationName(AnnotatedField af)
     {
-        String name = _findXmlName(af);
+        PropertyName name = _findXmlName(af);
         if (name != null) {
-            return name;
+            return name.getSimpleName();
         }
         return super.findSerializationName(af);
     }
 
+    @Deprecated
     @Override
     public String findSerializationName(AnnotatedMethod am)
     {
-        String name = _findXmlName(am);
+        PropertyName name = _findXmlName(am);
         if (name != null) {
-            return name;
+            return name.getSimpleName();
         }
         return super.findSerializationName(am);
     }
 
     @Override
+    public PropertyName findNameForDeserialization(Annotated a)
+    {
+        PropertyName name = _findXmlName(a);
+        return (name == null) ? super.findNameForDeserialization(a) : name;
+    }
+    
+    @Deprecated
+    @Override
     public String findDeserializationName(AnnotatedField af)
     {
-        String name = _findXmlName(af);
+        PropertyName name = _findXmlName(af);
         if (name != null) {
-            return name;
+            return name.getSimpleName();
         }
         return super.findDeserializationName(af);
     }
 
+    @Deprecated
     @Override
     public String findDeserializationName(AnnotatedMethod am)
     {
-        String name = _findXmlName(am);
+        PropertyName name = _findXmlName(am);
         if (name != null) {
-            return name;
+            return name.getSimpleName();
         }
         return super.findDeserializationName(am);
     }
     
+    @Deprecated
     @Override
     public String findDeserializationName(AnnotatedParameter ap)
     {
-        String name = _findXmlName(ap);
-        // empty name not acceptable...
-        if (name != null && name.length() > 0) {
-            return name;
+        PropertyName name = _findXmlName(ap);
+        if (name != null) {
+            // empty name not acceptable...
+            String local = name.getSimpleName();
+            if (local != null && local.length() > 0) {
+                return local;
+            }
         }
         return super.findDeserializationName(ap);
-    }
-
-    protected String _findXmlName(Annotated a)
-    {
-        JacksonXmlProperty pann = a.getAnnotation(JacksonXmlProperty.class);
-        if (pann != null) {
-            return pann.localName();
-        }
-        return null;
     }
     
     /*
@@ -171,6 +184,21 @@ public class JacksonXmlAnnotationIntrospector
     protected StdTypeResolverBuilder _constructStdTypeResolverBuilder()
     {
         return new XmlTypeResolverBuilder();
+    }
+
+    /*
+    /**********************************************************************
+    /* Internal methods
+    /**********************************************************************
+     */
+
+    protected PropertyName _findXmlName(Annotated a)
+    {
+        JacksonXmlProperty pann = a.getAnnotation(JacksonXmlProperty.class);
+        if (pann != null) {
+            return PropertyName.construct(pann.localName(), pann.namespace());
+        }
+        return null;
     }
 }
 
