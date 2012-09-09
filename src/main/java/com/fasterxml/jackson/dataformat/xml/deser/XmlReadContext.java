@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.io.CharTypes;
 
@@ -26,6 +28,8 @@ public final class XmlReadContext
 
     protected String _currentName;
 
+    protected Set<String> _namesToWrap;
+    
     /*
     /**********************************************************
     /* Simple instance reuse slots; speeds up things
@@ -60,6 +64,7 @@ public final class XmlReadContext
         _lineNr = lineNr;
         _columnNr = colNr;
         _currentName = null;
+        _namesToWrap = null;
     }
 
     // // // Factory methods
@@ -128,6 +133,14 @@ public final class XmlReadContext
         return new JsonLocation(srcRef, totalChars, _lineNr, _columnNr);
     }
 
+    public void setNamesToWrap(Set<String> namesToWrap) {
+        _namesToWrap = namesToWrap;
+    }
+
+    public Set<String> getNamesToWrap() { 
+        return _namesToWrap;
+    }
+    
     /*
     /**********************************************************
     /* State changes

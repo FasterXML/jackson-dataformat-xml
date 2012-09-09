@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -115,6 +116,8 @@ public class FromXmlParser
     protected JsonToken _nextToken;
 
     protected String _currText;
+
+    protected Set<String> _namesToWrap;
     
     /*
     /**********************************************************
@@ -224,7 +227,36 @@ public class FromXmlParser
     public XMLStreamReader getStaxReader() {
         return _xmlTokens.getXmlReader();
     }
-    
+
+    /*
+    /**********************************************************
+    /* Internal API
+    /**********************************************************
+     */
+
+    /**
+     * Method that may be called to indicate that specified names
+     * (only local parts retained currently: this may be changed in
+     * future) should be considered "auto-wrapping", meaning that
+     * they will be doubled to contain two opening elements, two
+     * matching closing elements. This is needed for supporting
+     * handling of so-called "unwrapped" array types, something
+     * XML mappings like JAXB often use.
+     *<p>
+     * NOTE: this method is considered part of internal implementation
+     * interface, and it is <b>NOT</b> guaranteed to remain unchanged
+     * between minor versions (it is however expected not to change in
+     * patch versions). So if you have to use it, be prepared for
+     * possible additional work.
+     * 
+     * @since 2.1
+     */
+    public void addVirtualWrapping(Set<String> namesToWrap)
+    {
+        _namesToWrap = namesToWrap;
+        _parsingContext.setNamesToWrap(namesToWrap);
+    }
+
     /*
     /**********************************************************
     /* JsonParser impl
@@ -347,6 +379,7 @@ public class FromXmlParser
             case END_OBJECT:
             case END_ARRAY:
                 _parsingContext = _parsingContext.getParent();
+                _namesToWrap = _parsingContext.getNamesToWrap();
                 break;
             case FIELD_NAME:
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -378,7 +411,13 @@ public class FromXmlParser
                 _mayBeLeaf = true;
                 continue;
             }
-            _parsingContext.setCurrentName(_xmlTokens.getLocalName());
+            String name = _xmlTokens.getLocalName();
+            _parsingContext.setCurrentName(name);
+
+            if (_namesToWrap != null && _namesToWrap.contains(name)) {
+//                System.err.println("VOILA! Wrap '"+name+"'!");
+            }
+
             _mayBeLeaf = true;
             /* Ok: in array context we need to skip reporting field names. But what's the best way
              * to find next token?
