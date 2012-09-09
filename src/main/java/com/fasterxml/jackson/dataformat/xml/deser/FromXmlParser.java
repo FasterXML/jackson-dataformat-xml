@@ -382,7 +382,6 @@ public class FromXmlParser
             _mayBeLeaf = true;
             /* Ok: in array context we need to skip reporting field names. But what's the best way
              * to find next token?
-             * 
              */
             return (_currToken = JsonToken.FIELD_NAME);
         }

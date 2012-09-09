@@ -60,6 +60,7 @@ public class XmlBeanDeserializerModifier
         return propDefs;
     }
 
+    /*
     @Override
     public BeanDeserializerBuilder updateBuilder(DeserializationConfig config,
             BeanDescription beanDesc, BeanDeserializerBuilder builder)
@@ -70,5 +71,16 @@ public class XmlBeanDeserializerModifier
             System.out.println("Builder, prop '"+prop.getName()+"', type "+prop.getType()+", hasSer "+prop.hasValueDeserializer());
         }
         return builder;
+    }
+    */
+
+    @Override
+    public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
+            BeanDescription beanDesc, JsonDeserializer<?> deserializer)
+    {
+        if (!(deserializer instanceof BeanDeserializerBase)) {
+            return deserializer;
+        }
+        return new WrapperHandlingDeserializer((BeanDeserializerBase) deserializer);
     }
 }
