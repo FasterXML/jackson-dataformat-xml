@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.deser.*;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 
 /**
  * Delegating deserializer whose only function is to handle case of
@@ -72,7 +73,7 @@ public class WrapperHandlingDeserializer
              * (not perfect check, but simplest reasonable check)
              */
             JavaType type = prop.getType();
-            if (!(type.isArrayType() || type.isCollectionLikeType())) {
+            if (!TypeUtil.isIndexedType(type)) {
                 continue;
             }
             AnnotatedMember acc = prop.getMember();
@@ -91,6 +92,7 @@ public class WrapperHandlingDeserializer
         if (unwrappedNames == null) {
             return newDelegatee;
         }
+//System.out.println("Unwrapped for (): "+unwrappedNames);       
         // Otherwise, create the thing that can deal with virtual wrapping
         return new WrapperHandlingDeserializer(newDelegatee, unwrappedNames);
     }

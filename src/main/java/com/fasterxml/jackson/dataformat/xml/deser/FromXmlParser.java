@@ -413,8 +413,12 @@ public class FromXmlParser
             String name = _xmlTokens.getLocalName();
             _parsingContext.setCurrentName(name);
 
+            /* Ok: virtual wrapping can be done by simply repeating
+             * current START_ELEMENT. Couple of ways to do it; but
+             * start by making _xmlTokens replay the thing...
+             */
             if (_namesToWrap != null && _namesToWrap.contains(name)) {
-//                System.err.println("VOILA! Wrap '"+name+"'!");
+                _xmlTokens.repeatStartElement();
             }
 
             _mayBeLeaf = true;

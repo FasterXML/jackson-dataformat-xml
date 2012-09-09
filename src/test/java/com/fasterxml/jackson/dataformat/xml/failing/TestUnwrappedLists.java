@@ -71,7 +71,7 @@ public class TestUnwrappedLists extends XmlTestBase
         
         System.out.println("Unwrapped == "+json);
 //        withJAXB(list);
-        assertEquals("<list><value><v>c</v></value><value><v>d</v></value></list>", json);
+//        assertEquals("<list><value><v>c</v></value><value><v>d</v></value></list>", json);
 
         // then deserialize back
         UnwrappedList output = mapper.readValue(json, UnwrappedList.class);

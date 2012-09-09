@@ -71,6 +71,8 @@ public class TestViews extends XmlTestBase
 
         String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);
 
+System.out.println("XML == "+xml);        
+        
         // views not used for deserialization
         Foo result = xmlMapper.readValue(xml, Foo.class);
         assertEquals("test", result.restrictedFooProperty);

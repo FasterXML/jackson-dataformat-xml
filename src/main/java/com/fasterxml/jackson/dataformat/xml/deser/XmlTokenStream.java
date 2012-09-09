@@ -58,6 +58,22 @@ public class XmlTokenStream
     protected String _namespaceURI;
 
     protected String _textValue;
+
+    /*
+    /**********************************************************************
+    /* State for handling virtual wrapping
+    /**********************************************************************
+     */
+    
+    /**
+     * Status flag used to "replay" current event
+     */
+    protected boolean _repeatElement;
+
+    /**
+     * Wrapping state, if any active (null if none)
+     */
+    protected ElementWrapper _currentWrapper;
     
     /*
     /**********************************************************************
@@ -83,7 +99,7 @@ public class XmlTokenStream
     public XMLStreamReader2 getXmlReader() {
         return _xmlReader;
     }
-    
+
     /*
     /**********************************************************************
     /* Public API
@@ -92,6 +108,13 @@ public class XmlTokenStream
 
     public int next() throws IOException 
     {
+        if (_repeatElement) {
+            _repeatElement = false;
+            // important: add the virtual element second time, but not with name to match
+            _currentWrapper = new ElementWrapper(_currentWrapper);
+            return _currentState;
+        }
+        
         try {
             return _next();
         } catch (XMLStreamException e) {
@@ -148,6 +171,24 @@ public class XmlTokenStream
 
     /*
     /**********************************************************************
+    /* Internal API: more esoteric methods
+    /**********************************************************************
+     */
+    
+    protected void repeatStartElement()
+    {
+        // sanity check: can only be used when just returned START_ELEMENT:
+        if (_currentState != XML_START_ELEMENT) {
+            throw new IllegalStateException("Current state not XML_START_ELEMENT ("
+                    +XML_START_ELEMENT+") but "+_currentState);
+        }
+        // Important: add wrapper, to keep track...
+        _currentWrapper = new ElementWrapper(_currentWrapper, _localName, _namespaceURI);
+        _repeatElement = true;
+    }
+
+    /*
+    /**********************************************************************
     /* Internal methods, parsing
     /**********************************************************************
      */
@@ -176,13 +217,13 @@ public class XmlTokenStream
                 _textValue = text;
                 return (_currentState = XML_TEXT);
             }
-            return (_currentState = XML_END_ELEMENT);
+            return _handleEndElement();
         case XML_ATTRIBUTE_NAME:
             // if we just returned name, will need to just send value next
             return (_currentState = XML_ATTRIBUTE_VALUE);
         case XML_TEXT:
             // text is always followed by END_ELEMENT
-            return (_currentState = XML_END_ELEMENT);
+            return _handleEndElement();
         }
 
         // Ok: must be END_ELEMENT; see what tag we get (or end)
@@ -190,7 +231,7 @@ public class XmlTokenStream
         case XMLStreamConstants.END_DOCUMENT:
             return (_currentState = XML_END);
         case XMLStreamConstants.END_ELEMENT:
-            return (_currentState = XML_END_ELEMENT);
+            return _handleEndElement();
         }
         // START_ELEMENT...
         return _initStartElement();
@@ -243,11 +284,36 @@ public class XmlTokenStream
     
     private final int _initStartElement() throws XMLStreamException
     {
+        final String ns = _xmlReader.getNamespaceURI();
+        final String localName = _xmlReader.getLocalName();
         _nextAttributeIndex = 0;
+        /* Support for virtual wrapping: in wrapping, may either
+         * create a new wrapper scope (if in sub-tree, or matches
+         * wrapper element itself), or implicitly close existing
+         * scope.
+         */
+        if (_currentWrapper != null) {
+            if (_currentWrapper.matchesWrapper(localName, ns)) {
+                _currentWrapper = new ElementWrapper(_currentWrapper, localName, ns);
+            } else {
+                // implicit end is more interesting:
+                _localName = _currentWrapper.getWrapperLocalName();
+                _currentWrapper = _currentWrapper.getParent();
+                return (_currentState = XML_END_ELEMENT);
+            }
+        }
         _attributeCount = _xmlReader.getAttributeCount();
-        _localName = _xmlReader.getLocalName();
-        _namespaceURI = _xmlReader.getNamespaceURI();
+        _localName = localName;
+        _namespaceURI = ns;
         return (_currentState = XML_START_ELEMENT);
+    }
+
+    private final int _handleEndElement()
+    {
+        if (_currentWrapper != null) {
+            _currentWrapper = _currentWrapper.getParent();
+        }
+        return (_currentState = XML_END_ELEMENT);
     }
     
     private JsonLocation _extractLocation(XMLStreamLocation2 location)
