@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.util;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
 import javax.xml.stream.*;
@@ -8,6 +8,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 
 import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
  * Simple helper class used on top of STAX {@link XMLStreamReader} to further
