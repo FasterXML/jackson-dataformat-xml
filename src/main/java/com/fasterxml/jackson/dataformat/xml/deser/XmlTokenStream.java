@@ -109,12 +109,8 @@ public class XmlTokenStream
     public int next() throws IOException 
     {
         if (_repeatElement) {
-            _repeatElement = false;
-            // important: add the virtual element second time, but not with name to match
-            _currentWrapper = new ElementWrapper(_currentWrapper);
-            return _currentState;
+            return _handleRepeatElement();
         }
-        
         try {
             return _next();
         } catch (XMLStreamException e) {
@@ -122,7 +118,7 @@ public class XmlTokenStream
             return -1;
         }
     }
-
+    
     public void skipEndElement() throws IOException
     {
         try {
@@ -183,7 +179,7 @@ public class XmlTokenStream
                     +XML_START_ELEMENT+") but "+_currentState);
         }
         // Important: add wrapper, to keep track...
-        _currentWrapper = new ElementWrapper(_currentWrapper, _localName, _namespaceURI);
+        _currentWrapper = ElementWrapper.matchingWrapper(_currentWrapper, _localName, _namespaceURI);
         _repeatElement = true;
     }
 
@@ -224,6 +220,9 @@ public class XmlTokenStream
         case XML_TEXT:
             // text is always followed by END_ELEMENT
             return _handleEndElement();
+        case XML_END:
+            return XML_END;
+//            throw new IllegalStateException("No more XML tokens available (end of input)");
         }
 
         // Ok: must be END_ELEMENT; see what tag we get (or end)
@@ -263,7 +262,7 @@ public class XmlTokenStream
 
     private final int _skipUntilTag() throws XMLStreamException
     {
-        while (true) {
+        while (_xmlReader.hasNext()) {
             int type;
             switch (type = _xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
@@ -274,6 +273,7 @@ public class XmlTokenStream
                 // any other type (proc instr, comment etc) is just ignored
             }
         }
+        throw new IllegalStateException("Expected to find a tag, instead reached end of input");
     }
     
     /*
@@ -294,7 +294,7 @@ public class XmlTokenStream
          */
         if (_currentWrapper != null) {
             if (_currentWrapper.matchesWrapper(localName, ns)) {
-                _currentWrapper = new ElementWrapper(_currentWrapper, localName, ns);
+                _currentWrapper = _currentWrapper.intermediateWrapper();
             } else {
                 // implicit end is more interesting:
                 _localName = _currentWrapper.getWrapperLocalName();
@@ -308,10 +308,34 @@ public class XmlTokenStream
         return (_currentState = XML_START_ELEMENT);
     }
 
+    /**
+     * Method called to handle details of repeating "virtual"
+     * start/end elements, needed for handling 'unwrapped' lists.
+     */
+    protected int _handleRepeatElement() throws IOException 
+    {
+        _repeatElement = false;
+        if (_currentState == XML_START_ELEMENT) {
+            // important: add the virtual element second time, but not with name to match
+            _currentWrapper = _currentWrapper.intermediateWrapper();
+        } else if (_currentState == XML_END_ELEMENT) {
+            _localName = _xmlReader.getLocalName();
+            _namespaceURI = _xmlReader.getNamespaceURI();
+        }
+        return _currentState;
+    }
+    
     private final int _handleEndElement()
     {
         if (_currentWrapper != null) {
+            ElementWrapper w = _currentWrapper;
             _currentWrapper = _currentWrapper.getParent();
+            // important: if we close the scope, must duplicate END_ELEMENT as well
+            if (w.isMatching()) {
+                _repeatElement = true;
+                _localName = w.getWrapperLocalName();
+                _namespaceURI = w.getWrapperNamespace();
+            }
         }
         return (_currentState = XML_END_ELEMENT);
     }

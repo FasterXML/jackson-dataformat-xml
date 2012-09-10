@@ -9,8 +9,8 @@ public class TestDeserialization extends XmlTestBase
     private static class EmptyStrings
     {
         @JacksonXmlProperty(isAttribute=true)
-        public String a;
-        public String b;
+        public String a = "NOT SET";
+        public String b = "NOT SET";
     }
 
     private final XmlMapper MAPPER = new XmlMapper();

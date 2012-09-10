@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.util.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class TestDeserialization extends XmlTestBase
@@ -19,12 +18,6 @@ public class TestDeserialization extends XmlTestBase
         @JacksonXmlProperty(isAttribute=true, localName="attr")
         public String text = "?";
     }
-
-    static class ListBean
-    {
-        @JacksonXmlElementWrapper(useWrapping=false)
-        public List<Integer> values;
-    }
     
     /*
     /**********************************************************
@@ -35,7 +28,7 @@ public class TestDeserialization extends XmlTestBase
     private final XmlMapper MAPPER = new XmlMapper();
     
     /**
-     * Unit test to ensure that we can succesfully also roundtrip
+     * Unit test to ensure that we can successfully also round trip
      * example Bean used in Jackson tutorial
      */
     public void testRoundTripWithJacksonExample() throws Exception
@@ -53,19 +46,6 @@ public class TestDeserialization extends XmlTestBase
         assertNotNull(bean);
         assertEquals("abc", bean.text);
     }
-
-    public void testListBean() throws Exception
-    {
-        ListBean bean = MAPPER.readValue(
-                "<ListBean><values><values>1</values><values>2</values><values>3</values></values></ListBean>",
-                ListBean.class);
-        assertNotNull(bean);
-        assertNotNull(bean.values);
-        assertEquals(3, bean.values.size());
-        assertEquals(Integer.valueOf(1), bean.values.get(0));
-        assertEquals(Integer.valueOf(2), bean.values.get(1));
-        assertEquals(Integer.valueOf(3), bean.values.get(2));
-    }
     
     // Issue#14:
     public void testMapWithAttr() throws Exception
@@ -73,7 +53,7 @@ public class TestDeserialization extends XmlTestBase
     	final String xml = "<order><person lang='en'>John Smith</person></order>";
 
     	/*
-    	JsonParser jp = MAPPER.getJsonFactory().createJsonParser(xml);
+    	JsonParser jp = MAPPER.getJsonFactory().createParser(xml);
     	JsonToken t;
     	while ((t = jp.nextToken()) != null) {
     		switch (t) {

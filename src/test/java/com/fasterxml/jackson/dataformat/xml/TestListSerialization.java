@@ -41,7 +41,7 @@ public class TestListSerialization extends XmlTestBase
             }
         }
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
@@ -50,7 +50,7 @@ public class TestListSerialization extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
  
-    public void testSimpleList() throws IOException
+    public void testSimpleWrappedList() throws IOException
     {
         String xml = MAPPER.writeValueAsString(new ListBean(1, 2, 3));
         xml = removeSjsxpNamespace(xml);

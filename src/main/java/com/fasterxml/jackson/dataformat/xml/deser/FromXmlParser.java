@@ -470,6 +470,7 @@ public class FromXmlParser
         case XmlTokenStream.XML_END:
             return (_currToken = null);
         }
+        
         // should never get here
         _throwInternal();
         return null;

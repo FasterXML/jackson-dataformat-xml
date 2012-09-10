@@ -26,7 +26,13 @@ public class TestElementWrapper extends XmlTestBase
           public List<MyPerson> children = new ArrayList<MyPerson>();
     }
 
+    @XmlRootElement(name="p")
+    static class MyPerson2 {
+        public String name;
 
+        public List<MyPerson2> child = new ArrayList<MyPerson2>();
+  }
+    
     /*
     /**********************************************************************
     /* Unit tests
@@ -54,6 +60,26 @@ public class TestElementWrapper extends XmlTestBase
         
         String expected = "<Individual><name>Jay</name>"
                 + "<offspring><kid><name>Junior</name><offspring/></kid></offspring></Individual>";
+        assertEquals(expected, xml);
+    }
+
+    // And with JAXB, default should be "no wrapper"
+    public void testNoElementWrapper() throws Exception
+    {
+        XmlMapper jaxbMapper = new XmlMapper();
+        jaxbMapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+
+        MyPerson2 person = new MyPerson2();
+        person.name = "Jay";
+
+        MyPerson2 child = new MyPerson2();
+        child.name = "Junior";
+        
+        person.child.add(child);
+
+        String xml = jaxbMapper.writeValueAsString(person);
+        
+        String expected = "<p><name>Jay</name><child><name>Junior</name></child></p>";
         assertEquals(expected, xml);
     }
 }

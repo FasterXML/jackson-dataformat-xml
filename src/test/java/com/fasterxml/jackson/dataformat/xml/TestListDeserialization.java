@@ -13,24 +13,24 @@ public class TestListDeserialization extends XmlTestBase
     /**********************************************************
      */
 
-	@JacksonXmlRootElement(localName = "person", namespace ="http://example.org/person" )
-	public static class Person
-	{
-	   @JacksonXmlProperty( isAttribute = true )
-	   public String id;
-	   public String name;
-	   public int age;
+    @JacksonXmlRootElement(localName = "person", namespace ="http://example.org/person" )
+    public static class Person
+    {
+        @JacksonXmlProperty( isAttribute = true )
+        public String id;
+        public String name;
+        public int age;
 
-	   @JacksonXmlElementWrapper(localName = "notes")
-	   @JacksonXmlProperty(localName = "note" )
-	   public List<String> notes = new ArrayList<String>();
-	   
-	   public Person() { }
-	   public Person(String name, int age) {
-		   this.name = name;
-		   this.age = age;
-	   }
-	}
+        @JacksonXmlElementWrapper(localName = "notes")
+        @JacksonXmlProperty(localName = "note" )
+        public List<String> notes = new ArrayList<String>();
+
+        public Person() { }
+        public Person(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+    }
 
     public static class PersonWithGetters
     {
@@ -55,6 +55,18 @@ public class TestListDeserialization extends XmlTestBase
        }
     }
 
+    static class ListBeanWrapped
+    {
+        @JacksonXmlElementWrapper
+        public List<Integer> values;
+    }
+
+    static class ListBeanUnwrapped
+    {
+        @JacksonXmlElementWrapper(useWrapping=false)
+        public List<Integer> values;
+    }
+    
     /*
     /**********************************************************
     /* Unit tests
@@ -98,5 +110,40 @@ public class TestListDeserialization extends XmlTestBase
         assertEquals(2, result._notes.size());
         assertEquals("note 1", result._notes.get(0));
         assertEquals("note 2", result._notes.get(1));
+    }
+
+    public void testWrappedListBeanDeser() throws Exception
+    {
+        ListBeanWrapped bean = MAPPER.readValue(
+                "<ListBeanWrapped><values><values>1</values><values>2</values><values>3</values></values></ListBeanWrapped>",
+                ListBeanWrapped.class);
+        assertNotNull(bean);
+        assertNotNull(bean.values);
+        assertEquals(3, bean.values.size());
+        assertEquals(Integer.valueOf(1), bean.values.get(0));
+        assertEquals(Integer.valueOf(2), bean.values.get(1));
+        assertEquals(Integer.valueOf(3), bean.values.get(2));
+    }
+
+    public void testUnwrappedListBeanDeser() throws Exception
+    {
+        /*
+        ListBeanUnwrapped foo = new ListBeanUnwrapped();
+        foo.values = new ArrayList<Integer>();
+        foo.values.add(1);
+        foo.values.add(2);
+        foo.values.add(3);
+System.out.println("List -> "+MAPPER.writeValueAsString(foo));
+*/
+        
+        ListBeanUnwrapped bean = MAPPER.readValue(
+                "<ListBeanUnwrapped><values>1</values><values>2</values><values>3</values></ListBeanUnwrapped>",
+                ListBeanUnwrapped.class);
+        assertNotNull(bean);
+        assertNotNull(bean.values);
+        assertEquals(3, bean.values.size());
+        assertEquals(Integer.valueOf(1), bean.values.get(0));
+        assertEquals(Integer.valueOf(2), bean.values.get(1));
+        assertEquals(Integer.valueOf(3), bean.values.get(2));
     }
 }

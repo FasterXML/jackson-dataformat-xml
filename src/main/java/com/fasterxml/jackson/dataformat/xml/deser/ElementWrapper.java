@@ -10,13 +10,19 @@ class ElementWrapper
     protected final String _wrapperName;
     protected final String _wrapperNamespace;
 
-    public ElementWrapper(ElementWrapper parent) {
+    /*
+    /**********************************************************
+    /* Life-cycle
+    /**********************************************************
+     */
+    
+    private ElementWrapper(ElementWrapper parent) {
         _parent = parent;
         _wrapperName = null;
         _wrapperNamespace = "";
     }
     
-    public ElementWrapper(ElementWrapper parent,
+    private ElementWrapper(ElementWrapper parent,
             String wrapperLocalName, String wrapperNamespace)
     {
         _parent = parent;
@@ -24,6 +30,33 @@ class ElementWrapper
         _wrapperNamespace = (wrapperNamespace == null) ? "" : wrapperNamespace;
     }
 
+    /**
+     * Factory method called to construct a new "matching" wrapper element,
+     * at level where virtual wrapping is needed.
+     */
+    public static ElementWrapper matchingWrapper(ElementWrapper parent,
+            String wrapperLocalName, String wrapperNamespace)
+    {
+        return new ElementWrapper(parent, wrapperLocalName, wrapperNamespace);
+    }
+
+    /**
+     * Factory method used for creating intermediate wrapper level, which
+     * is only used for purpose of keeping track of physical element
+     * nesting.
+     */
+    public ElementWrapper intermediateWrapper() {
+        return new ElementWrapper(this, null, null);
+    }
+    
+    /*
+    /**********************************************************
+    /* API
+    /**********************************************************
+     */
+
+    public boolean isMatching() { return _wrapperName != null; }
+    
     public String getWrapperLocalName() { return _wrapperName; }
     public String getWrapperNamespace() { return _wrapperNamespace; }
 

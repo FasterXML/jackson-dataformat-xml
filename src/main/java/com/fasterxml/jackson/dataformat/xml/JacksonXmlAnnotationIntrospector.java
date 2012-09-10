@@ -48,14 +48,18 @@ public class JacksonXmlAnnotationIntrospector
             if (!w.useWrapping()) {
                 return PropertyName.NO_NAME;
             }
-            return PropertyName.construct(w.localName(), w.namespace());
-        } else {
-            /* 09-Sep-2012, tatu: In absence of configurating we need to use our
-             *   default settings...
-             */
-            if (_cfgDefaultUseWrapper) {
+            // also: need to ensure we use marker:
+            String localName = w.localName();
+            if (localName == null || localName.length() == 0) {
                 return PropertyName.USE_DEFAULT;
             }
+            return PropertyName.construct(w.localName(), w.namespace());
+        }
+        /* 09-Sep-2012, tatu: In absence of configurating we need to use our
+         *   default settings...
+         */
+        if (_cfgDefaultUseWrapper) {
+            return PropertyName.USE_DEFAULT;
         }
         return null;
     }
