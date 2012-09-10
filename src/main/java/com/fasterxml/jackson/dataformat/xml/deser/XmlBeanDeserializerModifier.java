@@ -28,9 +28,21 @@ public class XmlBeanDeserializerModifier
             if (acc == null) {
                 continue;
             }
-            // first: do we need to handle wrapping (for Lists)?
+            /* First: handle "as text"? Such properties
+             * are exposed as values of 'unnamed' fields; so one way to
+             * map them is to rename property to have name ""... (and
+             * hope this does not break other parts...)
+             */
+
+            Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
+            if (b != null && b.booleanValue()) {
+                // unwrapped properties will appear as 'unnamed' (empty String)
+                propDefs.set(i, prop.withName(""));
+                continue;
+            }
+            // second: do we need to handle wrapping (for Lists)?
             PropertyName wrapperName = intr.findWrapperName(acc);
-            if (wrapperName != null) {
+            if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 String localName = wrapperName.getSimpleName();
                 if ((localName != null && localName.length() > 0)
                         && !localName.equals(prop.getName())) {
@@ -42,37 +54,11 @@ public class XmlBeanDeserializerModifier
                     propDefs.set(i, prop.withName(localName));
                     continue;
                 }
-            } else {
-                /* If not, how about "as text" unwrapping? Such properties
-                 * are exposed as values of 'unnamed' fields; so one way to
-                 * map them is to rename property to have name ""... (and
-                 * hope this does not break other parts...)
-                 */
-                Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
-                if (b != null && b.booleanValue()) {
-                    // unwrapped properties will appear as 'unnamed' (empty String)
-                    propDefs.set(i, prop.withName(""));
-                    continue;
-                }
+                // otherwise unwrapped; needs handling but later on
             }
-            // otherwise unwrapped; needs handling but later on
         }
         return propDefs;
     }
-
-    /*
-    @Override
-    public BeanDeserializerBuilder updateBuilder(DeserializationConfig config,
-            BeanDescription beanDesc, BeanDeserializerBuilder builder)
-    {
-        Iterator<SettableBeanProperty> it = builder.getProperties();
-        while (it.hasNext()) {
-            SettableBeanProperty prop = it.next();
-            System.out.println("Builder, prop '"+prop.getName()+"', type "+prop.getType()+", hasSer "+prop.hasValueDeserializer());
-        }
-        return builder;
-    }
-    */
 
     @Override
     public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,

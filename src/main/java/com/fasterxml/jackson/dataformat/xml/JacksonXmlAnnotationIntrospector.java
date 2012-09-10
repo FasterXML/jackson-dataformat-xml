@@ -17,6 +17,22 @@ public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
+    /**
+     * For backwards compatibility with 2.0, the default behavior is
+     * to assume use of List wrapper if no annotations are used.
+     */
+    public final static boolean DEFAULT_USE_WRAPPER = true;
+
+    protected final boolean _cfgDefaultUseWrapper;
+    
+    public JacksonXmlAnnotationIntrospector() {
+        this(DEFAULT_USE_WRAPPER);
+    }
+
+    public JacksonXmlAnnotationIntrospector(boolean defaultUseWrapper) {
+        _cfgDefaultUseWrapper = defaultUseWrapper;
+    }
+    
     /*
     /**********************************************************************
     /* Overrides of JacksonAnnotationIntrospector impls
@@ -28,7 +44,18 @@ public class JacksonXmlAnnotationIntrospector
     {
         JacksonXmlElementWrapper w = ann.getAnnotation(JacksonXmlElementWrapper.class);
         if (w != null) {
+            // Special case: wrapping explicitly blocked?
+            if (!w.useWrapping()) {
+                return PropertyName.NO_NAME;
+            }
             return PropertyName.construct(w.localName(), w.namespace());
+        } else {
+            /* 09-Sep-2012, tatu: In absence of configurating we need to use our
+             *   default settings...
+             */
+            if (_cfgDefaultUseWrapper) {
+                return PropertyName.USE_DEFAULT;
+            }
         }
         return null;
     }

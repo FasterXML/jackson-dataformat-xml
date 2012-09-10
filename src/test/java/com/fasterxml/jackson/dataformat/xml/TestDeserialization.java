@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.util.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class TestDeserialization extends XmlTestBase
@@ -21,6 +22,7 @@ public class TestDeserialization extends XmlTestBase
 
     static class ListBean
     {
+        @JacksonXmlElementWrapper(useWrapping=false)
         public List<Integer> values;
     }
     

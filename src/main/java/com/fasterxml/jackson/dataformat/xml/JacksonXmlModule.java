@@ -13,7 +13,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 public class JacksonXmlModule extends SimpleModule
 {
     private final static AnnotationIntrospector XML_ANNOTATION_INTROSPECTOR = new JacksonXmlAnnotationIntrospector();
-    
+
     public JacksonXmlModule()
     {
         super("JackxonXmlModule", ModuleVersion.instance.version());

@@ -79,7 +79,7 @@ public class WrapperHandlingDeserializer
             AnnotatedMember acc = prop.getMember();
             PropertyName wrapperName = (acc == null) ? null : intr.findWrapperName(acc);
             // skip anything with wrapper (should work as is)
-            if (wrapperName != null && wrapperName.hasSimpleName()) {
+            if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 continue;
             }
             if (unwrappedNames == null) {
@@ -92,7 +92,6 @@ public class WrapperHandlingDeserializer
         if (unwrappedNames == null) {
             return newDelegatee;
         }
-//System.out.println("Unwrapped for (): "+unwrappedNames);       
         // Otherwise, create the thing that can deal with virtual wrapping
         return new WrapperHandlingDeserializer(newDelegatee, unwrappedNames);
     }

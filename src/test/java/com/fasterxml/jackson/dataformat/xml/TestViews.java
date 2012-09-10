@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /*
- * Tests for ('Json') Views, other filtering.
+ * Tests for ('JSON') Views, other filtering.
  */
 public class TestViews extends XmlTestBase
 {
@@ -70,8 +70,6 @@ public class TestViews extends XmlTestBase
         xmlMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false );
 
         String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);
-
-System.out.println("XML == "+xml);        
         
         // views not used for deserialization
         Foo result = xmlMapper.readValue(xml, Foo.class);

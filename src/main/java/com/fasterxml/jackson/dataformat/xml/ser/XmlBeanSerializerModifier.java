@@ -44,29 +44,22 @@ public class XmlBeanSerializerModifier extends BeanSerializerModifier
             // Actually: if we have a Collection type, easiest place to add wrapping would be here...
             //  or: let's also allow wrapping of "untyped" (Object): assuming it is a dynamically
             //   typed Collection...
-            if (TypeUtil.isIndexedType(bpw.getType())) {
-                String localName = null, wrapperNs = null;
-
-                PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
-                PropertyName wrapperName = intr.findWrapperName(member);
-                
-                if (wrapperName != null) {
-                    localName = wrapperName.getSimpleName();
-                    wrapperNs = wrapperName.getNamespace();
-                }
-                /* 21-Aug-2012, tatu: Missing localName means "use property name as wrapper",
-                 *   empty "no wrapper"
-                 */
-                if (localName == null) {
-                    wrapperName = wrappedName;
-                } else if (localName.length() == 0) {
-                    // Empty wrapper name is explicit "DO NOT wrap" Lists indicator, so:
-                    continue;
-                } else {
-                    wrapperName = PropertyName.construct(localName, (wrapperNs == null) ? "" : wrapperNs);
-                }
-                beanProperties.set(i, new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName));
+            if (!TypeUtil.isIndexedType(bpw.getType())) {
+                continue;
             }
+            PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
+            PropertyName wrapperName = intr.findWrapperName(member);
+
+            // first things first: no wrapping?
+            if (wrapperName == null || wrapperName == PropertyName.NO_NAME) {
+                continue;
+            }
+            // no local name? Just double the wrapped name for wrapper
+            String localName = wrapperName.getSimpleName();
+            if (localName == null || localName.length() == 0) {
+                wrapperName = wrappedName;
+            }
+            beanProperties.set(i, new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName));
         }
         return beanProperties;
     }
