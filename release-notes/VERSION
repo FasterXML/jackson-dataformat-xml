@@ -1,22 +1,28 @@
 Project: jackson-dataformat-xml
 
-Version: 2.0.5
+Version: 2.1.0
 
 Release date:
   27-Jul-2012
 
 Description:
-  Another patch release for 2.0.
+
+* [Issue#6]: Add support for "unwrapped lists"; now unwrapped is also default
+  when using JAXB annotations (but not with Jackson annotations, for backwards
+  compatibility). @JacksonXmlElementWrapper allows explicit per-property
+  overrides
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.0.5 (27-Jul-2012)
 
 Fixes:
 
 * [Issue-29]: Binary value not cleared, leading to duplicated binary data
   for POJOs.
  (reported by 'farfalena'@git)
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.0.4 (26-Jun-2012)
 
