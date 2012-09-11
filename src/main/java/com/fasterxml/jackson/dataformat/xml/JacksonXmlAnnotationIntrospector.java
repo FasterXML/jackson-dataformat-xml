@@ -32,7 +32,7 @@ public class JacksonXmlAnnotationIntrospector
     public JacksonXmlAnnotationIntrospector(boolean defaultUseWrapper) {
         _cfgDefaultUseWrapper = defaultUseWrapper;
     }
-    
+
     /*
     /**********************************************************************
     /* Overrides of JacksonAnnotationIntrospector impls

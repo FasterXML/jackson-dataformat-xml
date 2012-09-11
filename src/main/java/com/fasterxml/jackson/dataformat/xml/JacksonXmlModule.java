@@ -12,8 +12,25 @@ import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
  */
 public class JacksonXmlModule extends SimpleModule
 {
-    private final static AnnotationIntrospector XML_ANNOTATION_INTROSPECTOR = new JacksonXmlAnnotationIntrospector();
-
+    /**
+     * Determination of whether indexed properties (arrays, Lists) that are not explicitly
+     * annotated (with {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
+     * or equivalent) should default to using implicit wrapper (with same name as property) or not.
+     * If enabled, wrapping is used by default; if false, it is not.
+     *<p>
+     * Note that JAXB annotation introspector always assumes "do not wrap by default".
+     * Jackson annotations have different default due to backwards compatibility.
+     * 
+     * @since 2.1
+     */
+    protected boolean _cfgDefaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
+    
+    /*
+    /**********************************************************************
+    /* Life-cycle
+    /**********************************************************************
+     */
+    
     public JacksonXmlModule()
     {
         super("JackxonXmlModule", ModuleVersion.instance.version());
@@ -27,6 +44,30 @@ public class JacksonXmlModule extends SimpleModule
         context.addBeanDeserializerModifier(new XmlBeanDeserializerModifier());
 
         // as well as AnnotationIntrospector
-        context.insertAnnotationIntrospector(XML_ANNOTATION_INTROSPECTOR);
+        context.insertAnnotationIntrospector(_constructIntrospector());
     }    
+
+    /**
+     * Method that can be used to define whether {@link AnnotationIntrospector}
+     * we register will use wrapper for indexed (List, array) properties or not,
+     * if there are no explicit annotations.
+     * See {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
+     * for details.
+     * 
+     * @param state Whether to enable or disable "use wrapper for non-annotated List properties"
+     */
+    public void setDefaultUseWrapper(boolean state) {
+        _cfgDefaultUseWrapper = state;
+    }
+    
+    /*
+    /**********************************************************************
+    /* Internal methods
+    /**********************************************************************
+     */
+    
+    protected AnnotationIntrospector _constructIntrospector()
+    {
+        return new JacksonXmlAnnotationIntrospector(_cfgDefaultUseWrapper);
+    }
 }
