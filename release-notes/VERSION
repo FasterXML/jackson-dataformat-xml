@@ -11,6 +11,8 @@ Description:
   when using JAXB annotations (but not with Jackson annotations, for backwards
   compatibility). @JacksonXmlElementWrapper allows explicit per-property
   overrides
+* [Issue#30]: (from JAXB module, issue #11) Now `@XmlIDREF` forces use of
+  id value for serialization of a reference property.
 * [Issue#33]: Ignore attributes of elements for "List" objects
 
 ------------------------------------------------------------------------

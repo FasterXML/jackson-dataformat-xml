@@ -31,7 +31,7 @@ public class TestElementWrapper extends XmlTestBase
         public String name;
 
         public List<MyPerson2> child = new ArrayList<MyPerson2>();
-  }
+    }
     
     /*
     /**********************************************************************
