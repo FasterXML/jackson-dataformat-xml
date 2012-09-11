@@ -20,25 +20,41 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlMapper extends ObjectMapper
 {
+    protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
+    
+    // need to hold on to module instance just in case copy() is used
+    protected final JacksonXmlModule _xmlModule;
+    
     /*
     /**********************************************************
     /* Life-cycle: construction, configuration
     /**********************************************************
      */
 
-    public XmlMapper()
-    {
+    public XmlMapper() {
         this(new XmlFactory());
     }
     
-    public XmlMapper(XmlFactory xmlFactory)
+    public XmlMapper(XmlFactory xmlFactory) {
+        this(xmlFactory, DEFAULT_XML_MODULE);
+    }
+    
+    public XmlMapper(JacksonXmlModule module)
+    {
+        this(new XmlFactory(), module);
+    }
+
+    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
     {
         /* Need to override serializer provider (due to root name handling);
          * deserializer provider fine as is
          */
         super(xmlFactory, new XmlSerializerProvider(new XmlRootNameLookup()), null);
+        _xmlModule = module;
         // but all the rest is done via Module interface!
-        this.registerModule(new JacksonXmlModule());
+        if (module != null) {
+            registerModule(module);
+        }
     }
 
     // @since 2.1
@@ -46,7 +62,7 @@ public class XmlMapper extends ObjectMapper
     public XmlMapper copy()
     {
         _checkInvalidCopy(XmlMapper.class);
-        return new XmlMapper((XmlFactory) _jsonFactory.copy());
+        return new XmlMapper((XmlFactory) _jsonFactory.copy(), _xmlModule);
     }
     
     @Override

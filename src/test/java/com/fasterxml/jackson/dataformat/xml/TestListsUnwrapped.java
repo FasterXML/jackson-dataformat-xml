@@ -1,9 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import java.io.*;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -31,6 +27,10 @@ public class TestListsUnwrapped extends XmlTestBase
     @JsonRootName("list")
     static class UnwrappedList {
         @JacksonXmlElementWrapper(useWrapping=false)
+        public Value[] value;
+    }
+
+    static class DefaultList {
         public Value[] value;
     }
     
@@ -67,7 +67,7 @@ public class TestListsUnwrapped extends XmlTestBase
         list.value = new Value[] { new Value("c"), new Value("d") };
         String json = mapper.writeValueAsString(list);
         
-        System.out.println("Unwrapped == "+json);
+//        System.out.println("Unwrapped == "+json);
 //        withJAXB(list);
         assertEquals("<list><value><v>c</v></value><value><v>d</v></value></list>", json);
 
@@ -79,6 +79,33 @@ public class TestListsUnwrapped extends XmlTestBase
     
     }
 
+    /**
+     * Test to verify that default wrapping setting is used
+     */
+    public void testDefaultWrapping() throws Exception
+    {
+        // by default, should be using wrapping, so:
+        XmlMapper mapper = new XmlMapper();
+        DefaultList input = new DefaultList();
+        input.value = new Value[] { new Value("a"), new Value("b") };
+        String json = mapper.writeValueAsString(input);
+        assertEquals("<DefaultList><value><value><v>a</v></value><value><v>b</v></value></value></DefaultList>", json);
+        DefaultList output = mapper.readValue(json, DefaultList.class);
+        assertNotNull(output.value);
+        assertEquals(2, output.value.length);
+
+        // but can be changed not to use wrapping by default
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        mapper = new XmlMapper(module);
+        json = mapper.writeValueAsString(input);
+        assertEquals("<DefaultList><value><v>a</v></value><value><v>b</v></value></DefaultList>", json);
+        output = mapper.readValue(json, DefaultList.class);
+        assertNotNull(output.value);
+        assertEquals(2, output.value.length);
+    }
+    
+    /*
     void withJAXB(Object ob) throws Exception
     {
         JAXBContext jc = JAXBContext.newInstance(ob.getClass());
@@ -91,6 +118,6 @@ public class TestListsUnwrapped extends XmlTestBase
             xml = xml.substring(xml.indexOf("?>")+2);
         }
         System.out.println(xml);
-
    }
+   */
 }
