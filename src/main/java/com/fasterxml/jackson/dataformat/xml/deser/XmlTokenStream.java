@@ -171,6 +171,12 @@ public class XmlTokenStream
     /**********************************************************************
      */
     
+    /**
+     * Method used to add virtual wrapping, which just duplicates START_ELEMENT
+     * stream points to, and its matching closing element.
+     * 
+     * @since 2.1
+     */
     protected void repeatStartElement()
     {
         // sanity check: can only be used when just returned START_ELEMENT:
@@ -183,6 +189,31 @@ public class XmlTokenStream
         _repeatElement = true;
     }
 
+    /**
+     * Method called to skip any attributes current START_ELEMENT may have,
+     * so that they are not returned as token.
+     * 
+     * @since 2.1
+     */
+    protected void skipAttributes()
+    {
+        if (_currentState == XML_START_ELEMENT) {
+            _attributeCount = 0;
+        } else if (_currentState == XML_ATTRIBUTE_NAME) {
+            _attributeCount = 0;
+            _currentState = XML_START_ELEMENT;
+        } else {
+            throw new IllegalStateException("Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME ("
+                    +XML_START_ELEMENT+") but "+_currentState);
+        }
+        
+        _verifyIsStartElement();
+    }
+
+    protected void _verifyIsStartElement()
+    {
+    }
+    
     /*
     /**********************************************************************
     /* Internal methods, parsing

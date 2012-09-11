@@ -125,6 +125,19 @@ public class TestListDeserialization extends XmlTestBase
         assertEquals(Integer.valueOf(3), bean.values.get(2));
     }
 
+    // for [Issue#33]
+    public void testWrappedListWithAttribute() throws Exception
+    {
+        ListBeanWrapped bean = MAPPER.readValue(
+                "<ListBeanWrapped><values id='123'><values>1</values><values>2</values></values></ListBeanWrapped>",
+                ListBeanWrapped.class);
+        assertNotNull(bean);
+        assertNotNull(bean.values);
+        assertEquals(2, bean.values.size());
+        assertEquals(Integer.valueOf(1), bean.values.get(0));
+        assertEquals(Integer.valueOf(2), bean.values.get(1));
+    }
+
     public void testUnwrappedListBeanDeser() throws Exception
     {
         /*

@@ -355,6 +355,8 @@ public class FromXmlParser
             _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
             // And just in case a field name was to be returned, wipe it
             _nextToken = null;
+            // and last thing, [Issue#33], better ignore attributes
+            _xmlTokens.skipAttributes();
             return true;
         }
         return (t == JsonToken.START_ARRAY);

@@ -11,6 +11,7 @@ Description:
   when using JAXB annotations (but not with Jackson annotations, for backwards
   compatibility). @JacksonXmlElementWrapper allows explicit per-property
   overrides
+* [Issue#33]: Ignore attributes of elements for "List" objects
 
 ------------------------------------------------------------------------
 === History: ===
