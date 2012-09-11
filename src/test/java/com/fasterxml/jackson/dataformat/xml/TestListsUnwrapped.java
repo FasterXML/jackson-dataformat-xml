@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
 
@@ -8,10 +8,9 @@ import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class TestUnwrappedLists extends XmlTestBase
+public class TestListsUnwrapped extends XmlTestBase
 {
     static class Value {
         public String v;
@@ -31,8 +30,7 @@ public class TestUnwrappedLists extends XmlTestBase
     @XmlRootElement(name="list")
     @JsonRootName("list")
     static class UnwrappedList {
-//        @XmlElementWrapper(name="")
-        @JacksonXmlElementWrapper(localName = "")
+        @JacksonXmlElementWrapper(useWrapping=false)
         public Value[] value;
     }
     
@@ -64,14 +62,14 @@ public class TestUnwrappedLists extends XmlTestBase
     public void testUnwrappedLists() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
+
         UnwrappedList list = new UnwrappedList();
         list.value = new Value[] { new Value("c"), new Value("d") };
-
         String json = mapper.writeValueAsString(list);
         
         System.out.println("Unwrapped == "+json);
 //        withJAXB(list);
-//        assertEquals("<list><value><v>c</v></value><value><v>d</v></value></list>", json);
+        assertEquals("<list><value><v>c</v></value><value><v>d</v></value></list>", json);
 
         // then deserialize back
         UnwrappedList output = mapper.readValue(json, UnwrappedList.class);
