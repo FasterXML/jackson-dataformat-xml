@@ -206,12 +206,6 @@ public class XmlTokenStream
             throw new IllegalStateException("Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME ("
                     +XML_START_ELEMENT+") but "+_currentState);
         }
-        
-        _verifyIsStartElement();
-    }
-
-    protected void _verifyIsStartElement()
-    {
     }
     
     /*
