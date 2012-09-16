@@ -29,6 +29,11 @@ public final class XmlReadContext
     protected String _currentName;
 
     protected Set<String> _namesToWrap;
+
+    /**
+     * Name of property that requires wrapping
+     */
+    protected String _wrappedName;
     
     /*
     /**********************************************************
@@ -66,7 +71,7 @@ public final class XmlReadContext
         _currentName = null;
         _namesToWrap = null;
     }
-
+    
     // // // Factory methods
 
     public static XmlReadContext createRootContext(int lineNr, int colNr)
@@ -115,6 +120,21 @@ public final class XmlReadContext
 
     /*
     /**********************************************************
+    /* State changes
+    /**********************************************************
+     */
+
+    public final boolean expectComma() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setCurrentName(String name)
+    {
+        _currentName = name;
+    }
+
+    /*
+    /**********************************************************
     /* Extended API
     /**********************************************************
      */
@@ -140,22 +160,12 @@ public final class XmlReadContext
     public Set<String> getNamesToWrap() { 
         return _namesToWrap;
     }
-    
-    /*
-    /**********************************************************
-    /* State changes
-    /**********************************************************
-     */
 
-    public final boolean expectComma() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setCurrentName(String name)
+    protected void convertToArray()
     {
-        _currentName = name;
+        _type = TYPE_ARRAY;
     }
-
+    
     /*
     /**********************************************************
     /* Overridden standard methods

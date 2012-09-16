@@ -351,8 +351,7 @@ public class FromXmlParser
         if (t == JsonToken.START_OBJECT) {        	
             _currToken = JsonToken.START_ARRAY;
             // Ok: must replace current context with array as well
-            _parsingContext = _parsingContext.getParent();
-            _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+            _parsingContext.convertToArray();
             // And just in case a field name was to be returned, wipe it
             _nextToken = null;
             // and last thing, [Issue#33], better ignore attributes

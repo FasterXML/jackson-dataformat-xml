@@ -73,4 +73,22 @@ class ElementWrapper
         }
         return _wrapperName.equals(localName) && _wrapperNamespace.equals(ns);
     }
+
+    /*
+    /**********************************************************
+    /* Overrides
+    /**********************************************************
+     */
+
+    @Override
+    public String toString()
+    {
+        if (_parent == null) {
+            return "Wrapper: ROOT, matching: "+_wrapperName;
+        }
+        if (_wrapperName == null) {
+            return "Wrapper: empty";
+        }
+        return "Wrapper: branch, matching: "+_wrapperName;
+    }
 }
