@@ -26,7 +26,14 @@ public class TestSerializationAttr extends XmlTestBase
         @JacksonXmlProperty(isAttribute=true)
     	public String id = "abc";
     }
-    
+
+    public class Jurisdiction {
+        @JacksonXmlProperty(isAttribute=true)
+        protected String name = "Foo";
+        @JacksonXmlProperty(isAttribute=true)
+        protected int value = 13;
+    }
+
     /*
     /**********************************************************
     /* Set up
@@ -41,7 +48,7 @@ public class TestSerializationAttr extends XmlTestBase
         super.setUp();
         _xmlMapper = new XmlMapper();
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
@@ -65,6 +72,12 @@ public class TestSerializationAttr extends XmlTestBase
         assertEquals("<test xmlns='http://root' id='abc'>"
         		+"<wstxns1:booleanA xmlns:wstxns1='http://my.ns'>true</wstxns1:booleanA></test>",
         	xml);
+    }
+
+    public void testIssue6() throws IOException
+    {
+        assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>",
+                _xmlMapper.writeValueAsString(new Jurisdiction()));
     }
     
     /*
