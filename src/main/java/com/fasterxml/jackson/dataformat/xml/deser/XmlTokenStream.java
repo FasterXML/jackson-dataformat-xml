@@ -354,12 +354,13 @@ public class XmlTokenStream
     {
         if (_currentWrapper != null) {
             ElementWrapper w = _currentWrapper;
-            _currentWrapper = _currentWrapper.getParent();
             // important: if we close the scope, must duplicate END_ELEMENT as well
             if (w.isMatching()) {
                 _repeatElement = true;
                 _localName = w.getWrapperLocalName();
                 _namespaceURI = w.getWrapperNamespace();
+            } else {
+                _currentWrapper = _currentWrapper.getParent();
             }
         }
         return (_currentState = XML_END_ELEMENT);
