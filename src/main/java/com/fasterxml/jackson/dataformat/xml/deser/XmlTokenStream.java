@@ -19,6 +19,8 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
  */
 public class XmlTokenStream
 {
+    // // // main token states:
+    
     public final static int XML_START_ELEMENT = 1;
     public final static int XML_END_ELEMENT = 2;
     public final static int XML_ATTRIBUTE_NAME = 3;
@@ -26,6 +28,12 @@ public class XmlTokenStream
     public final static int XML_TEXT = 5;
     public final static int XML_END = 6;
 
+    // // // token replay states
+
+    private final static int REPLAY_START_DUP = 1;
+    private final static int REPLAY_END = 2;
+    private final static int REPLAY_START_DELAYED = 3;
+    
     /*
     /**********************************************************************
     /* Configuration
@@ -58,7 +66,7 @@ public class XmlTokenStream
     protected String _namespaceURI;
 
     protected String _textValue;
-
+    
     /*
     /**********************************************************************
     /* State for handling virtual wrapping
@@ -66,14 +74,22 @@ public class XmlTokenStream
      */
     
     /**
-     * Status flag used to "replay" current event
+     * Flag used to indicate that given element should be "replayed".
      */
-    protected boolean _repeatElement;
+    protected int _repeatElement;
 
     /**
      * Wrapping state, if any active (null if none)
      */
     protected ElementWrapper _currentWrapper;
+
+    /**
+     * In cases where we need to 'inject' a virtual END_ELEMENT, we may also
+     * need to restore START_ELEMENT afterwards; if so, this is where names
+     * are held.
+     */
+    protected String _nextLocalName;
+    protected String _nextNamespaceURI;
     
     /*
     /**********************************************************************
@@ -128,6 +144,8 @@ public class XmlTokenStream
             System.out.println(" XML-token: XML_TEXT '"+_textValue+"'");
             break;
         case XML_END: 
+            System.out.println(" XML-token: XML_END");
+            break;
         default:
             throw new IllegalStateException();
         }
@@ -135,9 +153,9 @@ public class XmlTokenStream
     }
     */
     
-    public int next () throws IOException 
+    public int next() throws IOException 
     {
-        if (_repeatElement) {
+        if (_repeatElement != 0) {
             return _handleRepeatElement();
         }
         try {
@@ -210,8 +228,12 @@ public class XmlTokenStream
                     +XML_START_ELEMENT+") but "+_currentState);
         }
         // Important: add wrapper, to keep track...
-        _currentWrapper = ElementWrapper.matchingWrapper(_currentWrapper, _localName, _namespaceURI);
-        _repeatElement = true;
+        if (_currentWrapper == null) {
+            _currentWrapper = ElementWrapper.matchingWrapper(_currentWrapper, _localName, _namespaceURI);
+        } else {
+            _currentWrapper = ElementWrapper.matchingWrapper(_currentWrapper.getParent(), _localName, _namespaceURI);
+        }
+        _repeatElement = REPLAY_START_DUP;
     }
 
     /**
@@ -348,7 +370,13 @@ public class XmlTokenStream
             } else {
                 // implicit end is more interesting:
                 _localName = _currentWrapper.getWrapperLocalName();
+                _namespaceURI = _currentWrapper.getWrapperNamespace();
                 _currentWrapper = _currentWrapper.getParent();
+//System.out.println(" START_ELEMENT ("+localName+") not matching '"+_localName+"'; add extra XML-END-ELEMENT!");
+                // Important! We also need to restore the START_ELEMENT, so:
+                _nextLocalName = localName;
+                _nextNamespaceURI = ns;
+                _repeatElement = REPLAY_START_DELAYED;
                 return (_currentState = XML_END_ELEMENT);
             }
         }
@@ -364,15 +392,32 @@ public class XmlTokenStream
      */
     protected int _handleRepeatElement() throws IOException 
     {
-        _repeatElement = false;
-        if (_currentState == XML_START_ELEMENT) {
+        int type = _repeatElement;
+        _repeatElement = 0;
+        if (type == REPLAY_START_DUP) {
+//System.out.println("handleRepeat for START_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             // important: add the virtual element second time, but not with name to match
             _currentWrapper = _currentWrapper.intermediateWrapper();
-        } else if (_currentState == XML_END_ELEMENT) {
+            return XML_START_ELEMENT;
+        }
+        if (type == REPLAY_END) {
+//System.out.println("handleRepeat for END_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             _localName = _xmlReader.getLocalName();
             _namespaceURI = _xmlReader.getNamespaceURI();
+            return XML_END_ELEMENT;
         }
-        return _currentState;
+        if (type == REPLAY_START_DELAYED) {
+            _currentWrapper = _currentWrapper.intermediateWrapper();
+            _localName = _nextLocalName;
+            _namespaceURI = _nextNamespaceURI;
+            _nextLocalName = null;
+            _nextNamespaceURI = null;
+            
+//System.out.println("handleRepeat for START_DELAYED: "+_localName+" ("+_xmlReader.getLocalName()+")");
+
+            return XML_START_ELEMENT;
+        }
+        throw new IllegalStateException("Unrecognized type to repeat: "+type);
     }
     
     private final int _handleEndElement()
@@ -381,9 +426,10 @@ public class XmlTokenStream
             ElementWrapper w = _currentWrapper;
             // important: if we close the scope, must duplicate END_ELEMENT as well
             if (w.isMatching()) {
-                _repeatElement = true;
+                _repeatElement = REPLAY_END;
                 _localName = w.getWrapperLocalName();
                 _namespaceURI = w.getWrapperNamespace();
+//System.out.println(" requestRepeat of END_ELEMENT '"+_localName);
             } else {
                 _currentWrapper = _currentWrapper.getParent();
             }

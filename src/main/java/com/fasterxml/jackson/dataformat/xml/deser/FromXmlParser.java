@@ -252,6 +252,16 @@ public class FromXmlParser
      */
     public void addVirtualWrapping(Set<String> namesToWrap)
     {
+//System.out.println("AddWraps: "+namesToWrap+" (current name="+_parsingContext.getCurrentName()+")");        
+
+        /* 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
+         *   problems with Lists-in-Lists properties
+         */
+        String name = _xmlTokens.getLocalName();
+        if (name != null && namesToWrap.contains(name)) {
+//System.out.println("!!! AddWraps matches CURRENT name... flash repeat; nextToken="+_nextToken);
+            _xmlTokens.repeatStartElement();
+        }
         _namesToWrap = namesToWrap;
         _parsingContext.setNamesToWrap(namesToWrap);
     }
@@ -271,11 +281,18 @@ public class FromXmlParser
         throws IOException, JsonParseException
     {
         // [JACKSON-395]: start markers require information from parent
+        String name;
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             XmlReadContext parent = _parsingContext.getParent();
-            return parent.getCurrentName();
+            name = parent.getCurrentName();
+        } else {
+            name = _parsingContext.getCurrentName();
         }
-        return _parsingContext.getCurrentName();
+        // sanity check
+        if (name == null) {
+            throw new IllegalStateException("Missing name, in state: "+_currToken);
+        }
+        return name;
     }
 
     @Override
@@ -346,36 +363,41 @@ public class FromXmlParser
      * 'start object'.
      */
     @Override
-    public boolean isExpectedStartArrayToken() {
+    public boolean isExpectedStartArrayToken()
+    {
         JsonToken t = _currToken;
         if (t == JsonToken.START_OBJECT) {        	
             _currToken = JsonToken.START_ARRAY;
             // Ok: must replace current context with array as well
             _parsingContext.convertToArray();
+//System.out.println(" isExpectedArrayStart: OBJ->Array, wraps now: "+_parsingContext.getNamesToWrap());
             // And just in case a field name was to be returned, wipe it
             _nextToken = null;
             // and last thing, [Issue#33], better ignore attributes
             _xmlTokens.skipAttributes();
             return true;
         }
+//System.out.println(" isExpectedArrayStart?: t="+t);
         return (t == JsonToken.START_ARRAY);
     }
 
-    /*
     // DEBUGGING
+    /*
     @Override
     public JsonToken nextToken() throws IOException, JsonParseException
     {
         JsonToken t = nextToken0();
-        switch (t) {
-        case FIELD_NAME:
-            System.out.println("JsonToken: FIELD_NAME '"+_parsingContext.getCurrentName()+"'");
-            break;
-        case VALUE_STRING:
-            System.out.println("JsonToken: VALUE_STRING '"+getText()+"'");
-            break;
-        default:
-            System.out.println("JsonToken: "+t);
+        if (t != null) {
+            switch (t) {
+            case FIELD_NAME:
+                System.out.println("JsonToken: FIELD_NAME '"+_parsingContext.getCurrentName()+"'");
+                break;
+            case VALUE_STRING:
+                System.out.println("JsonToken: VALUE_STRING '"+getText()+"'");
+                break;
+            default:
+                System.out.println("JsonToken: "+t);
+            }
         }
         return t;
     } 
@@ -415,15 +437,16 @@ public class FromXmlParser
          * a start-element that indicates an array element.
          */
         while (token == XmlTokenStream.XML_START_ELEMENT) {
-
             // If we thought we might get leaf, no such luck
             if (_mayBeLeaf) {
+//System.out.println("In mayBeLeaf (array? "+_parsingContext.inArray()+"): add START_OBJECT ("+_xmlTokens.getLocalName()+"), append FIELD_NAME");
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.FIELD_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 return (_currToken = JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
+//System.out.println("In ARRAY: skip field '"+_xmlTokens.getLocalName());
                 /* Yup: in array, so this element could be verified; but it won't be reported
                  * anyway, and we need to process following event.
                  */
@@ -470,7 +493,6 @@ public class FromXmlParser
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 return (_currToken = JsonToken.START_OBJECT);
             }
-            _mayBeLeaf = false;
             _parsingContext.setCurrentName(_xmlTokens.getLocalName());
             return (_currToken = JsonToken.FIELD_NAME);
         case XmlTokenStream.XML_ATTRIBUTE_VALUE:
