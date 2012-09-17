@@ -404,6 +404,9 @@ public class XmlTokenStream
 //System.out.println("handleRepeat for END_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             _localName = _xmlReader.getLocalName();
             _namespaceURI = _xmlReader.getNamespaceURI();
+            if (_currentWrapper != null) {
+                _currentWrapper = _currentWrapper.getParent();
+            }
             return XML_END_ELEMENT;
         }
         if (type == REPLAY_START_DELAYED) {
@@ -429,7 +432,8 @@ public class XmlTokenStream
                 _repeatElement = REPLAY_END;
                 _localName = w.getWrapperLocalName();
                 _namespaceURI = w.getWrapperNamespace();
-//System.out.println(" requestRepeat of END_ELEMENT '"+_localName);
+                _currentWrapper = _currentWrapper.getParent();
+//System.out.println(" IMPLICIT requestRepeat of END_ELEMENT '"+_localName);
             } else {
                 _currentWrapper = _currentWrapper.getParent();
             }

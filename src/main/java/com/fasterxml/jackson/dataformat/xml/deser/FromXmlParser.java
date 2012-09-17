@@ -439,14 +439,12 @@ public class FromXmlParser
         while (token == XmlTokenStream.XML_START_ELEMENT) {
             // If we thought we might get leaf, no such luck
             if (_mayBeLeaf) {
-//System.out.println("In mayBeLeaf (array? "+_parsingContext.inArray()+"): add START_OBJECT ("+_xmlTokens.getLocalName()+"), append FIELD_NAME");
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.FIELD_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 return (_currToken = JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
-//System.out.println("In ARRAY: skip field '"+_xmlTokens.getLocalName());
                 /* Yup: in array, so this element could be verified; but it won't be reported
                  * anyway, and we need to process following event.
                  */

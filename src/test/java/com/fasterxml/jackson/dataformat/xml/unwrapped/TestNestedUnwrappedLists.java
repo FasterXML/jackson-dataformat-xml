@@ -148,6 +148,8 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
         assertEquals(2, svc.vehicleMonitoringDelivery.size());
         VehicleMonitoringDelivery del = svc.vehicleMonitoringDelivery.get(1);
         assertNotNull(del);
-        assertNull(del.vehicleActivity);
+        assertNotNull(del.vehicleActivity);
+        assertEquals(1, del.vehicleActivity.size());
+        assertEquals("2012-09-12T09:28:07.536-04:00", del.vehicleActivity.get(0).recordedAtTime);
     }
 }
