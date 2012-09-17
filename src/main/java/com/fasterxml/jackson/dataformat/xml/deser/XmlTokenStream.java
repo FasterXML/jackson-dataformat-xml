@@ -121,13 +121,9 @@ public class XmlTokenStream
     
     public void skipEndElement() throws IOException
     {
-        try {
-            int type = _next();
-            if (type != XML_END_ELEMENT) {
-                throw new IOException("Expected END_ELEMENT, got event of type "+type);
-            }
-        } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+        int type = next();
+        if (type != XML_END_ELEMENT) {
+            throw new IOException("Expected END_ELEMENT, got event of type "+type);
         }
     }
 
