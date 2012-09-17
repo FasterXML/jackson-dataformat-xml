@@ -20,7 +20,7 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
 
     static class VehicleMonitoringDelivery {
         public String responseTimestamp;
-        public Date validUntil;
+        public String validUntil;
         public List<VehicleActivity> vehicleActivity;
     }
 
@@ -106,10 +106,11 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
         
         ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
         assertNotNull(svc);
+        assertEquals("2012-09-12T09:28:17.213-04:00", svc.responseTimestamp);
         assertNotNull(svc.vehicleMonitoringDelivery);
         assertEquals(1, svc.vehicleMonitoringDelivery.size());
         VehicleMonitoringDelivery del = svc.vehicleMonitoringDelivery.get(0);
-        assertEquals("2012-09-12T09:28:17.213-04:00", del.responseTimestamp);
+        assertEquals("2012-09-12T09:29:17.213-04:00", del.validUntil);
         assertNotNull(del);
         assertNotNull(del.vehicleActivity);
         assertEquals(2, del.vehicleActivity.size());
