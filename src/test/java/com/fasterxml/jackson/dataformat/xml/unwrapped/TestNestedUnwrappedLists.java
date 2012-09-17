@@ -14,20 +14,40 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
     // // // Test
 
     static class ServiceDelivery {
-        public Date responseTimestamp;
+        public String responseTimestamp;
         public List<VehicleMonitoringDelivery> vehicleMonitoringDelivery;    
     }
 
     static class VehicleMonitoringDelivery {
-        public Date responseTimestamp;
+        public String responseTimestamp;
         public Date validUntil;
         public List<VehicleActivity> vehicleActivity;
     }
 
     static class VehicleActivity {
-        public Date recordedAtTime;    
+        public String recordedAtTime;    
     }
 
+    /*
+    /**********************************************************************
+    /* Set up
+    /**********************************************************************
+     */
+
+    protected XmlMapper _xmlMapper;
+
+    // let's actually reuse XmlMapper to make things bit faster
+    @Override
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        _xmlMapper = new XmlMapper(module);
+        _xmlMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.PascalCaseStrategy());
+        _xmlMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+    }
+    
     /*
     /**********************************************************************
     /* Unit tests
@@ -36,11 +56,6 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
 
     public void testNested1_2() throws Exception
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        XmlMapper mapper = new XmlMapper(module);
-        mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.PascalCaseStrategy());
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
         final String XML =
 "<ServiceDelivery>\n"
 +"  <ResponseTimestamp>2012-09-12T09:28:17.213-04:00</ResponseTimestamp>\n"
@@ -57,22 +72,54 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
 +"</ServiceDelivery>\n"
                 ;
         
-        ServiceDelivery svc = mapper.readValue(XML, ServiceDelivery.class);
+        ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
         assertNotNull(svc);
         assertNotNull(svc.vehicleMonitoringDelivery);
         assertEquals(1, svc.vehicleMonitoringDelivery.size());
         VehicleMonitoringDelivery del = svc.vehicleMonitoringDelivery.get(0);
+        assertEquals("2012-09-12T09:28:17.213-04:00", del.responseTimestamp);
         assertNotNull(del);
         assertNotNull(del.vehicleActivity);
         assertEquals(2, del.vehicleActivity.size());
+        VehicleActivity act = del.vehicleActivity.get(1);
+        assertNotNull(act);
+        assertEquals("2013-09-12T09:29:07.536-04:00", act.recordedAtTime);
     }
 
+    public void testNested1_2b() throws Exception
+    {
+        final String XML =
+"<ServiceDelivery>\n"
++"  <ResponseTimestamp>2012-09-12T09:28:17.213-04:00</ResponseTimestamp>\n"
++"  <VehicleMonitoringDelivery>\n"
++"    <VehicleActivity>\n"
++"      <RecordedAtTime>2012-09-12T09:28:07.536-04:00</RecordedAtTime>\n"
++"    </VehicleActivity>\n"
++"    <VehicleActivity>\n"
++"      <RecordedAtTime>2013-09-12T09:29:07.536-04:00</RecordedAtTime>\n"
++"    </VehicleActivity>\n"
++"    <ResponseTimestamp>2012-09-12T09:28:17.213-04:00</ResponseTimestamp>\n"
++"    <ValidUntil>2012-09-12T09:29:17.213-04:00</ValidUntil>\n"
++"  </VehicleMonitoringDelivery>\n"
++"</ServiceDelivery>\n"
+                ;
+        
+        ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
+        assertNotNull(svc);
+        assertNotNull(svc.vehicleMonitoringDelivery);
+        assertEquals(1, svc.vehicleMonitoringDelivery.size());
+        VehicleMonitoringDelivery del = svc.vehicleMonitoringDelivery.get(0);
+        assertEquals("2012-09-12T09:28:17.213-04:00", del.responseTimestamp);
+        assertNotNull(del);
+        assertNotNull(del.vehicleActivity);
+        assertEquals(2, del.vehicleActivity.size());
+        VehicleActivity act = del.vehicleActivity.get(1);
+        assertNotNull(act);
+        assertEquals("2013-09-12T09:29:07.536-04:00", act.recordedAtTime);
+    }
+    
     public void testNested2_1() throws Exception
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        XmlMapper mapper = new XmlMapper(module);
-        mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.PascalCaseStrategy());
         final String XML =
 "<ServiceDelivery>\n"
 +"  <ResponseTimestamp>2012-09-12T09:28:17.213-04:00</ResponseTimestamp>\n"
@@ -93,7 +140,7 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
 +"</ServiceDelivery>\n"
                 ;
         
-        ServiceDelivery svc = mapper.readValue(XML, ServiceDelivery.class);
+        ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
         assertNotNull(svc);
         assertNotNull(svc.vehicleMonitoringDelivery);
         assertEquals(2, svc.vehicleMonitoringDelivery.size());
