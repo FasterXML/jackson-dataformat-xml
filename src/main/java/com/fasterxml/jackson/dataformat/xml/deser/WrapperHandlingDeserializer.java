@@ -136,6 +136,7 @@ public class WrapperHandlingDeserializer
      */
 
     protected void _configureParser(JsonParser jp)
+        throws IOException, JsonProcessingException
     {
         ((FromXmlParser) jp).addVirtualWrapping(_namesToWrap);
     }
