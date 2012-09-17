@@ -360,7 +360,27 @@ public class FromXmlParser
         }
         return (t == JsonToken.START_ARRAY);
     }
-    
+
+    /*
+    // DEBUGGING
+    @Override
+    public JsonToken nextToken() throws IOException, JsonParseException
+    {
+        JsonToken t = nextToken0();
+        switch (t) {
+        case FIELD_NAME:
+            System.out.println("JsonToken: FIELD_NAME '"+_parsingContext.getCurrentName()+"'");
+            break;
+        case VALUE_STRING:
+            System.out.println("JsonToken: VALUE_STRING '"+getText()+"'");
+            break;
+        default:
+            System.out.println("JsonToken: "+t);
+        }
+        return t;
+    } 
+    */
+
     @Override
     public JsonToken nextToken() throws IOException, JsonParseException
     {

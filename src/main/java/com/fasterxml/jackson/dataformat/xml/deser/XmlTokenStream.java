@@ -106,7 +106,36 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
+    // DEBUGGING
+    /*
     public int next() throws IOException 
+    {
+        int n = next0();
+        switch (n) {
+        case XML_START_ELEMENT: 
+            System.out.println(" XML-token: XML_START_ELEMENT '"+_localName+"'");
+            break;
+        case XML_END_ELEMENT: 
+            System.out.println(" XML-token: XML_END_ELEMENT '"+_localName+"'");
+            break;
+        case XML_ATTRIBUTE_NAME: 
+            System.out.println(" XML-token: XML_ATTRIBUTE_NAME '"+_localName+"'");
+            break;
+        case XML_ATTRIBUTE_VALUE: 
+            System.out.println(" XML-token: XML_ATTRIBUTE_VALUE '"+_textValue+"'");
+            break;
+        case XML_TEXT: 
+            System.out.println(" XML-token: XML_TEXT '"+_textValue+"'");
+            break;
+        case XML_END: 
+        default:
+            throw new IllegalStateException();
+        }
+        return n;
+    }
+    */
+    
+    public int next () throws IOException 
     {
         if (_repeatElement) {
             return _handleRepeatElement();
