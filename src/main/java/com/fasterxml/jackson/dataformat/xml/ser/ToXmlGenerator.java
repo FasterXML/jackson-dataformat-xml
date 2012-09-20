@@ -561,13 +561,13 @@ public final class ToXmlGenerator
                 _xmlWriter.writeBinary(data, offset, len);
             } else {
                 if (_xmlPrettyPrinter != null) {
-                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
-                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                			data, offset, len);
+                    _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                            _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                            data, offset, len);
                 } else {
-	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-	                _xmlWriter.writeBinary(data, offset, len);
-	                _xmlWriter.writeEndElement();
+                    _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    _xmlWriter.writeBinary(data, offset, len);
+                    _xmlWriter.writeEndElement();
                 }
             }
         } catch (XMLStreamException e) {
