@@ -382,7 +382,7 @@ public class FromXmlParser
     }
 
     // DEBUGGING
-    /*
+/*
     @Override
     public JsonToken nextToken() throws IOException, JsonParseException
     {
@@ -480,6 +480,7 @@ public class FromXmlParser
             }
             _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
             _parsingContext = _parsingContext.getParent();
+            _namesToWrap = _parsingContext.getNamesToWrap();
             return _currToken;
             
         case XmlTokenStream.XML_ATTRIBUTE_NAME:
@@ -502,6 +503,19 @@ public class FromXmlParser
                 _mayBeLeaf = false;
                 // Also: must skip following END_ELEMENT
                 _xmlTokens.skipEndElement();
+                /* One more refinement (pronunced like "hack") is that if
+                 * we had an empty String (or all white space), and we are
+                 * deserializing an array, we better just hide the text
+                 * altogether.
+                 */
+                if (_parsingContext.inArray()) {
+                    if (_isEmpty(_currText)) {
+                        _currToken = JsonToken.END_ARRAY;
+                        _parsingContext = _parsingContext.getParent();
+                        _namesToWrap = _parsingContext.getNamesToWrap();
+                        return _currToken;
+                    }
+                }
                 return (_currToken = JsonToken.VALUE_STRING);
             }
             // If not a leaf, need to transform into property...
@@ -817,5 +831,18 @@ public class FromXmlParser
             _byteArrayBuilder.reset();
         }
         return _byteArrayBuilder;
+    }
+
+    protected boolean _isEmpty(String str)
+    {
+        int len = (str == null) ? 0 : str.length();
+        if (len > 0) {
+            for (int i = 0; i < len; ++i) {
+                if (str.charAt(i) > ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

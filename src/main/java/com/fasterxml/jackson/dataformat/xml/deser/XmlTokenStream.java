@@ -222,6 +222,7 @@ public class XmlTokenStream
      */
     protected void repeatStartElement()
     {
+//System.out.println(" -> repeatStartElement for "+_localName);        
         // sanity check: can only be used when just returned START_ELEMENT:
         if (_currentState != XML_START_ELEMENT) {
             throw new IllegalStateException("Current state not XML_START_ELEMENT ("

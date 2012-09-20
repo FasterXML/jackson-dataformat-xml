@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.unwrapped;
 
-import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -86,6 +85,43 @@ public class TestNestedUnwrappedLists  extends XmlTestBase
         assertEquals("2013-09-12T09:29:07.536-04:00", act.recordedAtTime);
     }
 
+    public void testNestedWithEmpty() throws Exception
+    {
+        final String XML =
+"<ServiceDelivery>\n"
++"  <ResponseTimestamp>2012-09-12T09:28:17.213-04:00</ResponseTimestamp>\n"
++"  <VehicleMonitoringDelivery>\n"
++"  </VehicleMonitoringDelivery>\n"
++"</ServiceDelivery>\n"
+                ;
+        
+        ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
+        assertNotNull(svc);
+        assertNotNull(svc.vehicleMonitoringDelivery);
+        assertEquals(0, svc.vehicleMonitoringDelivery.size());
+    }
+
+    public void testNestedWithEmpty2() throws Exception
+    {
+        final String XML =
+"<ServiceDelivery>\n"
++"  <ResponseTimestamp>2012-09-12T09:28:17.213-04:00</ResponseTimestamp>\n"
++"  <VehicleMonitoringDelivery>\n"
++"    <VehicleActivity>\n"
++"    </VehicleActivity>\n"
++"  </VehicleMonitoringDelivery>\n"
++"</ServiceDelivery>\n"
+                ;
+        
+        ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
+        assertNotNull(svc);
+        assertNotNull(svc.vehicleMonitoringDelivery);
+        assertEquals(1, svc.vehicleMonitoringDelivery.size());
+        VehicleMonitoringDelivery del = svc.vehicleMonitoringDelivery.get(0);
+        assertNotNull(del.vehicleActivity);
+        assertEquals(0, del.vehicleActivity.size());
+    }
+    
     public void testNested1_2b() throws Exception
     {
         final String XML =
