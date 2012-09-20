@@ -106,6 +106,25 @@ public class TestListsUnwrapped extends XmlTestBase
         assertNotNull(output.value);
         assertEquals(2, output.value.length);
     }
+
+    public void testDefaultWrappingWithEmptyLists() throws Exception
+    {
+        // by default, should be using wrapping, so:
+        XmlMapper mapper = new XmlMapper();
+        String json = "<DefaultList><value><value></value></value></DefaultList>";
+        DefaultList output = mapper.readValue(json, DefaultList.class);
+        assertNotNull(output.value);
+        assertEquals(1, output.value.length);
+
+        // but without, should work as well
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        mapper = new XmlMapper(module);
+        json = "<DefaultList><value></value></DefaultList>";
+        output = mapper.readValue(json, DefaultList.class);
+        assertNotNull(output.value);
+        assertEquals(1, output.value.length);
+    }
     
     /*
     void withJAXB(Object ob) throws Exception
