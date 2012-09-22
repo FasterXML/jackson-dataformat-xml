@@ -156,7 +156,7 @@ public class XmlTokenStream
     public int next() throws IOException 
     {
         if (_repeatElement != 0) {
-            return _handleRepeatElement();
+            return (_currentState = _handleRepeatElement());
         }
         try {
             return _next();
