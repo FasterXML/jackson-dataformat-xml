@@ -411,7 +411,9 @@ public class XmlTokenStream
             return XML_END_ELEMENT;
         }
         if (type == REPLAY_START_DELAYED) {
-            _currentWrapper = _currentWrapper.intermediateWrapper();
+            if (_currentWrapper != null) {
+                _currentWrapper = _currentWrapper.intermediateWrapper();
+            }
             _localName = _nextLocalName;
             _namespaceURI = _nextNamespaceURI;
             _nextLocalName = null;
