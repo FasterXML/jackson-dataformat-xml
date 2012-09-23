@@ -13,61 +13,62 @@ public class TestTextValue extends XmlTestBase
     /**********************************************************
      */
 
-	static class Simple
-	{
-		@JacksonXmlProperty(isAttribute=true)
-		// same as: @javax.xml.bind.annotation.XmlAttribute
-		public int a = 13;
+    static class Simple
+    {
+        @JacksonXmlProperty(isAttribute=true)
+        // same as: @javax.xml.bind.annotation.XmlAttribute
+        public int a = 13;
 
-		@JacksonXmlText
-		// about same as: @javax.xml.bind.annotation.XmlValue
-		public String text = "something";
-	}
+        @JacksonXmlText
+        // about same as: @javax.xml.bind.annotation.XmlValue
+        public String text = "something";
+    }
 	
-	// Issue-24:
+    // Issue-24:
 
-	static class Main {
-		@JsonProperty("com.test.stack") public Stack stack;
-	}
-	static class Stack {
-		public String name;
+    static class Main {
+        @JsonProperty("com.test.stack") public Stack stack;
+    }
+    static class Stack {
+        public String name;
 
-		@JsonProperty("com.test.stack.slot")
-		public Slot slot;
-	}
-	static class Slot {
-		@JsonProperty("name")
-		public String name;
+        @JsonProperty("com.test.stack.slot")
+        public Slot slot;
+    }
+    static class Slot {
+        @JsonProperty("name")
+        public String name;
 
-		@JsonProperty("id")
-		public String id;
+        @JsonProperty("id")
+        public String id;
 
-		@JsonProperty("height")
-		public String height;
+        @JsonProperty("height")
+        public String height;
 
-		@JsonProperty("width")
-		public String width;
+        @JsonProperty("width")
+        public String width;
 
-		@JacksonXmlText
-		public String value;
-	}
-	/*
+        @JacksonXmlText
+        public String value;
+    }
+
+    /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
+    private final XmlMapper MAPPER = new XmlMapper();
+    
     public void testSerializeAsText() throws IOException
     {
-    	XmlMapper mapper = new XmlMapper();
-    	String xml = mapper.writeValueAsString(new Simple());
+    	String xml = MAPPER.writeValueAsString(new Simple());
     	assertEquals("<Simple a=\"13\">something</Simple>", xml);
     }
 
     public void testDeserializeAsText() throws IOException
     {
-    	XmlMapper mapper = new XmlMapper();
-    	Simple result = mapper.readValue("<Simple a='99'>else</Simple>",
+    	Simple result = MAPPER.readValue("<Simple a='99'>else</Simple>",
     			Simple.class);
     	assertEquals(99, result.a);
     	assertEquals("else", result.text);
@@ -84,8 +85,7 @@ public class TestTextValue extends XmlTestBase
     			+"</com.test.stack.slot>\n"
     			+"</com.test.stack>\n"
     			+"</main>";
-    	XmlMapper mapper = new XmlMapper();
-    	Main main = mapper.readValue(XML, Main.class);
+    	Main main = MAPPER.readValue(XML, Main.class);
     	assertNotNull(main.stack);
     	assertNotNull(main.stack.slot);
     	assertEquals(TEXT, main.stack.slot.value);

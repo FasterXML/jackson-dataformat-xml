@@ -553,6 +553,32 @@ public class FromXmlParser
         }
     }
 
+    // @since 2.1
+    @Override
+    public String getValueAsString() throws IOException, JsonParseException {
+        return getValueAsString(null);
+    }
+
+    @Override
+    public String getValueAsString(String defValue) throws IOException, JsonParseException
+    {
+//System.err.println("getValue, t=="+_currToken);       
+        if (_currToken == null) {
+            return null;
+        }
+        switch (_currToken) {
+        case FIELD_NAME:
+            return getCurrentName();
+        case VALUE_STRING:
+            return _currText;
+        default:
+            if (_currToken.isScalarValue()) {
+                return _currToken.asString();
+            }
+        }
+        return null;
+    }
+    
     @Override
     public char[] getTextCharacters() throws IOException, JsonParseException {
         String text = getText();
