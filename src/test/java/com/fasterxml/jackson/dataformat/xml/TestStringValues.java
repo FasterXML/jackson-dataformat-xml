@@ -1,7 +1,19 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.util.Arrays;
+
 public class TestStringValues extends XmlTestBase
 {
+    protected static class Bean2
+    {
+        public String a, b;
+
+        @Override
+        public String toString() {
+            return "[a="+a+",b="+b+"]";
+        }
+    }
+    
     /*
     /**********************************************************
     /* Unit tests
@@ -40,10 +52,48 @@ public class TestStringValues extends XmlTestBase
 
     public void testStringWithAttribute() throws Exception
     {
-    // and then the money shot: with 'standard' attribute...
+        // and then the money shot: with 'standard' attribute...
         StringBean bean = MAPPER.readValue("<StringBean><text xml:lang='fi'>Pulla</text></StringBean>", StringBean.class);
         assertNotNull(bean);
         assertEquals("Pulla", bean.text);
     }
+
+    public void testStringsWithAttribute() throws Exception
+    {
+        Bean2 bean = MAPPER.readValue(
+                "<Bean2>\n"
+                +"<a xml:lang='fi'>abc</a>"
+                +"<b xml:lang='en'>def</b>"
+//                +"<a>abc</a><b>def</b>"
+                +"</Bean2>\n",
+                Bean2.class);
+        assertNotNull(bean);
+        assertEquals("abc", bean.a);
+        assertEquals("def", bean.b);
+    }
     
+    public void testStringArrayWithAttribute() throws Exception
+    {
+        // should even work for arrays of those
+        StringBean[] beans = MAPPER.readValue(
+                "<StringBean>\n"
+                +"<StringBean><text xml:lang='fi'>Pulla</text></StringBean>"
+                +"<StringBean><text xml:lang='se'>Bulla</text></StringBean>"
+                +"<StringBean><text xml:lang='en'>Good stuff</text></StringBean>"
+
+                /*
+                +"<StringBean><text>Pulla</text></StringBean>"
+                +"<StringBean><text>Bulla</text></StringBean>"
+                +"<StringBean><text>Good stuff</text></StringBean>"
+                */
+
+                +"</StringBean>",
+                StringBean[].class);
+        assertNotNull(beans);
+System.out.println("-> "+Arrays.asList(beans));        
+//        assertEquals(3, beans.length);
+        assertEquals("Pulla", beans[0].text);
+        assertEquals("Bulla", beans[1].text);
+        assertEquals("Good stuff", beans[2].text);
+    }
 }

@@ -98,6 +98,12 @@ public abstract class XmlTestBase
 
         public StringBean() { this("foobar"); }
         public StringBean(String s) { text = s; }
+
+        @Override
+        public String toString() {
+            if (text == null) return "NULL";
+            return "\""+text+"\"";
+        }
     }
     
     /**

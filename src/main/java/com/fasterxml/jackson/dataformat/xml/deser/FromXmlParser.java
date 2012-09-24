@@ -252,14 +252,11 @@ public class FromXmlParser
      */
     public void addVirtualWrapping(Set<String> namesToWrap)
     {
-//System.out.println("AddWraps: "+namesToWrap+" (current name="+_parsingContext.getCurrentName()+")");        
-
         /* 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
          *   problems with Lists-in-Lists properties
          */
         String name = _xmlTokens.getLocalName();
         if (name != null && namesToWrap.contains(name)) {
-//System.out.println("!!! AddWraps matches CURRENT name... flash repeat; nextToken="+_nextToken);
             _xmlTokens.repeatStartElement();
         }
         _namesToWrap = namesToWrap;
@@ -382,7 +379,7 @@ public class FromXmlParser
     }
 
     // DEBUGGING
-/*
+    /*
     @Override
     public JsonToken nextToken() throws IOException, JsonParseException
     {
@@ -555,28 +552,51 @@ public class FromXmlParser
 
     // @since 2.1
     @Override
-    public String getValueAsString() throws IOException, JsonParseException {
+    public final String getValueAsString() throws IOException, JsonParseException {
         return getValueAsString(null);
     }
 
     @Override
     public String getValueAsString(String defValue) throws IOException, JsonParseException
     {
-//System.err.println("getValue, t=="+_currToken);       
-        if (_currToken == null) {
+        JsonToken t = _currToken;
+        if (t == null) {
             return null;
         }
-        switch (_currToken) {
+        switch (t) {
         case FIELD_NAME:
             return getCurrentName();
         case VALUE_STRING:
             return _currText;
+        case START_OBJECT:
+            // the interesting case; may be able to convert certain kinds of
+            // elements (specifically, ones with attributes, CDATA only content)
+            // into VALUE_STRING
+            {
+                String str = _xmlTokens.convertToString();
+                if (str != null) {
+                    // need to convert token, as well as "undo" START_OBJECT
+                    // note: Should NOT update context, because we will still be getting
+                    // matching END_OBJECT, which will undo contexts properly
+                    _parsingContext = _parsingContext.getParent();
+                    _namesToWrap = _parsingContext.getNamesToWrap();
+                    _currToken = JsonToken.VALUE_STRING;
+                    _nextToken = null;
+                    /* One more thing: must explicitly skip the END_OBJECT that
+                     * would follow.
+                     */
+                    _xmlTokens.skipEndElement();
+                    return (_currText = str);
+                }
+                
+            }
+            return null;
         default:
             if (_currToken.isScalarValue()) {
                 return _currToken.asString();
             }
         }
-        return null;
+        return defValue;
     }
     
     @Override
