@@ -80,18 +80,10 @@ public class TestStringValues extends XmlTestBase
                 +"<StringBean><text xml:lang='fi'>Pulla</text></StringBean>"
                 +"<StringBean><text xml:lang='se'>Bulla</text></StringBean>"
                 +"<StringBean><text xml:lang='en'>Good stuff</text></StringBean>"
-
-                /*
-                +"<StringBean><text>Pulla</text></StringBean>"
-                +"<StringBean><text>Bulla</text></StringBean>"
-                +"<StringBean><text>Good stuff</text></StringBean>"
-                */
-
                 +"</StringBean>",
                 StringBean[].class);
         assertNotNull(beans);
-System.out.println("-> "+Arrays.asList(beans));        
-//        assertEquals(3, beans.length);
+        assertEquals(3, beans.length);
         assertEquals("Pulla", beans[0].text);
         assertEquals("Bulla", beans[1].text);
         assertEquals("Good stuff", beans[2].text);
