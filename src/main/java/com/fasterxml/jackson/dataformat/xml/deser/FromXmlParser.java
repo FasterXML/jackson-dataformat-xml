@@ -22,6 +22,12 @@ public class FromXmlParser
     extends ParserMinimalBase
 {
     /**
+     * The default name placeholder for XML text segments is empty
+     * String ("").
+     */
+    public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
+    
+    /**
      * Enumeration that defines all togglable features for XML parsers
      */
     public enum Feature {
@@ -59,8 +65,15 @@ public class FromXmlParser
      * In cases where a start element has both attributes and non-empty textual
      * value, we have to create a bogus property; we will use this as
      * the property name.
+     *<p>
+     * Name used for pseudo-property used for returning XML Text value (which does
+     * not have actual element name to use). Defaults to empty String, but
+     * may be changed for interoperability reasons: JAXB, for example, uses
+     * "value" as name.
+     * 
+     * @since 2.1
      */
-    protected final static String UNNAMED_TEXT_PROPERTY = "";
+    protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
 
     /*
     /**********************************************************
@@ -167,6 +180,13 @@ public class FromXmlParser
         _objectCodec = c;
     }
 
+    /**
+     * @since 2.1
+     */
+    public void setXMLTextElementName(String name) {
+        _cfgNameForTextElement = name;
+    }
+    
     /**
      * XML format does require support from custom {@link ObjectCodec}
      * (that is, {@link XmlMapper}), so need to return true here.
@@ -516,7 +536,7 @@ public class FromXmlParser
                 return (_currToken = JsonToken.VALUE_STRING);
             }
             // If not a leaf, need to transform into property...
-            _parsingContext.setCurrentName(UNNAMED_TEXT_PROPERTY);
+            _parsingContext.setCurrentName(_cfgNameForTextElement);
             _nextToken = JsonToken.VALUE_STRING;
             return (_currToken = JsonToken.FIELD_NAME);
         case XmlTokenStream.XML_END:

@@ -72,6 +72,23 @@ public class XmlMapper extends ObjectMapper
 
     /*
     /**********************************************************
+    /* Additional XML-specific configurations
+    /**********************************************************
+     */
+
+    /**
+     * Method called by {@link JacksonXmlModule} to pass configuration
+     * information to {@link XmlFactory}, during registration.
+     * 
+     * @since 2.1
+     */
+    protected void setXMLTextElementName(String name)
+    {
+        ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
+    }
+    
+    /*
+    /**********************************************************
     /* Access to configuration settings
     /**********************************************************
      */

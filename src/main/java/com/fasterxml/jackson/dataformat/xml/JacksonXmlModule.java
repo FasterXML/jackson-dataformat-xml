@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
@@ -24,10 +25,20 @@ public class JacksonXmlModule extends SimpleModule
      * @since 2.1
      */
     protected boolean _cfgDefaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
+
+    /**
+     * Name used for pseudo-property used for returning XML Text value (which does
+     * not have actual element name to use). Defaults to empty String, but
+     * may be changed for interoperability reasons: JAXB, for example, uses
+     * "value" as name.
+     * 
+     * @since 2.1
+     */
+    protected String _cfgNameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
     
     /*
     /**********************************************************************
-    /* Life-cycle
+    /* Life-cycle: construction
     /**********************************************************************
      */
     
@@ -41,11 +52,23 @@ public class JacksonXmlModule extends SimpleModule
     {
         // Need to modify BeanDeserializer, BeanSerializer that are used
         context.addBeanSerializerModifier(new XmlBeanSerializerModifier());
-        context.addBeanDeserializerModifier(new XmlBeanDeserializerModifier());
+        context.addBeanDeserializerModifier(new XmlBeanDeserializerModifier(_cfgNameForTextElement));
 
         // as well as AnnotationIntrospector
         context.insertAnnotationIntrospector(_constructIntrospector());
+
+        // and finally inform XmlFactory about overrides, if need be:
+        if (_cfgNameForTextElement != FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY) {
+            XmlMapper m = (XmlMapper) context.getOwner();
+            m.setXMLTextElementName(_cfgNameForTextElement);
+        }
     }    
+
+    /*
+    /**********************************************************************
+    /* Life-cycle: configuration
+    /**********************************************************************
+     */
 
     /**
      * Method that can be used to define whether {@link AnnotationIntrospector}
@@ -53,11 +76,33 @@ public class JacksonXmlModule extends SimpleModule
      * if there are no explicit annotations.
      * See {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
      * for details.
+     *<p>
+     * Note that method MUST be called before registering the module; otherwise change
+     * will not have any effect.
      * 
      * @param state Whether to enable or disable "use wrapper for non-annotated List properties"
+     * 
+     * @since 2.1
      */
     public void setDefaultUseWrapper(boolean state) {
         _cfgDefaultUseWrapper = state;
+    }
+
+    /**
+     * Method that can be used to define alternate "virtual name" to use
+     * for XML CDATA segments; that is, text values. Default name is empty String
+     * (""); but some frameworks use other names: JAXB, for example, uses
+     * "value".
+     *<p>
+     * Note that method MUST be called before registering the module; otherwise change
+     * will not have any effect.
+     * 
+     * @param state Whether to enable or disable "use wrapper for non-annotated List properties"
+     * 
+     * @since 2.1
+     */
+    public void setXMLTextElementName(String name) {
+        _cfgNameForTextElement = name;
     }
     
     /*

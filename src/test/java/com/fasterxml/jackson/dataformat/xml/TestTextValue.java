@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class TestTextValue extends XmlTestBase
@@ -52,6 +53,11 @@ public class TestTextValue extends XmlTestBase
         public String value;
     }
 
+    static class JAXBStyle
+    {
+        public String value;
+    }
+    
     /*
     /**********************************************************
     /* Unit tests
@@ -90,13 +96,23 @@ public class TestTextValue extends XmlTestBase
     	assertNotNull(main.stack.slot);
     	assertEquals(TEXT, main.stack.slot.value);
     }
-    
-    /* // Uncomment to see how JAXB works here:
-    public void testJAXB() throws Exception
+
+    // for [Issue#36]
+    public void testAlternateTextElementName() throws IOException
     {
-        java.io.StringWriter sw = new java.io.StringWriter();
-        javax.xml.bind.JAXB.marshal(new Simple(), sw);
-        System.out.println("JAXB -> "+sw);
+        final String XML = "<JAXBStyle>foo</JAXBStyle>";
+        // first: verify that without change, POJO would not match:
+        try {
+            MAPPER.readValue(XML, JAXBStyle.class);
+            fail("Should have failed");
+        } catch (JsonProcessingException e) {
+            verifyException(e, "Unrecognized");
+        }
+        
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setXMLTextElementName("value");
+        XmlMapper mapper = new XmlMapper(module);
+        JAXBStyle pojo = mapper.readValue(XML, JAXBStyle.class);
+        assertEquals("foo", pojo.value);
     }
-    */
 }

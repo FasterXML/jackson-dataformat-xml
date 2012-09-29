@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import java.util.Arrays;
-
 public class TestStringValues extends XmlTestBase
 {
     protected static class Bean2

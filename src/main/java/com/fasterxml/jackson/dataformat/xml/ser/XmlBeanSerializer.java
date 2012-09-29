@@ -76,7 +76,7 @@ public class XmlBeanSerializer extends BeanSerializer
             if (info != null) {
                 ns = info.getNamespace();
                 if (textIndex < 0 && info.isText()) {
-                	textIndex = i;
+                    textIndex = i;
                 }
             }
             _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
@@ -144,11 +144,11 @@ public class XmlBeanSerializer extends BeanSerializer
         try {
             for (final int len = props.length; i < len; ++i) {
                 if (i == attrCount) {
-                	xgen.setNextIsAttribute(false);
+                    xgen.setNextIsAttribute(false);
                 }
                 // also: if this is property to write as text ("unwrap"), need to:
                 if (i == textIndex) {
-					xgen.setNextIsUnwrapped(true);
+                    xgen.setNextIsUnwrapped(true);
                 }
                 xgen.setNextName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];

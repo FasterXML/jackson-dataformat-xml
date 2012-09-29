@@ -232,4 +232,3 @@ public class JacksonXmlAnnotationIntrospector
         return null;
     }
 }
-

@@ -14,6 +14,8 @@ Description:
 * [Issue#30]: (from JAXB module, issue #11) Now `@XmlIDREF` forces use of
   id value for serialization of a reference property.
 * [Issue#33]: Ignore attributes of elements for "List" objects
+* [Issue#36]: Add 'JacksonXmlModule.setXMLTextElementName()' to allow
+  matching 'value' text property of JAXB beans.
 
 ------------------------------------------------------------------------
 === History: ===

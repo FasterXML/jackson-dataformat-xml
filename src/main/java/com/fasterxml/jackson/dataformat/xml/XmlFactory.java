@@ -58,6 +58,8 @@ public class XmlFactory extends JsonFactory
 
     protected XMLOutputFactory _xmlOutputFactory;
 
+    protected String _cfgNameForTextElement = null;
+    
     /*
     /**********************************************************
     /* Factory construction, configuration
@@ -128,6 +130,16 @@ public class XmlFactory extends JsonFactory
     public Version version() {
         return ModuleVersion.instance.version();
     }
+
+    /*
+    /**********************************************************
+    /* Configuration, XML-specific
+    /**********************************************************
+     */
+    
+    public void setXMLTextElementName(String name) {
+        _cfgNameForTextElement = name;
+    }
     
     /*
     /**********************************************************
@@ -188,7 +200,6 @@ public class XmlFactory extends JsonFactory
         }
         return this;
     }
-
 
     /**
      * Method for enabling specified XML generator feature.
@@ -389,8 +400,12 @@ public class XmlFactory extends JsonFactory
         } catch (XMLStreamException e) {
             return StaxUtil.throwXmlAsIOException(e);
         }
-        return new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        FromXmlParser xp = new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sr);
+        if (_cfgNameForTextElement != null) {
+            xp.setXMLTextElementName(_cfgNameForTextElement);
+        }
+        return xp;
     }
 
     /**
@@ -409,8 +424,12 @@ public class XmlFactory extends JsonFactory
         } catch (XMLStreamException e) {
             return StaxUtil.throwXmlAsIOException(e);
         }
-        return new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        FromXmlParser xp = new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sr);
+        if (_cfgNameForTextElement != null) {
+            xp.setXMLTextElementName(_cfgNameForTextElement);
+        }
+        return xp;
     }
 
     /**
@@ -429,8 +448,12 @@ public class XmlFactory extends JsonFactory
         } catch (XMLStreamException e) {
             return StaxUtil.throwXmlAsIOException(e);
         }
-        return new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        FromXmlParser xp = new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sr);
+        if (_cfgNameForTextElement != null) {
+            xp.setXMLTextElementName(_cfgNameForTextElement);
+        }
+        return xp;
     }
 
     /*
