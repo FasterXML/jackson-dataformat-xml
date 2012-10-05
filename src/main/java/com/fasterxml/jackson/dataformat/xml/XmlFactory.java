@@ -26,6 +26,8 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 */
 public class XmlFactory extends JsonFactory
 {
+    private static final long serialVersionUID = -1885780678226335519L;
+
     /**
      * Name used to identify XML format
      * (and returned by {@link #getFormatName()}
@@ -54,9 +56,10 @@ public class XmlFactory extends JsonFactory
 
     protected int _xmlGeneratorFeatures = DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
 
-    protected XMLInputFactory _xmlInputFactory;
+    // non-final for setters (why are they needed again?)
+    protected transient XMLInputFactory _xmlInputFactory;
 
-    protected XMLOutputFactory _xmlOutputFactory;
+    protected transient XMLOutputFactory _xmlOutputFactory;
 
     protected String _cfgNameForTextElement = null;
     
@@ -87,27 +90,26 @@ public class XmlFactory extends JsonFactory
         this(null, xmlIn, xmlOut);
     }
     
-    public XmlFactory(ObjectCodec oc,
-            XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
+    public XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
     {
         super(oc);
         if (xmlIn == null) {
-            /* 24-Jun-2010, tatu: Ugh. JDK authors seem to waffle on what the name of
-             *   factory constructor method is...
-             */
-            //xmlIn = XMLInputFactory.newFactory();
             xmlIn = XMLInputFactory.newInstance();
         }
         if (xmlOut == null) {
-            //xmlOut = XMLOutputFactory.newFactory();
             xmlOut = XMLOutputFactory.newInstance();
         }
+        _initFactories(xmlIn, xmlOut);
+        _xmlInputFactory = xmlIn;
+        _xmlOutputFactory = xmlOut;
+    }
+    
+    protected void _initFactories(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
+    {
         // Better ensure namespaces get built properly, so:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         // and for parser, force coalescing as well (much simpler to use)
         xmlIn.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-        _xmlInputFactory = xmlIn;
-        _xmlOutputFactory = xmlOut;
     }
 
     /**
@@ -131,6 +133,69 @@ public class XmlFactory extends JsonFactory
         return ModuleVersion.instance.version();
     }
 
+    /*
+    /**********************************************************
+    /* Serializable overrides
+    /**********************************************************
+     */
+
+    /**
+     * Hiding place for JDK-serialization unthawed factories...
+     */
+    protected transient String _jdkXmlInFactory;
+
+    /**
+     * Hiding place for JDK-serialization unthawed factories...
+     */
+    protected transient String _jdkXmlOutFactory;
+
+    /**
+     * Method that we need to override to actually make restoration go
+     * through constructors etc.
+     */
+    @Override // since JsonFactory already implemented it
+    protected Object readResolve() {
+        if (_jdkXmlInFactory == null) {
+            throw new IllegalStateException("No XMLInputFactory class name read during JDK deserialization");
+        }
+        if (_jdkXmlOutFactory == null) {
+            throw new IllegalStateException("No XMLOutputFactory class name read during JDK deserialization");
+        }
+        try {
+            XMLInputFactory inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).newInstance();
+            XMLOutputFactory outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).newInstance();
+            return new XmlFactory(_objectCodec, inf, outf);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    /**
+     * In addition to default serialization, which mostly works, need
+     * to handle case of XML factories, hence override.
+     */
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        _jdkXmlInFactory = in.readUTF();
+        _jdkXmlOutFactory = in.readUTF();
+    }
+
+    /**
+     * In addition to default serialization, which mostly works, need
+     * to handle case of XML factories, hence override.
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(_xmlInputFactory.getClass().getName());
+        out.writeUTF(_xmlOutputFactory.getClass().getName());
+    }
+    
     /*
     /**********************************************************
     /* Configuration, XML-specific
@@ -280,6 +345,12 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
+    @Override
+    public ToXmlGenerator createGenerator(OutputStream out) throws IOException
+    {
+        return createGenerator(out, JsonEncoding.UTF8);
+    }
+    
     @Override
     public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
     {

@@ -1,0 +1,84 @@
+package com.fasterxml.jackson.dataformat.xml;
+
+import java.io.*;
+
+import javax.xml.namespace.QName;
+
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+
+/**
+ * Unit test related to core [Issue#31] (https://github.com/FasterXML/jackson-core/issues/31)
+ * as it relates to XmlFactory.
+ */
+public class TestJDKSerializability extends XmlTestBase
+{
+    public void testJsonFactorySerializable() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        String origXml = "<root><a>text</a></root>";
+        assertEquals(origXml, _writeXml(f, false));
+
+        // Ok: freeze dry factory, thaw, and try to use again:
+        byte[] frozen = jdkSerialize(f);
+        XmlFactory f2 = jdkDeserialize(frozen);
+        assertNotNull(f2);
+        assertEquals(origXml, _writeXml(f2, false));
+
+        // Let's also try byte-based variant, for fun...
+        assertEquals(origXml, _writeXml(f2, true));
+    }
+
+    /*
+    /**********************************************************
+    /* Helper methods
+    /**********************************************************
+     */
+    
+    protected byte[] jdkSerialize(Object o) throws IOException
+    {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream(1000);
+        ObjectOutputStream obOut = new ObjectOutputStream(bytes);
+        obOut.writeObject(o);
+        obOut.close();
+        return bytes.toByteArray();
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> T jdkDeserialize(byte[] raw) throws IOException
+    {
+        ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(raw));
+        try {
+            return (T) objIn.readObject();
+        } catch (ClassNotFoundException e) {
+            fail("Missing class: "+e.getMessage());
+            return null;
+        } finally {
+            objIn.close();
+        }
+    }
+    
+    protected String _writeXml(XmlFactory f, boolean useBytes) throws IOException
+    {
+        if (useBytes) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            ToXmlGenerator jg = f.createGenerator(bytes);
+            _write(f, jg);
+            return bytes.toString("UTF-8");
+        }
+        StringWriter sw = new StringWriter();
+        ToXmlGenerator jg = f.createGenerator(sw);
+        _write(f, jg);
+        return sw.toString();
+    }
+        
+    protected void _write(JsonFactory f, ToXmlGenerator jg) throws IOException
+    {
+        jg.setNextName(new QName("root"));
+        jg.writeStartObject();
+        jg.writeFieldName("a");
+        jg.writeString("text");
+        jg.writeEndObject();
+        jg.close();
+    }
+}
