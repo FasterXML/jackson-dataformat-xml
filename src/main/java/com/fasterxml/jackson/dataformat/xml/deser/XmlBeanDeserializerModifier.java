@@ -14,7 +14,10 @@ import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
  */
 public class XmlBeanDeserializerModifier
     extends BeanDeserializerModifier
+    implements java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Virtual name used for text segments.
      */

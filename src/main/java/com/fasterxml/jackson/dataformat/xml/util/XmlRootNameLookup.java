@@ -9,13 +9,15 @@ import com.fasterxml.jackson.databind.type.ClassKey;
 import com.fasterxml.jackson.databind.util.LRUMap;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
-
 /**
  * Helper class used for efficiently finding root element name used with
  * XML serializations.
  */
 public class XmlRootNameLookup
+    implements java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * For efficient operation, let's try to minimize number of times we
      * need to introspect root element name to use.

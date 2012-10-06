@@ -15,8 +15,14 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
  * with XML-specific one; mostly to ensure that attribute properties are output
  * before element properties.
  */
-public class XmlBeanSerializerModifier extends BeanSerializerModifier
+public class XmlBeanSerializerModifier
+    extends BeanSerializerModifier
+    implements java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
+    public XmlBeanSerializerModifier() { }
+    
     /*
     /**********************************************************
     /* Overridden methods

@@ -23,8 +23,11 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
  * is bit briefer (and uglier...).
  */
 public class DefaultXmlPrettyPrinter
-    implements XmlPrettyPrinter
+    implements XmlPrettyPrinter,
+        java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Interface that defines objects that can produce indentation used
      * to separate object entries and array values. Indentation in this

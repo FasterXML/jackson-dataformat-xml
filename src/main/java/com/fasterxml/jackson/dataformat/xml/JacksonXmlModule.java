@@ -11,8 +11,12 @@ import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
  * Module that implements most functionality needed to support producing and
  * consuming XML instead of JSON.
  */
-public class JacksonXmlModule extends SimpleModule
+public class JacksonXmlModule
+    extends SimpleModule
+    implements java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Determination of whether indexed properties (arrays, Lists) that are not explicitly
      * annotated (with {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
