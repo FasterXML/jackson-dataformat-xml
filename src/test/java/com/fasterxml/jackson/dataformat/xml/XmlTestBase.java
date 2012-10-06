@@ -273,4 +273,12 @@ public abstract class XmlTestBase
         br.close();
         return sb.toString();
     }
+
+    public String jaxbSerialized(Object ob) throws Exception
+    {
+        StringWriter sw = new StringWriter();
+        javax.xml.bind.JAXB.marshal(ob, sw);
+        sw.close();
+        return sw.toString();
+    }
 }
