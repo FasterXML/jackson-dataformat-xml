@@ -26,6 +26,9 @@ Missing functionality is tracked via [Issue tracker](./issues).
 There are older versions (1.9.2)  available, which work with older Jackson versions (0.6.2): this is maintained on "1.9" branch,
 and uses different group id ("com.fasterxml" as well as artifact id ("jackson-xml-databind")
 
+Upcoming version 2.1 should have feature set that is very close to XML/JAXB use cases,
+and specifically adds formerly missing support for "unwrapped Lists".
+
 ## Maven dependency
 
 To use Jackson 2.x compatible version of this extension on Maven-based projects, use following dependency:
@@ -44,6 +47,21 @@ Although module implements low-level (`JsonFactory` / `JsonParser` / `JsonGenera
 most usage is through data-binding level. This because a small number of work-arounds have been added
 at data-binding level, to work around XML peculiarities: that is, stream of `JsonToken`s that parser
 produces has idiosyncracies that need special handling.
+
+Usually you either create `XmlMapper` simply by:
+
+    XmlMapper mapper = new XmlMapper();
+
+but in case you need to configure settings, you will want to do:
+
+    JacksonXmlModule module = new JacksonXmlModule();
+    // and then configure, for example:
+    module.setDefaultUseWrapper(false);
+    XmlMapper xmlMapper = new XmlMapper(module);
+    // and you can also configure AnnotationIntrospectors etc here:
+
+as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
+`XmlMapper` simply constructs module with default settings.
 
 ## Serializing POJOs as XML
 
@@ -86,6 +104,18 @@ In addition to standard [Jackson annotations](jackson-annotations) and optional 
  * `@JacksonXmlText` allows specifying that value of one property is to be serialized as "unwrapped" text, and not in an element.
 
 for longer description, check out [XML module annotations](jackson-dataformat/wiki/JacksonXmlAnnotations).
+
+## Known Limitations
+
+Currently, following limitations exist beyond basic Jackson (JSON) limitations:
+
+* Root value should be a POJO; and specifically following types can be serialized as properties but not as root values:
+ * Java arrays
+ * `java.util.Collection` values (Lists, Sets)
+* Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
+ * Unwrapped List/array support is added in Jackson 2.1 (2.0 does NOT support them; arrays are always wrapped)
+ * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
+ * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
 
 # See Also
 
