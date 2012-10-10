@@ -113,7 +113,7 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * Note: compared to base implementation by {@link ObjectMapper},
+     * Note: compared to base implementation by {@link JsonFactory},
      * here the copy will actually share underlying XML input and
      * output factories, as there is no way to make copies of those.
      * 
