@@ -1,12 +1,18 @@
 Project: jackson-dataformat-xml
 
-Version: 2.0.5
+Version: 2.0.6
 
 Release date:
-  05-Sep-2012
+  11-Oct-2012
 
 Description:
-  Another patch release for 2.0.
+  Another patch release for 2.0; no functional changes
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.0.5 (05-Sep-2012)
 
 Fixes:
 
@@ -14,9 +20,6 @@ Fixes:
   for POJOs.
  (reported by 'farfalena'@git)
 
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.0.4 (26-Jun-2012)
 
