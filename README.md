@@ -17,7 +17,9 @@ Specifically:
  * What should be guaranteed is that any XML written using this module must be readable using module as well: that is, we do aim for full XML serialization.
  * From above: there are XML constructs that module will not be able to handle; including some cases JAXB supports
  * This module may, however, also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
- 
+
+[![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-dataformat-xml-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-dataformat-xml-master/)
+
 # Status
 
 Version 2.0 works for significant number of XML/JAXB use cases.
