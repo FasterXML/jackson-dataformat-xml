@@ -21,6 +21,8 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlSerializerProvider extends DefaultSerializerProvider
 {
+    private static final long serialVersionUID = 8525947864862035821L;
+
     /**
      * If all we get to serialize is a null, there's no way to figure out
      * expected root name; so let's just default to something like "&lt;null>"...

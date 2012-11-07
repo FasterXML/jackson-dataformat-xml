@@ -19,6 +19,8 @@ import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 public class WrapperHandlingDeserializer
     extends DelegatingDeserializer
 {
+    private static final long serialVersionUID = 1L;
+
     protected final Set<String> _namesToWrap;
     
     /*
