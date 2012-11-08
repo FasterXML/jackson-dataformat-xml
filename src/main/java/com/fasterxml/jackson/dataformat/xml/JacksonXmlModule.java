@@ -28,5 +28,8 @@ public class JacksonXmlModule extends SimpleModule
 
         // as well as AnnotationIntrospector
         context.insertAnnotationIntrospector(XML_ANNOTATION_INTROSPECTOR);
+
+	// [Issue#41]: must call syper method as well
+        super.setupModule(context);
     }    
 }

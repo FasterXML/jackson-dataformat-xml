@@ -1,16 +1,25 @@
 Project: jackson-dataformat-xml
 
-Version: 2.0.6
+Version: 2.0.7
 
 Release date:
-  11-Oct-2012
+  xx-Nov-2012
 
 Description:
-  Another patch release for 2.0; no functional changes
+  Another patch release for 2.0
+
+Fixes:
+
+* [Issue#41]: Custom (de)serializers not getting registered with
+  JacksonXmlModule.
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.0.6 (11-Oct-2012)
+
+No functional changes
 
 2.0.5 (05-Sep-2012)
 
