@@ -93,6 +93,14 @@ public final class ToXmlGenerator
      */
 
     final protected XMLStreamWriter2 _xmlWriter;
+
+    final protected XMLStreamWriter _originalXmlWriter;
+    
+    /**
+     * Marker flag set if the underlying stream writer has to emulate
+     * Stax2 API: this is problematic if trying to use {@link #writeRaw} calls.
+     */
+    final protected boolean _stax2Emulation;
     
     final protected IOContext _ioContext;
 
@@ -153,7 +161,9 @@ public final class ToXmlGenerator
         super(genericGeneratorFeatures, codec);
         _xmlFeatures = xmlFeatures;
         _ioContext = ctxt;
+        _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
+        _stax2Emulation = (_xmlWriter != sw);
         _xmlPrettyPrinter = (_cfgPrettyPrinter instanceof XmlPrettyPrinter) ?
         		(XmlPrettyPrinter) _cfgPrettyPrinter : null;
     }
@@ -499,6 +509,10 @@ public final class ToXmlGenerator
     @Override
     public void writeRaw(String text) throws IOException, JsonGenerationException
     {
+        // [Issue#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRaw");
+        }
         try {
             _xmlWriter.writeRaw(text);
         } catch (XMLStreamException e) {
@@ -509,6 +523,10 @@ public final class ToXmlGenerator
     @Override
     public void writeRaw(String text, int offset, int len) throws IOException, JsonGenerationException
     {
+        // [Issue#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRaw");
+        }
         try {
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
@@ -519,6 +537,10 @@ public final class ToXmlGenerator
     @Override
     public void writeRaw(char[] text, int offset, int len) throws IOException, JsonGenerationException
     {
+        // [Issue#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRaw");
+        }
         try {
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
@@ -957,5 +979,17 @@ public final class ToXmlGenerator
     protected void handleMissingName()
     {
         throw new IllegalStateException("No element/attribute name specified when trying to output element");
+    }
+
+    /**
+     * Method called 
+     */
+    protected void  _reportUnimplementedStax2(String missingMethod) throws IOException
+    {
+        throw new JsonGenerationException("Underlying Stax XMLStreamWriter (of type "
+                +_originalXmlWriter.getClass().getName()
+                +") does not implement Stax2 API natively and is missing method '"
+                +missingMethod+"': this breaks functionality such as indentation that relies on it. "
+                +"You need to upgrade to using compliant Stax implementation like Woodstox or Aalto");
     }
 }

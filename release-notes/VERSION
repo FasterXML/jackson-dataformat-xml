@@ -3,6 +3,8 @@ Version: 2.1.1 (08-Oct-2012)
 
 Fixes:
 
+* [Issue#39]: Improve error reporting when trying to use non-Stax2
+  implementation, indentation
 * [Issue#41]: Custom (de)serializer registration not working with
   JacksonXmlModule
  (reported by matejj@github)
