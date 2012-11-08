@@ -20,6 +20,8 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlMapper extends ObjectMapper
 {
+    private static final long serialVersionUID = -724333029147285918L;
+
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
     
     // need to hold on to module instance just in case copy() is used

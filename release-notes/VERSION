@@ -1,9 +1,17 @@
 Project: jackson-dataformat-xml
+Version: 2.1.1 (08-Oct-2012)
 
-Version: 2.1.0
+Fixes:
 
-Release date:
-  08-Oct-2012
+* [Issue#41]: Custom (de)serializer registration not working with
+  JacksonXmlModule
+ (reported by matejj@github)
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.1.0 (08-Oct-2012)
 
 Description:
 
@@ -16,10 +24,6 @@ Description:
 * [Issue#33]: Ignore attributes of elements for "List" objects
 * [Issue#36]: Add 'JacksonXmlModule.setXMLTextElementName()' to allow
   matching 'value' text property of JAXB beans.
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.0.5 (27-Jul-2012)
 

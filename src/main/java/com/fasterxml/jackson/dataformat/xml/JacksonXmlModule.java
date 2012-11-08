@@ -66,6 +66,11 @@ public class JacksonXmlModule
             XmlMapper m = (XmlMapper) context.getOwner();
             m.setXMLTextElementName(_cfgNameForTextElement);
         }
+
+        /* Usually this would be the first call; but here anything added will
+         * be stuff user may has added, so do it afterwards instead.
+         */
+        super.setupModule(context);
     }    
 
     /*

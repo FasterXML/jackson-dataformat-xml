@@ -3,6 +3,9 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.io.*;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -66,6 +69,17 @@ public class TestSerialization extends XmlTestBase
     static class NsRootBean
     {
         public String value = "abc";
+    }
+
+    static class CustomSerializer extends StdScalarSerializer<String>
+    {
+        public CustomSerializer() { super(String.class); }
+        
+        @Override
+        public void serialize(String value, JsonGenerator jgen,
+                SerializerProvider provider) throws IOException {
+            jgen.writeString("custom:"+value);
+        }
     }
     
     /*
@@ -161,6 +175,15 @@ public class TestSerialization extends XmlTestBase
                 +"<b>2</b>"
                 +"</map></MapBean>",
                 xml);
+    }
+
+    // for [Issue#41]
+    public void testCustomSerializer() throws Exception
+    {
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.addSerializer(String.class, new CustomSerializer());
+        XmlMapper xml = new XmlMapper(module);
+        assertEquals("<String>custom:foo</String>", xml.writeValueAsString("foo"));
     }
     
     // manual 'test' to see "what would JAXB do?"
