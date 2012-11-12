@@ -38,7 +38,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.0.5</version>
+      <version>2.1.1</version>
     </dependency>
 
 (or whatever version is most up-to-date at the moment)
