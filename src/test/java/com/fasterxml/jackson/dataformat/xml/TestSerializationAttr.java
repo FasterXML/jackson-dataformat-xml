@@ -18,13 +18,13 @@ public class TestSerializationAttr extends XmlTestBase
     @JacksonXmlRootElement(localName="test", namespace="http://root")
     static class Issue19Bean
     {
-    	@JsonProperty
+        @JsonProperty
         @JacksonXmlProperty(namespace = "http://my.ns")
-    	public boolean booleanA = true;
+        public boolean booleanA = true;
 
-    	@JsonProperty
+        @JsonProperty
         @JacksonXmlProperty(isAttribute=true)
-    	public String id = "abc";
+        public String id = "abc";
     }
 
     public class Jurisdiction {
@@ -33,7 +33,7 @@ public class TestSerializationAttr extends XmlTestBase
         @JacksonXmlProperty(isAttribute=true)
         protected int value = 13;
     }
-
+    
     /*
     /**********************************************************
     /* Set up
