@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.fasterxml.jackson.databind.ser.BeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
-
 
 /**
  * Specific sub-class of {@link BeanSerializer} needed to take care
@@ -170,6 +170,63 @@ public class XmlBeanSerializer extends BeanSerializer
         }
     }
 
+    @Override
+    protected void serializeFieldsFiltered(Object bean, JsonGenerator jgen0,
+            SerializerProvider provider)
+        throws IOException, JsonGenerationException
+    {
+        final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
+        
+        final BeanPropertyWriter[] props;
+        if (_filteredProps != null && provider.getSerializationView() != null) {
+            props = _filteredProps;
+        } else {
+            props = _props;
+        }
+        final BeanPropertyFilter filter = findFilter(provider);
+        // better also allow missing filter actually..
+        if (filter == null) {
+            serializeFields(bean, jgen0, provider);
+            return;
+        }
+
+        final int attrCount = _attributeCount;
+        if (attrCount > 0) {
+            xgen.setNextIsAttribute(true);
+        }
+        final int textIndex = _textPropertyIndex;
+        final QName[] xmlNames = _xmlNames;
+
+        int i = 0;
+        try {
+            for (final int len = props.length; i < len; ++i) {
+                if (i == attrCount) {
+                    xgen.setNextIsAttribute(false);
+                }
+                // also: if this is property to write as text ("unwrap"), need to:
+                if (i == textIndex) {
+                    xgen.setNextIsUnwrapped(true);
+                }
+                xgen.setNextName(xmlNames[i]);
+                BeanPropertyWriter prop = props[i];
+                if (prop != null) { // can have nulls in filtered list
+                    filter.serializeAsField(bean, xgen, provider, prop);
+                }
+            }
+            if (_anyGetterWriter != null) {
+                _anyGetterWriter.getAndSerialize(bean, xgen, provider);
+            }
+        } catch (Exception e) {
+            String name = (i == props.length) ? "[anySetter]" : props[i].getName();
+            wrapAndThrow(provider, e, bean, name);
+        } catch (StackOverflowError e) {
+            JsonMappingException mapE = new JsonMappingException("Infinite recursion (StackOverflowError)", e);
+            String name = (i == props.length) ? "[anySetter]" : props[i].getName();
+            mapE.prependPath(new JsonMappingException.Reference(bean, name));
+            throw mapE;
+        }
+    }
+    
     @Override
     public void serializeWithType(Object bean, JsonGenerator jgen, SerializerProvider provider,
             TypeSerializer typeSer)

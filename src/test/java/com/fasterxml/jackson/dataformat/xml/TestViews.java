@@ -1,9 +1,15 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /*
  * Tests for ('Json') Views, other filtering.
@@ -39,8 +45,31 @@ public class TestViews extends XmlTestBase
     @JsonInclude(JsonInclude.Include.NON_NULL)
     static class NonNullBean
     {
-    	public String nullName = null;
-    	public String name = "Bob";
+        public String nullName = null;
+        public String name = "Bob";
+    }
+
+    @JsonFilter("filter44")
+    public class Issue44Bean {
+        @JacksonXmlProperty(isAttribute=true)
+        protected String first = "abc";
+
+        public int second = 13;
+    }
+
+    /*
+    /**********************************************************
+    /* Set up
+    /**********************************************************
+     */
+
+    protected XmlMapper _xmlMapper;
+
+    // let's actually reuse XmlMapper to make things bit faster
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        _xmlMapper = new XmlMapper();
     }
     
     /*
@@ -83,8 +112,20 @@ public class TestViews extends XmlTestBase
 
     public void testNullSuppression() throws Exception
     {
-        ObjectMapper xmlMapper = new XmlMapper();
-        String xml = xmlMapper.writeValueAsString(new NonNullBean());
+        String xml = _xmlMapper.writeValueAsString(new NonNullBean());
         assertEquals("<NonNullBean><name>Bob</name></NonNullBean>", xml);
+    }
+
+    public void testIssue44() throws IOException
+    {
+        String exp = "<Issue44Bean first=\"abc\"><second>13</second></Issue44Bean>";
+        Issue44Bean bean = new Issue44Bean();
+
+        FilterProvider prov = new SimpleFilterProvider().addFilter("filter44",
+                SimpleBeanPropertyFilter.serializeAllExcept("filterMe"));
+        ObjectWriter writer = _xmlMapper.writer(prov);
+
+        // as well as with proper filter
+        assertEquals(exp, writer.writeValueAsString(bean));
     }
 }

@@ -12,6 +12,7 @@ Fixes:
 
 * [Issue#41]: Custom (de)serializers not getting registered with
   JacksonXmlModule.
+* [Issue#44]: Problems with Filters, attribute output
 
 ------------------------------------------------------------------------
 === History: ===
