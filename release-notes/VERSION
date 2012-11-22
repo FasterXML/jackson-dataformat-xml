@@ -1,5 +1,16 @@
 Project: jackson-dataformat-xml
-Version: 2.1.1 (12-Nov-2012)
+Version: 2.1.2 (xx-xx-2012)
+
+Fixes:
+
+* [Issue#44]: Problems with FilterProvider, serialization, annotations
+ (reported by lalmeras@github)
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.1.1 (12-Nov-2012)
 
 Fixes:
 
@@ -8,10 +19,6 @@ Fixes:
 * [Issue#41]: Custom (de)serializer registration not working with
   JacksonXmlModule
  (reported by matejj@github)
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.1.0 (08-Oct-2012)
 
