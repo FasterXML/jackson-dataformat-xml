@@ -261,11 +261,13 @@ public final class ToXmlGenerator
      * 
      * @since 2.1.2
      */
-    public final void setNextNameIfMissing(QName name)
+    public final boolean setNextNameIfMissing(QName name)
     {
         if (_nextName == null) {
             _nextName = name;
+            return true;
         }
+        return false;
     }
     
     /**
