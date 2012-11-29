@@ -282,7 +282,12 @@ public final class ToXmlGenerator
     {
         if (wrapperName != null) {
             try {
-                _xmlWriter.writeStartElement(wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                if (_xmlPrettyPrinter != null) {
+                    _xmlPrettyPrinter.writeStartElement(_xmlWriter,
+                            wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                } else {
+                    _xmlWriter.writeStartElement(wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                }
             } catch (XMLStreamException e) {
                 StaxUtil.throwXmlAsIOException(e);
             }
@@ -298,7 +303,11 @@ public final class ToXmlGenerator
         // First: wrapper to close?
         if (wrapperName != null) {
             try {
-                _xmlWriter.writeEndElement();
+                if (_xmlPrettyPrinter != null) {
+                    _xmlPrettyPrinter.writeEndElement(_xmlWriter, _writeContext.getEntryCount());
+                } else {
+                    _xmlWriter.writeEndElement();
+                }
             } catch (XMLStreamException e) {
                 StaxUtil.throwXmlAsIOException(e);
             }
@@ -449,15 +458,15 @@ public final class ToXmlGenerator
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
             } else {
                 if (_xmlPrettyPrinter != null) {
-                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
-                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                			text);
+                    _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                            _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                            text);
                 } else if (checkNextIsUnwrapped()) {
-	                _xmlWriter.writeCharacters(text);
+                    _xmlWriter.writeCharacters(text);
                 } else {
-	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-	                _xmlWriter.writeCharacters(text);
-	                _xmlWriter.writeEndElement();
+                    _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    _xmlWriter.writeCharacters(text);
+                    _xmlWriter.writeEndElement();
                 }
             } 
         } catch (XMLStreamException e) {

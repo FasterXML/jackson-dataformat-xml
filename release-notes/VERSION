@@ -7,6 +7,8 @@ Fixes:
  (reported by matejj@github)
 * [Issue#44]: Problems with FilterProvider, serialization, annotations
  (reported by lalmeras@github)
+* [Issue#46]: Indentation not working for unwrapped Lists
+ (reporte by lalmeras@github)
 
 ------------------------------------------------------------------------
 === History: ===

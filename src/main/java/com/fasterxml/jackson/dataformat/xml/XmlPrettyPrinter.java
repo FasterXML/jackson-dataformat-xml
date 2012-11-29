@@ -15,6 +15,25 @@ import com.fasterxml.jackson.core.PrettyPrinter;
  */
 public interface XmlPrettyPrinter extends PrettyPrinter
 {
+    /**
+     * Method for forcibly writing a start element, without going
+     * through Jackson generator (and thus, without updating currently
+     * active element stack)
+     * 
+     * @since 2.1
+     */
+    public void writeStartElement(XMLStreamWriter2 sw,
+            String nsURI, String localName) throws XMLStreamException;
+
+    /**
+     * Method for forcibly writing an end element, without going
+     * through Jackson generator (and thus, without updating currently
+     * active element stack)
+     * 
+     * @since 2.1
+     */
+    public void writeEndElement(XMLStreamWriter2 sw, int nrOfEntries) throws XMLStreamException;
+
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, String text)
         throws XMLStreamException;

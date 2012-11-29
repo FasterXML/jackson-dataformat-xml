@@ -129,26 +129,26 @@ public class DefaultXmlPrettyPrinter
     
     @Override
     public void beforeArrayValues(JsonGenerator jgen) throws IOException, JsonGenerationException {
-		// never called for ToXmlGenerator
+        // never called for ToXmlGenerator
     }
 
     @Override
     public void writeStartArray(JsonGenerator jgen)
     		throws IOException, JsonGenerationException
     {
-		// anything to do here?
+        // anything to do here?
     }
 
     @Override
     public void writeArrayValueSeparator(JsonGenerator jgen)  throws IOException, JsonGenerationException {
-		// never called for ToXmlGenerator
+        // never called for ToXmlGenerator
     }
 
     @Override
     public void writeEndArray(JsonGenerator jgen, int nrOfValues)
     		throws IOException, JsonGenerationException
     {
-		// anything to do here?
+        // anything to do here?
     }
     
     /*
@@ -161,16 +161,16 @@ public class DefaultXmlPrettyPrinter
     public void beforeObjectEntries(JsonGenerator jgen)
         throws IOException, JsonGenerationException
     {
-		// never called for ToXmlGenerator
+        // never called for ToXmlGenerator
     }
 
     @Override
     public void writeStartObject(JsonGenerator jgen) throws IOException, JsonGenerationException
     {
-		if (!_objectIndenter.isInline()) {
-			if (_nesting > 0) {
-	        	_objectIndenter.writeIndentation(jgen, _nesting);
-			}
+        if (!_objectIndenter.isInline()) {
+            if (_nesting > 0) {
+                _objectIndenter.writeIndentation(jgen, _nesting);
+            }
             ++_nesting;
         }
         ((ToXmlGenerator) jgen)._handleStartObject();
@@ -178,14 +178,14 @@ public class DefaultXmlPrettyPrinter
 
     @Override
     public void writeObjectEntrySeparator(JsonGenerator jgen)
-    		throws IOException, JsonGenerationException
+            throws IOException, JsonGenerationException
     {
-		// never called for ToXmlGenerator
+        // never called for ToXmlGenerator
     }
 
     @Override
     public void writeObjectFieldValueSeparator(JsonGenerator jgen) throws IOException, JsonGenerationException {
-		// never called for ToXmlGenerator
+        // never called for ToXmlGenerator
     }
     
     @Override
@@ -196,11 +196,11 @@ public class DefaultXmlPrettyPrinter
         }
         // for empty elements, no need for linefeeds etc:
         if (nrOfEntries > 0) {
-        	_objectIndenter.writeIndentation(jgen, _nesting);
+            _objectIndenter.writeIndentation(jgen, _nesting);
         }
         ((ToXmlGenerator) jgen)._handleEndObject();
     }
-
+    
     /*
     /**********************************************************
     /* XML-specific additions
@@ -208,16 +208,42 @@ public class DefaultXmlPrettyPrinter
      */
 
     @Override
+    public void writeStartElement(XMLStreamWriter2 sw,
+            String nsURI, String localName) throws XMLStreamException
+    {
+        if (!_objectIndenter.isInline()) {
+            if (_nesting > 0) {
+                _objectIndenter.writeIndentation(sw, _nesting);
+            }
+            ++_nesting;
+        }
+        sw.writeStartElement(nsURI, localName);
+    }
+
+    @Override
+    public void writeEndElement(XMLStreamWriter2 sw, int nrOfEntries) throws XMLStreamException
+    {
+        if (!_objectIndenter.isInline()) {
+            --_nesting;
+        }
+        // for empty elements, no need for linefeeds etc:
+        if (nrOfEntries > 0) {
+            _objectIndenter.writeIndentation(sw, _nesting);
+        }
+        sw.writeEndElement();
+    }
+    
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, String text)
   		throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeCharacters(text);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeCharacters(text);
+        sw.writeEndElement();
     }
 
     @Override
@@ -226,12 +252,12 @@ public class DefaultXmlPrettyPrinter
     		char[] buffer, int offset, int len)
         throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeCharacters(buffer, offset, len);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeCharacters(buffer, offset, len);
+        sw.writeEndElement();
     }
 	
     @Override
@@ -286,30 +312,30 @@ public class DefaultXmlPrettyPrinter
         sw.writeEndElement();
     }
 
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, float value)
   		throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeFloat(value);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeFloat(value);
+        sw.writeEndElement();
     }
 	
-	@Override
+    @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName, BigInteger value)
-  		throws XMLStreamException
+            String nsURI, String localName, BigInteger value)
+        throws XMLStreamException
     {
-		if (!_objectIndenter.isInline()) {
-			_objectIndenter.writeIndentation(sw, _nesting);
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
         }
-		sw.writeStartElement(nsURI, localName);
-		sw.writeInteger(value);
-		sw.writeEndElement();
+        sw.writeStartElement(nsURI, localName);
+        sw.writeInteger(value);
+        sw.writeEndElement();
     }
 
     @Override
