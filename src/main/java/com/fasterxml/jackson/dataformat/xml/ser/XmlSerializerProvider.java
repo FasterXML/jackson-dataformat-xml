@@ -91,7 +91,11 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             throws IOException, JsonProcessingException
     {
         ToXmlGenerator xgen = (ToXmlGenerator) jgen;
-        xgen.setNextName(rootName);
+        /* 28-Nov-2012, tatu: We should only initialize the root
+         *  name if no name has been set, as per [Issue#42],
+         *  to allow for custom serializers to work.
+         */
+        xgen.setNextNameIfMissing(rootName);
         xgen.initGenerator();
         String ns = rootName.getNamespaceURI();
         /* [Issue-26] If we just try writing root element with namespace,

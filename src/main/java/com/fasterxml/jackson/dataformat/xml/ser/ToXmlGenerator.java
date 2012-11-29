@@ -254,6 +254,19 @@ public final class ToXmlGenerator
     {
         _nextName = name;
     }
+
+    /**
+     * Method that does same as {@link #setNextName}, unless
+     * a name has already been set.
+     * 
+     * @since 2.1.2
+     */
+    public final void setNextNameIfMissing(QName name)
+    {
+        if (_nextName == null) {
+            _nextName = name;
+        }
+    }
     
     /**
      * Methdod called when a structured (collection, array, map) is being

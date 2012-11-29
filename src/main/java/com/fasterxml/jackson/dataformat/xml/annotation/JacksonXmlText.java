@@ -16,9 +16,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlText
 {
-	/**
-	 * Whether serialization of the property should always be done as basic
-	 * XML text or not; if true, will be, if false, not.
-	 */
-	public boolean value() default true;
+    /**
+     * Whether serialization of the property should always be done as basic
+     * XML text or not; if true, will be, if false, not.
+     */
+    public boolean value() default true;
 }

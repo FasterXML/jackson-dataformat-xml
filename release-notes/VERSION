@@ -3,6 +3,8 @@ Version: 2.1.2 (xx-xx-2012)
 
 Fixes:
 
+* [Issue#42]: Problems with custom serializers, `JsonGenerator.writeObjectField`
+ (reported by matejj@github)
 * [Issue#44]: Problems with FilterProvider, serialization, annotations
  (reported by lalmeras@github)
 
