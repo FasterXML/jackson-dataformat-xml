@@ -58,7 +58,7 @@ public class XmlMapper extends ObjectMapper
             registerModule(module);
         }
     }
-
+    
     // @since 2.1
     @Override
     public XmlMapper copy()

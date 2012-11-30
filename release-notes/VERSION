@@ -8,7 +8,9 @@ Fixes:
 * [Issue#44]: Problems with FilterProvider, serialization, annotations
  (reported by lalmeras@github)
 * [Issue#46]: Indentation not working for unwrapped Lists
- (reporte by lalmeras@github)
+ (reported by lalmeras@github)
+* [Issue#48]: 'XmlMapper.copy()' was missing copy of some fields in `XmlFactory`
+ (reported by Sean B)
 
 ------------------------------------------------------------------------
 === History: ===

@@ -103,6 +103,31 @@ public class XmlFactory extends JsonFactory
         _xmlInputFactory = xmlIn;
         _xmlOutputFactory = xmlOut;
     }
+
+
+    protected XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
+            XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
+            String nameForTextElem)
+    {
+        super(oc);
+        _xmlParserFeatures = xpFeatures;
+        _xmlGeneratorFeatures = xgFeatures;
+        _cfgNameForTextElement = nameForTextElem;
+        if (xmlIn == null) {
+            xmlIn = XMLInputFactory.newInstance();
+        }
+        if (xmlOut == null) {
+            xmlOut = XMLOutputFactory.newInstance();
+        }
+        _initFactories(xmlIn, xmlOut);
+        _xmlInputFactory = xmlIn;
+        _xmlOutputFactory = xmlOut;
+    }
+    /*
+        return new XmlFactory(_xmlParserFeatures, _xmlGeneratorFeatures,
+                _xmlInputFactory, _xmlOutputFactory,
+                );
+     */
     
     protected void _initFactories(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
     {
@@ -125,7 +150,9 @@ public class XmlFactory extends JsonFactory
         _checkInvalidCopy(XmlFactory.class);
         // note: as with base class, must NOT copy mapper reference
         // as to XML factories... must pass as-is, unfortunately?
-        return new XmlFactory(_xmlInputFactory, _xmlOutputFactory);
+        return new XmlFactory(null, _xmlParserFeatures, _xmlGeneratorFeatures,
+                _xmlInputFactory, _xmlOutputFactory,
+                _cfgNameForTextElement);
     }
 
     @Override
@@ -202,8 +229,18 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
     
+    /**
+     * @since 2.1
+     */
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
+    }
+
+    /**
+     * @since 2.2
+     */
+    public String getXMLTextElementName() {
+        return _cfgNameForTextElement;
     }
     
     /*

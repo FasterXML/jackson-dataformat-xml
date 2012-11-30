@@ -2,10 +2,10 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 public class TestVersions extends XmlTestBase
 {
@@ -30,10 +30,20 @@ public class TestVersions extends XmlTestBase
     public void testMapperCopy()
     {
         XmlMapper mapper1 = new XmlMapper();
-        ObjectMapper mapper2 = mapper1.copy();
+        mapper1.setXMLTextElementName("foo");
+        mapper1.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+        
+        XmlMapper mapper2 = mapper1.copy();
         assertNotSame(mapper1, mapper2);
-        assertNotSame(mapper1.getFactory(), mapper2.getFactory());
-        assertEquals(XmlFactory.class, mapper2.getFactory().getClass());
+        XmlFactory xf1 = mapper1.getFactory();
+        XmlFactory xf2 = mapper2.getFactory();
+        assertNotSame(xf1, xf2);
+        assertEquals(XmlFactory.class, xf2.getClass());
+
+        // and [Issue#48] as well, incomplete copy...
+        assertEquals(xf1.getXMLTextElementName(), xf2.getXMLTextElementName());
+        assertEquals(xf1._xmlGeneratorFeatures, xf2._xmlGeneratorFeatures);
+        assertEquals(xf1._xmlParserFeatures, xf2._xmlParserFeatures);
     }
     
     /*
