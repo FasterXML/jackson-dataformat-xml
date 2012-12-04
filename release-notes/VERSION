@@ -1,5 +1,15 @@
 Project: jackson-dataformat-xml
-Version: 2.1.2 (04-Dec-2012)
+Version: 2.2.0 (xx-xxx-2013)
+
+New minor version.
+
+Fixes:
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.1.2 (04-Dec-2012)
 
 Fixes:
 
@@ -11,10 +21,6 @@ Fixes:
  (reported by lalmeras@github)
 * [Issue#48]: 'XmlMapper.copy()' was missing copy of some fields in `XmlFactory`
  (reported by Sean B)
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.1.1 (12-Nov-2012)
 
