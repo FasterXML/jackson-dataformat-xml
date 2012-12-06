@@ -11,8 +11,6 @@ Fixes:
 
 2.1.2 (04-Dec-2012)
 
-Fixes:
-
 * [Issue#42]: Problems with custom serializers, `JsonGenerator.writeObjectField`
  (reported by matejj@github)
 * [Issue#44]: Problems with FilterProvider, serialization, annotations
@@ -24,8 +22,6 @@ Fixes:
 
 2.1.1 (12-Nov-2012)
 
-Fixes:
-
 * [Issue#39]: Improve error reporting when trying to use non-Stax2
   implementation, indentation
 * [Issue#41]: Custom (de)serializer registration not working with
@@ -34,7 +30,7 @@ Fixes:
 
 2.1.0 (08-Oct-2012)
 
-Description:
+New minor version, with following changes:
 
 * [Issue#6]: Add support for "unwrapped lists"; now unwrapped is also default
   when using JAXB annotations (but not with Jackson annotations, for backwards
@@ -48,8 +44,6 @@ Description:
 
 2.0.5 (27-Jul-2012)
 
-Fixes:
-
 * [Issue-29]: Binary value not cleared, leading to duplicated binary data
   for POJOs.
  (reported by 'farfalena'@git)
@@ -60,23 +54,21 @@ no new fixes, dependencies to core components updated.
 
 2.0.3 (15-Jun-2012)
 
-Fixes:
+* [Issue#26]: Root element should use 'default namespace'
 
-* [Issue-26]: Root element should use 'default namespace'
-
-2.0.2 [14-May-2012]
+2.0.2 (14-May-2012)
 
  No fixes, updates dependencies.
 
-2.0.1 [14-Apr-2012]
+2.0.1 (14-Apr-2012)
 
-* Issue-23: Add @JacksonXmlText annotation (alias for JAXB @XmlValue), to
+* [Issue#23]: Add @JacksonXmlText annotation (alias for JAXB @XmlValue), to
   support case of text value with attributes
  (requested by Sebastian D)
 
-2.0.0 [25-Mar-2012]
+2.0.0 (25-Mar-2012)
 
-* Issue-19: Strange behavior with namespace generation when using 'isAttribute = true'
+* [Issue#19]: Strange behavior with namespace generation when using 'isAttribute = true'
   (reported by Morten-Olav H)
 
 [entries for version 1.x not retained)

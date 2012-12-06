@@ -61,6 +61,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
 ,com.fasterxml.jackson.databind
 ,com.fasterxml.jackson.databind.cfg
 ,com.fasterxml.jackson.databind.deser
+,com.fasterxml.jackson.databind.deser.std
 ,com.fasterxml.jackson.databind.introspect, com.fasterxml.jackson.databind.module
 ,com.fasterxml.jackson.databind.jsontype, com.fasterxml.jackson.databind.jsontype.impl
 ,com.fasterxml.jackson.databind.ser, com.fasterxml.jackson.databind.ser.impl, com.fasterxml.jackson.databind.ser.std
