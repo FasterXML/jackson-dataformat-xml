@@ -1,7 +1,17 @@
 Project: jackson-dataformat-xml
-Version: 2.1.2 (04-Dec-2012)
+Version: 2.1.3 (xx-xxx-2013)
 
 Fixes:
+
+* [JACKSON-879]: Missing OSGi import for 'com.fasterxml.jackson.databind.deser.std'
+  causing error trying to load 'DelegatingDeserializer' base class.
+ (reported by Martin S)
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.1.2 (04-Dec-2012)
 
 * [Issue#42]: Problems with custom serializers, `JsonGenerator.writeObjectField`
  (reported by matejj@github)
@@ -12,13 +22,7 @@ Fixes:
 * [Issue#48]: 'XmlMapper.copy()' was missing copy of some fields in `XmlFactory`
  (reported by Sean B)
 
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
-
 2.1.1 (12-Nov-2012)
-
-Fixes:
 
 * [Issue#39]: Improve error reporting when trying to use non-Stax2
   implementation, indentation
@@ -27,8 +31,6 @@ Fixes:
  (reported by matejj@github)
 
 2.1.0 (08-Oct-2012)
-
-Description:
 
 * [Issue#6]: Add support for "unwrapped lists"; now unwrapped is also default
   when using JAXB annotations (but not with Jackson annotations, for backwards
