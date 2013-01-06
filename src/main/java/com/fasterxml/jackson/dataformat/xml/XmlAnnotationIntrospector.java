@@ -63,6 +63,8 @@ public interface XmlAnnotationIntrospector
     public static class Pair extends AnnotationIntrospectorPair
         implements XmlAnnotationIntrospector
     {
+        private static final long serialVersionUID = 1L;
+        
         protected final XmlAnnotationIntrospector _xmlPrimary;
         protected final XmlAnnotationIntrospector _xmlSecondary;
         

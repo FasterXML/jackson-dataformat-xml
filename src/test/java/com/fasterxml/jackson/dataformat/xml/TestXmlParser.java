@@ -73,7 +73,7 @@ public class TestXmlParser extends XmlTestBase
         // Former could be worked around; latter less so at this point.
 
         // So, for now, let's just do sort of minimal verification, manually
-        JsonParser jp = _xmlMapper.getFactory().createJsonParser(xml);
+        JsonParser jp = _xmlMapper.getFactory().createParser(xml);
         
         assertToken(JsonToken.START_OBJECT, jp.nextToken()); // main object
 
@@ -151,7 +151,7 @@ public class TestXmlParser extends XmlTestBase
     {
         final String XML = "<array><elem>value</elem><elem><property>123</property></elem><elem>1</elem></array>";
 
-        FromXmlParser xp = (FromXmlParser) _xmlFactory.createJsonParser(new StringReader(XML));
+        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
@@ -178,7 +178,7 @@ public class TestXmlParser extends XmlTestBase
         xp.close();
 
         // And then with array handling:
-        xp = (FromXmlParser) _xmlFactory.createJsonParser(new StringReader(XML));
+        xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
         assertTrue(xp.getParsingContext().inRoot());
 
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
@@ -223,7 +223,7 @@ public class TestXmlParser extends XmlTestBase
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";
 
-        FromXmlParser xp = (FromXmlParser) _xmlFactory.createJsonParser(new StringReader(XML));
+        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
@@ -245,8 +245,8 @@ public class TestXmlParser extends XmlTestBase
     {
         StringWriter w = new StringWriter();
 
-        JsonParser jp = _xmlFactory.createJsonParser(xml);
-        JsonGenerator jg = _jsonFactory.createJsonGenerator(w);
+        JsonParser jp = _xmlFactory.createParser(xml);
+        JsonGenerator jg = _jsonFactory.createGenerator(w);
         while (jp.nextToken() != null) {
             jg.copyCurrentEvent(jp);
         }

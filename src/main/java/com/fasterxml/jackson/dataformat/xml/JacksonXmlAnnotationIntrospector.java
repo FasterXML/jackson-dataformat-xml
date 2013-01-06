@@ -17,6 +17,8 @@ public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
+    private static final long serialVersionUID = 1L;
+
     /**
      * For backwards compatibility with 2.0, the default behavior is
      * to assume use of List wrapper if no annotations are used.
