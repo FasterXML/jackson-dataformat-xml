@@ -75,8 +75,8 @@ public class TestListDeserialization extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
     {
-    	// easier for eye:
-    	MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+        // easier for eye:
+        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
     /* Issue#17 [https://github.com/FasterXML/jackson-dataformat-xml/issues/17]
@@ -85,17 +85,17 @@ public class TestListDeserialization extends XmlTestBase
      */
     public void testWrappedList() throws Exception
     {
-    	Person p = new Person( "Name", 30 );
-    	p.notes.add("note 1");
-    	p.notes.add("note 2");
-    	String xml = MAPPER.writeValueAsString( p );
-    	Person result = MAPPER.readValue(xml, Person.class);
-    	assertNotNull(result);
-    	assertEquals("Name", result.name);
-    	assertEquals(30, result.age);
-    	assertEquals(2, result.notes.size());
-    	assertEquals("note 1", result.notes.get(0));
-    	assertEquals("note 2", result.notes.get(1));
+        Person p = new Person( "Name", 30 );
+        p.notes.add("note 1");
+        p.notes.add("note 2");
+        String xml = MAPPER.writeValueAsString( p );
+        Person result = MAPPER.readValue(xml, Person.class);
+        assertNotNull(result);
+        assertEquals("Name", result.name);
+        assertEquals(30, result.age);
+        assertEquals(2, result.notes.size());
+        assertEquals("note 1", result.notes.get(0));
+        assertEquals("note 2", result.notes.get(1));
     }
 
     public void testWrappedListWithGetters() throws Exception
@@ -133,9 +133,12 @@ public class TestListDeserialization extends XmlTestBase
                 ListBeanWrapped.class);
         assertNotNull(bean);
         assertNotNull(bean.values);
-        assertEquals(2, bean.values.size());
+        if (bean.values.size() < 2) { // preliminary check
+            fail("List should have 2 entries, had "+bean.values.size());
+        }
         assertEquals(Integer.valueOf(1), bean.values.get(0));
         assertEquals(Integer.valueOf(2), bean.values.get(1));
+        assertEquals(2, bean.values.size());
     }
 
     public void testUnwrappedListBeanDeser() throws Exception
