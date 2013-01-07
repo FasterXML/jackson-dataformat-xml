@@ -245,11 +245,17 @@ public class XmlTokenStream
      */
     protected void skipAttributes()
     {
-        if (_currentState == XML_START_ELEMENT) {
-            _attributeCount = 0;
-        } else if (_currentState == XML_ATTRIBUTE_NAME) {
+        if (_currentState == XML_ATTRIBUTE_NAME) {
             _attributeCount = 0;
             _currentState = XML_START_ELEMENT;
+        } else if (_currentState == XML_START_ELEMENT) {
+            /* 06-Jan-2012, tatu: As per [#47] it looks like we should NOT do anything
+             *   in this particular case, because it occurs when original element had
+             *   no attributes and we now point to the first child element.
+             */
+//              _attributeCount = 0;
+        } else if (_currentState == XML_TEXT) {
+            ; // nothing to do... is it even legal?
         } else {
             throw new IllegalStateException("Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME ("
                     +XML_START_ELEMENT+") but "+_currentState);
