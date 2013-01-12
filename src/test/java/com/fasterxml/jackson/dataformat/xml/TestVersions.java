@@ -26,7 +26,7 @@ public class TestVersions extends XmlTestBase
     }
 
     // @since 2.1
-    // [Issue#28]: ObjectMapper.copy()
+    // [Issue#48]: ObjectMapper.copy()
     public void testMapperCopy()
     {
         XmlMapper mapper1 = new XmlMapper();
@@ -42,6 +42,7 @@ public class TestVersions extends XmlTestBase
 
         // and [Issue#48] as well, incomplete copy...
         assertEquals(xf1.getXMLTextElementName(), xf2.getXMLTextElementName());
+        assertEquals("foo", xf2.getXMLTextElementName());
         assertEquals(xf1._xmlGeneratorFeatures, xf2._xmlGeneratorFeatures);
         assertEquals(xf1._xmlParserFeatures, xf2._xmlParserFeatures);
     }
