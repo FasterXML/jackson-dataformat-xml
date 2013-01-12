@@ -26,7 +26,7 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 */
 public class XmlFactory extends JsonFactory
 {
-    private static final long serialVersionUID = -1885780678226335519L;
+    private static final long serialVersionUID = -2793875812715996133L;
 
     /**
      * Name used to identify XML format

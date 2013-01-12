@@ -26,7 +26,7 @@ public class TestVersions extends XmlTestBase
     }
 
     // @since 2.1
-    // [Issue#28]: ObjectMapper.copy()
+    // [Issue#48]: ObjectMapper.copy()
     public void testMapperCopy()
     {
         XmlMapper mapper1 = new XmlMapper();
