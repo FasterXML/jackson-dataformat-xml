@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.*;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
 
@@ -45,6 +47,25 @@ public class TestVersions extends XmlTestBase
         assertEquals("foo", xf2.getXMLTextElementName());
         assertEquals(xf1._xmlGeneratorFeatures, xf2._xmlGeneratorFeatures);
         assertEquals(xf1._xmlParserFeatures, xf2._xmlParserFeatures);
+    }
+
+    // Another test for [Issue#48]
+    public void testMapperSerialization() throws Exception
+    {
+        XmlMapper mapper1 = new XmlMapper();
+        mapper1.setXMLTextElementName("foo");
+        assertEquals("foo", mapper1.getFactory().getXMLTextElementName());
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream objectStream = new ObjectOutputStream(bytes);
+        objectStream.writeObject(mapper1);
+        objectStream.close();
+        
+        ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+        XmlMapper mapper2 = (XmlMapper) input.readObject();
+        input.close();
+
+        assertEquals("foo", mapper2.getFactory().getXMLTextElementName());
     }
     
     /*

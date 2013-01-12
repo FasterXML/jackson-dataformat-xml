@@ -14,7 +14,6 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
-
 /**
 * Factory used for constructing {@link FromXmlParser} and {@link ToXmlGenerator}
 * instances.
@@ -61,7 +60,7 @@ public class XmlFactory extends JsonFactory
 
     protected transient XMLOutputFactory _xmlOutputFactory;
 
-    protected String _cfgNameForTextElement = null;
+    protected String _cfgNameForTextElement;
     
     /*
     /**********************************************************
@@ -191,7 +190,8 @@ public class XmlFactory extends JsonFactory
         try {
             XMLInputFactory inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).newInstance();
             XMLOutputFactory outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).newInstance();
-            return new XmlFactory(_objectCodec, inf, outf);
+            return new XmlFactory(_objectCodec, _xmlParserFeatures, _xmlGeneratorFeatures,
+                    inf, outf, _cfgNameForTextElement);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (InstantiationException e) {
