@@ -276,7 +276,7 @@ public class DefaultXmlPrettyPrinter
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
             String nsURI, String localName, int value)
-                    throws XMLStreamException
+        throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {
             _objectIndenter.writeIndentation(sw, _nesting);
@@ -289,7 +289,7 @@ public class DefaultXmlPrettyPrinter
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
             String nsURI, String localName, long value)
-                    throws XMLStreamException
+        throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {
             _objectIndenter.writeIndentation(sw, _nesting);

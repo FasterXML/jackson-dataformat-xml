@@ -6,6 +6,7 @@ Fixes:
 * [JACKSON-879]: Missing OSGi import for 'com.fasterxml.jackson.databind.deser.std'
   causing error trying to load 'DelegatingDeserializer' base class.
  (reported by Martin S)
+* [Issue#45]: Indentation should not be added if element only has attributes
 * More fixes to [Issue#48], wrt thaw/unthaw
 
 ------------------------------------------------------------------------
