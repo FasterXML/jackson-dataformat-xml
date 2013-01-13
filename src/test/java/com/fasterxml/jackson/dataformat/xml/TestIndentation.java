@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class TestIndentation extends XmlTestBase
 {
@@ -25,6 +26,19 @@ public class TestIndentation extends XmlTestBase
         
         public IntWrapperBean() { }
         public IntWrapperBean(int i) { wrapped = new IntWrapper(i); }
+    }
+
+    // [Issue#45]
+    static class AttrBean {
+        @JacksonXmlProperty(isAttribute=true)
+        public int count = 3;
+    }
+
+    static class AttrBean2 {
+        @JacksonXmlProperty(isAttribute=true)
+        public int count = 3;
+
+        public int value = 14;
     }
     
     /*
@@ -85,7 +99,7 @@ public class TestIndentation extends XmlTestBase
 
         // should have at least one linefeed, space...
         if (xml.indexOf('\n') < 0 || xml.indexOf(' ') < 0) {
-        	fail("No indentation: XML == "+xml);
+            fail("No indentation: XML == "+xml);
         }
         
         // Let's verify we get similar stuff back, first:
@@ -93,5 +107,14 @@ public class TestIndentation extends XmlTestBase
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("b", map.get("a"));
+    }
+
+    // [Issue#45]: Use of attributes should not force linefeed for empty elements
+    public void testWithAttr() throws Exception
+    {
+        String xml = _xmlMapper.writeValueAsString(new AttrBean());
+        assertEquals("<AttrBean count=\"3\"/>", xml);
+        String xml2 = _xmlMapper.writeValueAsString(new AttrBean2());
+        assertEquals("<AttrBean2 count=\"3\">\n  <value>14</value>\n</AttrBean2>", xml2);
     }
 }

@@ -247,7 +247,7 @@ public final class ToXmlGenerator
 
     public void setNextIsUnwrapped(boolean isUnwrapped)
     {
-    	_nextIsUnwrapped = isUnwrapped;
+        _nextIsUnwrapped = isUnwrapped;
     }
     
     public final void setNextName(QName name)
@@ -395,7 +395,9 @@ public final class ToXmlGenerator
         }
         _writeContext = _writeContext.getParent();
         if (_cfgPrettyPrinter != null) {
-            _cfgPrettyPrinter.writeEndObject(this, _writeContext.getEntryCount());
+            // as per [Issue#45], need to suppress indentation if only attributes written:
+            int count = _nextIsAttribute ? 0 : _writeContext.getEntryCount();
+            _cfgPrettyPrinter.writeEndObject(this, count);
         } else {
             _handleEndObject();
         }
