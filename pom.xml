@@ -130,7 +130,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>woodstox-core-asl</artifactId>
-      <version>4.1.2</version>
+      <version>4.1.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
