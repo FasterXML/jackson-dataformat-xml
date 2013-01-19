@@ -45,7 +45,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   <properties>
     <javac.src.version>1.6</javac.src.version>
     <javac.target.version>1.6</javac.target.version>
-    <jackson.core.version>2.1.2</jackson.core.version>
+    <jackson.core.version>2.1.3</jackson.core.version>
     <osgi.export>com.fasterxml.jackson.dataformat.xml
 ,com.fasterxml.jackson.dataformat.xml.annotation
 ,com.fasterxml.jackson.dataformat.xml.deser
@@ -84,7 +84,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.core.version}</version>
+      <version>${jackson.annotations.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -95,7 +95,8 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
-      <version>${jackson.core.version}</version>
+      <!-- no changes since 2.1.2 so -->
+      <version>2.1.2</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
@@ -130,7 +131,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>woodstox-core-asl</artifactId>
-      <version>4.1.2</version>
+      <version>4.1.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
