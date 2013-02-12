@@ -43,6 +43,15 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 
 (or whatever version is most up-to-date at the moment)
 
+Also: you usually also want to make sure that XML library in use is [Woodstox](http://wiki.fasterxml.com/WoodstoxHome) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
+You can do this by adding this in your `pom.xml`:
+
+    <dependency>
+      <groupId>org.codehaus.woodstox</groupId>
+      <artifactId>woodstox-core-asl</artifactId>
+      <version>4.1.4</version>
+    </dependency>
+
 # Usage
 
 Although module implements low-level (`JsonFactory` / `JsonParser` / `JsonGenerator`) abstractions,
