@@ -35,22 +35,26 @@ and specifically adds formerly missing support for "unwrapped Lists".
 
 To use Jackson 2.x compatible version of this extension on Maven-based projects, use following dependency:
 
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.1.3</version>
-    </dependency>
+```xml
+<dependency>
+  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <version>2.1.3</version>
+</dependency>
+```
 
 (or whatever version is most up-to-date at the moment)
 
 Also: you usually also want to make sure that XML library in use is [Woodstox](http://wiki.fasterxml.com/WoodstoxHome) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
 You can do this by adding this in your `pom.xml`:
 
-    <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>woodstox-core-asl</artifactId>
-      <version>4.1.4</version>
-    </dependency>
+```xml
+<dependency>
+  <groupId>org.codehaus.woodstox</groupId>
+  <artifactId>woodstox-core-asl</artifactId>
+  <version>4.1.4</version>
+</dependency>
+```
 
 # Usage
 
@@ -61,15 +65,19 @@ produces has idiosyncracies that need special handling.
 
 Usually you either create `XmlMapper` simply by:
 
-    XmlMapper mapper = new XmlMapper();
+```java
+XmlMapper mapper = new XmlMapper();
+```
 
 but in case you need to configure settings, you will want to do:
 
-    JacksonXmlModule module = new JacksonXmlModule();
-    // and then configure, for example:
-    module.setDefaultUseWrapper(false);
-    XmlMapper xmlMapper = new XmlMapper(module);
-    // and you can also configure AnnotationIntrospectors etc here:
+```java
+JacksonXmlModule module = new JacksonXmlModule();
+// and then configure, for example:
+module.setDefaultUseWrapper(false);
+XmlMapper xmlMapper = new XmlMapper(module);
+// and you can also configure AnnotationIntrospectors etc here:
+```
 
 as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
 `XmlMapper` simply constructs module with default settings.
@@ -78,23 +86,29 @@ as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; defa
 
 Serialization is done very similar to JSON serialization: all that needs to change is `ObjectMapper` instance to use:
 
-    // Important: create XmlMapper; it will use proper factories, workarounds
-    ObjectMapper xmlMapper = new XmlMapper();
-    String xml = xmlMapper.writeValue(new Simple());
+```java
+// Important: create XmlMapper; it will use proper factories, workarounds
+ObjectMapper xmlMapper = new XmlMapper();
+String xml = xmlMapper.writeValue(new Simple());
+```
 
 and with POJO like:
 
-    public class Simple {
-        public int x = 1;
-        public int y = 2;
-    }
+```java
+public class Simple {
+    public int x = 1;
+    public int y = 2;
+}
+```
 
 you would get something like:
 
-    <Simple>
-      <x>1</x>
-      <y>2</y>
-    </Simple>
+```xml
+<Simple>
+  <x>1</x>
+  <y>2</y>
+</Simple>
+```
 
 (except that by default output is not indented: you can enabled indentation using standard Jackson mechanisms)
 
@@ -102,8 +116,10 @@ you would get something like:
 
 Similar to serialization, deserialization is not very different from JSON deserialization:
 
-    ObjectMapper xmlMapper = new XmlMapper();
-    Simple value = xmlMapper.readValue("<Simple><x>1</x><y>2</y></Simple>", Simple.class);
+```java
+ObjectMapper xmlMapper = new XmlMapper();
+Simple value = xmlMapper.readValue("<Simple><x>1</x><y>2</y></Simple>", Simple.class);
+```
 
 ## Additional annotations
 
