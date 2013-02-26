@@ -1,17 +1,19 @@
 Project: jackson-dataformat-xml
-Version: 2.1.3 (19-Jan-2013)
+Version: 2.1.4 (26-Feb-2013)
 
-Fixes:
+No functional changes, just dependency update
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.1.3 (19-Jan-2013)
 
 * [JACKSON-879]: Missing OSGi import for 'com.fasterxml.jackson.databind.deser.std'
   causing error trying to load 'DelegatingDeserializer' base class.
  (reported by Martin S)
 * [Issue#45]: Indentation should not be added if element only has attributes
 * More fixes to [Issue#48], wrt thaw/unthaw
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.1.2 (04-Dec-2012)
 
