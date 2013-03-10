@@ -20,7 +20,7 @@
   <parent>
     <groupId>com.fasterxml</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>4</version>
+    <version>8</version>
   </parent>
 
   <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -46,6 +46,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <javac.src.version>1.6</javac.src.version>
     <javac.target.version>1.6</javac.target.version>
     <jackson.core.version>2.2.0-SNAPSHOT</jackson.core.version>
+    <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
+    <packageVersion.package>com.fasterxml.jackson.dataformat.xml</packageVersion.package>
+
     <osgi.export>com.fasterxml.jackson.dataformat.xml
 ,com.fasterxml.jackson.dataformat.xml.annotation
 ,com.fasterxml.jackson.dataformat.xml.deser
@@ -136,16 +139,20 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </dependencies>
 
   <build>
-    <!--  need to enable filtering to add version info -->
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
-	    <!--  Need to skip known-failing tests for build... -->
-        <plugin>
+      <plugin>
+        <!-- Inherited from oss-base. Generate PackageVersion.java.-->
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <executions>
+          <execution>
+            <id>process-packageVersion</id>
+            <phase>generate-sources</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <!--  Need to skip known-failing tests for build... -->
+      <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire.version}</version>

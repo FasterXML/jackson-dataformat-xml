@@ -6,7 +6,6 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
-
 /**
  * Module that implements most functionality needed to support producing and
  * consuming XML instead of JSON.
@@ -48,7 +47,7 @@ public class JacksonXmlModule
     
     public JacksonXmlModule()
     {
-        super("JackxonXmlModule", ModuleVersion.instance.version());
+        super("JackxonXmlModule", PackageVersion.VERSION);
     }
     
     @Override
