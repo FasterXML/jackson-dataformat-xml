@@ -1,11 +1,12 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.unwrapped;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -48,6 +49,26 @@ public class TestListRoundtrip extends XmlTestBase
       }
     }
 
+    // For [Issue#58]:
+    @JacksonXmlRootElement(localName = "point")
+    static class Point {
+        @JacksonXmlProperty(localName = "x", isAttribute = true)
+        int x;
+        @JacksonXmlProperty(localName = "y", isAttribute = true)
+        int y;
+
+        public Point() { }
+        public Point(int x, int y) { this.x = x; this.y = y; }
+    }
+
+    @JacksonXmlRootElement(localName = "Points")
+    static class PointContainer {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(localName = "point")
+        public List<Point> points;
+    }
+
+    
     /*
     /**********************************************************
     /* Unit tests
@@ -89,4 +110,26 @@ public class TestListRoundtrip extends XmlTestBase
         assertEquals("2", prop2.value);
     }
 
+    public void testListWithAttrOnlyValues() throws Exception
+    {
+        PointContainer obj = new PointContainer();
+        obj.points = new ArrayList<Point>();
+        obj.points.add(new Point(1, 2));
+        obj.points.add(new Point(3, 4));
+        obj.points.add(new Point(5, 6));
+
+        String xml = MAPPER.writeValueAsString(obj);
+
+        PointContainer converted = MAPPER.readValue(xml, PointContainer.class);
+
+        assertEquals(3, converted.points.size());
+        assertNotNull(converted.points.get(0));
+        assertNotNull(converted.points.get(1));
+        assertNotNull(converted.points.get(2));
+
+        assertEquals(2, converted.points.get(0).y);
+        assertEquals(4, converted.points.get(1).y);
+        assertEquals(6, converted.points.get(2).y);
+    }
+    
 }
