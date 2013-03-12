@@ -130,7 +130,7 @@ In addition to standard [Jackson annotations](jackson-annotations) and optional 
  * `@JacksonXmlRootElement` allows specifying XML element to use for wrapping the root element (default uses 'simple name' of the value class)
  * `@JacksonXmlText` allows specifying that value of one property is to be serialized as "unwrapped" text, and not in an element.
 
-for longer description, check out [XML module annotations](jackson-dataformat/wiki/JacksonXmlAnnotations).
+for longer description, check out [XML module annotations](jackson-dataformat-xml/wiki/JacksonXmlAnnotations).
 
 ## Known Limitations
 
