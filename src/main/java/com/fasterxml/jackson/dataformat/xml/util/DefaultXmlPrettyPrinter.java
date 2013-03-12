@@ -467,7 +467,7 @@ public class DefaultXmlPrettyPrinter
         public void writeIndentation(XMLStreamWriter2 sw, int level)
             throws XMLStreamException
         {
-        	sw.writeRaw(SYSTEM_LINE_SEPARATOR);
+            sw.writeRaw(SYSTEM_LINE_SEPARATOR);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
             	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
