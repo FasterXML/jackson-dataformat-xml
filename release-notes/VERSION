@@ -14,6 +14,14 @@ Fixes:
 === History: ===
 ------------------------------------------------------------------------
 
+2.1.3 (19-Jan-2013)
+
+* [JACKSON-879]: Missing OSGi import for 'com.fasterxml.jackson.databind.deser.std'
+  causing error trying to load 'DelegatingDeserializer' base class.
+ (reported by Martin S)
+* [Issue#45]: Indentation should not be added if element only has attributes
+* More fixes to [Issue#48], wrt thaw/unthaw
+
 2.1.2 (04-Dec-2012)
 
 * [Issue#42]: Problems with custom serializers, `JsonGenerator.writeObjectField`
