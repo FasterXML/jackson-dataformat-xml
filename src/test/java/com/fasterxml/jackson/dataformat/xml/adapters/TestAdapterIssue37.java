@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.adapters;
 
 import java.io.UnsupportedEncodingException;
 import java.net.*;

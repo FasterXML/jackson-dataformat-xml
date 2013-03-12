@@ -66,7 +66,7 @@ public class TestListDeserialization extends XmlTestBase
         @JacksonXmlElementWrapper(useWrapping=false)
         public List<Integer> values;
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
