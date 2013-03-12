@@ -14,7 +14,7 @@ public class TestSerializationManual extends XmlTestBase
 
         public Value(int n) { num = n; }
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests

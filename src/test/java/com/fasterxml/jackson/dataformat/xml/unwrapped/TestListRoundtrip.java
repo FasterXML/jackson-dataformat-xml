@@ -4,7 +4,6 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -76,8 +75,8 @@ public class TestListRoundtrip extends XmlTestBase
      */
 
     private final XmlMapper MAPPER = new XmlMapper();
-    { // easier for eye:
-        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
+    { // easier for eye, uncomment for testing
+//        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
     
     public void testParentListRoundtrip() throws Exception
