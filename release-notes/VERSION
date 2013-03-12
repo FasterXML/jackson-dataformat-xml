@@ -5,8 +5,10 @@ New minor version.
 
 Fixes:
 
-* [Issue#47]: First attribute of list value elements ignored
+#47: First attribute of list value elements ignored
  (reported by dewthefifth@github)
+#56: Indenting disables @JacksonXmlText
+ (reported by edrik@github)
 
 ------------------------------------------------------------------------
 === History: ===

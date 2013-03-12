@@ -458,18 +458,19 @@ public final class ToXmlGenerator
         try {
             if (_nextIsAttribute) { // must write attribute name and value with one call
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
+            } else if (checkNextIsUnwrapped()) {
+                // [Issue#56] Should figure out how to prevent indentation for end element
+                //   but for now, let's just make sure structure is correct
+                //if (_xmlPrettyPrinter != null) { ... }
+                _xmlWriter.writeCharacters(text);
+            } else if (_xmlPrettyPrinter != null) {
+                _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                        _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                        text);
             } else {
-                if (_xmlPrettyPrinter != null) {
-                    _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
-                            _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                            text);
-                } else if (checkNextIsUnwrapped()) {
-                    _xmlWriter.writeCharacters(text);
-                } else {
-                    _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                    _xmlWriter.writeCharacters(text);
-                    _xmlWriter.writeEndElement();
-                }
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters(text);
+                _xmlWriter.writeEndElement();
             } 
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -489,16 +490,14 @@ public final class ToXmlGenerator
             } else if (checkNextIsUnwrapped()) {
             	// should we consider pretty-printing or not?
                 _xmlWriter.writeCharacters(text, offset, len);
+            } else if (_xmlPrettyPrinter != null) {
+                _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                        _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                        text, offset, len);
             } else {
-                if (_xmlPrettyPrinter != null) {
-                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
-                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                			text, offset, len);
-                } else {
-	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-	                _xmlWriter.writeCharacters(text, offset, len);
-	                _xmlWriter.writeEndElement();
-                }
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters(text, offset, len);
+                _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -995,11 +994,11 @@ public final class ToXmlGenerator
      */
     protected boolean checkNextIsUnwrapped()
     {
-    	if (_nextIsUnwrapped) {
-    		_nextIsUnwrapped = false;
-    		return true;
-    	}
-    	return false;
+        if (_nextIsUnwrapped) {
+    		    _nextIsUnwrapped = false;
+    		    return true;
+        }
+        return false;
     }
     
     protected void handleMissingName()

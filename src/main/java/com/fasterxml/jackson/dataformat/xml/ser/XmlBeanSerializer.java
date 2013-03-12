@@ -141,8 +141,8 @@ public class XmlBeanSerializer extends BeanSerializer
         }
         final int textIndex = _textPropertyIndex;
         final QName[] xmlNames = _xmlNames;
-        
         int i = 0;
+
         try {
             for (final int len = props.length; i < len; ++i) {
                 if (i == attrCount) {

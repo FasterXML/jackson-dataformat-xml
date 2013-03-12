@@ -117,7 +117,7 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public Boolean isOutputAsText(Annotated ann)
     {
-    	JacksonXmlText prop = ann.getAnnotation(JacksonXmlText.class);
+        JacksonXmlText prop = ann.getAnnotation(JacksonXmlText.class);
         if (prop != null) {
             return prop.value() ? Boolean.TRUE : Boolean.FALSE;
         }

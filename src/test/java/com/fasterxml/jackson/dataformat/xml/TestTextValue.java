@@ -68,8 +68,12 @@ public class TestTextValue extends XmlTestBase
     
     public void testSerializeAsText() throws IOException
     {
-    	String xml = MAPPER.writeValueAsString(new Simple());
-    	assertEquals("<Simple a=\"13\">something</Simple>", xml);
+        String xml = MAPPER.writeValueAsString(new Simple());
+        assertEquals("<Simple a=\"13\">something</Simple>", xml);
+        // [Issue#56]: should work with indentation as well
+        xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(new Simple());
+        // not optimal, but has to do
+        assertEquals("<Simple a=\"13\">something\n</Simple>", xml);
     }
 
     public void testDeserializeAsText() throws IOException

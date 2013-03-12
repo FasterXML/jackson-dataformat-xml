@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamException;
 import org.codehaus.stax2.XMLStreamWriter2;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.util.Instantiatable;
 
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -23,10 +24,10 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
  * is bit briefer (and uglier...).
  */
 public class DefaultXmlPrettyPrinter
-    implements XmlPrettyPrinter,
+    implements XmlPrettyPrinter, Instantiatable<DefaultXmlPrettyPrinter>,
         java.io.Serializable
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1811120944652457526L;
 
     /**
      * Interface that defines objects that can produce indentation used
@@ -87,7 +88,7 @@ public class DefaultXmlPrettyPrinter
      * Number of open levels of nesting. Used to determine amount of
      * indentation to use.
      */
-    protected int _nesting = 0;
+    protected transient int _nesting = 0;
     
     /*
     /**********************************************************
@@ -108,6 +109,17 @@ public class DefaultXmlPrettyPrinter
     }
 
     public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
+
+    /*
+    /**********************************************************
+    /* Instantiatable impl
+    /**********************************************************
+     */
+    
+    @Override
+    public DefaultXmlPrettyPrinter createInstance() {
+        return new DefaultXmlPrettyPrinter();
+    }
 
     /*
     /**********************************************************
