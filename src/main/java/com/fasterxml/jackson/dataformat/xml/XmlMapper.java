@@ -118,6 +118,26 @@ public class XmlMapper extends ObjectMapper
         ((XmlFactory)_jsonFactory).configure(f, state);
         return this;
     }
+
+    public ObjectMapper enable(ToXmlGenerator.Feature f) {
+        ((XmlFactory)_jsonFactory).enable(f);
+        return this;
+    }
+
+    public ObjectMapper enable(FromXmlParser.Feature f) {
+        ((XmlFactory)_jsonFactory).enable(f);
+        return this;
+    }
+
+    public ObjectMapper disable(ToXmlGenerator.Feature f) {
+        ((XmlFactory)_jsonFactory).disable(f);
+        return this;
+    }
+
+    public ObjectMapper disable(FromXmlParser.Feature f) {
+        ((XmlFactory)_jsonFactory).disable(f);
+        return this;
+    }
     
     /*
     /**********************************************************

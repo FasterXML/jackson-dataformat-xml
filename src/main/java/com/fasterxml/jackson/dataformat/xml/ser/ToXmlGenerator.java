@@ -123,6 +123,13 @@ public final class ToXmlGenerator
      */
 
     /**
+     * Marker set when {@link #initGenerator()} has been called or not.
+     * 
+     * @since 2.2
+     */
+    protected boolean _initialized;
+    
+    /**
      * Element or attribute name to use for next output call.
      * Assigned by either code that initiates serialization
      * or bean serializer.
@@ -174,6 +181,10 @@ public final class ToXmlGenerator
      */
     public void initGenerator()  throws IOException, JsonGenerationException
     {
+        if (_initialized) {
+            return;
+        }
+        _initialized = true;
         try {
             if ((_xmlFeatures & Feature.WRITE_XML_1_1.getMask()) != 0) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.1");

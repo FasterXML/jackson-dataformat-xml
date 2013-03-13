@@ -24,9 +24,10 @@ public class TestSerializationManual extends XmlTestBase
     public void testIssue54() throws Exception
     {
         XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION);
         StringWriter sw = new StringWriter();
         ToXmlGenerator generator = (ToXmlGenerator) xmlMapper.getFactory().createGenerator(sw);
-//        generator.initGenerator();
+        generator.initGenerator();
 
         generator.setNextName(new QName("items"));
         generator.writeStartObject();
@@ -42,6 +43,12 @@ public class TestSerializationManual extends XmlTestBase
         generator.close();
         
         String xml = sw.toString();
+        
+        // Remove XML declaration
+        assertTrue(xml.startsWith("<?xml version"));
+        int ix = xml.indexOf("?>");
+        xml = xml.substring(ix+2).trim();
+        
         assertEquals("<items><item><num>13</num></item><item><num>456</num></item></items>", xml);
    }
 }
