@@ -7,6 +7,7 @@ Fixes:
 
 #47: First attribute of list value elements ignored
  (reported by dewthefifth@github)
+#55: Problems deserializing wrapped lists (annotations not properly recognized)
 #56: Indenting disables @JacksonXmlText
  (reported by edrik@github)
 

@@ -36,7 +36,7 @@ public class XmlBeanDeserializerModifier
         int changed = 0;
         for (int i = 0, len = propDefs.size(); i < len; ++i) {
             BeanPropertyDefinition prop = propDefs.get(i);
-            AnnotatedMember acc = prop.getAccessor();
+            AnnotatedMember acc = prop.getMutator();
             // should not be null, but just in case:
             if (acc == null) {
                 continue;
@@ -58,6 +58,7 @@ public class XmlBeanDeserializerModifier
             }
             // second: do we need to handle wrapping (for Lists)?
             PropertyName wrapperName = intr.findWrapperName(acc);
+            
             if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 String localName = wrapperName.getSimpleName();
                 if ((localName != null && localName.length() > 0)
