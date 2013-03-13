@@ -36,7 +36,7 @@ public class XmlBeanDeserializerModifier
         int changed = 0;
         for (int i = 0, len = propDefs.size(); i < len; ++i) {
             BeanPropertyDefinition prop = propDefs.get(i);
-            AnnotatedMember acc = prop.getMutator();
+            AnnotatedMember acc = prop.getPrimaryMember();
             // should not be null, but just in case:
             if (acc == null) {
                 continue;
@@ -46,7 +46,6 @@ public class XmlBeanDeserializerModifier
              * map them is to rename property to have name ""... (and
              * hope this does not break other parts...)
              */
-
             Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
             if (b != null && b.booleanValue()) {
                 // unwrapped properties will appear as 'unnamed' (empty String)
@@ -57,7 +56,7 @@ public class XmlBeanDeserializerModifier
                 continue;
             }
             // second: do we need to handle wrapping (for Lists)?
-            PropertyName wrapperName = intr.findWrapperName(acc);
+            PropertyName wrapperName = prop.getWrapperName();
             
             if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 String localName = wrapperName.getSimpleName();

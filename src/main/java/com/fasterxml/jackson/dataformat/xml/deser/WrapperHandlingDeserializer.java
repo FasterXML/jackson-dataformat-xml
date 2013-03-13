@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 
@@ -67,7 +66,6 @@ public class WrapperHandlingDeserializer
         
         // Let's go through the properties now...
         Iterator<SettableBeanProperty> it = newDelegatee.properties();
-        final AnnotationIntrospector intr = ctxt.getAnnotationIntrospector();
         HashSet<String> unwrappedNames = null;
         while (it.hasNext()) {
             SettableBeanProperty prop = it.next();
@@ -78,8 +76,7 @@ public class WrapperHandlingDeserializer
             if (!TypeUtil.isIndexedType(type)) {
                 continue;
             }
-            AnnotatedMember acc = prop.getMember();
-            PropertyName wrapperName = (acc == null) ? null : intr.findWrapperName(acc);
+            PropertyName wrapperName = prop.getWrapperName();
             // skip anything with wrapper (should work as is)
             if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 continue;

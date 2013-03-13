@@ -24,7 +24,9 @@ public class XmlJaxbAnnotationIntrospector
     extends JaxbAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
-    @Deprecated
+	private static final long serialVersionUID = 6477843393758275877L;
+
+	@Deprecated
     public XmlJaxbAnnotationIntrospector() {
         super();
     }

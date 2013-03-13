@@ -54,7 +54,7 @@ public class XmlBeanSerializerModifier
                 continue;
             }
             PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
-            PropertyName wrapperName = intr.findWrapperName(member);
+            PropertyName wrapperName = bpw.getWrapperName();
 
             // first things first: no wrapping?
             if (wrapperName == null || wrapperName == PropertyName.NO_NAME) {
