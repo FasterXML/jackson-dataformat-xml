@@ -68,7 +68,7 @@ public class TestAdapterIssue37 extends XmlTestBase
     @XmlRootElement(name = "DocWithMapData")
     public static class DocWithMapData
     {
-        @XmlJavaTypeAdapter(value = URLEncoderMapDataAdapter.class, type = MapData.class)
+        @XmlJavaTypeAdapter(value = URLEncoderMapDataAdapter.class) // type = MapData[].class)
         public Map<String, String> mapDatas;
     }
 
@@ -132,9 +132,10 @@ public class TestAdapterIssue37 extends XmlTestBase
         DocWithMapData bean = new DocWithMapData();
         bean.mapDatas = needEncodingMapData;
 
-        assertEquals(
-            "<DocWithMapData><mapDatas><my%2Fkey>my/value</my%2Fkey></mapDatas></DocWithMapData>",
-            _jaxbMapper.writeValueAsString(bean));
+        String xml = _jaxbMapper.writeValueAsString(bean);
+        
+        assertEquals("<DocWithMapData><mapDatas><my%2Fkey>my/value</my%2Fkey></mapDatas></DocWithMapData>",
+                xml);
     }
 
     public void testSimpleKeyMapSimpleAnnotation() throws Exception
