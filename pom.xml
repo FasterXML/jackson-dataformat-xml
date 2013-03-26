@@ -43,8 +43,11 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <javac.src.version>1.6</javac.src.version>
-    <javac.target.version>1.6</javac.target.version>
+    <!-- 25-Mar-2013, tatu: As per #62, revert to 1.5 for 2.1.5; will be 1.6
+            again from 2.2.0 onwards.
+      -->
+    <javac.src.version>1.5</javac.src.version>
+    <javac.target.version>1.5</javac.target.version>
     <jackson.core.version>2.1.4</jackson.core.version>
     <osgi.export>com.fasterxml.jackson.dataformat.xml
 ,com.fasterxml.jackson.dataformat.xml.annotation
