@@ -105,7 +105,7 @@ public class JacksonXmlModule
      * Note that method MUST be called before registering the module; otherwise change
      * will not have any effect.
      * 
-     * @param state Whether to enable or disable "use wrapper for non-annotated List properties"
+     * @param name Virtual name to use when exposing XML character data sections
      * 
      * @since 2.1
      */
