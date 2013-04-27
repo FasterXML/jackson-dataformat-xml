@@ -51,9 +51,9 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
-    protected int _xmlParserFeatures = DEFAULT_XML_PARSER_FEATURE_FLAGS;
+    protected int _xmlParserFeatures;
 
-    protected int _xmlGeneratorFeatures = DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
+    protected int _xmlGeneratorFeatures;
 
     // non-final for setters (why are they needed again?)
     protected transient XMLInputFactory _xmlInputFactory;
@@ -91,16 +91,8 @@ public class XmlFactory extends JsonFactory
     
     public XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
     {
-        super(oc);
-        if (xmlIn == null) {
-            xmlIn = XMLInputFactory.newInstance();
-        }
-        if (xmlOut == null) {
-            xmlOut = XMLOutputFactory.newInstance();
-        }
-        _initFactories(xmlIn, xmlOut);
-        _xmlInputFactory = xmlIn;
-        _xmlOutputFactory = xmlOut;
+        this(oc, DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
+                xmlIn, xmlOut, null);
     }
 
     protected XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
@@ -121,11 +113,6 @@ public class XmlFactory extends JsonFactory
         _xmlInputFactory = xmlIn;
         _xmlOutputFactory = xmlOut;
     }
-    /*
-        return new XmlFactory(_xmlParserFeatures, _xmlGeneratorFeatures,
-                _xmlInputFactory, _xmlOutputFactory,
-                );
-     */
 
     /**
      * @since 2.2.1
