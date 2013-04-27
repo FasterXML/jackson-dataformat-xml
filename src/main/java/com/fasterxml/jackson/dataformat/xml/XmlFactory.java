@@ -103,7 +103,6 @@ public class XmlFactory extends JsonFactory
         _xmlOutputFactory = xmlOut;
     }
 
-
     protected XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
             XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
             String nameForTextElem)
@@ -127,6 +126,19 @@ public class XmlFactory extends JsonFactory
                 _xmlInputFactory, _xmlOutputFactory,
                 );
      */
+
+    /**
+     * @since 2.2.1
+     */
+    protected XmlFactory(XmlFactory src, ObjectCodec oc)
+    {
+        super(src, oc);
+        _xmlParserFeatures = src._xmlParserFeatures;
+        _xmlGeneratorFeatures = src._xmlGeneratorFeatures;
+        _cfgNameForTextElement = src._cfgNameForTextElement;
+        _xmlInputFactory = src._xmlInputFactory;
+        _xmlOutputFactory = src._xmlOutputFactory;
+    }
     
     protected void _initFactories(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
     {
@@ -147,11 +159,7 @@ public class XmlFactory extends JsonFactory
     public XmlFactory copy()
     {
         _checkInvalidCopy(XmlFactory.class);
-        // note: as with base class, must NOT copy mapper reference
-        // as to XML factories... must pass as-is, unfortunately?
-        return new XmlFactory(null, _xmlParserFeatures, _xmlGeneratorFeatures,
-                _xmlInputFactory, _xmlOutputFactory,
-                _cfgNameForTextElement);
+        return new XmlFactory(this, null);
     }
 
     @Override

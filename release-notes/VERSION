@@ -1,19 +1,20 @@
 Project: jackson-dataformat-xml
-Version: 2.2.0 (22-Apr-2013)
+Version: 2.2.1 (xx-May-2013)
 
-New minor version.
+- Fixed problems with `XmlFactory.copy()` not calling underlying JsonFactory
+  settings
 
-Fixes:
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.2.0 (22-Apr-2013)
 
 #47: First attribute of list value elements ignored
  (reported by dewthefifth@github)
 #55: Problems deserializing wrapped lists (annotations not properly recognized)
 #56: Indenting disables @JacksonXmlText
  (reported by edrik@github)
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.1.3 (19-Jan-2013)
 
