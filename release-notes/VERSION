@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.1.5 (xx-Apr-2013)
+Version: 2.1.5 (02-May-2013)
 
 * [Issue#62]: Revert JDK dependency to 1.5 for rest of 2.1.x
 
