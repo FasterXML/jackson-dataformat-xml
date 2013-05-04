@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- |  Copyright 2012 FasterXML.com
- |
- |  Licensed under the Apache License, Version 2.0 (the "License");
- |  you may not use this file except in compliance with the License.
- |  You may obtain a copy of the License at
- |
- |  http://www.apache.org/licenses/LICENSE-2.0
- |
- |  Unless required by applicable law or agreed to in writing, software
- |  distributed under the License is distributed on an "AS IS" BASIS,
- |  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- |  See the License for the specific language governing permissions and
- |  limitations under the License.
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion> 
 
@@ -43,7 +28,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <jackson.core.version>2.2.1-SNAPSHOT</jackson.core.version>
+    <jackson.core.version>2.2.1</jackson.core.version>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 

@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.2.1 (xx-May-2013)
+Version: 2.2.1 (03-May-2013)
 
 - Fixed problems with `XmlFactory.copy()` not calling underlying JsonFactory
   settings
