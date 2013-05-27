@@ -3,7 +3,9 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.util.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 public class TestDeserialization extends XmlTestBase
 {
@@ -18,7 +20,18 @@ public class TestDeserialization extends XmlTestBase
         @JacksonXmlProperty(isAttribute=true, localName="attr")
         public String text = "?";
     }
-    
+
+    static class Optional {
+        @JacksonXmlText
+        public String number = "NOT SET";
+        public String type = "NOT SET";
+    }
+
+    static class Optionals {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<Optional> optional;
+    } 
+
     /*
     /**********************************************************
     /* Unit tests
@@ -81,5 +94,53 @@ public class TestDeserialization extends XmlTestBase
     	// we would just have '{ "person" : "John Smith" }'
     	
     	assertNotNull(map);
+    }
+
+    // // Tests for [Issue#64]
+
+    public void testOptionalAttr() throws Exception
+    {
+        Optional ob = MAPPER.readValue("<phone type='work'>123-456-7890</phone>",
+                Optional.class);
+        assertNotNull(ob);
+                System.err.println("ob: " + ob);
+        assertEquals("123-456-7890", ob.number);
+        assertEquals("work", ob.type);
+    }
+
+    public void testMissingOptionalAttr() throws Exception
+    {
+        Optional ob = MAPPER.readValue("<phone>123-456-7890</phone>",
+                Optional.class);
+        assertNotNull(ob);
+                System.err.println("ob: " + ob);
+        assertEquals("123-456-7890", ob.number);
+        assertEquals("NOT SET", ob.type);
+    }
+
+    public void testMultiOptional() throws Exception
+    {
+        Optionals ob = MAPPER.readValue("<MultiOptional><optional type='work'>123-456-7890</optional></MultiOptional>",
+                Optionals.class);
+        assertNotNull(ob);
+        assertNotNull(ob.optional);
+        assertEquals(1, ob.optional.size());
+//        System.err.println("ob: " + ob); // works fine
+        Optional opt = ob.optional.get(0);
+        assertEquals("123-456-7890", opt.number);
+        assertEquals("work", opt.type);
+    }
+    
+        public void testMultiOptionalWithMissingType() throws Exception
+    {
+            Optionals ob = MAPPER.readValue("<MultiOptional><optional>123-456-7890</optional></MultiOptional>",
+                    Optionals.class);
+            assertNotNull(ob);
+            assertNotNull(ob.optional);
+            assertEquals(1, ob.optional.size());
+//            System.err.println("ob: " + ob); // works fine
+            Optional opt = ob.optional.get(0);
+            assertEquals("123-456-7890", opt.number);
+            assertEquals("NOT SET", opt.type);
     }
 }
