@@ -112,7 +112,6 @@ public class TestDeserialization extends XmlTestBase
         Optional ob = MAPPER.readValue("<phone>123-456-7890</phone>",
                 Optional.class);
         assertNotNull(ob);
-                System.err.println("ob: " + ob);
         assertEquals("123-456-7890", ob.number);
         assertEquals("NOT SET", ob.type);
     }
