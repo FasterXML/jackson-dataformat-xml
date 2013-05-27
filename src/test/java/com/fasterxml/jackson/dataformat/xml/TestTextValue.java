@@ -57,7 +57,17 @@ public class TestTextValue extends XmlTestBase
     {
         public String value;
     }
-    
+
+    // [Issue#66]
+    static class Issue66Bean
+    {
+        @JacksonXmlProperty(isAttribute = true)
+        protected String id;
+
+        @JacksonXmlText
+        protected String textValue;
+    }
+
     /*
     /**********************************************************
     /* Unit tests
@@ -78,16 +88,15 @@ public class TestTextValue extends XmlTestBase
 
     public void testDeserializeAsText() throws IOException
     {
-    	Simple result = MAPPER.readValue("<Simple a='99'>else</Simple>",
-    			Simple.class);
-    	assertEquals(99, result.a);
-    	assertEquals("else", result.text);
+        Simple result = MAPPER.readValue("<Simple a='99'>else</Simple>", Simple.class);
+        assertEquals(99, result.a);
+        assertEquals("else", result.text);
     }
     
     public void testIssue24() throws Exception
     {
-    	final String TEXT = "+/null/this is a long string";
-    	final String XML =
+        final String TEXT = "+/null/this is a long string";
+        final String XML =
     			"<main>\n"
     			+"<com.test.stack name='stack1'>\n"
     			+"<com.test.stack.slot height='0' id='0' name='slot0' width='0'>"
@@ -95,10 +104,10 @@ public class TestTextValue extends XmlTestBase
     			+"</com.test.stack.slot>\n"
     			+"</com.test.stack>\n"
     			+"</main>";
-    	Main main = MAPPER.readValue(XML, Main.class);
-    	assertNotNull(main.stack);
-    	assertNotNull(main.stack.slot);
-    	assertEquals(TEXT, main.stack.slot.value);
+        Main main = MAPPER.readValue(XML, Main.class);
+        assertNotNull(main.stack);
+        assertNotNull(main.stack.slot);
+        assertEquals(TEXT, main.stack.slot.value);
     }
 
     // for [Issue#36]
@@ -112,11 +121,28 @@ public class TestTextValue extends XmlTestBase
         } catch (JsonProcessingException e) {
             verifyException(e, "Unrecognized");
         }
-        
         JacksonXmlModule module = new JacksonXmlModule();
         module.setXMLTextElementName("value");
         XmlMapper mapper = new XmlMapper(module);
         JAXBStyle pojo = mapper.readValue(XML, JAXBStyle.class);
         assertEquals("foo", pojo.value);
+    }
+
+    // [Issue#66], implicit property from "XmlText"
+    public void testIssue66() throws Exception
+    {
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(false);
+        XmlMapper mapper = new XmlMapper(module);
+        final String XML = "<Issue66Bean id=\"id\">text</Issue66Bean>";
+
+        // let's start with deserialization
+        Issue66Bean node = mapper.readValue(XML, Issue66Bean.class);
+        assertEquals("id", node.id);
+        assertEquals("text", node.textValue);
+
+        // Let's serialize too
+        String json = mapper.writeValueAsString(node);
+        assertEquals(XML, json);
     }
 }
