@@ -28,7 +28,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <jackson.core.version>2.2.1</jackson.core.version>
+    <jackson.core.version>2.2.2</jackson.core.version>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 

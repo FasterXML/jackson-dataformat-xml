@@ -6,46 +6,44 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class TestListRoundtrip extends XmlTestBase
 {
     @JacksonXmlRootElement(localName="parents")
     public static class Parents {
-      @JacksonXmlElementWrapper(useWrapping=false)
-      public List<Parent> parent = new ArrayList<Parent>();
+        @JacksonXmlElementWrapper(useWrapping=false)
+        public List<Parent> parent = new ArrayList<Parent>();
     }
 
     @JsonPropertyOrder({ "name", "desc", "prop" })
     public static class Parent {
-      @JacksonXmlProperty(isAttribute=true)
-      public String name;
+        @JacksonXmlProperty(isAttribute=true)
+        public String name;
 
-      public String description;
+        public String description;
       
-      @JacksonXmlElementWrapper(useWrapping=false)
-      public List<Prop> prop = new ArrayList<Prop>();
+        @JacksonXmlElementWrapper(useWrapping=false)
+        public List<Prop> prop = new ArrayList<Prop>();
 
-      public Parent() { }
-      public Parent(String name, String desc) {
-          this.name = name;
-          description = desc;
-      }
+        public Parent() { }
+        public Parent(String name, String desc) {
+            this.name = name;
+            description = desc;
+        }
     }
 
     static class Prop {
-      @JacksonXmlProperty(isAttribute=true)
-      public String name;
+        @JacksonXmlProperty(isAttribute=true)
+        public String name;
 
-      public String value;
+        public String value;
 
-      public Prop() { }
-      public Prop(String name, String value) {
-          this.name = name;
-          this.value = value;
-      }
+        public Prop() { }
+        public Prop(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
     }
 
     // For [Issue#58]:
@@ -67,6 +65,15 @@ public class TestListRoundtrip extends XmlTestBase
         public List<Point> points;
     }
 
+    static class Optional {
+        @JacksonXmlText
+        public String number = "NOT SET";
+        public String type = "NOT SET";
+    }
+    static class Optionals {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<Optional> optional;
+    } 
     
     /*
     /**********************************************************
@@ -129,6 +136,34 @@ public class TestListRoundtrip extends XmlTestBase
         assertEquals(2, converted.points.get(0).y);
         assertEquals(4, converted.points.get(1).y);
         assertEquals(6, converted.points.get(2).y);
+    }
+
+    // // [Issue#64]
+    
+    public void testOptionals() throws Exception
+    {
+        Optionals ob = MAPPER.readValue("<MultiOptional><optional type='work'>123-456-7890</optional></MultiOptional>",
+                Optionals.class);
+        assertNotNull(ob);
+        assertNotNull(ob.optional);
+        assertEquals(1, ob.optional.size());
+//        System.err.println("ob: " + ob); // works fine
+        Optional opt = ob.optional.get(0);
+        assertEquals("123-456-7890", opt.number);
+        assertEquals("work", opt.type);
+    }
+    
+        public void testOptionalsWithMissingType() throws Exception
+    {
+            Optionals ob = MAPPER.readValue("<MultiOptional><optional>123-456-7890</optional></MultiOptional>",
+                    Optionals.class);
+            assertNotNull(ob);
+            assertNotNull(ob.optional);
+            assertEquals(1, ob.optional.size());
+//            System.err.println("ob: " + ob); // works fine
+            Optional opt = ob.optional.get(0);
+            assertEquals("123-456-7890", opt.number);
+            assertEquals("NOT SET", opt.type);
     }
     
 }

@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.util.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
@@ -26,11 +25,6 @@ public class TestDeserialization extends XmlTestBase
         public String number = "NOT SET";
         public String type = "NOT SET";
     }
-
-    static class Optionals {
-        @JacksonXmlElementWrapper(useWrapping = false)
-        public List<Optional> optional;
-    } 
 
     /*
     /**********************************************************
@@ -63,7 +57,7 @@ public class TestDeserialization extends XmlTestBase
     // Issue#14:
     public void testMapWithAttr() throws Exception
     {
-    	final String xml = "<order><person lang='en'>John Smith</person></order>";
+        final String xml = "<order><person lang='en'>John Smith</person></order>";
 
     	/*
     	JsonParser jp = MAPPER.getJsonFactory().createParser(xml);
@@ -80,8 +74,7 @@ public class TestDeserialization extends XmlTestBase
     		}
     	}
     	*/
-    	
-    	Map<?,?> map = MAPPER.readValue(xml, Map.class);
+        Map<?,?> map = MAPPER.readValue(xml, Map.class);
     	
     	// Will result in equivalent of:
     	// { "person" : {
@@ -93,14 +86,14 @@ public class TestDeserialization extends XmlTestBase
     	// which may or may not be what we want. Without attribute
     	// we would just have '{ "person" : "John Smith" }'
     	
-    	assertNotNull(map);
+    	    assertNotNull(map);
     }
 
     // // Tests for [Issue#64]
 
     public void testOptionalAttr() throws Exception
     {
-        Optional ob = MAPPER.readValue("<phone type='work'>123-456-7890</phone>",
+        Optional ob = MAPPER.readValue("<Optional type='work'>123-456-7890</Optional>",
                 Optional.class);
         assertNotNull(ob);
         assertEquals("123-456-7890", ob.number);
@@ -109,36 +102,10 @@ public class TestDeserialization extends XmlTestBase
 
     public void testMissingOptionalAttr() throws Exception
     {
-        Optional ob = MAPPER.readValue("<phone>123-456-7890</phone>",
+        Optional ob = MAPPER.readValue("<Optional>123-456-7890</Optional>",
                 Optional.class);
         assertNotNull(ob);
         assertEquals("123-456-7890", ob.number);
         assertEquals("NOT SET", ob.type);
-    }
-
-    public void testMultiOptional() throws Exception
-    {
-        Optionals ob = MAPPER.readValue("<MultiOptional><optional type='work'>123-456-7890</optional></MultiOptional>",
-                Optionals.class);
-        assertNotNull(ob);
-        assertNotNull(ob.optional);
-        assertEquals(1, ob.optional.size());
-//        System.err.println("ob: " + ob); // works fine
-        Optional opt = ob.optional.get(0);
-        assertEquals("123-456-7890", opt.number);
-        assertEquals("work", opt.type);
-    }
-    
-        public void testMultiOptionalWithMissingType() throws Exception
-    {
-            Optionals ob = MAPPER.readValue("<MultiOptional><optional>123-456-7890</optional></MultiOptional>",
-                    Optionals.class);
-            assertNotNull(ob);
-            assertNotNull(ob.optional);
-            assertEquals(1, ob.optional.size());
-//            System.err.println("ob: " + ob); // works fine
-            Optional opt = ob.optional.get(0);
-            assertEquals("123-456-7890", opt.number);
-            assertEquals("NOT SET", opt.type);
     }
 }
