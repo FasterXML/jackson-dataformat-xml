@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.2.2 (xx-May-2013)
+Version: 2.2.2 (31-May-2013)
 
 #66: @JacksonXmlText should imply existence of property (without explicit marking) 
  (suggested by ShijunK@github)

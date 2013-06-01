@@ -487,5 +487,23 @@ public class XmlTokenStream
                 location.getLineNumber(),
                 location.getColumnNumber());
     }
-    
+
+    // for DEBUGGING
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(Token stream:");
+        sb.append(" state=").append(_currentState);
+        sb.append(" attr#=").append(_attributeCount);
+        sb.append(" nextAttr#=").append(_nextAttributeIndex);
+        sb.append(" name=").append(_localName);
+        sb.append(" text=").append(_textValue);
+        sb.append(" repeat?=").append(_repeatElement);
+        sb.append(" wrapper=[").append(_currentWrapper);
+        sb.append("] repeatElement=").append(_repeatElement);
+        sb.append(" nextName=").append(_nextLocalName);
+        sb.append(")");
+        return sb.toString();
+    }
 }
