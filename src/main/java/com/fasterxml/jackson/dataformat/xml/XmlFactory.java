@@ -373,7 +373,7 @@ public class XmlFactory extends JsonFactory
     
     /*
     /**********************************************************
-    /* Upcoming parts of public API (for 2.1)
+    /* New factory methods (since 2.1)
     /**********************************************************
      */
 
@@ -413,43 +413,26 @@ public class XmlFactory extends JsonFactory
     
     /*
     /**********************************************************
-    /* Overridden parts of public API for generator creation
+    /* Deprecated methods (remove in 2.4?)
     /**********************************************************
      */
     
-    /**
-     *<p>
-     * note: co-variant return type
-     */
+    @Deprecated
     @Override
-    public ToXmlGenerator createJsonGenerator(OutputStream out, JsonEncoding enc)
-        throws IOException
-    {
-        // false -> we won't manage the stream unless explicitly directed to
-        return new ToXmlGenerator(_createContext(out, false),
-                _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+    public ToXmlGenerator createJsonGenerator(OutputStream out, JsonEncoding enc) throws IOException {
+        return createGenerator(out, enc);
     }
 
+    @Deprecated
     @Override
-    public ToXmlGenerator createJsonGenerator(Writer out)
-        throws IOException
-    {
-        return new ToXmlGenerator(_createContext(out, false),
-                _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+    public ToXmlGenerator createJsonGenerator(Writer out) throws IOException {
+        return createGenerator(out);
     }
 
+    @Deprecated
     @Override
-    public ToXmlGenerator createJsonGenerator(File f, JsonEncoding enc)
-        throws IOException
-    {
-        OutputStream out = new FileOutputStream(f);
-        // true -> yes, we have to manage the stream since we created it
-        IOContext ctxt = _createContext(out, true);
-        ctxt.setEncoding(enc);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+    public ToXmlGenerator createJsonGenerator(File f, JsonEncoding enc) throws IOException {
+        return createGenerator(f, enc);
     }
 
     /*
@@ -460,40 +443,6 @@ public class XmlFactory extends JsonFactory
 
     @Override
     protected FromXmlParser _createParser(InputStream in, IOContext ctxt)
-        throws IOException, JsonParseException
-    {
-        return _createJsonParser(in, ctxt);
-    }
-
-    @Override
-    protected FromXmlParser _createParser(Reader r, IOContext ctxt)
-        throws IOException, JsonParseException
-    {
-        return _createJsonParser(r, ctxt);
-    }
-
-    @Override
-    protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt)
-        throws IOException, JsonParseException
-    {
-        return _createJsonParser(data, offset, len, ctxt);
-    }
-    
-    /*
-    /**********************************************************
-    /* Overridden internal factory methods for parser creation
-    /**********************************************************
-     */
-
-    //protected IOContext _createContext(Object srcRef, boolean resourceManaged)
-
-    /**
-     * Overridable factory method that actually instantiates desired
-     * parser.
-     */
-    @Override
-    @Deprecated
-    protected FromXmlParser _createJsonParser(InputStream in, IOContext ctxt)
         throws IOException, JsonParseException
     {
         XMLStreamReader sr;
@@ -511,13 +460,8 @@ public class XmlFactory extends JsonFactory
         return xp;
     }
 
-    /**
-     * Overridable factory method that actually instantiates desired
-     * parser.
-     */
     @Override
-    @Deprecated
-    protected FromXmlParser _createJsonParser(Reader r, IOContext ctxt)
+    protected FromXmlParser _createParser(Reader r, IOContext ctxt)
         throws IOException, JsonParseException
     {
         XMLStreamReader sr;
@@ -535,13 +479,8 @@ public class XmlFactory extends JsonFactory
         return xp;
     }
 
-    /**
-     * Overridable factory method that actually instantiates desired
-     * parser.
-     */
     @Override
-    @Deprecated
-    protected FromXmlParser _createJsonParser(byte[] data, int offset, int len, IOContext ctxt)
+    protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt)
         throws IOException, JsonParseException
     {
         XMLStreamReader sr;
@@ -558,10 +497,54 @@ public class XmlFactory extends JsonFactory
         }
         return xp;
     }
+    
+    /*
+    /**********************************************************
+    /* Deprecated internal factory methods for parser creation
+    /**********************************************************
+     */
+
+    //protected IOContext _createContext(Object srcRef, boolean resourceManaged)
+
+    /**
+     * Overridable factory method that actually instantiates desired
+     * parser.
+     */
+    @Override
+    @Deprecated
+    protected FromXmlParser _createJsonParser(InputStream in, IOContext ctxt)
+        throws IOException, JsonParseException
+    {
+        return _createParser(in, ctxt);
+    }
+
+    /**
+     * Overridable factory method that actually instantiates desired
+     * parser.
+     */
+    @Override
+    @Deprecated
+    protected FromXmlParser _createJsonParser(Reader r, IOContext ctxt)
+        throws IOException, JsonParseException
+    {
+        return _createParser(r, ctxt);
+    }
+
+    /**
+     * Overridable factory method that actually instantiates desired
+     * parser.
+     */
+    @Override
+    @Deprecated
+    protected FromXmlParser _createJsonParser(byte[] data, int offset, int len, IOContext ctxt)
+        throws IOException, JsonParseException
+    {
+        return _createParser(data, offset, len, ctxt);
+    }
 
     /*
     /**********************************************************************
-    /* Internal factory methods
+    /* Internal factory methods, XML-specific
     /**********************************************************************
      */
 

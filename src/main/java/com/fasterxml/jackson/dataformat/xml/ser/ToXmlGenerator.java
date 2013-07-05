@@ -20,7 +20,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
-
 /**
  * {@link JsonGenerator} that outputs JAXB-style XML output instead of JSON content.
  * Operation requires calling code (usually either standard Jackson serializers,
@@ -833,11 +832,21 @@ public final class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
+        boolean usePlain = isEnabled(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
         try {
             if (_nextIsAttribute) {
-                _xmlWriter.writeDecimalAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), dec);
+                if (usePlain) {
+                    _xmlWriter.writeAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                            dec.toPlainString());
+                } else {
+                    _xmlWriter.writeDecimalAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), dec);
+                }
             } else if (checkNextIsUnwrapped()) {
-                _xmlWriter.writeDecimal(dec);
+                if (usePlain) {
+                    _xmlWriter.writeCharacters(dec.toPlainString());
+                } else {
+                    _xmlWriter.writeDecimal(dec);
+                }
             } else {
                 if (_xmlPrettyPrinter != null) {
                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
@@ -845,7 +854,11 @@ public final class ToXmlGenerator
                 			dec);
                 } else {
 	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-	                _xmlWriter.writeDecimal(dec);
+	                if (usePlain) {
+	                    _xmlWriter.writeDecimal(dec);
+	                } else {
+                         _xmlWriter.writeCharacters(dec.toPlainString());
+	                }
 	                _xmlWriter.writeEndElement();
                 }
             }
@@ -868,7 +881,7 @@ public final class ToXmlGenerator
         }
         try {
             if (_nextIsAttribute) {
-                _xmlWriter.writeIntegerAttribute(null,
+                _xmlWriter.writeIntegerAttribute("",
                 		_nextName.getNamespaceURI(), _nextName.getLocalPart(), value);
             } else if (checkNextIsUnwrapped()) {
                 _xmlWriter.writeInteger(value);

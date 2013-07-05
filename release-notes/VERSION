@@ -1,12 +1,16 @@
 Project: jackson-dataformat-xml
-Version: 2.2.2 (31-May-2013)
+Version: 2.3.0 (xx-xxx-2013)
 
-#66: @JacksonXmlText should imply existence of property (without explicit marking) 
- (suggested by ShijunK@github)
+- Add support for `JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN`
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.2.2 (31-May-2013)
+
+#66: @JacksonXmlText should imply existence of property (without explicit marking) 
+ (suggested by ShijunK@github)
 
 2.2.1 (03-May-2013)
 
