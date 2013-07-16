@@ -36,5 +36,6 @@ public class TestComplex extends XmlTestBase
         ObjectReader r = MAPPER.reader(MediaItem.class);
         MediaItem result = r.readValue(xml);
         assertNotNull(result);
+        assertEquals(content.getTitle(), result.getContent().getTitle());
     }
 }

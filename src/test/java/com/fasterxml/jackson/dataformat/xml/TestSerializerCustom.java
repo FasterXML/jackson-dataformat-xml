@@ -39,7 +39,7 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public Item deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public Item deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
           ObjectCodec oc = jp.getCodec();
           JsonNode json = oc.readTree(jp);
           JsonNode foo = json.get("obj");
@@ -57,7 +57,7 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public void serialize(Item value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+        public void serialize(Item value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
           jgen.writeStartObject();
           jgen.writeObjectField("obj", value.obj);
           jgen.writeStringField("name", value.name);
