@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+@SuppressWarnings("serial")
 public class TestSerialization extends XmlTestBase
 {
     /*
@@ -81,6 +82,8 @@ public class TestSerialization extends XmlTestBase
             jgen.writeString("custom:"+value);
         }
     }
+
+    static class CustomMap extends LinkedHashMap<String, Integer> { }
     
     /*
     /**********************************************************
@@ -177,6 +180,22 @@ public class TestSerialization extends XmlTestBase
                 xml);
     }
 
+    public void testNakedMap() throws IOException
+    {
+        CustomMap input = new CustomMap();        
+        input.put("a", 123);
+        input.put("b", 456);
+        String xml = _xmlMapper.writeValueAsString(input);
+
+        
+//        System.err.println("XML = "+xml);
+        
+        CustomMap result = _xmlMapper.readValue(xml, CustomMap.class);
+        assertEquals(2, result.size());
+
+        assertEquals(Integer.valueOf(456), result.get("b"));
+    }
+    
     // for [Issue#41]
     public void testCustomSerializer() throws Exception
     {
