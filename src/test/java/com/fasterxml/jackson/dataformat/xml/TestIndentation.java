@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -40,7 +41,20 @@ public class TestIndentation extends XmlTestBase
 
         public int value = 14;
     }
-    
+
+    public class PojoFor123
+    {
+        @JacksonXmlProperty(isAttribute = true)
+        public String name;
+
+        @JsonInclude(JsonInclude.Include.NON_EMPTY) 
+        public String property;
+        
+        public PojoFor123(String name) {
+            this.name = name;       
+        }
+    }
+
     /*
     /**********************************************************
     /* Set up
@@ -117,4 +131,12 @@ public class TestIndentation extends XmlTestBase
         String xml2 = _xmlMapper.writeValueAsString(new AttrBean2());
         assertEquals("<AttrBean2 count=\"3\">\n  <value>14</value>\n</AttrBean2>", xml2);
     }
+
+    public void testEmptyElem() throws Exception
+    {
+        PojoFor123 simple = new PojoFor123("foobar");
+        String xml = _xmlMapper.writeValueAsString(simple);
+        assertEquals("<PojoFor123 name=\"foobar\"/>", xml);
+    }
+
 }

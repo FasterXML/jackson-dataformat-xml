@@ -89,6 +89,15 @@ public class DefaultXmlPrettyPrinter
      * indentation to use.
      */
     protected transient int _nesting = 0;
+
+    /**
+     * Marker flag set on start element, and cleared if an end element
+     * is encountered. Used for suppressing indentation to allow empty
+     * elements.
+     * 
+     * @since 2.3.0
+     */
+    protected transient boolean _justHadStartElement;
     
     /*
     /**********************************************************
@@ -185,6 +194,7 @@ public class DefaultXmlPrettyPrinter
             }
             ++_nesting;
         }
+        _justHadStartElement = true;
         ((ToXmlGenerator) jgen)._handleStartObject();
     }
 
@@ -207,7 +217,9 @@ public class DefaultXmlPrettyPrinter
             --_nesting;
         }
         // for empty elements, no need for linefeeds etc:
-        if (nrOfEntries > 0) {
+        if (_justHadStartElement) {
+            _justHadStartElement = false;
+        } else {
             _objectIndenter.writeIndentation(jgen, _nesting);
         }
         ((ToXmlGenerator) jgen)._handleEndObject();
@@ -224,12 +236,15 @@ public class DefaultXmlPrettyPrinter
             String nsURI, String localName) throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {
-            if (_nesting > 0) {
+            if (_justHadStartElement) {
+                _justHadStartElement = false;
+            } else {
                 _objectIndenter.writeIndentation(sw, _nesting);
             }
             ++_nesting;
         }
         sw.writeStartElement(nsURI, localName);
+        _justHadStartElement = true;        
     }
 
     @Override
@@ -239,7 +254,9 @@ public class DefaultXmlPrettyPrinter
             --_nesting;
         }
         // for empty elements, no need for linefeeds etc:
-        if (nrOfEntries > 0) {
+        if (_justHadStartElement) {
+            _justHadStartElement = false;
+        } else {
             _objectIndenter.writeIndentation(sw, _nesting);
         }
         sw.writeEndElement();
@@ -256,6 +273,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeCharacters(text);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -270,6 +288,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeCharacters(buffer, offset, len);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 	
     @Override
@@ -283,6 +302,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeBoolean(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
     
     @Override
@@ -296,6 +316,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeInt(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -309,6 +330,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeLong(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -322,6 +344,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeDouble(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -335,6 +358,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeFloat(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 	
     @Override
@@ -348,6 +372,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeInteger(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -361,6 +386,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeDecimal(value);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -375,6 +401,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeStartElement(nsURI, localName);
         sw.writeBinary(data, offset, len);
         sw.writeEndElement();
+        _justHadStartElement = false;
     }
 
     @Override
@@ -386,6 +413,7 @@ public class DefaultXmlPrettyPrinter
             _objectIndenter.writeIndentation(sw, _nesting);
         }
         sw.writeEmptyElement(nsURI, localName);
+        _justHadStartElement = false;
     }
     
     /*
