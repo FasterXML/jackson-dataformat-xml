@@ -2,9 +2,11 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * Tests for verifying that Lists (and arrays) can be serialized even
@@ -12,11 +14,20 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
  */
 public class TestRootListHandling extends XmlTestBase
 {
+    @JacksonXmlRootElement(localName="SR")
+    @JsonPropertyOrder({ "id", "name", "description" })
     public static class SampleResource {
         private Long id;
         private String name;
         private String description;
 
+        public SampleResource() { }
+        public SampleResource(long id, String n, String d) {
+            this.id = id;
+            name = n;
+            description = d;
+        }
+        
         public Long getId() {
             return id;
         }
@@ -48,11 +59,25 @@ public class TestRootListHandling extends XmlTestBase
     /**********************************************************
      */
 
+    // Test for ensuring that we can use ".withRootName()" to override
+    // default name AND annotation
+    public void testRenamedRootItem() throws Exception
+    {
+        XmlMapper xmlMapper = new XmlMapper();
+        String xml = xmlMapper
+                .writer()
+                .withRootName("Shazam")
+                .writeValueAsString(new SampleResource(123, "Foo", "Barfy!"))
+                .trim();
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<Shazam><id>123</id><name>Foo</name><description>Barfy!</description></Shazam>", xml);
+    }
+    
     // for [Issue#38] -- root-level Collections not supported
     public void testListSerialization() throws Exception
     {
         JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
+//        module.setDefaultUseWrapper(true);
         XmlMapper xmlMapper = new XmlMapper(module);
         AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
         xmlMapper.setAnnotationIntrospector(introspector);
@@ -73,17 +98,16 @@ public class TestRootListHandling extends XmlTestBase
 
         // to see what JAXB might do, uncomment:
 //System.out.println("By JAXB: "+jaxbSerialized(l)); //  ArrayList.class, SampleResource.class));
-        
+
         String xml = xmlMapper
             .writerWithDefaultPrettyPrinter()
-            .withRootName("RootList")
             .writeValueAsString(l)
             .trim();
 
         // first trivial sanity checks
         assertNotNull(xml);
-        if (xml.indexOf("<RootList>") < 0) {
-            fail("Unexpected output: should have <RootList> as root element, got: "+xml);
+        if (xml.indexOf("<ArrayList>") < 0) {
+            fail("Unexpected output: should have <ArrayList> as root element, got: "+xml);
         }
 
         // and then try reading back
