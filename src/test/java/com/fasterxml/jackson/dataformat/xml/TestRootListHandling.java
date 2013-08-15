@@ -1,13 +1,16 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml;
 
 import java.util.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.*;
 
-public class TestUnwrappedRootList extends XmlTestBase
+/**
+ * Tests for verifying that Lists (and arrays) can be serialized even
+ * when they are root values.
+ */
+public class TestRootListHandling extends XmlTestBase
 {
     public static class SampleResource {
         private Long id;
