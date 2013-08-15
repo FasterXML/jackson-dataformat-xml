@@ -13,29 +13,27 @@ public class TestUntypedListSerialization extends XmlTestBase
     @JacksonXmlRootElement(localName="l")
     static class UntypedListBean
     {
-    	public final Object list;
+        public final Object list;
     	
-    	public UntypedListBean()
-    	{
-    	    ArrayList<String> l= new ArrayList<String>();
-    	    l.add("first");
-    	    l.add("second");
-    	    list = l;
-    	}
+        public UntypedListBean() {
+            ArrayList<String> l= new ArrayList<String>();
+            l.add("first");
+            l.add("second");
+            list = l;
+        }
     }
 
     @JacksonXmlRootElement(localName="l")
     static class TypedListBean
     {
-    	public final List<String> list;
+        public final List<String> list;
     	
-    	public TypedListBean()
-    	{
-    	    ArrayList<String> l= new ArrayList<String>();
-    	    l.add("first");
-    	    l.add("second");
-    	    list = l;
-    	}
+        public TypedListBean() {
+            ArrayList<String> l= new ArrayList<String>();
+            l.add("first");
+            l.add("second");
+            list = l;
+        }
     }
     
     /*
@@ -47,14 +45,14 @@ public class TestUntypedListSerialization extends XmlTestBase
     private final XmlMapper MAPPER = new XmlMapper();
 
     /*
-     *  For Issue#8 -- Will not use wrapping, if type is not statically known
+     *  For [Issue#8] -- Will not use wrapping, if type is not statically known
      *  to be a Collection
      */
     public void testListAsObject() throws IOException
     {
-    	String xmlForUntyped = MAPPER.writeValueAsString(new UntypedListBean());
-    	String xmlForTyped = MAPPER.writeValueAsString(new TypedListBean());
+        String xmlForUntyped = MAPPER.writeValueAsString(new UntypedListBean());
+        String xmlForTyped = MAPPER.writeValueAsString(new TypedListBean());
 
-    	assertEquals(xmlForTyped, xmlForUntyped);
+        assertEquals(xmlForTyped, xmlForUntyped);
     }
 }

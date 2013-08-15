@@ -49,7 +49,7 @@ public class XmlBeanDeserializerModifier
             Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
             if (b != null && b.booleanValue()) {
                 // unwrapped properties will appear as 'unnamed' (empty String)
-                BeanPropertyDefinition newProp = prop.withName(_cfgNameForTextValue);
+                BeanPropertyDefinition newProp = prop.withSimpleName(_cfgNameForTextValue);
                 if (newProp != prop) {
                     propDefs.set(i, newProp);
                 }
@@ -67,7 +67,7 @@ public class XmlBeanDeserializerModifier
                         propDefs = new ArrayList<BeanPropertyDefinition>(propDefs);
                     }
                     ++changed;
-                    propDefs.set(i, prop.withName(localName));
+                    propDefs.set(i, prop.withSimpleName(localName));
                     continue;
                 }
                 // otherwise unwrapped; needs handling but later on

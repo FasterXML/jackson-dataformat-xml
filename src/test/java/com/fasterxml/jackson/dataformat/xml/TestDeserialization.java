@@ -54,26 +54,10 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("abc", bean.text);
     }
     
-    // Issue#14:
+    // [Issue#14]
     public void testMapWithAttr() throws Exception
     {
         final String xml = "<order><person lang='en'>John Smith</person></order>";
-
-    	/*
-    	JsonParser jp = MAPPER.getJsonFactory().createParser(xml);
-    	JsonToken t;
-    	while ((t = jp.nextToken()) != null) {
-    		switch (t) {
-    		case FIELD_NAME:
-    			System.out.println("Field '"+jp.getCurrentName()+"'");
-    			break;
-    		case VALUE_STRING:
-    			System.out.println("text '"+jp.getText()+"'");
-    		default:
-    			System.out.println("Token "+t);
-    		}
-    	}
-    	*/
         Map<?,?> map = MAPPER.readValue(xml, Map.class);
     	
     	// Will result in equivalent of:

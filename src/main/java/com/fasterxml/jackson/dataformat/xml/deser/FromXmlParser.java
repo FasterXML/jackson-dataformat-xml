@@ -679,118 +679,14 @@ public class FromXmlParser
         return _binaryValue;
     }
     
+    @SuppressWarnings("resource")
     protected byte[] _decodeBase64(Base64Variant b64variant)
         throws IOException, JsonParseException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();
-    
         final String str = getText();
-        int ptr = 0;
-        int len = str.length();
-
-        main_loop:
-        while (ptr < len) {
-            // first, we'll skip preceding white space, if any
-            char ch;
-            do {
-                ch = str.charAt(ptr++);
-                if (ptr >= len) {
-                    break main_loop;
-                }
-            } while (ch <= INT_SPACE);
-            int bits = b64variant.decodeBase64Char(ch);
-            if (bits < 0) {
-                _reportInvalidBase64(b64variant, ch, 0, null);
-            }
-            int decodedData = bits;
-            // then second base64 char; can't get padding yet, nor ws
-            if (ptr >= len) {
-                _reportBase64EOF();
-            }
-            ch = str.charAt(ptr++);
-            bits = b64variant.decodeBase64Char(ch);
-            if (bits < 0) {
-                _reportInvalidBase64(b64variant, ch, 1, null);
-            }
-            decodedData = (decodedData << 6) | bits;
-            // third base64 char; can be padding, but not ws
-            if (ptr >= len) {
-                _reportBase64EOF();
-            }
-            ch = str.charAt(ptr++);
-            bits = b64variant.decodeBase64Char(ch);
-
-            // First branch: can get padding (-> 1 byte)
-            if (bits < 0) {
-                if (bits != Base64Variant.BASE64_VALUE_PADDING) {
-                    _reportInvalidBase64(b64variant, ch, 2, null);
-                }
-                // Ok, must get padding
-                if (ptr >= len) {
-                    _reportBase64EOF();
-                }
-                ch = str.charAt(ptr++);
-                if (!b64variant.usesPaddingChar(ch)) {
-                    _reportInvalidBase64(b64variant, ch, 3, "expected padding character '"+b64variant.getPaddingChar()+"'");
-                }
-                // Got 12 bits, only need 8, need to shift
-                decodedData >>= 4;
-                builder.append(decodedData);
-                continue;
-            }
-            // Nope, 2 or 3 bytes
-            decodedData = (decodedData << 6) | bits;
-            // fourth and last base64 char; can be padding, but not ws
-            if (ptr >= len) {
-                _reportBase64EOF();
-            }
-            ch = str.charAt(ptr++);
-            bits = b64variant.decodeBase64Char(ch);
-            if (bits < 0) {
-                if (bits != Base64Variant.BASE64_VALUE_PADDING) {
-                    _reportInvalidBase64(b64variant, ch, 3, null);
-                }
-                decodedData >>= 2;
-                builder.appendTwoBytes(decodedData);
-            } else {
-                // otherwise, our triple is now complete
-                decodedData = (decodedData << 6) | bits;
-                builder.appendThreeBytes(decodedData);
-            }
-        }
+        _decodeBase64(str, builder, b64variant);
         return builder.toByteArray();
-    }
-
-    /**
-     * @param bindex Relative index within base64 character unit; between 0
-     *   and 3 (as unit has exactly 4 characters)
-     */
-    @Override
-    protected void _reportInvalidBase64(Base64Variant b64variant, char ch, int bindex, String msg)
-        throws JsonParseException
-    {
-        String base;
-        if (ch <= INT_SPACE) {
-            base = "Illegal white space character (code 0x"+Integer.toHexString(ch)+") as character #"+(bindex+1)+" of 4-char base64 unit: can only used between units";
-        } else if (b64variant.usesPaddingChar(ch)) {
-            base = "Unexpected padding character ('"+b64variant.getPaddingChar()+"') as character #"+(bindex+1)+" of 4-char base64 unit: padding only legal as 3rd or 4th character";
-        } else if (!Character.isDefined(ch) || Character.isISOControl(ch)) {
-            // Not sure if we can really get here... ? (most illegal xml chars are caught at lower level)
-            base = "Illegal character (code 0x"+Integer.toHexString(ch)+") in base64 content";
-        } else {
-            base = "Illegal character '"+ch+"' (code 0x"+Integer.toHexString(ch)+") in base64 content";
-        }
-        if (msg != null) {
-            base = base + ": " + msg;
-        }
-        throw new JsonParseException(base, JsonLocation.NA);
-    }
-
-    @Override
-    protected void _reportBase64EOF()
-        throws JsonParseException
-    {
-        throw new JsonParseException("Unexpected end-of-String when base64 content", JsonLocation.NA);
     }
     
     /*

@@ -250,6 +250,7 @@ public class TestXmlParser extends XmlTestBase
         while (jp.nextToken() != null) {
             jg.copyCurrentEvent(jp);
         }
+        jp.close();
         jg.close();
         return w.toString();
     }

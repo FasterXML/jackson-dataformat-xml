@@ -93,6 +93,7 @@ public class TestJDKSerializability extends XmlTestBase
         }
     }
     
+    @SuppressWarnings("resource")
     protected String _writeXml(XmlFactory f, boolean useBytes) throws IOException
     {
         if (useBytes) {

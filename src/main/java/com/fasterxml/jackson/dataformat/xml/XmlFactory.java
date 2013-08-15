@@ -400,6 +400,7 @@ public class XmlFactory extends JsonFactory
                 _objectCodec, _createXmlWriter(out));
     }
 
+    @SuppressWarnings("resource")
     @Override
     public ToXmlGenerator createGenerator(File f, JsonEncoding enc) throws IOException
     {

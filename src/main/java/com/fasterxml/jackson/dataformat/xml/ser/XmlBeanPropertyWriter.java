@@ -23,12 +23,12 @@ public class XmlBeanPropertyWriter
     /**
      * Element name used as wrapper for collection.
      */
-    protected final QName _wrapperName;
+    protected final QName _wrapperQName;
 
     /**
      * Element name used for items in the collection
      */
-    protected final QName _wrappedName;
+    protected final QName _wrappedQName;
     
     /*
     /**********************************************************
@@ -46,8 +46,8 @@ public class XmlBeanPropertyWriter
             JsonSerializer<Object> serializer)
     {
         super(wrapped);
-        _wrapperName = _qname(wrapperName);
-        _wrappedName = _qname(wrappedName);
+        _wrapperQName = _qname(wrapperName);
+        _wrappedQName = _qname(wrappedName);
 
         if (serializer != null) {
             assignSerializer(serializer);
@@ -117,13 +117,13 @@ public class XmlBeanPropertyWriter
 
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
         ToXmlGenerator xmlGen = (ToXmlGenerator) jgen;
-        xmlGen.startWrappedValue(_wrapperName, _wrappedName);
+        xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
         jgen.writeFieldName(_name);
         if (_typeSerializer == null) {
             ser.serialize(value, jgen, prov);
         } else {
             ser.serializeWithType(value, jgen, prov, _typeSerializer);
         }
-        xmlGen.finishWrappedValue(_wrapperName, _wrappedName);
+        xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
     }
 }
