@@ -121,7 +121,6 @@ public class XmlBeanSerializer extends BeanSerializer
      * extra handling, such as indication of whether to write attributes or
      * elements.
      */
-    @SuppressWarnings("deprecation")
     @Override
     protected void serializeFields(Object bean, JsonGenerator jgen0, SerializerProvider provider)
         throws IOException, JsonGenerationException
@@ -129,7 +128,7 @@ public class XmlBeanSerializer extends BeanSerializer
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         final BeanPropertyWriter[] props;
         // !!! TODO: change to use non-deprecated version in 2.3
-        if (_filteredProps != null && provider.getSerializationView() != null) {
+        if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
         } else {
             props = _props;

@@ -324,6 +324,18 @@ public final class ToXmlGenerator
         }
     }
 
+    /**
+     * Trivial helper method called when to add a replicated wrapper name
+     * 
+     * @since 2.2
+     */
+    public void writeRepeatedFieldName() throws IOException, JsonGenerationException
+    {
+        if (_writeContext.writeFieldName(_nextName.getLocalPart()) == JsonWriteContext.STATUS_EXPECT_VALUE) {
+            _reportError("Can not write a field name, expecting a value");
+        }
+    }
+    
     /*
     /**********************************************************
     /* JsonGenerator method overrides

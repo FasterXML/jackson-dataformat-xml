@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.*;
 
@@ -68,13 +69,35 @@ public class TestUnwrappedRootList extends XmlTestBase
         l.add(r2);
 
         // to see what JAXB might do, uncomment:
-//        System.out.println("By JAXB: "+jaxbSerialized(l));
+//System.out.println("By JAXB: "+jaxbSerialized(l)); //  ArrayList.class, SampleResource.class));
         
-        String result = xmlMapper.writeValueAsString(l);
-        assertNotNull(result);
+        String xml = xmlMapper
+            .writerWithDefaultPrettyPrinter()
+            .withRootName("RootList")
+            .writeValueAsString(l)
+            .trim();
 
-        // TODO: verify actual contents
+        // first trivial sanity checks
+        assertNotNull(xml);
+        if (xml.indexOf("<RootList>") < 0) {
+            fail("Unexpected output: should have <RootList> as root element, got: "+xml);
+        }
+
+        // and then try reading back
+        JavaType resListType = xmlMapper.getTypeFactory()
+                .constructCollectionType(List.class, SampleResource.class);
+        Object ob = xmlMapper.reader(resListType).readValue(xml);
+        assertNotNull(ob);
+
+//      System.err.println("XML -> "+xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ob));
         
-//        assertEquals("<x></x>", result);
+        assertTrue(ob instanceof List);
+        List<?> resultList = (List<?>) ob;
+        assertEquals(2, resultList.size());
+        assertEquals(SampleResource.class, resultList.get(0).getClass());
+        assertEquals(SampleResource.class, resultList.get(1).getClass());
+        SampleResource rr = (SampleResource) resultList.get(1);
+        assertEquals("William", rr.getName());
+
     }
 }
