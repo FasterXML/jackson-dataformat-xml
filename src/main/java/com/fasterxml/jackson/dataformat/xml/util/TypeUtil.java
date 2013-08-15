@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.util;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -28,4 +29,8 @@ public class TypeUtil
         return false;
     }    
 
+    public static boolean isIndexedType(Class<?> cls)
+    {
+        return (cls.isArray() && cls != byte[].class) || Collection.class.isAssignableFrom(cls);
+    }
 }

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.util.TokenBuffer;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -60,25 +61,31 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     {
         return new XmlSerializerProvider(this, config, jsf);
     }
-
+    
+    @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator jgen, Object value)
         throws IOException, JsonProcessingException
     {
+        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (value == null) {
-            _serializeNull(jgen);
+            _serializeXmlNull(xgen);
             return;
         }
-        Class<?> cls = value.getClass();
-        QName rootName = _rootNameFromConfig();
-        if (rootName == null) {
-            rootName = _rootNameLookup.findRootName(cls, _config);
-        }
-        _initWithRootName(jgen, rootName);
-        final boolean asArray = Collection.class.isAssignableFrom(cls) ||
-                (cls.isArray() && cls != byte[].class);
-        if (asArray) {
-            _startRootArray(jgen, rootName);
+        final Class<?> cls = value.getClass();
+        final boolean asArray;
+        if (xgen == null) { // called by convertValue()
+            asArray = false;
+        } else {
+            QName rootName = _rootNameFromConfig();
+            if (rootName == null) {
+                rootName = _rootNameLookup.findRootName(cls, _config);
+            }
+            _initWithRootName(xgen, rootName);
+            asArray = TypeUtil.isIndexedType(cls);
+            if (asArray) {
+                _startRootArray(jgen, rootName);
+            }
         }
         
         // From super-class implementation
@@ -100,23 +107,30 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             jgen.writeEndObject();
         }
     }
-    
+
+    @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType)
         throws IOException, JsonProcessingException
     {
+        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (value == null) {
-            _serializeNull(jgen);
+            _serializeXmlNull(xgen);
             return;
         }
-        QName rootName = _rootNameFromConfig();
-        if (rootName == null) {
-            rootName = _rootNameLookup.findRootName(rootType, _config);
-        }
-        _initWithRootName(jgen, rootName);
-        final boolean asArray = TypeUtil.isIndexedType(rootType);
-        if (asArray) {
-            _startRootArray(jgen, rootName);
+        final boolean asArray;
+        if (xgen == null) { // called by convertValue()
+            asArray = false;
+        } else {
+            QName rootName = _rootNameFromConfig();
+            if (rootName == null) {
+                rootName = _rootNameLookup.findRootName(rootType, _config);
+            }
+            _initWithRootName(xgen, rootName);
+            asArray = TypeUtil.isIndexedType(rootType);
+            if (asArray) {
+                _startRootArray(jgen, rootName);
+            }
         }
 
         final JsonSerializer<Object> ser = findTypedValueSerializer(rootType, true, null);
@@ -140,23 +154,30 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     }
     
     // @since 2.1
+    @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType,
             JsonSerializer<Object> ser)
         throws IOException, JsonGenerationException
     {
+        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (value == null) {
-            _serializeNull(jgen);
+            _serializeXmlNull(xgen);
             return;
         }
-        QName rootName = _rootNameFromConfig();
-        if (rootName == null) {
-            rootName = _rootNameLookup.findRootName(rootType, _config);
-        }
-        _initWithRootName(jgen, rootName);
-        final boolean asArray = TypeUtil.isIndexedType(rootType);
-        if (asArray) {
-            _startRootArray(jgen, rootName);
+        final boolean asArray;
+        if (xgen == null) { // called by convertValue()
+            asArray = false;
+        } else {
+            QName rootName = _rootNameFromConfig();
+            if (rootName == null) {
+                rootName = _rootNameLookup.findRootName(rootType, _config);
+            }
+            _initWithRootName(xgen, rootName);
+            asArray = TypeUtil.isIndexedType(rootType);
+            if (asArray) {
+                _startRootArray(jgen, rootName);
+            }
         }
         if (ser == null) {
             ser = findTypedValueSerializer(rootType, true, null);
@@ -187,18 +208,16 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         ((ToXmlGenerator) jgen).writeFieldName("item");
     }    
 
-    @Override
-    protected void _serializeNull(JsonGenerator jgen)
+    protected void _serializeXmlNull(ToXmlGenerator jgen)
             throws IOException, JsonProcessingException
     {
         _initWithRootName(jgen, ROOT_NAME_FOR_NULL);
         super.serializeValue(jgen, null);
     }
 
-    protected void _initWithRootName(JsonGenerator jgen, QName rootName)
+    protected void _initWithRootName(ToXmlGenerator xgen, QName rootName)
             throws IOException, JsonProcessingException
     {
-        ToXmlGenerator xgen = (ToXmlGenerator) jgen;
         /* 28-Nov-2012, tatu: We should only initialize the root
          *  name if no name has been set, as per [Issue#42],
          *  to allow for custom serializers to work.
@@ -229,4 +248,19 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         String name = _config.getRootName();
         return (name == null) ? null : new QName(name);
     }
+
+    protected ToXmlGenerator _asXmlGenerator(JsonGenerator jgen)
+        throws JsonMappingException
+    {
+        // [Issue#71]: When converting, we actually get TokenBuffer, which is fine
+        if (!(jgen instanceof ToXmlGenerator)) {
+            // but verify
+            if (!(jgen instanceof TokenBuffer)) {
+                throw new JsonMappingException("XmlMapper does not with generators of type other than ToXmlGenerator; got: "
+                            +jgen.getClass().getName());
+                }
+                return null;
+        }
+        return (ToXmlGenerator) jgen;
+    }    
 }

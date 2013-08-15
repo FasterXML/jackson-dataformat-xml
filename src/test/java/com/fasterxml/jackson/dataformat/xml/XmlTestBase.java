@@ -164,7 +164,7 @@ public abstract class XmlTestBase
     
     /*
     /**********************************************************
-    /* Construction
+    /* Construction, factory methods
     /**********************************************************
      */
 
@@ -172,6 +172,13 @@ public abstract class XmlTestBase
         super();
     }
 
+    protected XmlMapper xmlMapper(boolean useListWrapping)
+    {
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(useListWrapping);
+        return new XmlMapper(module);
+    }
+    
     /*
     /**********************************************************
     /* Additional assertion methods
