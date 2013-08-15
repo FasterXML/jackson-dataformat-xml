@@ -48,35 +48,40 @@ public class XmlRootNameLookup
         QName name;
         synchronized (_rootNames) {
             name = _rootNames.get(key);
-            if (name == null) {
-                BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
-                AnnotationIntrospector intr = config.getAnnotationIntrospector();
-                AnnotatedClass ac = beanDesc.getClassInfo();
-                String localName = null;
-                String ns = null;
+        }
+        if (name != null) {
+            return name;
+        }
 
-                PropertyName root = intr.findRootName(ac);
-                if (root != null) {
-                    localName = root.getSimpleName();
-                    ns = root.getNamespace();
-                }
-                // No answer so far? Let's just default to using simple class name
-                if (localName == null || localName.length() == 0) {
-                    // Should we strip out enclosing class tho? For now, nope:
-                    localName = rootType.getSimpleName();
-                    name = new QName("", localName);
-                } else {
-                    // Otherwise let's see if there's namespace, too (if we are missing it)
-                    if (ns == null || ns.length() == 0) {
-                        ns = findNamespace(intr, ac);
-                    }
-                }
-                if (ns == null) { // some QName impls barf on nulls...
-                    ns = "";
-                }
-                name = new QName(ns, localName);
-                _rootNames.put(key, name);
+        BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
+        AnnotationIntrospector intr = config.getAnnotationIntrospector();
+        AnnotatedClass ac = beanDesc.getClassInfo();
+        String localName = null;
+        String ns = null;
+
+        PropertyName root = intr.findRootName(ac);
+        if (root != null) {
+            localName = root.getSimpleName();
+            ns = root.getNamespace();
+        }
+        // No answer so far? Let's just default to using simple class name
+        if (localName == null || localName.length() == 0) {
+            // Should we strip out enclosing class tho? For now, nope:
+            // one caveat: array simple names end with "[]"; also, "$" needs replacing
+            localName = StaxUtil.sanitizeXmlTypeName(rootType.getSimpleName());
+            name = new QName("", localName);
+        } else {
+            // Otherwise let's see if there's namespace, too (if we are missing it)
+            if (ns == null || ns.length() == 0) {
+                ns = findNamespace(intr, ac);
             }
+        }
+        if (ns == null) { // some QName impls barf on nulls...
+            ns = "";
+        }
+        name = new QName(ns, localName);
+        synchronized (_rootNames) {
+            _rootNames.put(key, name);
         }
         return name;
     }

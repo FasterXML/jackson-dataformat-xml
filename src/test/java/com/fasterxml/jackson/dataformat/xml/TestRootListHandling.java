@@ -76,12 +76,18 @@ public class TestRootListHandling extends XmlTestBase
     // for [Issue#38] -- root-level Collections not supported
     public void testListSerialization() throws Exception
     {
+        _testListSerialization(true);
+        _testListSerialization(false);
+    }
+        
+    private void _testListSerialization(boolean useWrapping) throws Exception
+    {
         JacksonXmlModule module = new JacksonXmlModule();
-//        module.setDefaultUseWrapper(true);
+        module.setDefaultUseWrapper(useWrapping);
         XmlMapper xmlMapper = new XmlMapper(module);
         AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
         xmlMapper.setAnnotationIntrospector(introspector);
-        
+
         SampleResource r1 = new SampleResource();
         r1.setId(123L);
         r1.setName("Albert");
@@ -125,6 +131,59 @@ public class TestRootListHandling extends XmlTestBase
         assertEquals(SampleResource.class, resultList.get(1).getClass());
         SampleResource rr = (SampleResource) resultList.get(1);
         assertEquals("William", rr.getName());
-
     }
+
+    // Related to #38 as well
+    public void testArraySerialization() throws Exception
+    {
+        _testArraySerialization(true);
+        _testArraySerialization(false);
+    }
+    
+    private void _testArraySerialization(boolean useWrapping) throws Exception
+    {
+        JacksonXmlModule module = new JacksonXmlModule();
+        module.setDefaultUseWrapper(useWrapping);
+        XmlMapper xmlMapper = new XmlMapper(module);
+        AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
+        xmlMapper.setAnnotationIntrospector(introspector);
+
+        SampleResource r1 = new SampleResource();
+        r1.setId(123L);
+        r1.setName("Albert");
+        r1.setDescription("desc");
+
+        SampleResource r2 = new SampleResource();
+        r2.setId(123L);
+        r2.setName("William");
+        r2.setDescription("desc2");
+
+        SampleResource[] input = new SampleResource[] { r1, r2 };
+
+        // to see what JAXB might do, uncomment:
+//System.out.println("By JAXB: "+jaxbSerialized(input));
+
+        String xml = xmlMapper
+            .writerWithDefaultPrettyPrinter()
+            .writeValueAsString(input)
+            .trim();
+
+        // first trivial sanity checks
+        assertNotNull(xml);
+        // Is this good name? If not, what should be used instead?
+        if (xml.indexOf("<SampleResources>") < 0) {
+            fail("Unexpected output: should have <SampleResources> as root element, got: "+xml);
+        }
+
+        // and then try reading back
+        SampleResource[] result = xmlMapper.reader(SampleResource[].class).readValue(xml);
+        assertNotNull(result);
+
+//      System.err.println("XML -> "+xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ob));
+        
+        assertEquals(2, result.length);
+        SampleResource rr = result[1];
+        assertEquals("desc2", rr.getDescription());
+    }
+
 }

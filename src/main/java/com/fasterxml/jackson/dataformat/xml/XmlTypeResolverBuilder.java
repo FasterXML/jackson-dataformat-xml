@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
@@ -12,6 +11,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.ClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
  * Custom specialization of {@link StdTypeResolverBuilder}; needed so that
@@ -25,7 +25,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     {
         super.init(idType, idRes);
         if (_typeProperty != null) {
-            _typeProperty = sanitizeXmlTypeName(_typeProperty);
+            _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
         }
         return this;
     }
@@ -37,7 +37,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         if (typeIdPropName == null || typeIdPropName.length() == 0) {
             typeIdPropName = _idType.getDefaultPropertyName();
         }
-        _typeProperty = sanitizeXmlTypeName(typeIdPropName);
+        _typeProperty = StaxUtil.sanitizeXmlTypeName(typeIdPropName);
         return this;
     }
 
@@ -65,32 +65,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     /* Internal helper methods
     /**********************************************************************
      */
-    
-    /**
-     * Since XML names can not contain all characters JSON names can, we may
-     * need to replace characters. Let's start with trivial replacement of
-     * ASCII characters that can not be included.
-     */
-    protected static String sanitizeXmlTypeName(String name)
-    {
-        StringBuilder sb = new StringBuilder(name);
-        int changes = 0;
-        for (int i = 0, len = name.length(); i < len; ++i) {
-            char c = name.charAt(i);
-            if (c > 127) continue;
-            if (c >= 'a' && c <= 'z') continue;
-            if (c >= 'A' && c <= 'Z') continue;
-            if (c >= '0' && c <= '9') continue;
-            if (c == '_' || c == '.' || c == '-') continue;
-            // Ok, need to replace
-            ++changes;
-            sb.setCharAt(i, '_');
-        }
-        if (changes == 0) {
-            return name;
-        }
-        return sb.toString();
-    }
+
 
     /**
      * Helper method for encoding regular Java class name in form that
