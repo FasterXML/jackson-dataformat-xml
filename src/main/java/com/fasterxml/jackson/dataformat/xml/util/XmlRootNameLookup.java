@@ -21,10 +21,21 @@ public class XmlRootNameLookup
     /**
      * For efficient operation, let's try to minimize number of times we
      * need to introspect root element name to use.
+     *<p>
+     * Note: changed to <code>transient</code> for 2.3; no point in serializing such
+     * state
      */
-    protected final LRUMap<ClassKey,QName> _rootNames = new LRUMap<ClassKey,QName>(40, 200);
+    protected final transient LRUMap<ClassKey,QName> _rootNames = new LRUMap<ClassKey,QName>(40, 200);
 
     public XmlRootNameLookup() { }
+    
+    protected Object readResolve() {
+        // just need to make 100% sure it gets set to non-null, that's all
+        if (_rootNames == null) {
+            return new XmlRootNameLookup();
+        }
+        return this;
+    }
 
     public QName findRootName(JavaType rootType, MapperConfig<?> config)
     {

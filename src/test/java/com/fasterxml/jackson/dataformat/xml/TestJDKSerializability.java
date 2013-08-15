@@ -5,6 +5,7 @@ import java.io.*;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 /**
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
  */
 public class TestJDKSerializability extends XmlTestBase
 {
+    @JacksonXmlRootElement(localName="MyPojo")
     static class MyPojo {
         public int x;
         private int y;
