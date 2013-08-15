@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 // Failing unit test(s) wrt [Issue#64]
-public class TestListRoundtrip extends XmlTestBase
+public class TestIssue64Lists extends XmlTestBase
 {
     static class Optional {
         @JacksonXmlText
