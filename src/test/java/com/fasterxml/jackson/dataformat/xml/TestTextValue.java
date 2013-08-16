@@ -3,17 +3,12 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class TestTextValue extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     static class Simple
     {
         @JacksonXmlProperty(isAttribute=true)
@@ -25,7 +20,7 @@ public class TestTextValue extends XmlTestBase
         public String text = "something";
     }
 	
-    // Issue-24:
+    // [Issue#24]
 
     static class Main {
         @JsonProperty("com.test.stack") public Stack stack;
