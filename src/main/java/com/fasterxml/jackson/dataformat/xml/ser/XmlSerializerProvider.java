@@ -1,7 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -18,7 +17,6 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
-
 /**
  * We need to override some parts of
  * {@link com.fasterxml.jackson.databind.SerializerProvider}
@@ -26,7 +24,7 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlSerializerProvider extends DefaultSerializerProvider
 {
-    private static final long serialVersionUID = 8525947864862035821L;
+    private static final long serialVersionUID = -141838337907252911L;
 
     /**
      * If all we get to serialize is a null, there's no way to figure out
