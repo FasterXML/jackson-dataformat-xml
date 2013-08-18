@@ -15,6 +15,11 @@ public class TestIssue64Lists extends XmlTestBase
 
         @JacksonXmlProperty(isAttribute=true)
         public String type = "NOT SET";
+
+        public Optional() { }
+        
+        // uncommenting this ALSO works:
+//        public Optional(String n) { number = n; }
     }
 
     static class Optionals {
