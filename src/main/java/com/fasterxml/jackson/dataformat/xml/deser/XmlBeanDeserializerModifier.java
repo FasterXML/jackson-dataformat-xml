@@ -34,7 +34,8 @@ public class XmlBeanDeserializerModifier
     {
         final AnnotationIntrospector intr = config.getAnnotationIntrospector();
         int changed = 0;
-        for (int i = 0, len = propDefs.size(); i < len; ++i) {
+        
+        for (int i = 0, propCount = propDefs.size(); i < propCount; ++i) {
             BeanPropertyDefinition prop = propDefs.get(i);
             AnnotatedMember acc = prop.getPrimaryMember();
             // should not be null, but just in case:
@@ -78,11 +79,55 @@ public class XmlBeanDeserializerModifier
 
     @Override
     public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
-            BeanDescription beanDesc, JsonDeserializer<?> deserializer)
+            BeanDescription beanDesc, JsonDeserializer<?> deser0)
     {
-        if (!(deserializer instanceof BeanDeserializerBase)) {
-            return deserializer;
+        if (!(deser0 instanceof BeanDeserializerBase)) {
+            return deser0;
         }
-        return new WrapperHandlingDeserializer((BeanDeserializerBase) deserializer);
+        /* 17-Aug-2013, tatu: One important special case first: if we have one "XML Text"
+         * property, it may be exposed as VALUE_STRING token (depending on whether any attribute
+         * values are exposed): and to deserialize from that, we need special handling unless POJO
+         * has appropriate single-string creator method.
+         */
+        BeanDeserializerBase deser = (BeanDeserializerBase) deser0;
+
+        // Heuristics are bit tricky; but for now let's assume that if POJO
+        // can already work with VALUE_STRING, it's ok and doesn't need extra support
+        if (!deser.getValueInstantiator().canCreateFromString()) {
+            SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
+            if (textProp != null) {
+//                System.err.println("DEBUG: gotcha! "+textProp);
+                // !!! TODO
+            }
+        }
+        return new WrapperHandlingDeserializer(deser);
+    }
+
+    private SettableBeanProperty _findSoleTextProp(DeserializationConfig config,
+            Iterator<SettableBeanProperty> propIt)
+    {
+        final AnnotationIntrospector ai = config.getAnnotationIntrospector();
+        SettableBeanProperty textProp = null;
+        while (propIt.hasNext()) {
+            SettableBeanProperty prop = propIt.next();
+            AnnotatedMember m = prop.getMember();
+            if (m != null) {
+                // Ok, let's use a simple check: we should have renamed it earlier so:
+                PropertyName n = prop.getFullName();
+                if (_cfgNameForTextValue.equals(n.getSimpleName())) {
+                    // should we verify we only got one?
+                    textProp = prop;
+                    continue;
+                }
+                // as-attribute are ok as well
+                Boolean b = AnnotationUtil.findIsAttributeAnnotation(ai, m);
+                if (b != null && b.booleanValue()) {
+                    continue;
+                }
+            }
+            // Otherwise, it's something else; no go
+            return null;
+        }
+        return textProp;
     }
 }
