@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 // Failing unit test(s) wrt [Issue#64]
-public class TestIssue64Lists extends XmlTestBase
+public class TestUnwrappedLists extends XmlTestBase
 {
     static class Optional {
         @JacksonXmlText

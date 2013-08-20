@@ -8,12 +8,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 public class TestDeserialization extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     static class AttributeBean
     {
         @JacksonXmlProperty(isAttribute=true, localName="attr")
