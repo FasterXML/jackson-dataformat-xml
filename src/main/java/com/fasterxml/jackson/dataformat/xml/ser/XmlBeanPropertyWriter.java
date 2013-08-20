@@ -116,14 +116,20 @@ public class XmlBeanPropertyWriter
         }
 
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
-        ToXmlGenerator xmlGen = (ToXmlGenerator) jgen;
-        xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
+        // 19-Aug-2013, tatu: ... except for those nasty 'convertValue()' calls...
+        @SuppressWarnings("resource")
+        final ToXmlGenerator xmlGen = (jgen instanceof ToXmlGenerator) ? (ToXmlGenerator) jgen : null;
+        if (xmlGen != null) {
+            xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
+        }
         jgen.writeFieldName(_name);
         if (_typeSerializer == null) {
             ser.serialize(value, jgen, prov);
         } else {
             ser.serializeWithType(value, jgen, prov, _typeSerializer);
         }
-        xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
+        if (xmlGen != null) {
+            xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
+        }
     }
 }

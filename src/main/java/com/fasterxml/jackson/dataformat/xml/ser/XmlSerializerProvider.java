@@ -65,13 +65,13 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     public void serializeValue(JsonGenerator jgen, Object value)
         throws IOException, JsonProcessingException
     {
-        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (value == null) {
-            _serializeXmlNull(xgen);
+            _serializeXmlNull(jgen);
             return;
         }
         final Class<?> cls = value.getClass();
         final boolean asArray;
+        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
@@ -82,7 +82,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(cls);
             if (asArray) {
-                _startRootArray(jgen, rootName);
+                _startRootArray(xgen, rootName);
             }
         }
         
@@ -111,12 +111,12 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType)
         throws IOException, JsonProcessingException
     {
-        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (value == null) {
-            _serializeXmlNull(xgen);
+            _serializeXmlNull(jgen);
             return;
         }
         final boolean asArray;
+        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
@@ -127,7 +127,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(rootType);
             if (asArray) {
-                _startRootArray(jgen, rootName);
+                _startRootArray(xgen, rootName);
             }
         }
 
@@ -158,12 +158,12 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             JsonSerializer<Object> ser)
         throws IOException, JsonGenerationException
     {
-        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (value == null) {
-            _serializeXmlNull(xgen);
+            _serializeXmlNull(jgen);
             return;
         }
         final boolean asArray;
+        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
@@ -174,7 +174,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(rootType);
             if (asArray) {
-                _startRootArray(jgen, rootName);
+                _startRootArray(xgen, rootName);
             }
         }
         if (ser == null) {
@@ -198,20 +198,21 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
-    protected void _startRootArray(JsonGenerator jgen, QName rootName)
-        throws IOException, JsonProcessingException
-    {
-        jgen.writeStartObject();
-        // Could repeat root name, but what's the point? How to customize?
-        ((ToXmlGenerator) jgen).writeFieldName("item");
-    }    
-
-    protected void _serializeXmlNull(ToXmlGenerator jgen)
+    protected void _serializeXmlNull(JsonGenerator jgen)
             throws IOException, JsonProcessingException
     {
-        _initWithRootName(jgen, ROOT_NAME_FOR_NULL);
+        if (jgen instanceof ToXmlGenerator)
+        _initWithRootName((ToXmlGenerator) jgen, ROOT_NAME_FOR_NULL);
         super.serializeValue(jgen, null);
     }
+    
+    protected void _startRootArray(ToXmlGenerator xgen, QName rootName)
+        throws IOException, JsonProcessingException
+    {
+        xgen.writeStartObject();
+        // Could repeat root name, but what's the point? How to customize?
+        xgen.writeFieldName("item");
+    }    
 
     protected void _initWithRootName(ToXmlGenerator xgen, QName rootName)
             throws IOException, JsonProcessingException

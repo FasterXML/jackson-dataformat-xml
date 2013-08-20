@@ -125,6 +125,12 @@ public class XmlBeanSerializer extends BeanSerializer
     protected void serializeFields(Object bean, JsonGenerator jgen0, SerializerProvider provider)
         throws IOException, JsonGenerationException
     {
+        // 19-Aug-2013, tatu: During 'convertValue()', need to skip
+        if (!(jgen0 instanceof ToXmlGenerator)) {
+            super.serializeFields(bean, jgen0, provider);
+            return;
+        }
+        
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         final BeanPropertyWriter[] props;
         // !!! TODO: change to use non-deprecated version in 2.3
@@ -171,17 +177,22 @@ public class XmlBeanSerializer extends BeanSerializer
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void serializeFieldsFiltered(Object bean, JsonGenerator jgen0,
             SerializerProvider provider)
         throws IOException, JsonGenerationException
     {
+        // 19-Aug-2013, tatu: During 'convertValue()', need to skip
+        if (!(jgen0 instanceof ToXmlGenerator)) {
+            super.serializeFieldsFiltered(bean, jgen0, provider);
+            return;
+        }
+        
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         
         final BeanPropertyWriter[] props;
         // !!! TODO: change to use non-deprecated version in 2.3
-        if (_filteredProps != null && provider.getSerializationView() != null) {
+        if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
         } else {
             props = _props;

@@ -137,7 +137,13 @@ public class WrapperHandlingDeserializer
     protected void _configureParser(JsonParser jp)
         throws IOException, JsonProcessingException
     {
-        ((FromXmlParser) jp).addVirtualWrapping(_namesToWrap);
+        /* 19-Aug-2013, tatu: Although we should not usually get called with
+         *   parser of other types, there are some cases where this may happen:
+         *   specifically, during structural value conversions.
+         */
+        if (jp instanceof FromXmlParser) {
+            ((FromXmlParser) jp).addVirtualWrapping(_namesToWrap);
+        }
     }
     
     protected BeanDeserializerBase _verifyDeserType(JsonDeserializer<?> deser)

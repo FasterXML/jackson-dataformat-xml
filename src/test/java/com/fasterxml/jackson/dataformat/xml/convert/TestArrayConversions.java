@@ -17,6 +17,23 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
  */
 public class TestArrayConversions extends XmlTestBase
 {
+    static class IntListWrapper {
+        public List<Integer> values;
+    }
+
+    static class IntArrayWrapper {
+        public int[] values;
+
+        public IntArrayWrapper() { }
+        public IntArrayWrapper(int[] v) { values = v; }
+    }
+    
+    /*
+    /********************************************************
+    /* Test methods
+    /********************************************************
+     */
+
     public void testNullXform() throws Exception {
         _testNullXform(xmlMapper(true));
         _testNullXform(xmlMapper(false));
@@ -104,6 +121,46 @@ public class TestArrayConversions extends XmlTestBase
         List<Number> expNums = _numberList(data, data.length);
         List<Long> actNums = mapper.convertValue(data, new TypeReference<List<Long>>() {});
         assertEquals(expNums, actNums);        
+    }
+
+    public void testListToIntArray() throws Exception
+    {
+        _testListToIntArray(true);
+        _testListToIntArray(false);
+    }
+
+    private void _testListToIntArray(boolean wrap) throws Exception
+    {
+        final XmlMapper mapper = xmlMapper(wrap);
+        List<Integer> in = new ArrayList<Integer>();
+        in.add(1);
+        in.add(2);
+        in.add(3);
+        int[] out = mapper.convertValue(in, int[].class);
+        assertEquals(3, out.length);
+        for (int i = 0; i < out.length; ++i) {
+            assertEquals(i+1, out[i]);
+        }
+    }
+    
+    public void testListAsProperty() throws Exception
+    {
+        _testListAsProperty(true);
+        _testListAsProperty(false);
+    }
+
+    private void _testListAsProperty(boolean wrap) throws Exception
+    {
+        final XmlMapper mapper = xmlMapper(wrap);
+        IntListWrapper mid = mapper.convertValue(new IntArrayWrapper(new int[] { 1, 2, 3}),
+                IntListWrapper.class);
+        assertNotNull(mid);
+        assertNotNull(mid.values);
+        assertEquals(3, mid.values.size());
+
+        IntArrayWrapper output = mapper.convertValue(mid, IntArrayWrapper.class);
+        assertEquals(3, output.values.length);
+        assertEquals(3, output.values[2]);
     }
     
     /*
