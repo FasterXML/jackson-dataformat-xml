@@ -20,8 +20,13 @@ public class WrapperHandlingDeserializer
 {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * (Simple) Names of properties, for which virtual wrapping is needed
+     * to compensate: these are so-called 'unwrapped' XML lists where property
+     * name is used for elements, and not as List markers.
+     */
     protected final Set<String> _namesToWrap;
-    
+
     /*
     /**********************************************************************
     /* Construction
@@ -32,8 +37,8 @@ public class WrapperHandlingDeserializer
         this(delegate, null);
     }
 
-    public WrapperHandlingDeserializer(BeanDeserializerBase delegate,
-            Set<String> namesToWrap) {
+    public WrapperHandlingDeserializer(BeanDeserializerBase delegate, Set<String> namesToWrap)
+    {
         super(delegate);
         _namesToWrap = namesToWrap;
     }
@@ -61,8 +66,6 @@ public class WrapperHandlingDeserializer
             BeanProperty property, JsonDeserializer<?> newDelegatee0)
     {
         BeanDeserializerBase newDelegatee = _verifyDeserType(newDelegatee0);
-
-//System.out.println("DEBUG: createContextual!");
         
         // Let's go through the properties now...
         Iterator<SettableBeanProperty> it = newDelegatee.properties();
@@ -134,7 +137,7 @@ public class WrapperHandlingDeserializer
     /**********************************************************************
      */
 
-    protected void _configureParser(JsonParser jp)
+    protected final void _configureParser(JsonParser jp)
         throws IOException, JsonProcessingException
     {
         /* 19-Aug-2013, tatu: Although we should not usually get called with

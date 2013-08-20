@@ -96,8 +96,7 @@ public class XmlBeanDeserializerModifier
         if (!deser.getValueInstantiator().canCreateFromString()) {
             SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
             if (textProp != null) {
-//                System.err.println("DEBUG: gotcha! "+textProp);
-                // !!! TODO
+                return new XmlTextDeserializer(deser, textProp);
             }
         }
         return new WrapperHandlingDeserializer(deser);
