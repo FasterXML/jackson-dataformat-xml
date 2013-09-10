@@ -62,28 +62,20 @@ public class XmlTextDeserializer
     /* Abstract method implementations
     /**********************************************************************
      */
-    
+
     @Override
-    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee) {
-        return new XmlTextDeserializer(_verifyDeserType(newDelegatee), _xmlTextPropertyIndex);
+    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee0) {
+        // default not enough, as we need to create a new wrapping deserializer
+        // even if delegatee does not change
+        throw new IllegalStateException("Internal error: should never get called");
     }
 
-    /*
-    /**********************************************************************
-    /* Overridden methods
-    /**********************************************************************
-     */
-
-    /**
-     * We need to override this method; otherwise underlying changes to XML text
-     * property will go unnoticed. Otherwise default handling should work fine.
-     */
     @Override
-    protected JsonDeserializer<?> _createContextual(DeserializationContext ctxt,
-            BeanProperty property, JsonDeserializer<?> newDelegatee0)
+    public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
+            BeanProperty property)
+        throws JsonMappingException
     {
-        BeanDeserializerBase newDelegatee = _verifyDeserType(newDelegatee0);
-        return new XmlTextDeserializer(newDelegatee, _xmlTextPropertyIndex);
+        return new XmlTextDeserializer(_verifyDeserType(_delegatee), _xmlTextPropertyIndex);
     }
 
     /*

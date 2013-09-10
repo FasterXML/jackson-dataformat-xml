@@ -42,30 +42,27 @@ public class WrapperHandlingDeserializer
         super(delegate);
         _namesToWrap = namesToWrap;
     }
-    
+
     /*
     /**********************************************************************
     /* Abstract method implementations
     /**********************************************************************
      */
-    
-    @Override
-    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee) {
-        return new WrapperHandlingDeserializer(_verifyDeserType(newDelegatee),
-                _namesToWrap);
-    }
-    
-    /*
-    /**********************************************************************
-    /* Overridden methods
-    /**********************************************************************
-     */
 
     @Override
-    protected JsonDeserializer<?> _createContextual(DeserializationContext ctxt,
-            BeanProperty property, JsonDeserializer<?> newDelegatee0)
+    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee0) {
+        // default not enough, as we may need to create a new wrapping deserializer
+        // even if delegatee does not change
+        throw new IllegalStateException("Internal error: should never get called");
+    }
+
+    @Override
+    public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
+            BeanProperty property)
+        throws JsonMappingException
     {
-        BeanDeserializerBase newDelegatee = _verifyDeserType(newDelegatee0);
+        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property);
+        BeanDeserializerBase newDelegatee = _verifyDeserType(del);
         
         // Let's go through the properties now...
         Iterator<SettableBeanProperty> it = newDelegatee.properties();
