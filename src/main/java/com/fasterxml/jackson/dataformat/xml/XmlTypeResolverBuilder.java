@@ -127,9 +127,13 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
 
         @Override
-        public JavaType typeFromId(String id)
-        {
+        public JavaType typeFromId(String id) {
             return super.typeFromId(decodeXmlClassName(id));
+        }
+
+        @Override
+        public JavaType typeFromId(DatabindContext context, String id) {
+            return super.typeFromId(context, decodeXmlClassName(id));
         }
     }
 
@@ -148,9 +152,13 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
 
         @Override
-        public JavaType typeFromId(String id)
-        {
+        public JavaType typeFromId(String id) {
             return super.typeFromId(decodeXmlClassName(id));
+        }
+
+        @Override
+        public JavaType typeFromId(DatabindContext context, String id) {
+            return super.typeFromId(context, decodeXmlClassName(id));
         }
     }
 }
