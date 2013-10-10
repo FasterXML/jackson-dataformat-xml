@@ -1,9 +1,10 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.stream;
 
 import java.io.*;
 
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlTokenStream;
 
 public class TestXmlTokenStream extends XmlTestBase
