@@ -5,14 +5,13 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.core.*;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
+import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
@@ -197,7 +196,7 @@ public class XmlBeanSerializer extends BeanSerializer
         } else {
             props = _props;
         }
-        final BeanPropertyFilter filter = findFilter(provider);
+        final PropertyFilter filter = findPropertyFilter(provider, _propertyFilterId, bean);
         // better also allow missing filter actually..
         if (filter == null) {
             serializeFields(bean, jgen0, provider);
