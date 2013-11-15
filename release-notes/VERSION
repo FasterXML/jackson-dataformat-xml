@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.3.0 (xx-Oct-2013)
+Version: 2.3.0 (14-Nov-2013)
 
 #38: Support root-level Collection serialization
 #64: Problems deserializing unwrapped lists, with optional (and missing) attribute.
