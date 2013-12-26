@@ -7,4 +7,9 @@ Sebastien Dionne:
 
 * Suggested Issue-23: Add @JacksonXmlText annotation (alias for JAXB @XmlValue),
   to support case of property values as 'unwrapped' text
- [2.0.1]
+ (2.0.1)
+
+Pascal Gelinas:
+
+* Reported and fixed #84: Problem with @JacksonXmlText when property output is suppressed
+ (2.3.1)
