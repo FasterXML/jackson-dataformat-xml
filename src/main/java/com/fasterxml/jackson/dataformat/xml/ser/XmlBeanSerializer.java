@@ -160,6 +160,11 @@ public class XmlBeanSerializer extends BeanSerializer
                 if (prop != null) { // can have nulls in filtered list
                     prop.serializeAsField(bean, xgen, provider);
                 }
+                // Reset to avoid next value being written as unwrapped, 
+                // for example when property is suppressed
+                if (i == textIndex) {
+                    xgen.setNextIsUnwrapped(false);
+                }
             }
             if (_anyGetterWriter != null) {
                 _anyGetterWriter.getAndSerialize(bean, xgen, provider);
