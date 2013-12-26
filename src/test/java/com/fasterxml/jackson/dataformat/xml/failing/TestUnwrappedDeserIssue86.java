@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.unwrapped;
+package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +13,50 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class TestIssue86 {
+public class TestUnwrappedDeserIssue86
+{
+    @JacksonXmlRootElement(localName = "test")
+    public static class Issue86 {
 
+      @JacksonXmlProperty(localName = "id", isAttribute = true)
+      private String id;
+
+      @JacksonXmlElementWrapper(useWrapping = false)
+      @JacksonXmlProperty(localName = "test")
+      private List<Issue86> children;
+
+      public Issue86() {}
+
+      public Issue86(final String id, final List<Issue86> children) {
+        this.id = id;
+        this.children = children;
+      }
+
+      @Override
+      public boolean equals(final Object other) {
+        if (other == null) {
+          return false;
+        }
+
+        if (other == this) {
+          return true;
+        }
+
+        if (!(other instanceof Issue86)) {
+          return false;
+        }
+
+        final Issue86 otherIssue86 = (Issue86) other;
+        return otherIssue86.id.equals(id) && otherIssue86.children.equals(children);
+      }
+    }
+
+    /*
+    /**********************************************************************
+    /* Test methods
+    /***********************************************************************
+     */
+    
   @Test
   public void deserializeUnwrappedListWhenLocalNameForRootElementAndXmlPropertyMatch() throws Exception {
     final String source =
@@ -56,41 +98,4 @@ public class TestIssue86 {
     final Issue86 after = mapper.readValue(xml, Issue86.class);
     Assert.assertEquals(before, after);
   }
-
-  @JacksonXmlRootElement(localName = "test")
-  public static class Issue86 {
-
-    @JacksonXmlProperty(localName = "id", isAttribute = true)
-    private String id;
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "test")
-    private List<Issue86> children;
-
-    public Issue86() {}
-
-    public Issue86(final String id, final List<Issue86> children) {
-      this.id = id;
-      this.children = children;
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-      if (other == null) {
-        return false;
-      }
-
-      if (other == this) {
-        return true;
-      }
-
-      if (!(other instanceof Issue86)) {
-        return false;
-      }
-
-      final Issue86 otherIssue86 = (Issue86) other;
-      return otherIssue86.id.equals(id) && otherIssue86.children.equals(children);
-    }
-  }
-
 }

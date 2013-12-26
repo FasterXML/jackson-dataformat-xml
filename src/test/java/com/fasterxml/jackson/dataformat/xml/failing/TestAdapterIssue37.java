@@ -88,7 +88,7 @@ public class TestAdapterIssue37 extends XmlTestBase
         map.put(a,b);
         return map;
     }
-    
+
     /*
     /**********************************************************************
     /* Set up

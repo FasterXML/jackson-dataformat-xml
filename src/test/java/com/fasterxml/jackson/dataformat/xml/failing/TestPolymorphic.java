@@ -1,8 +1,11 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.dataformat.xml.*;
+import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.dataformat.xml.*;
 
 public class TestPolymorphic extends XmlTestBase
 {
@@ -53,6 +56,20 @@ public class TestPolymorphic extends XmlTestBase
         public ClassArrayWrapper(String s) { wrapped = new SubTypeWithClassArray(s); }
     }
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    protected static class TypeWithClassPropertyAndObjectId {
+        public String id;
+
+        public TypeWithClassPropertyAndObjectId(String id) { this.id = id; }
+    }
+
+    protected static class Wrapper {
+        public List<TypeWithClassPropertyAndObjectId> data;
+
+        public Wrapper(List<TypeWithClassPropertyAndObjectId> data) { this.data = data; }
+    }
+    
     /*
     /**********************************************************
     /* Set up
@@ -96,6 +113,23 @@ public class TestPolymorphic extends XmlTestBase
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.wrapped.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result.wrapped).name);
+    }
+
+    /**
+     * Test for issue 81
+     */
+    public void testAsPropertyWithObjectId() throws Exception
+    {
+        List<TypeWithClassPropertyAndObjectId> data = new ArrayList<TestPolymorphic.TypeWithClassPropertyAndObjectId>();
+        TypeWithClassPropertyAndObjectId object = new TypeWithClassPropertyAndObjectId("Foobar");
+        data.add(object);
+        // This will be written as an id reference instead of object; as such, no type info will be written.
+        data.add(object);
+        String xml = _xmlMapper.writeValueAsString(new Wrapper(data));
+        Wrapper result = _xmlMapper.readValue(xml, Wrapper.class);
+        assertNotNull(result);
+        assertSame(result.data.get(0), result.data.get(1));
+        assertEquals("Foobar", result.data.get(0).id);
     }
 }
    
