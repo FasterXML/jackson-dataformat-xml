@@ -126,6 +126,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
             return encodeXmlClassName(super.idFromValue(value));
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public JavaType typeFromId(String id) {
             return super.typeFromId(decodeXmlClassName(id));
@@ -151,6 +152,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
             return encodeXmlClassName(super.idFromValue(value));
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public JavaType typeFromId(String id) {
             return super.typeFromId(decodeXmlClassName(id));
