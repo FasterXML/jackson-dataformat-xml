@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.3.1 (xx-Dec-2013)
+Version: 2.3.1 (28-Dec-2013)
 
 #84: Problem with @JacksonXmlText when property output is suppressed
  (contributed by Pascal G)
