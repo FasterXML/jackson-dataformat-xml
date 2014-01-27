@@ -145,47 +145,6 @@ public class JacksonXmlAnnotationIntrospector
         return name;
     }
 
-    /* Ok, now: following contains quite a bit of duplication.
-     * But it is still needed since trying to refactor things tends
-     * to end in infinite loop or stack overflow... we can eventually
-     * remove these methods once we are certain that core databinding
-     * never calls these methods (perhaps with 2.3 or at latest 2.4)
-     */
-    
-    @Deprecated
-    @Override
-    public String findSerializationName(AnnotatedField a)
-    {
-        PropertyName pname = _findXmlName(a);
-        if (pname != null) {
-            return pname.getSimpleName();
-        }
-        String name = super.findSerializationName(a);
-        if (name == null) {
-            if (a.hasAnnotation(JacksonXmlText.class)) {
-                return "";
-            }
-        }
-        return name;
-    }
-
-    @Deprecated
-    @Override
-    public String findSerializationName(AnnotatedMethod a)
-    {
-        PropertyName pname = _findXmlName(a);
-        if (pname != null) {
-            return pname.getSimpleName();
-        }
-        String name = super.findSerializationName(a);
-        if (name == null) {
-            if (a.hasAnnotation(JacksonXmlText.class)) {
-                return "";
-            }
-        }
-        return name;
-    }
-
     @Override
     public PropertyName findNameForDeserialization(Annotated a)
     {
@@ -199,62 +158,6 @@ public class JacksonXmlAnnotationIntrospector
             }
         }
         return name;
-    }
-    
-    @Deprecated
-    @Override
-    public String findDeserializationName(AnnotatedField a)
-    {
-        PropertyName pname = _findXmlName(a);
-        if (pname != null) {
-            return pname.getSimpleName();
-        }
-        String name = super.findDeserializationName(a);
-        if (name == null) {
-            if (a.hasAnnotation(JacksonXmlText.class)) {
-                return "";
-            }
-        }
-        return name;
-    }
-
-    @Deprecated
-    @Override
-    public String findDeserializationName(AnnotatedMethod a)
-    {
-        PropertyName pname = _findXmlName(a);
-        if (pname != null) {
-            return pname.getSimpleName();
-        }
-        String name = super.findDeserializationName(a);
-        if (name == null) {
-            if (a.hasAnnotation(JacksonXmlText.class)) {
-                return "";
-            }
-        }
-        return name;
-    }
-    
-    @Deprecated
-    @Override
-    public String findDeserializationName(AnnotatedParameter a)
-    {
-        PropertyName pname = _findXmlName(a);
-        if (pname != null) {
-            // empty name not acceptable...
-            String local = pname.getSimpleName();
-            if (local != null && local.length() > 0) {
-                return local;
-            }
-        }
-        // xml text still has special handling...
-        String name = super.findDeserializationName(a);
-        if (name == null) {
-            if (a.hasAnnotation(JacksonXmlText.class)) {
-                return "";
-            }
-        }
-        return super.findDeserializationName(a);
     }
     
     /*
