@@ -10,7 +10,7 @@
 
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.3.2-SNAPSHOT</version>
+  <version>2.4.0-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
@@ -28,10 +28,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <!-- no patch versions for annotations (since 2.3) -->
-    <jackson.version.annotations>2.3.0</jackson.version.annotations>
-    <jackson.version.core>2.3.2-SNAPSHOT</jackson.version.core>
-    <jackson.version.jaxb>2.3.1</jackson.version.jaxb>
+    <jackson.version.annotations>2.4-SNAPSHOT</jackson.version.annotations>
+    <jackson.version.core>2.4.0-SNAPSHOT</jackson.version.core>
+    <jackson.version.jaxb>${jackson.version.core}</jackson.version.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 

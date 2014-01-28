@@ -499,49 +499,6 @@ public class XmlFactory extends JsonFactory
         return xp;
     }
     
-    /*
-    /**********************************************************
-    /* Deprecated internal factory methods for parser creation
-    /**********************************************************
-     */
-
-    //protected IOContext _createContext(Object srcRef, boolean resourceManaged)
-
-    /**
-     * Overridable factory method that actually instantiates desired
-     * parser.
-     */
-    @Override
-    @Deprecated
-    protected FromXmlParser _createJsonParser(InputStream in, IOContext ctxt)
-        throws IOException, JsonParseException
-    {
-        return _createParser(in, ctxt);
-    }
-
-    /**
-     * Overridable factory method that actually instantiates desired
-     * parser.
-     */
-    @Override
-    @Deprecated
-    protected FromXmlParser _createJsonParser(Reader r, IOContext ctxt)
-        throws IOException, JsonParseException
-    {
-        return _createParser(r, ctxt);
-    }
-
-    /**
-     * Overridable factory method that actually instantiates desired
-     * parser.
-     */
-    @Override
-    @Deprecated
-    protected FromXmlParser _createJsonParser(byte[] data, int offset, int len, IOContext ctxt)
-        throws IOException, JsonParseException
-    {
-        return _createParser(data, offset, len, ctxt);
-    }
 
     /*
     /**********************************************************************

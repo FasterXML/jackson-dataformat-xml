@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
@@ -806,5 +807,11 @@ public class FromXmlParser
             }
         }
         return true;
+    }
+
+    @Override
+    public Version version()
+    {
+        return PackageVersion.VERSION;
     }
 }
