@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
+import com.fasterxml.jackson.databind.ser.impl.WritableObjectId;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
@@ -249,6 +250,11 @@ public class XmlBeanSerializer extends BeanSerializer
             TypeSerializer typeSer)
         throws IOException, JsonGenerationException
     {
+        if (_objectIdWriter != null) {
+            _serializeWithObjectId(bean, jgen, provider, typeSer);
+            return;
+        }
+
         /* Ok: let's serialize type id as attribute, but if (and only if!)
          * we are using AS_PROPERTY
          */
@@ -264,6 +270,28 @@ public class XmlBeanSerializer extends BeanSerializer
         }
     }
     
+    @Override
+    protected void _serializeObjectId(Object bean,
+                                      JsonGenerator jgen,
+                                      SerializerProvider provider,
+                                      TypeSerializer typeSer,
+                                      WritableObjectId objectId) throws IOException, JsonProcessingException,
+            JsonGenerationException {
+        /* Ok: let's serialize type id as attribute, but if (and only if!)
+         * we are using AS_PROPERTY
+         */
+        if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
+            ToXmlGenerator xgen = (ToXmlGenerator)jgen;
+            xgen.setNextIsAttribute(true);
+            super._serializeObjectId(bean, jgen, provider, typeSer, objectId);
+            if (_attributeCount == 0) { // if no attributes, need to reset
+                xgen.setNextIsAttribute(false);
+            }
+        } else {
+            super._serializeObjectId(bean, jgen, provider, typeSer, objectId);
+        }
+    }
+
     /*
     /**********************************************************
     /* Helper methods
