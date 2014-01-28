@@ -132,7 +132,6 @@ public class XmlBeanSerializer extends BeanSerializer
         
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         final BeanPropertyWriter[] props;
-        // !!! TODO: change to use non-deprecated version in 2.3
         if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
         } else {
@@ -195,7 +194,6 @@ public class XmlBeanSerializer extends BeanSerializer
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         
         final BeanPropertyWriter[] props;
-        // !!! TODO: change to use non-deprecated version in 2.3
         if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
         } else {
@@ -315,17 +313,19 @@ public class XmlBeanSerializer extends BeanSerializer
 
         for (int i = 0, len = properties.length; i < len; ++i) {
             BeanPropertyWriter bpw = properties[i];
-            
+
             if (!_isAttribute(bpw)) {
                 continue;
             }
-            // Swap if attribute and there are preceding elements:
-            if (attrCount < i) {
-                properties[i] = properties[attrCount];
+
+            // Move attribute a few places done as necessary
+            int moveBy = i-attrCount;
+            if (moveBy > 0) {
+                System.arraycopy(properties, attrCount, properties, attrCount+1, moveBy);
                 properties[attrCount] = bpw;
                 if (filteredProperties != null) {
                     BeanPropertyWriter fbpw = filteredProperties[i];
-                    filteredProperties[i] = filteredProperties[attrCount];
+                    System.arraycopy(filteredProperties, attrCount, filteredProperties, attrCount+1, moveBy);
                     filteredProperties[attrCount] = fbpw;
                 }
             }

@@ -4,6 +4,8 @@ Version: 2.3.2 (xx-xxx-2014)
 #81: Serialization of a polymorphic class As.Property with Identity info doesn't work 
  (fixed by Pascal G)
    -- NOTE! Depends on a related fix in `jackson-databind` 2.3.2
+#91: @JsonPropertyOrder not working correctly with attributes
+ (reported by thrykol@github)
 
 ------------------------------------------------------------------------
 === History: ===
