@@ -53,8 +53,7 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase {
 
     @Override
     public JsonSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
-//        return new UnwrappingBeanSerializer(this, unwrapper);
-        throw new UnsupportedOperationException("Unwrapping serialization not yet supported for XML");
+        return new UnwrappingXmlBeanSerializer(this, unwrapper);
     }
     
     @Override

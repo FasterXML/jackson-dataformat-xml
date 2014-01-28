@@ -148,6 +148,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         }
 
         final int attrCount = _attributeCount;
+        boolean isAttribute = xgen._nextIsAttribute;
         if (attrCount > 0) {
             xgen.setNextIsAttribute(true);
         }
@@ -157,7 +158,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
 
         try {
             for (final int len = props.length; i < len; ++i) {
-                if (i == attrCount) {
+                // 28-jan-2014, pascal: we don't want to reset the attribute flag if we are an unwrapping serializer 
+                // that started with nextIsAttribute to true because all properties should be unwrapped as attributes too.
+                if (i == attrCount && !(isAttribute && isUnwrappingSerializer())) {
                     xgen.setNextIsAttribute(false);
                 }
                 // also: if this is property to write as text ("unwrap"), need to:
