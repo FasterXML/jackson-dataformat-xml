@@ -1,11 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestOrderingIssue91 extends XmlTestBase
+public class TestSerializationOrdering extends XmlTestBase
 {
     @JsonPropertyOrder({"a", "c" })
     static class Bean91 {
