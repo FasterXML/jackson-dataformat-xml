@@ -69,7 +69,6 @@ public class TestUnwrappingWithXML extends XmlTestBase
     final static class LocationWithAttributes {
         @JacksonXmlProperty(isAttribute=true)
         public int x;
-        @JacksonXmlProperty(isAttribute=true)
         public int y;
 
         public LocationWithAttributes() { }
@@ -122,7 +121,7 @@ public class TestUnwrappingWithXML extends XmlTestBase
     public void testUnwrappingSubWithAttribute()
         throws Exception
     {
-        final String XML = "<UnwrappingSubWithAttributes name=\"Joe\" loc.x=\"15\" loc.y=\"27\"/>";
+        final String XML = "<UnwrappingSubWithAttributes name=\"Joe\" loc.x=\"15\"><loc.y>27</loc.y></UnwrappingSubWithAttributes>";
         ObjectMapper mapper = xmlMapper(false);
         UnwrappingSubWithAttributes wrapper = mapper.reader(UnwrappingSubWithAttributes.class).readValue(XML);
         assertNotNull(wrapper);
