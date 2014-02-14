@@ -26,7 +26,7 @@ public class TestUnwrappedLists extends XmlTestBase
         @JacksonXmlElementWrapper(useWrapping = false)
         public List<Optional> optional;
     } 
-    
+
     /*
     /**********************************************************
     /* Unit tests

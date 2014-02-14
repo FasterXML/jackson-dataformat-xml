@@ -10,12 +10,6 @@ import com.fasterxml.jackson.core.*;
 public abstract class XmlTestBase
     extends TestCase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     /**
      * Sample class from Jackson tutorial ("JacksonInFiveMinutes")
      */

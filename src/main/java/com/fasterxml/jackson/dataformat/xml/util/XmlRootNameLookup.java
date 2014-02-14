@@ -37,8 +37,7 @@ public class XmlRootNameLookup
         return this;
     }
 
-    public QName findRootName(JavaType rootType, MapperConfig<?> config)
-    {
+    public QName findRootName(JavaType rootType, MapperConfig<?> config) {
         return findRootName(rootType.getRawClass(), config);
     }
 
