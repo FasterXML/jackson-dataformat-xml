@@ -78,18 +78,32 @@ public class XmlBeanPropertyWriter
         throws Exception
     {
         Object value = get(bean);
-        
-        /* Hmmh. Does the default null serialization work ok here? For now let's assume
-         * it does; can change later if not.
+
+        /* 13-Feb-2014, tatu: As per [#103], default handling does not really
+         *   work here. Rather, we need just a wrapping and should NOT call
+         *   null handler, as it does not know what to do...
+         *   
+         *   Question, however, is what should it be serialized as. We have two main
+         *   choices; equivalent empty List, and "nothing" (missing). Let's start with
+         *   empty List? But producing missing entry is non-trivial...
          */
         if (value == null) {
-            if (_nullSerializer != null) {
-                jgen.writeFieldName(_name);
-                _nullSerializer.serialize(null, jgen, prov);
+            // if (_nullSerializer != null) { ... }
+
+            // For Empty List, we'd do this:
+            /*
+            @SuppressWarnings("resource")
+            final ToXmlGenerator xmlGen = (jgen instanceof ToXmlGenerator) ? (ToXmlGenerator) jgen : null;
+            if (xmlGen != null) {
+                xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
+                xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
             }
+            */
+            // but for missing thing, well, just output nothing
+            
             return;
         }
-        
+
         // then find serializer to use
         JsonSerializer<Object> ser = _serializer;
         if (ser == null) {
@@ -115,10 +129,10 @@ public class XmlBeanPropertyWriter
             _handleSelfReference(bean, ser);
         }
 
-        // Ok then; addition we want to do is to add wrapper element, and that's what happens here
-        // 19-Aug-2013, tatu: ... except for those nasty 'convertValue()' calls...
         @SuppressWarnings("resource")
         final ToXmlGenerator xmlGen = (jgen instanceof ToXmlGenerator) ? (ToXmlGenerator) jgen : null;
+        // Ok then; addition we want to do is to add wrapper element, and that's what happens here
+        // 19-Aug-2013, tatu: ... except for those nasty 'convertValue()' calls...
         if (xmlGen != null) {
             xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
         }
