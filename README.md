@@ -1,6 +1,6 @@
 # Overview
 
-This projects contains [Jackson](http://http://wiki.fasterxml.com/JacksonHome) extension component for
+This projects contains [Jackson](http://wiki.fasterxml.com/JacksonHome) extension component for
 reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
@@ -23,7 +23,7 @@ Specifically:
 # Status
 
 Version 2.0 works for significant number of XML/JAXB use cases.
-Missing functionality is tracked via [Issue tracker](./issues).
+Missing functionality is tracked via [Issue tracker](https://github.com/FasterXML/jackson-dataformat-xml/issues).
 
 There are older versions (1.9.2)  available, which work with older Jackson versions (0.6.2): this is maintained on "1.9" branch,
 and uses different group id ("com.fasterxml" as well as artifact id ("jackson-xml-databind")
@@ -125,14 +125,14 @@ Simple value = xmlMapper.readValue("<Simple><x>1</x><y>2</y></Simple>", Simple.c
 
 ## Additional annotations
 
-In addition to standard [Jackson annotations](jackson-annotations) and optional JAXB (`javax.xml.bind.annotation`), this project also adds couple of its own annotations for convenience, to support XML-specific details:
+In addition to standard [Jackson annotations](https://github.com/FasterXML/jackson-annotations) and optional JAXB (`javax.xml.bind.annotation`), this project also adds couple of its own annotations for convenience, to support XML-specific details:
 
  * `@JacksonXmlElementWrapper` allows specifying XML element to use for wrapping `List` and `Map` properties
  * `@JacksonXmlProperty` allows specifying XML namespace and local name for a property; as well as whether property is to be written as an XML element or attribute.
  * `@JacksonXmlRootElement` allows specifying XML element to use for wrapping the root element (default uses 'simple name' of the value class)
  * `@JacksonXmlText` allows specifying that value of one property is to be serialized as "unwrapped" text, and not in an element.
 
-for longer description, check out [XML module annotations](../../wiki/Jackson-XML-annotations).
+for longer description, check out [XML module annotations](https://github.com/FasterXML/jackson-dataformat-xml/wiki/Jackson-XML-annotations).
 
 ## Known Limitations
 
@@ -148,4 +148,4 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 
 # See Also
 
-See [wiki page](jackson-dataformat-xml/wiki) for more information
+See [wiki page](https://github.com/FasterXML/jackson-dataformat-xml/wiki) for more information
