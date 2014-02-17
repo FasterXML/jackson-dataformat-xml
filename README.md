@@ -148,4 +148,5 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 
 # See Also
 
-See [wiki page](https://github.com/FasterXML/jackson-dataformat-xml/wiki) for more information
+* XML module [wiki page](https://github.com/FasterXML/jackson-dataformat-xml/wiki) for more information
+* Using XML with [DropWizard](https://github.com/dropwizard/dropwizard)? Check out [this extension](https://github.com/yunspace/dropwizard-xml)!
