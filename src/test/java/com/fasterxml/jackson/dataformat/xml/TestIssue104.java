@@ -37,7 +37,6 @@ public class TestIssue104 extends XmlTestBase {
     // Another test to ensure ordering is not required (i.e. can do front references)
     public void testSimpleCollectionDeserWithForwardRefs() throws Exception
     {
-        MAPPER.writeValue(System.out, new IdWrapper(7));
         IdWrapper result = MAPPER.readValue("<IdWrapper><node><value><value>7</value></value><next><node>1</node></next><id>1</id></node></IdWrapper>"
                 ,IdWrapper.class);
         assertEquals(7, (int)result.node.value.get(0));
