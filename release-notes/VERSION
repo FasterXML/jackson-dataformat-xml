@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.3.2 (xx-xxx-2014)
+Version: 2.3.2 (01-Mar-2014)
 
 #81: Serialization of a polymorphic class As.Property with Identity info doesn't work 
  (fixed by Pascal G)
