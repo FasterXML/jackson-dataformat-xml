@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.text;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class TestTextValue extends XmlTestBase
+public class TextValueTest extends XmlTestBase
 {
     static class Simple
     {

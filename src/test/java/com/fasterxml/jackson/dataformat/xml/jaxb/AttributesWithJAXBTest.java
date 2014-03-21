@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestAttributes extends XmlTestBase
+public class AttributesWithJAXBTest extends XmlTestBase
 {
     @XmlAccessorType(value = XmlAccessType.FIELD)
     public class Jurisdiction {

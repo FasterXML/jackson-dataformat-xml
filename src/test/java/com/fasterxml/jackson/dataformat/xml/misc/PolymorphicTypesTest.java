@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.types;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ public class PolymorphicTypesTest extends XmlTestBase
          *   inclusion, which allows use of attribute over element, so:
          */
         final String exp = 
-            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.dataformat.xml.types.PolymorphicTypesTest..SubTypeWithClassProperty\">"
+            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.dataformat.xml.misc.PolymorphicTypesTest..SubTypeWithClassProperty\">"
             //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.types.TestPolymorphic..SubTypeWithClassProperty</_class>"
             +"<name>Foobar</name></SubTypeWithClassProperty>"
                 ;

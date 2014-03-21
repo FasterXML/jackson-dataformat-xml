@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.text;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-public class TestXmlText extends XmlTestBase
+public class XmlTextTest extends XmlTestBase
 {
     @JsonPropertyOrder({"first","second"})
     class Data{

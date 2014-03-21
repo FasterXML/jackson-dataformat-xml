@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.convert;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.*;
 import java.lang.reflect.Array;
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
  * Conversion tests to ensure that standard ObjectMapper conversions
  * work despite XmlMapper having to add XML-specific work-arounds.
  */
-public class TestArrayConversions extends XmlTestBase
+public class ArrayConversionsTest extends XmlTestBase
 {
     static class IntListWrapper {
         public List<Integer> values;

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
  * annotations, it should be possible to use them similar to how they are used
  * with default Jackson JSON data binding. Let's verify this is the case.
  */
-public class TestWithJAXBAnnotations extends XmlTestBase
+public class WithJAXBAnnotationsTest extends XmlTestBase
 {
     /*
     /**********************************************************************

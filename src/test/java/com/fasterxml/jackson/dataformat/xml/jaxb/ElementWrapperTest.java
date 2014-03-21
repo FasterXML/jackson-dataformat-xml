@@ -15,7 +15,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestElementWrapper extends XmlTestBase
+public class ElementWrapperTest extends XmlTestBase
 {
     @XmlRootElement(name = "Individual")
     static class MyPerson {
