@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestNestedUnwrappedLists  extends XmlTestBase
+public class NestedUnwrappedListsTest  extends XmlTestBase
 {
     // // // Test
 

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 
-public class TestXmlParser extends XmlTestBase
+public class XmlParserTest extends XmlTestBase
 {
     /*
     /**********************************************************

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestPolymorphic extends XmlTestBase
+public class PolymorphicTypesTest extends XmlTestBase
 {
     /*
     /**********************************************************
@@ -83,7 +83,7 @@ public class TestPolymorphic extends XmlTestBase
          *   inclusion, which allows use of attribute over element, so:
          */
         final String exp = 
-            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.dataformat.xml.types.TestPolymorphic..SubTypeWithClassProperty\">"
+            "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.dataformat.xml.types.PolymorphicTypesTest..SubTypeWithClassProperty\">"
             //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.types.TestPolymorphic..SubTypeWithClassProperty</_class>"
             +"<name>Foobar</name></SubTypeWithClassProperty>"
                 ;
@@ -109,7 +109,7 @@ public class TestPolymorphic extends XmlTestBase
      */
     public void testAsPropertyWithObjectId() throws Exception
     {
-        List<TypeWithClassPropertyAndObjectId> data = new ArrayList<TestPolymorphic.TypeWithClassPropertyAndObjectId>();
+        List<TypeWithClassPropertyAndObjectId> data = new ArrayList<PolymorphicTypesTest.TypeWithClassPropertyAndObjectId>();
         TypeWithClassPropertyAndObjectId object = new TypeWithClassPropertyAndObjectId("Foobar");
         data.add(object);
         // This will be written as an id reference instead of object; as such, no type info will be written.

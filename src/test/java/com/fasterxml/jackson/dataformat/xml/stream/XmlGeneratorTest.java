@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
-public class TestXmlGenerator extends XmlTestBase
+public class XmlGeneratorTest extends XmlTestBase
 {
     public void testSimpleElement() throws Exception
     {

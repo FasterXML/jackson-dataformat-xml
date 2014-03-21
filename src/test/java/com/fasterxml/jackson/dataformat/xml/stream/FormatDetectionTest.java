@@ -12,7 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class TestXMLFormatDetection extends XmlTestBase
+public class FormatDetectionTest extends XmlTestBase
 {
     static class POJO {
         public int x, y;
