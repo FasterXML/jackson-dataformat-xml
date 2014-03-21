@@ -13,7 +13,7 @@ public abstract class XmlTestBase
     /**
      * Sample class from Jackson tutorial ("JacksonInFiveMinutes")
      */
-    protected static class FiveMinuteUser {
+    public static class FiveMinuteUser {
         public enum Gender { MALE, FEMALE };
 
         public static class Name

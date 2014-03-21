@@ -1,9 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 

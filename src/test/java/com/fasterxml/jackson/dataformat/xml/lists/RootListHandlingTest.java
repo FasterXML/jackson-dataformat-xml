@@ -15,7 +15,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * Tests for verifying that Lists (and arrays) can be serialized even
  * when they are root values.
  */
-public class TestRootListHandling extends XmlTestBase
+public class RootListHandlingTest extends XmlTestBase
 {
     @JacksonXmlRootElement(localName="SR")
     @JsonPropertyOrder({ "id", "name", "description" })

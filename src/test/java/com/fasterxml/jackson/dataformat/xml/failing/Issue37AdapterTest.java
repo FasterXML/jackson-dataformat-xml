@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
 
-public class TestAdapterIssue37 extends XmlTestBase
+public class Issue37AdapterTest extends XmlTestBase
 {
     @XmlJavaTypeAdapter(URLEncoderMapDataAdapter.class)
     public static class MapData

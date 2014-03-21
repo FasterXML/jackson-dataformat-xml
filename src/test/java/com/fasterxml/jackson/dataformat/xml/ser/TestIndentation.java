@@ -1,10 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class TestIndentation extends XmlTestBase

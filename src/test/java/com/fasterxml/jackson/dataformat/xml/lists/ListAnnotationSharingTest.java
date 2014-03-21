@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.unwrapped;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
 // for [Issue#55]
-public class TestListAnnotationSharing extends XmlTestBase
+public class ListAnnotationSharingTest extends XmlTestBase
 {
     static class Wrapper {
         @JacksonXmlElementWrapper(localName = "Points", useWrapping = true)

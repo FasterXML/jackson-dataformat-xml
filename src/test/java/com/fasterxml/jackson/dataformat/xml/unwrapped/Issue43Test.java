@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class TestIssue43 extends XmlTestBase
+public class Issue43Test extends XmlTestBase
 {
     static class Name {
         @JacksonXmlProperty(isAttribute=true)

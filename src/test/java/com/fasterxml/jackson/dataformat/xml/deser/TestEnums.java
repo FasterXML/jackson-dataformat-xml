@@ -1,6 +1,7 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 public class TestEnums extends XmlTestBase
 {

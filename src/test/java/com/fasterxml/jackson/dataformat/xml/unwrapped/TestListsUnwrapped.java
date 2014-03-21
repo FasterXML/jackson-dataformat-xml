@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.unwrapped;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -34,6 +36,22 @@ public class TestListsUnwrapped extends XmlTestBase
 
     static class DefaultList {
         public Value[] value;
+    }
+
+    // [Issue#64]
+    static class Optionals {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<Optional> optional;
+    } 
+
+    static class Optional {
+        @JacksonXmlText
+        public String number = "NOT SET";
+
+        @JacksonXmlProperty(isAttribute=true)
+        public String type = "NOT SET";
+
+        public Optional() { }
     }
     
     /*
@@ -125,7 +143,25 @@ public class TestListsUnwrapped extends XmlTestBase
         assertNotNull(output.value);
         assertEquals(1, output.value.length);
     }
-    
+
+    // // [Issue#64]
+    public void testOptionalsWithMissingType() throws Exception
+    {
+        XmlMapper mapper = new XmlMapper();
+//        Optionals ob = MAPPER.readValue("<MultiOptional><optional type='work'>123-456-7890</optional></MultiOptional>",
+        Optionals ob = mapper.readValue("<MultiOptional><optional>123-456-7890</optional></MultiOptional>",
+                Optionals.class);
+        assertNotNull(ob);
+        assertNotNull(ob.optional);
+        assertEquals(1, ob.optional.size());
+
+//            System.err.println("ob: " + ob); // works fine
+
+        Optional opt = ob.optional.get(0);
+        assertEquals("123-456-7890", opt.number);
+        assertEquals("NOT SET", opt.type);
+    }
+
     /*
     void withJAXB(Object ob) throws Exception
     {

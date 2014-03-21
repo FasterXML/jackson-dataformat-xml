@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 /**
  * Unit test(s) for [Issue#42], problems with custom (de)serializer.

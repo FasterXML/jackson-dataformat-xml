@@ -1,10 +1,12 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 public class TestSerializationManual extends XmlTestBase

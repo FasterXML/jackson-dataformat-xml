@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 

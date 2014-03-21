@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2014 Nu Echo Inc. All rights reserved.
  */
 
-package com.fasterxml.jackson.dataformat.xml.unwrapped;
+package com.fasterxml.jackson.dataformat.xml.failing;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -22,7 +22,24 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
  * @author Nu Echo Inc.
  */
 @RunWith(JUnit4.class)
-public class TestIssue97 {
+public class Issue97Test extends XmlTestBase
+{
+    @JsonTypeInfo(property = "type", use = Id.NAME)
+    public static abstract class Foo {
+        @JacksonXmlProperty(isAttribute = true)
+        public String data;
+    }
+
+    @JsonTypeName("good")
+    public static class FooGood extends Foo {
+        public String bar;
+    }
+
+    @JsonTypeName("bad")
+    public static class FooBad extends Foo {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<String> bar;
+    }
 
     @Test
     public void testGood() throws Exception {
@@ -47,50 +64,8 @@ public class TestIssue97 {
         Foo fooRead = mapper.readValue(xml, Foo.class);
         assertThat(fooRead, instanceOf(FooBad.class));
 
-        // BOOM
         xml = "<Foo data=\"dummy\" type=\"bad\"><bar><bar>FOOBAR</bar></bar></Foo>";
         fooRead = mapper.readValue(xml, Foo.class);
         assertThat(fooRead, instanceOf(FooBad.class));
-    }
-
-    @JsonTypeInfo(property = "type", use = Id.NAME)
-    public static abstract class Foo {
-        private String mData;
-
-        public void setData(String data) {
-            mData = data;
-        }
-
-        @JacksonXmlProperty(isAttribute = true)
-        public String getData() {
-            return mData;
-        }
-    }
-
-    @JsonTypeName("good")
-    public static class FooGood extends Foo {
-        private String mBar;
-
-        public String getBar() {
-            return mBar;
-        }
-
-        public void setBar(String bar) {
-            mBar = bar;
-        }
-    }
-
-    @JsonTypeName("bad")
-    public static class FooBad extends Foo {
-        private List<String> mBar;
-
-        @JacksonXmlElementWrapper(useWrapping = false)
-        public List<String> getBar() {
-            return mBar;
-        }
-
-        public void setBar(List<String> bar) {
-            mBar = bar;
-        }
     }
 }

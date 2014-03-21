@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestWrappedLists extends XmlTestBase
+public class WrappedListsTest extends XmlTestBase
 {
     static class Order  {
         @JacksonXmlElementWrapper(localName = "line_items")
@@ -29,8 +29,7 @@ public class TestWrappedLists extends XmlTestBase
 
     private final XmlMapper MAPPER = xmlMapper(true);
 
-    /* For [Issue#103]
-     */
+    // For [Issue#103]
     public void testEmptyList() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Order());

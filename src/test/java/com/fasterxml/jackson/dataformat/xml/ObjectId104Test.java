@@ -8,9 +8,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Unit test to showcase issue #104, based on TestObjectIdDeserialization unit test in databind package.
- *
  */
-public class TestIssue104 extends XmlTestBase {
+public class ObjectId104Test extends XmlTestBase {
     // // Classes for external id from property annotations:
     
     static class IdWrapper

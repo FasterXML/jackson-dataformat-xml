@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.unwrapped;
+package com.fasterxml.jackson.dataformat.xml.text;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
