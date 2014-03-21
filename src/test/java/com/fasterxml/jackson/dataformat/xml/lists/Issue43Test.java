@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.unwrapped;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.List;
 

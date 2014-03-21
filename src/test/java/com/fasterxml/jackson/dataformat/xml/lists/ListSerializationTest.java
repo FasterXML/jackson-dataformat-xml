@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class TestListSerialization extends XmlTestBase
+public class ListSerializationTest extends XmlTestBase
 {
     /*
     /**********************************************************

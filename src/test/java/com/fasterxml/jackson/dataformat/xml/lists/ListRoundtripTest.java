@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class TestListRoundtrip extends XmlTestBase
+public class ListRoundtripTest extends XmlTestBase
 {
     @JacksonXmlRootElement(localName="parents")
     public static class Parents {
