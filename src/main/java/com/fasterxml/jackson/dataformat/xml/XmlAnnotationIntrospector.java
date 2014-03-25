@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
  * Additional extension interface used above and beyond
@@ -20,21 +21,6 @@ public interface XmlAnnotationIntrospector
      */
     public String findNamespace(Annotated ann);
 
-    // Method used to check if specified property has annotation that indicates
-    // that it should be wrapped in an element; and if so, name to use.
-    // Note: local name of "" is used to indicate that name should default
-    // to using name (local name and namespace) of property itself.
-    //
-    // Removed in 2.1
-//    public QName findWrapperElement(Annotated ann);
-
-    // Method used to find out name to use for the outermost (root) XML element
-    // name when serializing (since there is no property that would define it);
-    // this overrides default name based on type of object.
-    //
-    // Removed in 2.1
-//    public QName findRootElement(Annotated ann);
-
     /**
      * Method used to check whether given annotated element
      * (field, method, constructor parameter) has indicator that suggests
@@ -48,7 +34,7 @@ public interface XmlAnnotationIntrospector
      * it should be serialized as text, without element wrapper.
      */
     public Boolean isOutputAsText(Annotated ann);
-    
+
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -71,8 +57,21 @@ public interface XmlAnnotationIntrospector
         public Pair(AnnotationIntrospector p, AnnotationIntrospector s)
         {
             super(p, s);
-            _xmlPrimary = (p instanceof XmlAnnotationIntrospector) ? (XmlAnnotationIntrospector) p : null;
-            _xmlSecondary = (s instanceof XmlAnnotationIntrospector) ? (XmlAnnotationIntrospector) s : null;
+            if (p instanceof XmlAnnotationIntrospector) {
+                _xmlPrimary = (XmlAnnotationIntrospector) p;
+            } else if (p instanceof JaxbAnnotationIntrospector) {
+                _xmlPrimary = new JaxbWrapper((JaxbAnnotationIntrospector) p);
+            } else {
+                _xmlPrimary = null;
+            }
+
+            if (s instanceof XmlAnnotationIntrospector) {
+                _xmlSecondary = (XmlAnnotationIntrospector) s;
+            } else if (s instanceof JaxbAnnotationIntrospector) {
+                _xmlSecondary = new JaxbWrapper((JaxbAnnotationIntrospector) s);
+            } else {
+                _xmlSecondary = null;
+            }
         }
 
         public static XmlAnnotationIntrospector.Pair instance(AnnotationIntrospector a1, AnnotationIntrospector a2) {
@@ -89,29 +88,6 @@ public interface XmlAnnotationIntrospector
             return value;
         }
 
-        // These were removed in 2.1
-        /*
-        @Override
-        public QName findWrapperElement(Annotated ann)
-        {
-            QName value = (_xmlPrimary == null) ? null : _xmlPrimary.findWrapperElement(ann);
-            if (value == null && _xmlSecondary != null) {
-                value = _xmlSecondary.findWrapperElement(ann);
-            }
-            return value;
-        }
-
-        @Override
-        public QName findRootElement(Annotated ann)
-        {
-            QName value = (_xmlPrimary == null) ? null : _xmlPrimary.findRootElement(ann);
-            if (value == null && _xmlSecondary != null) {
-                value = _xmlSecondary.findRootElement(ann);
-            }
-            return value;
-        }
-        */
-        
         @Override
         public Boolean isOutputAsAttribute(Annotated ann)
         {
@@ -131,6 +107,43 @@ public interface XmlAnnotationIntrospector
             }
             return value;
         }
-    
+    }
+
+    /*
+    /**********************************************************************
+    /* Helper class used to adapt JaxbAnnoationIntrospector as
+    /* XmlAnnotationIntrospector
+    /**********************************************************************
+     */
+
+    /**
+     * Wrapper we need to adapt {@link JaxbAnnotationIntrospector} as
+     * {@link XmlAnnotationIntrospector}: something we can not (alas!)
+     * do in JAXB module because of dependency direction (JAXB module
+     * has no knowledge of this module).
+     */
+    static class JaxbWrapper implements XmlAnnotationIntrospector
+    {
+        protected final JaxbAnnotationIntrospector _intr;
+
+        public JaxbWrapper(JaxbAnnotationIntrospector i) {
+            _intr = i;
+        }
+        
+        @Override
+        public String findNamespace(Annotated ann) {
+            return _intr.findNamespace(ann);
+        }
+
+        @Override
+        public Boolean isOutputAsAttribute(Annotated ann) {
+            return _intr.isOutputAsAttribute(ann);
+        }
+
+        @Override
+        public Boolean isOutputAsText(Annotated ann) {
+            return _intr.isOutputAsText(ann);
+        }
+        
     }
 }

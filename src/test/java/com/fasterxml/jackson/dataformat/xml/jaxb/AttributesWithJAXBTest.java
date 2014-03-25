@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.*;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class AttributesWithJAXBTest extends XmlTestBase
 {
@@ -14,35 +15,44 @@ public class AttributesWithJAXBTest extends XmlTestBase
     public class Jurisdiction {
         @XmlAttribute(name="name",required=true)
         protected String name = "Foo";
+
         @XmlAttribute(name="value",required=true)
         protected int value = 13;
     }
 
-    /*
-    /**********************************************************************
-    /* Set up
-    /**********************************************************************
-     */
+    @XmlRootElement(name="problem")
+    public static class Problem {
+        @XmlAttribute(name="id")     
+        public String id;
+        public String description;
 
-    protected XmlMapper _jaxbMapper;
-
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _jaxbMapper = new XmlMapper();
-        _jaxbMapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        public Problem() { }
+        public Problem(String id, String description) {
+            this.id = id;
+            this.description = description;
+        }
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
-    public void testIssue6() throws IOException
+    public void testTwoAttributes() throws IOException
     {
-        assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>",
-                _jaxbMapper.writeValueAsString(new Jurisdiction()));
+        XmlMapper mapper = new XmlMapper();
+//        mapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        String xml = mapper.writeValueAsString(new Jurisdiction());
+        assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>", xml);
+    }
+
+    public void testAttributeAndElement() throws IOException
+    {
+        XmlMapper mapper = new XmlMapper();
+        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        String xml = mapper.writeValueAsString(new Problem("x", "Stuff"));
+        assertEquals("<problem id=\"x\"><description>Stuff</description></problem>", xml);
     }
 }
