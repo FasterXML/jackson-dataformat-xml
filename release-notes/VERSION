@@ -1,5 +1,13 @@
 Project: jackson-dataformat-xml
-Version: 2.3.2 (01-Mar-2014)
+Version: 2.3.3 (xx-xxx-2014)
+
+No changes since 2.3.2.
+
+------------------------------------------------------------------------
+=== History: ===
+------------------------------------------------------------------------
+
+2.3.2 (01-Mar-2014)
 
 #81: Serialization of a polymorphic class As.Property with Identity info doesn't work 
  (fixed by Pascal G)
@@ -8,10 +16,6 @@ Version: 2.3.2 (01-Mar-2014)
  (reported by thrykol@github)
 #103: Serialize wrapped 'null' Lists correctly
  (reported by 5kilodope@github)
-
-------------------------------------------------------------------------
-=== History: ===
-------------------------------------------------------------------------
 
 2.3.1 (28-Dec-2013)
 
