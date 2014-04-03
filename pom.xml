@@ -149,6 +149,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
             </excludes>
             <includes>
               <include>**/Test*.java</include>
+              <include>**/*Test.java</include>
             </includes>
           </configuration>
         </plugin>

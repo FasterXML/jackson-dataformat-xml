@@ -1,7 +1,8 @@
 Project: jackson-dataformat-xml
 Version: 2.3.3 (xx-xxx-2014)
 
-No changes since 2.3.2.
+#101: Invalid index error when deserializing unwrapped list element with multiple attributes
+ (reported by yunspace@github; fix suggested by escholz@github)
 
 ------------------------------------------------------------------------
 === History: ===
