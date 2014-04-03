@@ -392,7 +392,9 @@ public class XmlTokenStream
     {
         final String ns = _xmlReader.getNamespaceURI();
         final String localName = _xmlReader.getLocalName();
+        _attributeCount = _xmlReader.getAttributeCount();
         _nextAttributeIndex = 0;
+
         /* Support for virtual wrapping: in wrapping, may either
          * create a new wrapper scope (if in sub-tree, or matches
          * wrapper element itself), or implicitly close existing
@@ -414,7 +416,6 @@ public class XmlTokenStream
                 return (_currentState = XML_END_ELEMENT);
             }
         }
-        _attributeCount = _xmlReader.getAttributeCount();
         _localName = localName;
         _namespaceURI = ns;
         return (_currentState = XML_START_ELEMENT);
