@@ -1,11 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.*;
 
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class AttributeFailIssue108Test extends XmlTestBase
+public class AttributeIssue108Test extends XmlTestBase
 {
     static class Foo {
         @JacksonXmlElementWrapper(useWrapping = false)
