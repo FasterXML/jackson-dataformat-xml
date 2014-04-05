@@ -8,12 +8,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 public class TestEnums extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     static enum TestEnum { A, B, C; }
     
     static class UntypedEnumBean
