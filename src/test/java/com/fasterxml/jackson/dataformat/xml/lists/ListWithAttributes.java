@@ -2,12 +2,32 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class ListWithAttributes extends XmlTestBase
 {
+    // [Issue#43]
+    static class Name {
+        @JacksonXmlProperty(isAttribute=true)
+        public String language;
+
+        @JacksonXmlText
+        public String text;
+
+//        public String data;
+
+        public Name() { }
+    }
+
+    static class RoomName {
+        @JacksonXmlElementWrapper(localName = "names", useWrapping=true)
+        @JsonProperty("name")
+        public List<Name> names;
+    }
+    
     // [Issue#99]: allow skipping unknown properties
     static class Root {
         @JacksonXmlElementWrapper(useWrapping = false)
@@ -42,6 +62,19 @@ public class ListWithAttributes extends XmlTestBase
     /**********************************************************
      */
 
+    // [Issue#43]
+    public void testIssue43() throws Exception
+    {
+        String xmlData = "<roomName><names>"
+                +"<name language=\"en\">SPECIAL</name>"
+                +"</names></roomName>";
+
+        XmlMapper xmlMapper = new XmlMapper();
+        RoomName roomName = xmlMapper.readValue(xmlData, RoomName.class);
+        assertEquals(1, roomName.names.size());
+        assertEquals("SPECIAL", roomName.names.get(0).text);
+    }
+    
     // [Issue#99]: allow skipping unknown properties
     public void testListWithAttributes() throws Exception
     {
