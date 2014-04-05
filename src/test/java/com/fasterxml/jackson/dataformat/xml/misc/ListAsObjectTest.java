@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 @SuppressWarnings("serial")
-public class Issue76Test extends XmlTestBase
+public class ListAsObjectTest extends XmlTestBase
 {
     static final class Value {
         @XmlElement(name = "v")
