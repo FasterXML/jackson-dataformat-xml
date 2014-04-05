@@ -11,5 +11,7 @@ Sebastien Dionne:
 
 Pascal Gelinas:
 
+* Reported and fixed #83: Add support for @JsonUnwrapped
+ (2.4.0)
 * Reported and fixed #84: Problem with @JacksonXmlText when property output is suppressed
  (2.3.1)

@@ -3,12 +3,12 @@ package com.fasterxml.jackson.dataformat.xml;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-public class TestComplex extends XmlTestBase
+public class RoundtripContentTest extends XmlTestBase
 {
-    private final XmlMapper MAPPER = new XmlMapper();
-    
     public void testRoundtrip() throws Exception
     {
+        final XmlMapper MAPPER = new XmlMapper();
+        
         MediaItem.Content content = new MediaItem.Content();
         content.setTitle("content");
         content.addPerson("William");

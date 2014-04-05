@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import static org.junit.Assert.*;
 
@@ -7,10 +7,11 @@ import org.junit.Test;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 // for #12
-public class TestUnwrappingWithXML extends XmlTestBase
+public class UnwrappingWithXMLTest extends XmlTestBase
 {
     @JsonPropertyOrder({"x", "y"})
     final static class Location {

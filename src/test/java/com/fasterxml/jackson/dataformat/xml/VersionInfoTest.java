@@ -4,12 +4,12 @@ import java.io.*;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
-
+import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
-public class TestVersions extends XmlTestBase
+public class VersionInfoTest extends XmlTestBase
 {
     public void testMapperVersions()
     {
@@ -69,6 +69,7 @@ public class TestVersions extends XmlTestBase
         assertFalse("Should find version information (got "+v+")", v.isUknownVersion());
         Version exp = PackageVersion.VERSION;
         assertEquals(exp.toFullString(), v.toFullString());
-        assertEquals(exp, v);    }
+        assertEquals(exp, v);
+    }
 }
 

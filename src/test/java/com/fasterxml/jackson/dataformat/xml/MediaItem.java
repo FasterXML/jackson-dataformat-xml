@@ -5,7 +5,7 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"content", "images"})
-public class MediaItem
+class MediaItem
 {
     public enum Player { JAVA, FLASH;  }
     public enum Size { SMALL, LARGE; }
