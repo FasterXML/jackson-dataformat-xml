@@ -5,6 +5,8 @@ Version: 2.4.0 (xx-xxx-2014)
  (reported by pierre@github)
 #83: Add support for @JsonUnwrapped
  (contributed by Pascal G)
+#99: Problem with DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Lists
+ (reported by anton0xf@github)
 #108: Unwrapped list ignore attributes if 2 lists in sequence
 #111: Make vanilla `JaxbAnnotationIntrospector` work, without having to
  use `XmlJaxbAnnotationIntrospector`

@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.misc;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
