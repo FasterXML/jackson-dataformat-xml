@@ -99,7 +99,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
 <!--
       <version>[3.0.4, 3.5.0)</version>
 -->
-      <version>3.1.1</version>
+      <version>3.1.4</version>
     </dependency>
     <!--  and a Stax impl is needed: SJSXP (from JDK 1.6) might work, but always   
           has odd issues. Let's default to Woodstox: caller can upgrade to Aalto
@@ -108,7 +108,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>woodstox-core-asl</artifactId>
-      <version>4.1.5</version>
+      <version>4.3.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
