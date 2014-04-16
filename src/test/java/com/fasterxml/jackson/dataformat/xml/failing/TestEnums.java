@@ -30,13 +30,17 @@ public class TestEnums extends XmlTestBase
     public void testUntypedEnum() throws Exception
     {
         ObjectMapper mapper = new XmlMapper();
-        String str = mapper.writeValueAsString(new UntypedEnumBean(TestEnum.B));
+        String xml = mapper.writeValueAsString(new UntypedEnumBean(TestEnum.B));
         
-        UntypedEnumBean result = mapper.readValue(str, UntypedEnumBean.class);
+        UntypedEnumBean result = mapper.readValue(xml, UntypedEnumBean.class);
         assertNotNull(result);
         assertNotNull(result.value);
         Object ob = result.value;
-        assertSame(TestEnum.class, ob.getClass());
+        
+        if (TestEnum.class != ob.getClass()) {
+            fail("Failed to deserialize TestEnum (got "+ob.getClass()+getName()+") from: "+xml);
+        }
+
         assertEquals(TestEnum.B, result.value);
     }
 }

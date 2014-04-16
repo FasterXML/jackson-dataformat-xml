@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class TestUntypedListSerialization extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName="l")
+    @JacksonXmlRootElement(localName="L")
     static class UntypedListBean
     {
         public final Object list;
@@ -23,7 +23,7 @@ public class TestUntypedListSerialization extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName="l")
+    @JacksonXmlRootElement(localName="L")
     static class TypedListBean
     {
         public final List<String> list;
