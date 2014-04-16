@@ -22,7 +22,7 @@ public class XmlBeanSerializerModifier
     private static final long serialVersionUID = 1L;
 
     public XmlBeanSerializerModifier() { }
-    
+
     /*
     /**********************************************************
     /* Overridden methods

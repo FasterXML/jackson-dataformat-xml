@@ -2,8 +2,8 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
+
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -14,33 +14,30 @@ import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 
 /**
- * Variant of {@link BeanSerializer} for Xml handling.
+ * Variant of {@link BeanSerializer} for XML handling.
  * 
  * @author Pascal Gélinas
  */
-public class XmlBeanSerializer extends XmlBeanSerializerBase {
+public class XmlBeanSerializer extends XmlBeanSerializerBase
+{
     /*
     /**********************************************************
     /* Life-cycle: constructors
     /**********************************************************
      */
-    public XmlBeanSerializer(BeanSerializerBase src)
-    {
+    public XmlBeanSerializer(BeanSerializerBase src) {
         super(src);
     }
 
-    public XmlBeanSerializer(XmlBeanSerializerBase src, ObjectIdWriter objectIdWriter, Object filterId)
-    {
+    public XmlBeanSerializer(XmlBeanSerializerBase src, ObjectIdWriter objectIdWriter, Object filterId) {
         super(src, objectIdWriter, filterId);
     }
 
-    public XmlBeanSerializer(XmlBeanSerializerBase src, ObjectIdWriter objectIdWriter)
-    {
+    public XmlBeanSerializer(XmlBeanSerializerBase src, ObjectIdWriter objectIdWriter) {
         super(src, objectIdWriter);
     }
 
-    public XmlBeanSerializer(XmlBeanSerializerBase src, String[] toIgnore)
-    {
+    public XmlBeanSerializer(XmlBeanSerializerBase src, String[] toIgnore) {
         super(src, toIgnore);
     }
 
@@ -57,20 +54,17 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase {
     }
     
     @Override
-    public BeanSerializerBase withObjectIdWriter(ObjectIdWriter objectIdWriter)
-    {
+    public BeanSerializerBase withObjectIdWriter(ObjectIdWriter objectIdWriter) {
         return new XmlBeanSerializer(this, objectIdWriter, _propertyFilterId);
     }
 
     @Override
-    protected BeanSerializerBase withFilterId(Object filterId)
-    {
+    protected BeanSerializerBase withFilterId(Object filterId) {
         return new XmlBeanSerializer(this, _objectIdWriter, filterId);
     }
 
     @Override
-    protected BeanSerializerBase withIgnorals(String[] toIgnore)
-    {
+    protected BeanSerializerBase withIgnorals(String[] toIgnore) {
         return new XmlBeanSerializer(this, toIgnore);
     }
 
@@ -110,8 +104,7 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase {
      * {@link BeanPropertyWriter} instances.
      */
     @Override
-    public final void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
-        throws IOException, JsonGenerationException
+    public void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider) throws IOException
     {
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, jgen, provider, true);
@@ -133,8 +126,7 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase {
      */
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "XmlBeanSerializer for " + handledType().getName();
     }
 }

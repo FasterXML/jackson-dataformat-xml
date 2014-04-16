@@ -5,9 +5,7 @@ import java.io.IOException;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
@@ -140,7 +138,6 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         final BeanPropertyWriter[] props;
-        // !!! TODO: change to use non-deprecated version in 2.3
         if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
         } else {
@@ -206,7 +203,6 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
         
         final BeanPropertyWriter[] props;
-        // !!! TODO: change to use non-deprecated version in 2.3
         if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
         } else {
@@ -282,15 +278,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
     
     @Override
-    protected void _serializeObjectId(Object bean,
-                                      JsonGenerator jgen,
-                                      SerializerProvider provider,
-                                      TypeSerializer typeSer,
-                                      WritableObjectId objectId) throws IOException, JsonProcessingException,
-            JsonGenerationException {
-        /* Ok: let's serialize type id as attribute, but if (and only if!)
-         * we are using AS_PROPERTY
-         */
+    protected void _serializeObjectId(Object bean, JsonGenerator jgen, SerializerProvider provider,
+            TypeSerializer typeSer, WritableObjectId objectId) throws IOException
+    {
+        // Ok: let's serialize type id as attribute, but if (and only if!) we are using AS_PROPERTY
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
             ToXmlGenerator xgen = (ToXmlGenerator)jgen;
             xgen.setNextIsAttribute(true);

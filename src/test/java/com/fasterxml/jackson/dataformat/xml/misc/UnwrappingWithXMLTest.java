@@ -1,9 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.ObjectMapper;
