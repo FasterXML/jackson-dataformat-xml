@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -444,7 +445,7 @@ public class XmlFactory extends JsonFactory
 
     /*
     /**********************************************************
-    /* Internal factory methods
+    /* Internal factory method overrides
     /**********************************************************
      */
 
@@ -521,6 +522,13 @@ public class XmlFactory extends JsonFactory
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
         return xp;
+    }
+
+    @Override
+    protected JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException {
+        // this method should never get called here, so:
+        VersionUtil.throwInternal();
+        return null;
     }
 
     /*
