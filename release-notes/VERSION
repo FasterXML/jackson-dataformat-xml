@@ -1,12 +1,16 @@
 Project: jackson-dataformat-xml
-Version: 2.3.3 (10-Apr-2014)
+Version: 2.3.4 (xx-xxx-2014)
 
-#101: Invalid index error when deserializing unwrapped list element with multiple attributes
- (reported by yunspace@github; fix suggested by escholz@github)
+- Fixed `XmlFactory.requiresCustomCodec()` to return true as it should
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.3.3 (10-Apr-2014)
+
+#101: Invalid index error when deserializing unwrapped list element with multiple attributes
+ (reported by yunspace@github; fix suggested by escholz@github)
 
 2.3.2 (01-Mar-2014)
 

@@ -368,7 +368,7 @@ public class XmlFactory extends JsonFactory
      */
     @Override
     public boolean requiresCustomCodec() {
-        return false;
+        return true;
     }
     
     /*
