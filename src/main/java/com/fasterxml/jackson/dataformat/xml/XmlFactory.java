@@ -5,11 +5,13 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.io.Stax2ByteArraySource;
+import org.codehaus.stax2.io.Stax2CharArraySource;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -143,8 +145,7 @@ public class XmlFactory extends JsonFactory
      * @since 2.1
      */
     @Override
-    public XmlFactory copy()
-    {
+    public XmlFactory copy() {
         _checkInvalidCopy(XmlFactory.class);
         return new XmlFactory(this, null);
     }
@@ -240,7 +241,7 @@ public class XmlFactory extends JsonFactory
     
     /*
     /**********************************************************
-    /* Configuration, parser settings
+    /* Configuration, XML, parser setting
     /**********************************************************
      */
 
@@ -282,7 +283,7 @@ public class XmlFactory extends JsonFactory
 
     /*
     /******************************************************
-    /* Configuration, generator settings
+    /* Configuration, XML, generator settings
     /******************************************************
      */
 
@@ -337,7 +338,7 @@ public class XmlFactory extends JsonFactory
 
     /*
     /**********************************************************
-    /* Format detection functionality (since 1.8)
+    /* Format detection functionality
     /**********************************************************
      */
 
@@ -349,14 +350,12 @@ public class XmlFactory extends JsonFactory
      * implementation will return null for all sub-classes
      */
     @Override
-    public String getFormatName()
-    {
+    public String getFormatName() {
         return FORMAT_NAME_XML;
     }
 
     @Override
-    public MatchStrength hasFormat(InputAccessor acc) throws IOException
-    {
+    public MatchStrength hasFormat(InputAccessor acc) throws IOException {
         return hasXMLFormat(acc);
     }
 
@@ -367,19 +366,51 @@ public class XmlFactory extends JsonFactory
      * @return True since XML format does require support from codec
      */
     @Override
-    public boolean requiresCustomCodec() {
-        return false;
+    public boolean requiresCustomCodec() { return true; }
+
+    /*
+    /**********************************************************
+    /* Capability overrides
+    /**********************************************************
+     */
+    
+    /**
+     * As of 2.4, we do have actual capability for passing char arrays
+     * efficiently, but unfortunately
+     * have no working mechanism for recycling buffers. So we have to 
+     * admit that can not make efficient use.
+     */
+    public boolean canUseCharArrays() { return false; }
+
+    /*
+    /**********************************************************
+    /* Overrides of public methods: parsing
+    /**********************************************************
+     */
+
+    /**
+     * Overridden just to prevent trying to optimize access via char array;
+     * while nice idea, problem is that we don't have proper hooks to ensure
+     * that temporary buffer gets recycled; so let's just use StringReader.
+     */
+    @SuppressWarnings("resource")
+    public JsonParser createParser(String content) throws IOException, JsonParseException {
+        Reader r = new StringReader(content);
+        IOContext ctxt = _createContext(r, true);
+        if (_inputDecorator != null) {
+            r = _inputDecorator.decorate(ctxt, r);
+        }
+        return _createParser(r, ctxt);
     }
     
     /*
     /**********************************************************
-    /* New factory methods (since 2.1)
+    /* Overrides of public methods: generation
     /**********************************************************
      */
 
     @Override
-    public ToXmlGenerator createGenerator(OutputStream out) throws IOException
-    {
+    public ToXmlGenerator createGenerator(OutputStream out) throws IOException {
         return createGenerator(out, JsonEncoding.UTF8);
     }
     
@@ -411,40 +442,15 @@ public class XmlFactory extends JsonFactory
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
-    
-    /*
-    /**********************************************************
-    /* Deprecated methods (remove in 2.4?)
-    /**********************************************************
-     */
-    
-    @Deprecated
-    @Override
-    public ToXmlGenerator createJsonGenerator(OutputStream out, JsonEncoding enc) throws IOException {
-        return createGenerator(out, enc);
-    }
-
-    @Deprecated
-    @Override
-    public ToXmlGenerator createJsonGenerator(Writer out) throws IOException {
-        return createGenerator(out);
-    }
-
-    @Deprecated
-    @Override
-    public ToXmlGenerator createJsonGenerator(File f, JsonEncoding enc) throws IOException {
-        return createGenerator(f, enc);
-    }
 
     /*
     /**********************************************************
-    /* Upcoming parts of public API (for 2.1)
+    /* Internal factory method overrides
     /**********************************************************
      */
 
     @Override
-    protected FromXmlParser _createParser(InputStream in, IOContext ctxt)
-        throws IOException, JsonParseException
+    protected FromXmlParser _createParser(InputStream in, IOContext ctxt) throws IOException
     {
         XMLStreamReader sr;
         try {
@@ -462,8 +468,7 @@ public class XmlFactory extends JsonFactory
     }
 
     @Override
-    protected FromXmlParser _createParser(Reader r, IOContext ctxt)
-        throws IOException, JsonParseException
+    protected FromXmlParser _createParser(Reader r, IOContext ctxt) throws IOException
     {
         XMLStreamReader sr;
         try {
@@ -481,8 +486,28 @@ public class XmlFactory extends JsonFactory
     }
 
     @Override
-    protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt)
-        throws IOException, JsonParseException
+    protected FromXmlParser _createParser(char[] data, int offset, int len, IOContext ctxt,
+            boolean recycleBuffer) throws IOException
+    {
+        // !!! TODO: add proper handling of 'recycleBuffer'; currently its handling
+        //    is always same as if 'false' was passed
+        XMLStreamReader sr;
+        try {
+            sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
+            sr = _initializeXmlReader(sr);
+        } catch (XMLStreamException e) {
+            return StaxUtil.throwXmlAsIOException(e);
+        }
+        FromXmlParser xp = new FromXmlParser(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, sr);
+        if (_cfgNameForTextElement != null) {
+            xp.setXMLTextElementName(_cfgNameForTextElement);
+        }
+        return xp;
+    }
+    
+    @Override
+    protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
     {
         XMLStreamReader sr;
         try {
@@ -498,7 +523,13 @@ public class XmlFactory extends JsonFactory
         }
         return xp;
     }
-    
+
+    @Override
+    protected JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException {
+        // this method should never get called here, so:
+        VersionUtil.throwInternal();
+        return null;
+    }
 
     /*
     /**********************************************************************
