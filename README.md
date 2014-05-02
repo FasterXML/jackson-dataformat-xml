@@ -39,7 +39,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.1.3</version>
+  <version>2.3.3</version>
 </dependency>
 ```
 
