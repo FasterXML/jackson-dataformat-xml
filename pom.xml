@@ -10,7 +10,7 @@
 
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.4.0-rc3-SNAPSHOT</version>
+  <version>2.4.0-rc4-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
@@ -28,8 +28,8 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <version.jackson.annotations>2.4.0-rc1</version.jackson.annotations>
-    <version.jackson.core>2.4.0-rc2</version.jackson.core>
+    <version.jackson.annotations>2.4.0-rc3</version.jackson.annotations>
+    <version.jackson.core>2.4.0-rc3</version.jackson.core>
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
