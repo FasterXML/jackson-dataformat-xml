@@ -972,8 +972,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void close()
-        throws IOException
+    public void close() throws IOException
     {
 //        boolean wasClosed = _closed;
         super.close();

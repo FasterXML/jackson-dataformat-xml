@@ -5,11 +5,27 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public abstract class XmlTestBase
     extends TestCase
 {
+    @JsonPropertyOrder({ "first", "last", "id" })
+    protected static class NameBean {
+        @JacksonXmlProperty(isAttribute=true)
+        public int age;
+        public String last, first;
+
+        public NameBean() { }
+        public NameBean(int age, String f, String l) {
+            this.age = age;
+            first = f;
+            last = l;
+        }
+    }
+
     /**
      * Sample class from Jackson tutorial ("JacksonInFiveMinutes")
      */

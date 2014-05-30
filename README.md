@@ -123,6 +123,36 @@ ObjectMapper xmlMapper = new XmlMapper();
 Simple value = xmlMapper.readValue("<Simple><x>1</x><y>2</y></Simple>", Simple.class);
 ```
 
+## Incremental/partial reading/writing (2.4+)
+
+It is also possible to do incremental writes. This is done by creating Stax
+`XMLInputFactory` separately (similar to how with JSON you would create `JsonGenerator`), and then:
+
+```java
+// First create Stax components we need
+XMLInputFactory f = XMLInputFactory.newFactory();
+StringWriter out = new StringWriter();
+XMLStreamWriter sw = f.createXMLStreamWriter(out);
+
+// then Jackson components
+XmlMapper mapper = new XmlMapper(f);
+
+sw.writeStartDocument();
+sw.writeStartElement("root");
+
+// Write whatever content POJOs...
+SomePojo value1 = ...;
+OtherPojo value2 = ...;
+mapper.writeValue(sw, value1);
+mapper.writeValue(sw, value2);
+// and/or regular Stax output
+sw.writeComment("Some insightful commentary here");
+
+sw.writeEndElement();
+sw.writeEndDocument();
+
+```
+
 ## Additional annotations
 
 In addition to standard [Jackson annotations](https://github.com/FasterXML/jackson-annotations) and optional JAXB (`javax.xml.bind.annotation`), this project also adds couple of its own annotations for convenience, to support XML-specific details:

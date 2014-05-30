@@ -1,14 +1,21 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.IOException;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
-
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
@@ -36,16 +43,25 @@ public class XmlMapper extends ObjectMapper
     public XmlMapper() {
         this(new XmlFactory());
     }
-    
+
+    /** @since 2.4 */
+    public XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF) {
+        this(new XmlFactory(inputF, outF));
+    }
+
+    /** @since 2.4 */
+    public XmlMapper(XMLInputFactory inputF) {
+        this(new XmlFactory(inputF));
+    }
+
     public XmlMapper(XmlFactory xmlFactory) {
         this(xmlFactory, DEFAULT_XML_MODULE);
     }
     
-    public XmlMapper(JacksonXmlModule module)
-    {
+    public XmlMapper(JacksonXmlModule module) {
         this(new XmlFactory(), module);
     }
-
+    
     public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
     {
         /* Need to override serializer provider (due to root name handling);
@@ -88,7 +104,7 @@ public class XmlMapper extends ObjectMapper
     {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
-    
+
     /*
     /**********************************************************
     /* Access to configuration settings
@@ -138,6 +154,66 @@ public class XmlMapper extends ObjectMapper
         ((XmlFactory)_jsonFactory).disable(f);
         return this;
     }
+
+    /*
+    /**********************************************************
+    /* XML-specific access
+    /**********************************************************
+     */
+
+    /**
+     * Method for reading a single XML value from given XML-specific input
+     * source; useful for incremental data-binding, combining traversal using
+     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
+     * 
+     * @since 2.4
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T readValue(XMLStreamReader r, Class<T> valueType) throws IOException {
+        return (T) _readMapAndClose(getFactory().createParser(r),
+                _typeFactory.constructType(valueType));
+    } 
+
+    /**
+     * Method for reading a single XML value from given XML-specific input
+     * source; useful for incremental data-binding, combining traversal using
+     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
+     * 
+     * @since 2.4
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T> T readValue(XMLStreamReader r, TypeReference valueTypeRef) throws IOException {
+        return (T) _readMapAndClose(getFactory().createParser(r),
+                _typeFactory.constructType(valueTypeRef));
+    } 
+
+    /**
+     * Method for reading a single XML value from given XML-specific input
+     * source; useful for incremental data-binding, combining traversal using
+     * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
+     * 
+     * @since 2.4
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException {
+        return (T) _readMapAndClose(getFactory().createParser(r), valueType);
+    } 
+
+    /**
+     * Method for serializing given value using specific {@link XMLStreamReader}:
+     * useful when building large XML files by binding individual items, one at
+     * a time.
+     * 
+     * @since 2.4
+     */
+    public void writeValue(XMLStreamWriter w0, Object value) throws IOException {
+        @SuppressWarnings("resource")
+        ToXmlGenerator g = getFactory().createGenerator(w0);
+        super.writeValue(g, value);
+        /* NOTE: above call should do flush(); and we should NOT close here.
+         * Finally, 'g' has no buffers to release.
+         */
+    }
     
     /*
     /**********************************************************
@@ -153,4 +229,10 @@ public class XmlMapper extends ObjectMapper
     protected PrettyPrinter _defaultPrettyPrinter() {
         return new DefaultXmlPrettyPrinter();
     }
+
+    /*
+    /**********************************************************
+    /* Helper methods
+    /**********************************************************
+     */
 }

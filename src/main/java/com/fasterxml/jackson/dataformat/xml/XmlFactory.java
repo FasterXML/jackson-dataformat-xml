@@ -80,14 +80,17 @@ public class XmlFactory extends JsonFactory
      * and this reuse only works within context of a single
      * factory instance.
      */
-    public XmlFactory() { this(null); }
+    public XmlFactory() { this(null, null, null); }
 
     public XmlFactory(ObjectCodec oc) {
         this(oc, null, null);
     }
 
-    public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
-    {
+    public XmlFactory(XMLInputFactory xmlIn) {
+        this(null, xmlIn, null);
+    }
+    
+    public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
         this(null, xmlIn, xmlOut);
     }
     
@@ -328,10 +331,20 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
+    /** @since 2.4 */
+    public XMLInputFactory getXMLInputFactory() {
+        return _xmlInputFactory;
+    }
+
     public void setXMLInputFactory(XMLInputFactory f) {
         _xmlInputFactory = f;
     }
 
+    /** @since 2.4 */
+    public XMLOutputFactory getXMLOutputFactory() {
+        return _xmlOutputFactory;
+    }
+    
     public void setXMLOutputFactory(XMLOutputFactory f) {
         _xmlOutputFactory = f;
     }
@@ -443,6 +456,53 @@ public class XmlFactory extends JsonFactory
                 _objectCodec, _createXmlWriter(out));
     }
 
+    /*
+    /**********************************************************
+    /* Extended public API, mostly for XmlMapper
+    /**********************************************************
+     */
+
+    /**
+     * Factory method that wraps given {@link XMLStreamReader}, usually to allow
+     * partial data-binding.
+     * 
+     * @since 2.4
+     */
+    public FromXmlParser createParser(XMLStreamReader sr) throws IOException
+    {
+        try {
+            sr = _initializeXmlReader(sr);
+        } catch (XMLStreamException e) {
+            return StaxUtil.throwXmlAsIOException(e);
+        }
+        // false -> not managed
+        FromXmlParser xp = new FromXmlParser(_createContext(sr, false),
+                _generatorFeatures, _xmlGeneratorFeatures, _objectCodec, sr);
+        if (_cfgNameForTextElement != null) {
+            xp.setXMLTextElementName(_cfgNameForTextElement);
+        }
+        return xp;
+    }
+
+    /**
+     * Factory method that wraps given {@link XMLStreamWriter}, usually to allow
+     * incremental serialization to compose large output by serializing a sequence
+     * of individual objects.
+     *
+     * @since 2.4
+     */
+    public ToXmlGenerator createGenerator(XMLStreamWriter sw) throws IOException
+    {
+        try {
+            sw = _initializeXmlWriter(sw);
+        } catch (XMLStreamException e) {
+            return StaxUtil.throwXmlAsIOException(e);
+        }
+        IOContext ctxt = _createContext(sw, false);
+        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, sw);
+    }
+    
     /*
     /**********************************************************
     /* Internal factory method overrides
