@@ -147,10 +147,27 @@ mapper.writeValue(sw, value1);
 mapper.writeValue(sw, value2);
 // and/or regular Stax output
 sw.writeComment("Some insightful commentary here");
-
 sw.writeEndElement();
 sw.writeEndDocument();
+```
 
+Similarly it is possible to read content, sub-tree by sub-tree; assuming similar XML content
+we would use
+
+```java
+XMLOutputFactory f = XMLOutputFactory.newFactory();
+File inputFile = ...;
+XMLStreamReader sr = f.createXMLStreamReader(new FileInputStream(inputFile));
+
+XmlMapper mapper = new XmlMapper();
+sr.next(); // to point to <root>
+sr.next(); // to point to root-element under root
+SomePojo value1 = mapper.readValue(sr, SomePojo.class);
+// sr now points to matching END_ELEMENT, so move forward
+sr.next(); // should verify it's either closing root or new start, left as exercise
+OtherPojo value = mapper.readValue(sr, OtherPojo.class);
+// and more, as needed, then
+sr.close();
 ```
 
 ## Additional annotations
