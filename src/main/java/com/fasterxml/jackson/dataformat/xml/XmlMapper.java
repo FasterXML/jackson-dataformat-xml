@@ -7,8 +7,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
@@ -168,10 +167,8 @@ public class XmlMapper extends ObjectMapper
      * 
      * @since 2.4
      */
-    @SuppressWarnings("unchecked")
     public <T> T readValue(XMLStreamReader r, Class<T> valueType) throws IOException {
-        return (T) _readMapAndClose(getFactory().createParser(r),
-                _typeFactory.constructType(valueType));
+        return readValue(r, _typeFactory.constructType(valueType));
     } 
 
     /**
@@ -181,10 +178,8 @@ public class XmlMapper extends ObjectMapper
      * 
      * @since 2.4
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> T readValue(XMLStreamReader r, TypeReference valueTypeRef) throws IOException {
-        return (T) _readMapAndClose(getFactory().createParser(r),
-                _typeFactory.constructType(valueTypeRef));
+    public <T> T readValue(XMLStreamReader r, TypeReference<T> valueTypeRef) throws IOException {
+        return readValue(r, _typeFactory.constructType(valueTypeRef));
     } 
 
     /**
@@ -194,9 +189,11 @@ public class XmlMapper extends ObjectMapper
      * 
      * @since 2.4
      */
-    @SuppressWarnings("unchecked")
-    public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException {
-        return (T) _readMapAndClose(getFactory().createParser(r), valueType);
+    @SuppressWarnings("resource")
+    public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException
+    {
+        FromXmlParser p = getFactory().createParser(r);
+        return super.readValue(p,  valueType);
     } 
 
     /**

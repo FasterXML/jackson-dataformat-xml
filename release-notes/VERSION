@@ -10,6 +10,8 @@ Version: 2.4.0 (xx-xxx-2014)
 #108: Unwrapped list ignore attributes if 2 lists in sequence
 #111: Make vanilla `JaxbAnnotationIntrospector` work, without having to
  use `XmlJaxbAnnotationIntrospector`
+#115: Allow incremental reading/writing with existing `XMLStreamReader`
+ and `XMLStreamWriter`.
 - Add `JsonFactory.canUseCharArrays()` introspection method
 
 ------------------------------------------------------------------------

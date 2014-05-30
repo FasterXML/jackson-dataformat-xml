@@ -470,11 +470,15 @@ public class XmlFactory extends JsonFactory
      */
     public FromXmlParser createParser(XMLStreamReader sr) throws IOException
     {
-        try {
-            sr = _initializeXmlReader(sr);
-        } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+        // note: should NOT move parser if already pointing to START_ELEMENT
+        if (sr.getEventType() != XMLStreamConstants.START_ELEMENT) {
+            try {
+                sr = _initializeXmlReader(sr);
+            } catch (XMLStreamException e) {
+                return StaxUtil.throwXmlAsIOException(e);
+            }
         }
+
         // false -> not managed
         FromXmlParser xp = new FromXmlParser(_createContext(sr, false),
                 _generatorFeatures, _xmlGeneratorFeatures, _objectCodec, sr);
