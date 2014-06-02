@@ -2,7 +2,6 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class TestSerializationOrdering extends XmlTestBase
