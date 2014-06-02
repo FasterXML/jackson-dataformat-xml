@@ -23,10 +23,10 @@ public class XmlMapper extends ObjectMapper
     private static final long serialVersionUID = -724333029147285918L;
 
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
-    
+
     // need to hold on to module instance just in case copy() is used
     protected final JacksonXmlModule _xmlModule;
-    
+
     /*
     /**********************************************************
     /* Life-cycle: construction, configuration
@@ -34,15 +34,14 @@ public class XmlMapper extends ObjectMapper
      */
 
     public XmlMapper() {
-        this(new XmlFactory());
+        this(new XmlFactory(), DEFAULT_XML_MODULE);
     }
-    
+
     public XmlMapper(XmlFactory xmlFactory) {
         this(xmlFactory, DEFAULT_XML_MODULE);
     }
-    
-    public XmlMapper(JacksonXmlModule module)
-    {
+
+    public XmlMapper(JacksonXmlModule module) {
         this(new XmlFactory(), module);
     }
 

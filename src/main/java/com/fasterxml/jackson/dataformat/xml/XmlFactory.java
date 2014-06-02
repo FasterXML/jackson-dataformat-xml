@@ -78,7 +78,7 @@ public class XmlFactory extends JsonFactory
      * and this reuse only works within context of a single
      * factory instance.
      */
-    public XmlFactory() { this(null); }
+    public XmlFactory() { this(null, null, null); }
 
     public XmlFactory(ObjectCodec oc) {
         this(oc, null, null);
