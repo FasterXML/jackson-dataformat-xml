@@ -393,6 +393,7 @@ public class XmlFactory extends JsonFactory
      * have no working mechanism for recycling buffers. So we have to 
      * admit that can not make efficient use.
      */
+    @Override
     public boolean canUseCharArrays() { return false; }
 
     /*
@@ -407,7 +408,8 @@ public class XmlFactory extends JsonFactory
      * that temporary buffer gets recycled; so let's just use StringReader.
      */
     @SuppressWarnings("resource")
-    public JsonParser createParser(String content) throws IOException, JsonParseException {
+    @Override
+    public JsonParser createParser(String content) throws IOException {
         Reader r = new StringReader(content);
         IOContext ctxt = _createContext(r, true);
         if (_inputDecorator != null) {
