@@ -1,5 +1,5 @@
 Project: jackson-dataformat-xml
-Version: 2.4.0 (xx-xxx-2014)
+Version: 2.4.0 (02-Jun-2014)
 
 #76: UnrecognizedPropertyException when containing object is a Collection
  (reported by pierre@github)
