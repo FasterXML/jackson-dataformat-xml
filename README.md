@@ -22,14 +22,7 @@ Specifically:
 
 # Status
 
-Version 2.0 works for significant number of XML/JAXB use cases.
-Missing functionality is tracked via [Issue tracker](https://github.com/FasterXML/jackson-dataformat-xml/issues).
-
-There are older versions (1.9.2)  available, which work with older Jackson versions (0.6.2): this is maintained on "1.9" branch,
-and uses different group id ("com.fasterxml" as well as artifact id ("jackson-xml-databind")
-
-Upcoming version 2.1 should have feature set that is very close to XML/JAXB use cases,
-and specifically adds formerly missing support for "unwrapped Lists".
+As of version 2.3, module is fully functional and considered production ready.
 
 ## Maven dependency
 
@@ -39,7 +32,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.3.3</version>
+  <version>2.4.0</version>
 </dependency>
 ```
 
@@ -186,12 +179,13 @@ for longer description, check out [XML module annotations](https://github.com/Fa
 Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 
 * Root value should be a POJO; and specifically following types can be serialized as properties but not as root values:
- * Java arrays
- * `java.util.Collection` values (Lists, Sets)
+    * Java arrays
+    * `java.util.Collection` values (Lists, Sets)
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
- * Unwrapped List/array support is added in Jackson 2.1 (2.0 does NOT support them; arrays are always wrapped)
- * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
- * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
+    * Unwrapped List/array support was added in Jackson 2.1 (2.0 does NOT support them; arrays are always wrapped)
+    * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
+    * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
+* Tree Model is only supported in limited fashion: specifically, Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
 
 # See Also
 
