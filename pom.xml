@@ -5,11 +5,12 @@
   <parent>
     <groupId>com.fasterxml</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>11</version>
+    <version>12</version>
   </parent>
 
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
+  <packaging>bundle</packaging>
   <version>2.2.4-SNAPSHOT</version>
 
   <name>Jackson-dataformat-XML</name>
@@ -28,7 +29,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <jackson.core.version>2.2.3</jackson.core.version>
+    <jackson.core.version>2.2.4</jackson.core.version>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
