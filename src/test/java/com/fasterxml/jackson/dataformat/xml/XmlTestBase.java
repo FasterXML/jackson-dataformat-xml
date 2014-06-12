@@ -265,7 +265,7 @@ public abstract class XmlTestBase
     
     /**
      * Helper method that tries to remove unnecessary namespace
-     * declaration that default JDK XML parser (SJSXP) seems fit
+     * declaration that default JDK XML parser (SJSXP) sees fit
      * to add.
      */
     protected static String removeSjsxpNamespace(String xml)

@@ -145,7 +145,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         }
 
         final int attrCount = _attributeCount;
-        boolean isAttribute = xgen._nextIsAttribute;
+        final boolean isAttribute = xgen._nextIsAttribute;
         if (attrCount > 0) {
             xgen.setNextIsAttribute(true);
         }
@@ -176,6 +176,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 }
             }
             if (_anyGetterWriter != null) {
+                // For [#117]: not a clean fix, but with @JsonTypeInfo, we'll end up
+                // with accidental attributes otherwise
+                xgen.setNextIsAttribute(false);
                 _anyGetterWriter.getAndSerialize(bean, xgen, provider);
             }
         } catch (Exception e) {
@@ -215,6 +218,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             return;
         }
 
+        final boolean isAttribute = xgen._nextIsAttribute;
         final int attrCount = _attributeCount;
         if (attrCount > 0) {
             xgen.setNextIsAttribute(true);
@@ -225,7 +229,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         int i = 0;
         try {
             for (final int len = props.length; i < len; ++i) {
-                if (i == attrCount) {
+                // 28-jan-2014, pascal: we don't want to reset the attribute flag if we are an unwrapping serializer 
+                // that started with nextIsAttribute to true because all properties should be unwrapped as attributes too.
+                if (i == attrCount && !(isAttribute && isUnwrappingSerializer())) {
                     xgen.setNextIsAttribute(false);
                 }
                 // also: if this is property to write as text ("unwrap"), need to:
@@ -239,6 +245,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 }
             }
             if (_anyGetterWriter != null) {
+                // For [#117]: not a clean fix, but with @JsonTypeInfo, we'll end up
+                // with accidental attributes otherwise
+                xgen.setNextIsAttribute(false);
                 _anyGetterWriter.getAndSerialize(bean, xgen, provider);
             }
         } catch (Exception e) {
@@ -261,7 +270,6 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             _serializeWithObjectId(bean, jgen, provider, typeSer);
             return;
         }
-
         /* Ok: let's serialize type id as attribute, but if (and only if!)
          * we are using AS_PROPERTY
          */

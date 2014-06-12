@@ -1,8 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
+import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -35,6 +36,22 @@ public class TestSerializationAttr extends XmlTestBase
         @JacksonXmlProperty(isAttribute=true)
         protected int value = 13;
     }
+
+    @JacksonXmlRootElement(localName = "dynaBean", namespace = "")
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "class", include = JsonTypeInfo.As.PROPERTY)
+    public class DynaBean {
+        private final Map<String, String> _properties = new TreeMap<String, String>();
+
+        public DynaBean(Map<String, String> values) {
+            _properties.putAll(values);
+        }
+
+        @JsonAnyGetter
+        @JacksonXmlProperty(isAttribute = false)
+        public Map<String, String> getProperties() {
+            return _properties;
+        }
+    }    
     
     /*
     /**********************************************************
@@ -80,6 +97,16 @@ public class TestSerializationAttr extends XmlTestBase
     {
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>",
                 _xmlMapper.writeValueAsString(new Jurisdiction()));
+    }
+
+    public void testIssue117AnySetterAttrs() throws IOException
+    {
+        Map<String, String> values = new HashMap<String, String>();
+        values.put("prop1", "val1");
+
+        String xml = _xmlMapper.writeValueAsString(new DynaBean(values));
+        assertEquals("<dynaBean class=\"TestSerializationAttr$DynaBean\"><prop1>val1</prop1></dynaBean>",
+                removeSjsxpNamespace(xml));
     }
     
     /*

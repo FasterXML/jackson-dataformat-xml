@@ -1,6 +1,9 @@
 Project: jackson-dataformat-xml
 Version: 2.4.1 (xx-Jun-2014)
 
+#117: @JsonAnyGetter + @JsonTypeInfo combination prevents serialization of properties as elements
+ (reported by gawi@github)
+
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
