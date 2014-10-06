@@ -1,16 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 
 public class TestEnums extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     static enum TestEnum { A, B, C; }
 
     static class EnumBean
@@ -27,11 +20,12 @@ public class TestEnums extends XmlTestBase
     /**********************************************************
      */
 
+    private final XmlMapper MAPPER = new XmlMapper();
+    
     public void testEnum() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
-        String str = mapper.writeValueAsString(new EnumBean(TestEnum.B));
-        EnumBean result = mapper.readValue(str, EnumBean.class);
+        String xml = MAPPER.writeValueAsString(new EnumBean(TestEnum.B));
+        EnumBean result = MAPPER.readValue(xml, EnumBean.class);
         assertNotNull(result);
         assertEquals(TestEnum.B, result.value);
     }
