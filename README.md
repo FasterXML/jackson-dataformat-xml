@@ -181,6 +181,7 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 * Root value should be a POJO; and specifically following types can be serialized as properties but not as root values:
     * Java arrays
     * `java.util.Collection` values (Lists, Sets)
+    * `Enum`s (support for these may be added in future -- but not as of 2.4)
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
     * Unwrapped List/array support was added in Jackson 2.1 (2.0 does NOT support them; arrays are always wrapped)
     * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
