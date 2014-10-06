@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -27,6 +28,8 @@ public class TestEnums extends XmlTestBase
     /**********************************************************
      */
 
+    private final XmlMapper MAPPER = new XmlMapper();
+    
     public void testUntypedEnum() throws Exception
     {
         ObjectMapper mapper = new XmlMapper();
@@ -42,5 +45,14 @@ public class TestEnums extends XmlTestBase
         }
 
         assertEquals(TestEnum.B, result.value);
+    }
+
+    // [dataformat-xml#121]
+    public void testRootEnumIssue121() throws Exception
+    {
+        String xml = MAPPER.writeValueAsString(TestEnum.B);
+        TestEnum result = MAPPER.readValue(xml, TestEnum.class);
+        assertNotNull(result);
+        assertEquals(TestEnum.B, result);
     }
 }
