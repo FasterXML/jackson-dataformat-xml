@@ -11,8 +11,9 @@ import com.fasterxml.jackson.core.io.CharTypes;
  * state data we need.
  *<p>
  * Almost same as standard <code>JsonReaderContext</code>, but
- * cut'n pasted since the impl is final for performance reasons;
- * this class is one of hot spots in profiling.
+ * custom version needed to be able to keep track of names
+ * of properties that need wrapping; this is needed to
+ * support wrapped/unwrapped Collection/array values.
  */
 public final class XmlReadContext
     extends JsonStreamContext
@@ -74,13 +75,11 @@ public final class XmlReadContext
     
     // // // Factory methods
 
-    public static XmlReadContext createRootContext(int lineNr, int colNr)
-    {
+    public static XmlReadContext createRootContext(int lineNr, int colNr) {
         return new XmlReadContext(null, TYPE_ROOT, lineNr, colNr);
     }
 
-    public static XmlReadContext createRootContext()
-    {
+    public static XmlReadContext createRootContext() {
         return new XmlReadContext(null, TYPE_ROOT, 1, 0);
     }
     
@@ -128,8 +127,7 @@ public final class XmlReadContext
         throw new UnsupportedOperationException();
     }
 
-    public void setCurrentName(String name)
-    {
+    public void setCurrentName(String name) {
         _currentName = name;
     }
 
@@ -143,11 +141,8 @@ public final class XmlReadContext
      * @return Location pointing to the point where the context
      *   start marker was found
      */
-    public final JsonLocation getStartLocation(Object srcRef)
-    {
-        /* We don't keep track of offsets at this level (only
-         * reader does)
-         */
+    public final JsonLocation getStartLocation(Object srcRef) {
+        // We don't keep track of offsets at this level (only reader does)
         long totalChars = -1L;
 
         return new JsonLocation(srcRef, totalChars, _lineNr, _columnNr);
@@ -161,8 +156,7 @@ public final class XmlReadContext
         return _namesToWrap;
     }
 
-    protected void convertToArray()
-    {
+    protected void convertToArray() {
         _type = TYPE_ARRAY;
     }
     

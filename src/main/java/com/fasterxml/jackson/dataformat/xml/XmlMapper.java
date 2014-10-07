@@ -26,7 +26,8 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlMapper extends ObjectMapper
 {
-    private static final long serialVersionUID = -724333029147285918L;
+    // as of 2.5
+    private static final long serialVersionUID = -1212805483143619605L;
 
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
     
@@ -99,8 +100,7 @@ public class XmlMapper extends ObjectMapper
      * 
      * @since 2.1
      */
-    protected void setXMLTextElementName(String name)
-    {
+    protected void setXMLTextElementName(String name) {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
 
@@ -226,10 +226,4 @@ public class XmlMapper extends ObjectMapper
     protected PrettyPrinter _defaultPrettyPrinter() {
         return new DefaultXmlPrettyPrinter();
     }
-
-    /*
-    /**********************************************************
-    /* Helper methods
-    /**********************************************************
-     */
 }

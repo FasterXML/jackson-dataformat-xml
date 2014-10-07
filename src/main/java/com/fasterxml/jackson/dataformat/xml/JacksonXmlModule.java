@@ -118,9 +118,8 @@ public class JacksonXmlModule
     /* Internal methods
     /**********************************************************************
      */
-    
-    protected AnnotationIntrospector _constructIntrospector()
-    {
+
+    protected AnnotationIntrospector _constructIntrospector() {
         return new JacksonXmlAnnotationIntrospector(_cfgDefaultUseWrapper);
     }
 }
