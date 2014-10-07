@@ -3,17 +3,16 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class TestUnwrappedDeserIssue86
+public class TestUnwrappedDeserIssue86 extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "test")
     public static class Issue86 {
@@ -70,32 +69,21 @@ public class TestUnwrappedDeserIssue86
             "</test>" +
         "</test>";
 
-    final Issue86 before = new Issue86(
-        "0",
-        Arrays.asList(
-            new Issue86(
-                "0.1",
+    final Issue86 before = new Issue86("0",
+        Arrays.asList(new Issue86("0.1",
+                Arrays.asList(new Issue86("0.1.1", null))),
+            new Issue86("0.2", null),
+            new Issue86("0.3",
                 Arrays.asList(
-                    new Issue86(
-                        "0.1.1",
-                        null))),
-            new Issue86(
-                "0.2",
-                null),
-            new Issue86(
-                "0.3",
-                Arrays.asList(
-                    new Issue86(
-                        "0.3.1",
-                        null)))));
+                    new Issue86("0.3.1", null)))));
 
     final XmlMapper mapper = new XmlMapper();
     mapper.setSerializationInclusion(Include.NON_NULL);
 
     final String xml = mapper.writeValueAsString(before);
-    Assert.assertEquals(source, xml);
+    assertEquals(source, xml);
 
     final Issue86 after = mapper.readValue(xml, Issue86.class);
-    Assert.assertEquals(before, after);
+    assertEquals(before, after);
   }
 }
