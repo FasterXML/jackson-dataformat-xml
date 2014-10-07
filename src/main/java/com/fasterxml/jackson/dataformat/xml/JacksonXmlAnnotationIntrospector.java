@@ -171,8 +171,7 @@ public class JacksonXmlAnnotationIntrospector
      * that cleans up type id property name to be a valid xml name.
      */
     @Override
-    protected StdTypeResolverBuilder _constructStdTypeResolverBuilder()
-    {
+    protected StdTypeResolverBuilder _constructStdTypeResolverBuilder() {
         return new XmlTypeResolverBuilder();
     }
 

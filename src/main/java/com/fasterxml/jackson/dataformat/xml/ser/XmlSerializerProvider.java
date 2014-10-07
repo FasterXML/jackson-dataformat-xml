@@ -24,7 +24,8 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlSerializerProvider extends DefaultSerializerProvider
 {
-    private static final long serialVersionUID = -141838337907252911L;
+    // As of 2.5
+    private static final long serialVersionUID = -4138605166320336475L;
 
     /**
      * If all we get to serialize is a null, there's no way to figure out
@@ -55,15 +56,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     @Override
     public DefaultSerializerProvider createInstance(SerializationConfig config,
-            SerializerFactory jsf)
-    {
+            SerializerFactory jsf) {
         return new XmlSerializerProvider(this, config, jsf);
     }
     
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator jgen, Object value)
-        throws IOException, JsonProcessingException
+        throws IOException
     {
         if (value == null) {
             _serializeXmlNull(jgen);
@@ -109,7 +109,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType)
-        throws IOException, JsonProcessingException
+        throws IOException
     {
         if (value == null) {
             _serializeXmlNull(jgen);
@@ -155,8 +155,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType,
-            JsonSerializer<Object> ser)
-        throws IOException, JsonGenerationException
+            JsonSerializer<Object> ser) throws IOException
     {
         if (value == null) {
             _serializeXmlNull(jgen);
@@ -198,24 +197,21 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
-    protected void _serializeXmlNull(JsonGenerator jgen)
-            throws IOException, JsonProcessingException
+    protected void _serializeXmlNull(JsonGenerator jgen) throws IOException
     {
         if (jgen instanceof ToXmlGenerator)
         _initWithRootName((ToXmlGenerator) jgen, ROOT_NAME_FOR_NULL);
         super.serializeValue(jgen, null);
     }
     
-    protected void _startRootArray(ToXmlGenerator xgen, QName rootName)
-        throws IOException, JsonProcessingException
+    protected void _startRootArray(ToXmlGenerator xgen, QName rootName) throws IOException
     {
         xgen.writeStartObject();
         // Could repeat root name, but what's the point? How to customize?
         xgen.writeFieldName("item");
     }    
 
-    protected void _initWithRootName(ToXmlGenerator xgen, QName rootName)
-            throws IOException, JsonProcessingException
+    protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws IOException
     {
         /* 28-Nov-2012, tatu: We should only initialize the root
          *  name if no name has been set, as per [Issue#42],
