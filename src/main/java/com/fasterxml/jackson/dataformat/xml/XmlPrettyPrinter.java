@@ -35,12 +35,12 @@ public interface XmlPrettyPrinter extends PrettyPrinter
     public void writeEndElement(XMLStreamWriter2 sw, int nrOfEntries) throws XMLStreamException;
 
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName, String text)
+    		String nsURI, String localName, String text, boolean isCData)
         throws XMLStreamException;
 
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName,
-    		char[] buffer, int offset, int len)
+    		char[] buffer, int offset, int len, boolean isCData)
         throws XMLStreamException;
     
     public void writeLeafElement(XMLStreamWriter2 sw,

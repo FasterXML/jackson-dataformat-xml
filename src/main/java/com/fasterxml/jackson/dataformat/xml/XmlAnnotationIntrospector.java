@@ -35,6 +35,13 @@ public interface XmlAnnotationIntrospector
      */
     public Boolean isOutputAsText(Annotated ann);
 
+    /**
+     * Method used to check whether given annotated element
+     * (field, method, constructor parameter) has indicator that suggests
+     * it should be wrapped in a CDATA tag.
+     */
+    public Boolean isOutputAsCData(Annotated ann);
+
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -107,6 +114,15 @@ public interface XmlAnnotationIntrospector
             }
             return value;
         }
+
+        @Override
+        public Boolean isOutputAsCData(Annotated ann) {
+            Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsCData(ann);
+            if (value == null && _xmlSecondary != null) {
+                value = _xmlSecondary.isOutputAsCData(ann);
+            }
+            return value;
+        }
     }
 
     /*
@@ -144,6 +160,12 @@ public interface XmlAnnotationIntrospector
         public Boolean isOutputAsText(Annotated ann) {
             return _intr.isOutputAsText(ann);
         }
-        
+
+        @Override
+        public Boolean isOutputAsCData(Annotated ann) {
+            //There is no CData annotation in JAXB
+            return false;
+        }
+
     }
 }

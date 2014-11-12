@@ -44,8 +44,9 @@ public class XmlBeanSerializerModifier
             String ns = AnnotationUtil.findNamespaceAnnotation(intr, member);
             Boolean isAttribute = AnnotationUtil.findIsAttributeAnnotation(intr, member);
             Boolean isText = AnnotationUtil.findIsTextAnnotation(intr, member);
+            Boolean isCData = AnnotationUtil.findIsCDataAnnotation(intr, member);
             bpw.setInternalSetting(XmlBeanSerializerBase.KEY_XML_INFO,
-            		new XmlInfo(isAttribute, ns, isText));
+            		new XmlInfo(isAttribute, ns, isText, isCData));
 
             // Actually: if we have a Collection type, easiest place to add wrapping would be here...
             //  or: let's also allow wrapping of "untyped" (Object): assuming it is a dynamically

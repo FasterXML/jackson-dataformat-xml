@@ -264,14 +264,18 @@ public class DefaultXmlPrettyPrinter
     
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName, String text)
+    		String nsURI, String localName, String text, boolean isCData)
   		throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {
             _objectIndenter.writeIndentation(sw, _nesting);
         }
         sw.writeStartElement(nsURI, localName);
-        sw.writeCharacters(text);
+        if(isCData) {
+            sw.writeCData(text);
+        } else {
+            sw.writeCharacters(text);
+        }
         sw.writeEndElement();
         _justHadStartElement = false;
     }
@@ -279,14 +283,18 @@ public class DefaultXmlPrettyPrinter
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName,
-    		char[] buffer, int offset, int len)
+    		char[] buffer, int offset, int len, boolean isCData)
         throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {
             _objectIndenter.writeIndentation(sw, _nesting);
         }
         sw.writeStartElement(nsURI, localName);
-        sw.writeCharacters(buffer, offset, len);
+        if(isCData) {
+            sw.writeCData(buffer, offset, len);
+        } else {
+            sw.writeCharacters(buffer, offset, len);
+        }
         sw.writeEndElement();
         _justHadStartElement = false;
     }

@@ -148,6 +148,12 @@ public final class ToXmlGenerator
      * once.
      */
     protected boolean _nextIsUnwrapped = false;
+
+    /**
+     * Marker flag used to indicate that the next write of a (property)
+     * value should be as CData
+     */
+    protected boolean _nextIsCData = false;
     
     /**
      * To support proper serialization of arrays it is necessary to keep
@@ -258,6 +264,11 @@ public final class ToXmlGenerator
     public void setNextIsUnwrapped(boolean isUnwrapped)
     {
         _nextIsUnwrapped = isUnwrapped;
+    }
+
+    public void setNextIsCData(boolean isCData)
+    {
+        _nextIsCData = isCData;
     }
     
     public final void setNextName(QName name)
@@ -484,14 +495,22 @@ public final class ToXmlGenerator
                 // [Issue#56] Should figure out how to prevent indentation for end element
                 //   but for now, let's just make sure structure is correct
                 //if (_xmlPrettyPrinter != null) { ... }
-                _xmlWriter.writeCharacters(text);
+                if(_nextIsCData) {
+                    _xmlWriter.writeCData(text);
+                } else {
+                    _xmlWriter.writeCharacters(text);
+                }
             } else if (_xmlPrettyPrinter != null) {
                 _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                         _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                        text);
+                        text, _nextIsCData);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeCharacters(text);
+                if(_nextIsCData) {
+                    _xmlWriter.writeCData(text);
+                } else {
+                    _xmlWriter.writeCharacters(text);
+                }
                 _xmlWriter.writeEndElement();
             } 
         } catch (XMLStreamException e) {
@@ -511,14 +530,22 @@ public final class ToXmlGenerator
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
             } else if (checkNextIsUnwrapped()) {
             	// should we consider pretty-printing or not?
-                _xmlWriter.writeCharacters(text, offset, len);
+                if(_nextIsCData) {
+                    _xmlWriter.writeCData(text, offset, len);
+                } else {
+                    _xmlWriter.writeCharacters(text, offset, len);
+                }
             } else if (_xmlPrettyPrinter != null) {
                 _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                         _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                        text, offset, len);
+                        text, offset, len, _nextIsCData);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                _xmlWriter.writeCharacters(text, offset, len);
+                if(_nextIsCData) {
+                    _xmlWriter.writeCData(text, offset, len);
+                } else {
+                    _xmlWriter.writeCharacters(text, offset, len);
+                }
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
