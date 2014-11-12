@@ -171,6 +171,7 @@ In addition to standard [Jackson annotations](https://github.com/FasterXML/jacks
  * `@JacksonXmlProperty` allows specifying XML namespace and local name for a property; as well as whether property is to be written as an XML element or attribute.
  * `@JacksonXmlRootElement` allows specifying XML element to use for wrapping the root element (default uses 'simple name' of the value class)
  * `@JacksonXmlText` allows specifying that value of one property is to be serialized as "unwrapped" text, and not in an element.
+ * `@JacksonXmlCData` allows specifying that the value of a property is to be serialized within a CData tag.
 
 for longer description, check out [XML module annotations](https://github.com/FasterXML/jackson-dataformat-xml/wiki/Jackson-XML-annotations).
 
