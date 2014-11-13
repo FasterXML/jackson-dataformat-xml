@@ -61,9 +61,9 @@ public class XmlJaxbAnnotationIntrospector
     @Override
     public Boolean isOutputAsCData(Annotated ann) {
         //There is no CData annotation in JAXB
-        return false;
+        return null;
     }
-    
+
     /*
     /**********************************************************************
     /* Helper methods
