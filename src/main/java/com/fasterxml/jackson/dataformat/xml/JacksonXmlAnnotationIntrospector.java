@@ -123,6 +123,15 @@ public class JacksonXmlAnnotationIntrospector
         }
         return null;
     }
+
+    @Override
+    public Boolean isOutputAsCData(Annotated ann) {
+        JacksonXmlCData prop = ann.getAnnotation(JacksonXmlCData.class);
+        if (prop != null) {
+            return prop.value() ? Boolean.TRUE : Boolean.FALSE;
+        }
+        return null;
+    }
     
     /*
     /**********************************************************************

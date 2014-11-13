@@ -63,4 +63,18 @@ public class AnnotationUtil
         }
         return null;
     }
+
+    public static Boolean findIsCDataAnnotation(AnnotationIntrospector ai,
+                                               AnnotatedMember prop)
+    {
+        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+            if (intr instanceof XmlAnnotationIntrospector) {
+                Boolean b = ((XmlAnnotationIntrospector) intr).isOutputAsCData(prop);
+                if (b != null) {
+                    return b;
+                }
+            }
+        }
+        return null;
+    }
 }

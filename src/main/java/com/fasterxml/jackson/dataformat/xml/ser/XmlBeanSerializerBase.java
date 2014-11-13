@@ -167,7 +167,15 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 xgen.setNextName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
+                    if(_isCData(prop)) {
+                        xgen.setNextIsCData(true);
+                    }
+
                     prop.serializeAsField(bean, xgen, provider);
+
+                    if(_isCData(prop)) {
+                        xgen.setNextIsCData(false);
+                    }
                 }
                 // Reset to avoid next value being written as unwrapped, 
                 // for example when property is suppressed
@@ -314,6 +322,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         return (info != null) && info.isAttribute();
     }
 
+    protected static boolean _isCData(BeanPropertyWriter bpw)
+    {
+        XmlInfo info = (XmlInfo) bpw.getInternalSetting(KEY_XML_INFO);
+        return (info != null) && info.isCData();
+    }
+
     /**
      * Method for re-sorting lists of bean properties such that attributes are strictly
      * written before elements.
@@ -330,7 +344,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 continue;
             }
             
-            // Move attribute a few places done as necessary
+            // Move attribute a few places down as necessary
             int moveBy = i - attrCount;
             if (moveBy > 0) {
                 System.arraycopy(properties, attrCount, properties, attrCount + 1, moveBy);

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -72,6 +73,18 @@ public class TestSerialization extends XmlTestBase
     static class NsRootBean
     {
         public String value = "abc";
+    }
+
+    static class CDataStringBean
+    {
+        @JacksonXmlCData
+        public String value = "<some<data\"";
+    }
+
+    static class CDataStringArrayBean
+    {
+        @JacksonXmlCData
+        public String[] value = {"<some<data\"", "abc"};
     }
 
     static class CustomSerializer extends StdScalarSerializer<String>
@@ -196,6 +209,20 @@ public class TestSerialization extends XmlTestBase
         assertEquals(2, result.size());
 
         assertEquals(Integer.valueOf(456), result.get("b"));
+    }
+
+    public void testCDataString() throws IOException
+    {
+        String xml = _xmlMapper.writeValueAsString(new CDataStringBean());
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<CDataStringBean><value><![CDATA[<some<data\"]]></value></CDataStringBean>", xml);
+    }
+
+    public void testCDataStringArray() throws IOException
+    {
+        String xml = _xmlMapper.writeValueAsString(new CDataStringArrayBean());
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<CDataStringArrayBean><value><value><![CDATA[<some<data\"]]></value><value><![CDATA[abc]]></value></value></CDataStringArrayBean>", xml);
     }
     
     // for [Issue#41]
