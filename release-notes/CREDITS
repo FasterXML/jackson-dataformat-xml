@@ -11,7 +11,12 @@ Sebastien Dionne:
 
 Pascal Gelinas:
 
-* Reported and fixed #83: Add support for @JsonUnwrapped
- (2.4.0)
 * Reported and fixed #84: Problem with @JacksonXmlText when property output is suppressed
  (2.3.1)
+* Reported and fixed #83: Add support for @JsonUnwrapped
+ (2.4.0)
+
+Dan Jasek: (oillio@github)
+
+* Contributed #126: Allow specifying properties that should be written as CData
+ (2.5.0)
