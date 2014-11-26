@@ -9,8 +9,7 @@ Project: jackson-dataformat-xml
 #126: Allow specifying properties that should be written as CData
  (contributed by Dan J)
 
-2.4.4 (not yet released)
-
+2.4.4 (24-Nov-2014)
 2.4.3 (04-Oct-2014)
 2.4.2 (15-Aug-2014)
 
