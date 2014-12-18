@@ -97,7 +97,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
         assertEquals(27, wrapper.location.y);
 
         // should also write out the same way
-        assertEquals(XML, mapper.writerWithType(Unwrapping.class).writeValueAsString(wrapper));
+        assertEquals(XML, mapper.writerFor(Unwrapping.class).writeValueAsString(wrapper));
     }
 
     public void testUnwrappingWithAttribute()
@@ -112,7 +112,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
         assertEquals(27, wrapper.location.y);
 
         // should also write out the same way
-        assertEquals(XML, mapper.writerWithType(UnwrappingWithAttributes.class).writeValueAsString(wrapper));
+        assertEquals(XML, mapper.writerFor(UnwrappingWithAttributes.class).writeValueAsString(wrapper));
     }
 
     public void testUnwrappingSubWithAttribute()
@@ -127,6 +127,6 @@ public class UnwrappingWithXMLTest extends XmlTestBase
         assertEquals(27, wrapper.location.y);
 
         // should also write out the same way
-        assertEquals(XML, mapper.writerWithType(UnwrappingSubWithAttributes.class).writeValueAsString(wrapper));
+        assertEquals(XML, mapper.writerFor(UnwrappingSubWithAttributes.class).writeValueAsString(wrapper));
     }
 }

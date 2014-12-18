@@ -18,7 +18,7 @@ public class RoundtripContentTest extends XmlTestBase
         input.addPhoto(new MediaItem.Photo("http://a", "title1", 200, 100, MediaItem.Size.LARGE));
         input.addPhoto(new MediaItem.Photo("http://b", "title2", 640, 480, MediaItem.Size.SMALL));
 
-        ObjectWriter w = MAPPER.writerWithType(MediaItem.class);
+        ObjectWriter w = MAPPER.writerFor(MediaItem.class);
 
         /*
         StringWriter sw = new StringWriter();
