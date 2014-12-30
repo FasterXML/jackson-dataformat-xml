@@ -32,7 +32,6 @@ public class FromXmlParser
      * Enumeration that defines all togglable features for XML parsers
      */
     public enum Feature {
-        DUMMY_PLACEHOLDER(false)
         ;
 
         final boolean _defaultState;
@@ -347,8 +346,7 @@ public class FromXmlParser
     public boolean isClosed() { return _closed; }
 
     @Override
-    public XmlReadContext getParsingContext()
-    {
+    public XmlReadContext getParsingContext() {
         return _parsingContext;
     }
 
@@ -358,8 +356,7 @@ public class FromXmlParser
      * that starts the current token.
      */
     @Override
-    public JsonLocation getTokenLocation()
-    {
+    public JsonLocation getTokenLocation() {
         return _xmlTokens.getTokenLocation();
     }
 
@@ -368,8 +365,7 @@ public class FromXmlParser
      * usually for error reporting purposes
      */
     @Override
-    public JsonLocation getCurrentLocation()
-    {
+    public JsonLocation getCurrentLocation() {
         return _xmlTokens.getCurrentLocation();
     }
 
@@ -450,7 +446,7 @@ public class FromXmlParser
             return t;
         }
         int token = _xmlTokens.next();
-        
+
         /* Need to have a loop just because we may have to eat/convert
          * a start-element that indicates an array element.
          */
@@ -781,8 +777,7 @@ public class FromXmlParser
      * Method called to release internal buffers owned by the base
      * parser.
      */
-    protected void _releaseBuffers() throws IOException
-    {
+    protected void _releaseBuffers() throws IOException {
         // anything we can/must release? Underlying parser should do all of it, for now?
     }
 
@@ -810,8 +805,7 @@ public class FromXmlParser
     }
 
     @Override
-    public Version version()
-    {
+    public Version version() {
         return PackageVersion.VERSION;
     }
 }
