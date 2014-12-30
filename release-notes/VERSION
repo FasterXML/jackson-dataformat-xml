@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.5.0 (not yet released)
 
+#120: Encoding not taken in account
+ (reported by Sébastien D, sdeleuze@github)
 #126: Allow specifying properties that should be written as CData
  (contributed by Dan J)
 

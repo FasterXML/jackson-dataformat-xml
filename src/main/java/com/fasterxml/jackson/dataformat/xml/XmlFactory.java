@@ -434,7 +434,9 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
     {
         // false -> we won't manage the stream unless explicitly directed to
-        return new ToXmlGenerator(_createContext(out, false),
+        IOContext ctxt = _createContext(out, false);
+        ctxt.setEncoding(enc);
+        return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
