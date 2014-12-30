@@ -110,16 +110,16 @@ public class FromXmlParser
     /* Parsing state
     /**********************************************************
      */
-    
+
     /**
      * Information about parser context, context in which
      * the next token is to be parsed (root, array, object).
      */
     protected XmlReadContext _parsingContext;
-    
-    protected final XmlTokenStream _xmlTokens;
 
+    protected final XmlTokenStream _xmlTokens;
     /**
+     * 
      * We need special handling to keep track of whether a value
      * may be exposed as simple leaf value.
      */
@@ -130,13 +130,13 @@ public class FromXmlParser
     protected String _currText;
 
     protected Set<String> _namesToWrap;
-    
+
     /*
     /**********************************************************
     /* Parsing state, parsed values
     /**********************************************************
      */
-    
+
     /**
      * ByteArrayBuilder is needed if 'getBinaryValue' is called. If so,
      * we better reuse it for remainder of content.
@@ -156,7 +156,7 @@ public class FromXmlParser
     /* Life-cycle
     /**********************************************************
      */
-    
+
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
             ObjectCodec codec, XMLStreamReader xmlReader)
     {
@@ -543,6 +543,22 @@ public class FromXmlParser
         // should never get here
         _throwInternal();
         return null;
+    }
+    
+    /*
+    /**********************************************************
+    /* Overrides of specialized nextXxx() methods
+    /**********************************************************
+     */
+
+    /**
+     * Method overridden to support more reliable deserialization of
+     * String collections.
+     */
+    @Override
+    public String nextTextValue() throws IOException, JsonParseException {
+        // !!! TODO: optimize
+        return (nextToken() == JsonToken.VALUE_STRING) ? getText() : null;
     }
     
     /*
