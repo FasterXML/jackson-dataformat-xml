@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
@@ -27,11 +27,16 @@ public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
     // for [#129]
     public void testListWithEmptyCData() throws Exception
     {
-        String SECOND = " ";
+        _testListWithEmptyCData(" ");
+        _testListWithEmptyCData("");
+    }
+        
+    private void _testListWithEmptyCData(String cdata) throws Exception
+    {
         ListValues result = MAPPER.readValue("<root>\n"
                 + "<value>A</value>\n"
 //                + "<value><![CDATA["+SECOND+"]]></value>\n"
-                + "<value> </value>\n"
+                + "<value>"+cdata+"</value>\n"
                 + "<value>C</value>\n"
                 + "</root>", ListValues.class);
 
@@ -39,7 +44,7 @@ public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
 
         assertEquals(3, values.size()); // expecting 3 values, getting only 1
         assertEquals("A", values.get(0));
-        assertEquals(SECOND, values.get(1)); // expecting empty string in second position
+        assertEquals(cdata, values.get(1)); // expecting empty string in second position
         assertEquals("C", values.get(2));
     }    
 }

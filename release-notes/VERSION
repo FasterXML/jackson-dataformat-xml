@@ -10,6 +10,8 @@ Project: jackson-dataformat-xml
  (reported by Sébastien D, sdeleuze@github)
 #126: Allow specifying properties that should be written as CData
  (contributed by Dan J)
+#129: Unwrapped collection containing empty CDATA not deserialized correctly
+ (reported by tjconsult@github)
 
 2.4.4 (24-Nov-2014)
 2.4.3 (04-Oct-2014)

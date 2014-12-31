@@ -10,8 +10,6 @@ import static org.hamcrest.CoreMatchers.*;
 import java.util.*;
 
 import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.*;
@@ -21,7 +19,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
 /**
  * @author Nu Echo Inc.
  */
-@RunWith(JUnit4.class)
 public class Issue97Test extends XmlTestBase
 {
     @JsonTypeInfo(property = "type", use = Id.NAME)
