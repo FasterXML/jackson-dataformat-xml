@@ -14,7 +14,7 @@ public class ListAnnotationSharingTest extends XmlTestBase
     static class Wrapper {
         @JacksonXmlElementWrapper(localName = "Points", useWrapping = true)
         @JsonProperty("Point")
-        private List<Point> points = new ArrayList<Point>();
+        List<Point> points = new ArrayList<Point>();
 
         public List<Point> getPoints() {
             return points;

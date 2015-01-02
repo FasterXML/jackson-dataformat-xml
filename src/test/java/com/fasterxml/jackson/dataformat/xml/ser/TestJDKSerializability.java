@@ -20,7 +20,7 @@ public class TestJDKSerializability extends XmlTestBase
     @JacksonXmlRootElement(localName="MyPojo")
     static class MyPojo {
         public int x;
-        private int y;
+        int y;
         
         public MyPojo() { }
         public MyPojo(int x0, int y0) {
