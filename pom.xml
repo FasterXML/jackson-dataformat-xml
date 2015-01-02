@@ -28,8 +28,8 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
 
   <properties>
-    <version.jackson.annotations>2.5.0-SNAPSHOT</version.jackson.annotations>
-    <version.jackson.core>2.5.0-SNAPSHOT</version.jackson.core>
+    <version.jackson.annotations>2.5.0</version.jackson.annotations>
+    <version.jackson.core>2.5.0</version.jackson.core>
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>

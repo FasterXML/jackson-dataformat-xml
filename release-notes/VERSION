@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.5.0 (not yet released)
+2.5.0 (01-Jan-2015)
 
 #120: Encoding not taken in account
  (reported by Sébastien D, sdeleuze@github)
