@@ -29,7 +29,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
 
   <properties>
     <version.jackson.annotations>2.4.0</version.jackson.annotations>
-    <version.jackson.core>2.4.4</version.jackson.core>
+    <version.jackson.core>2.4.5</version.jackson.core>
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
