@@ -1,11 +1,16 @@
 Project: jackson-dataformat-xml
-Version: 2.3.4 (17-Jul-2014)
-
-- Fixed `XmlFactory.requiresCustomCodec()` to return true as it should
 
 ------------------------------------------------------------------------
 === History: ===
 ------------------------------------------------------------------------
+
+2.3.5 (14-Jan-2015)
+
+No changes since 2.3.4
+
+2.3.4 (17-Jul-2014)
+
+- Fixed `XmlFactory.requiresCustomCodec()` to return true as it should
 
 2.3.3 (10-Apr-2014)
 
