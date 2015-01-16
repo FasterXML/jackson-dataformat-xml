@@ -171,6 +171,11 @@ public class FromXmlParser
     }
 
     @Override
+    public Version version() {
+        return PackageVersion.VERSION;
+    }
+    
+    @Override
     public ObjectCodec getCodec() {
         return _objectCodec;
     }
@@ -803,10 +808,8 @@ public class FromXmlParser
         }        
         return _binaryValue;
     }
-    
-    @SuppressWarnings("resource")
-    protected byte[] _decodeBase64(Base64Variant b64variant)
-        throws IOException, JsonParseException
+
+    protected byte[] _decodeBase64(Base64Variant b64variant) throws IOException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();
         final String str = getText();
@@ -821,57 +824,49 @@ public class FromXmlParser
      */
 
     @Override
-    public BigInteger getBigIntegerValue() throws IOException, JsonParseException
-    {
+    public BigInteger getBigIntegerValue() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public BigDecimal getDecimalValue() throws IOException, JsonParseException
-    {
+    public BigDecimal getDecimalValue() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public double getDoubleValue() throws IOException, JsonParseException
-    {
+    public double getDoubleValue() throws IOException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public float getFloatValue() throws IOException, JsonParseException
-    {
+    public float getFloatValue() throws IOException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public int getIntValue() throws IOException, JsonParseException
-    {
+    public int getIntValue() throws IOException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public long getLongValue() throws IOException, JsonParseException
-    {
+    public long getLongValue() throws IOException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public NumberType getNumberType() throws IOException, JsonParseException
-    {
+    public NumberType getNumberType() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Number getNumberValue() throws IOException, JsonParseException
-    {
+    public Number getNumberValue() throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -930,10 +925,5 @@ public class FromXmlParser
             }
         }
         return true;
-    }
-
-    @Override
-    public Version version() {
-        return PackageVersion.VERSION;
     }
 }

@@ -17,7 +17,10 @@ import com.fasterxml.jackson.databind.util.NameTransformer;
  * @author Pascal Gélinas
  * 
  */
-public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase {
+public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
+{
+    private static final long serialVersionUID = 1L;
+ 
     /**
      * Transformer used to add prefix and/or suffix for properties of unwrapped
      * POJO.

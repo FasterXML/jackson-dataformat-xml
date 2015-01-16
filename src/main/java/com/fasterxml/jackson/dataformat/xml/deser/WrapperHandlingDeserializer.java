@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
@@ -27,6 +26,8 @@ public class WrapperHandlingDeserializer
      */
     protected final Set<String> _namesToWrap;
 
+    protected final JavaType _type;
+    
     /*
     /**********************************************************************
     /* Construction
@@ -41,6 +42,7 @@ public class WrapperHandlingDeserializer
     {
         super(delegate);
         _namesToWrap = namesToWrap;
+        _type = delegate.getValueType();
     }
 
     /*
@@ -61,6 +63,16 @@ public class WrapperHandlingDeserializer
             BeanProperty property)
         throws JsonMappingException
     {
+        // !!! 16-Jan-2015, tatu: TODO: change to be like so in 2.6.0 -- leaving
+        //    out for 2.5 just to increase compatibility slightly with 2.4 databind
+        /*
+        JavaType vt = _type;
+        if (vt == null) {
+            vt = ctxt.constructType(_delegatee.handledType());
+        }
+        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
+        */
+
         JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property);
         BeanDeserializerBase newDelegatee = _verifyDeserType(del);
         
@@ -102,8 +114,7 @@ public class WrapperHandlingDeserializer
      */
 
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException
+    public Object deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException
     {
         _configureParser(jp);
         return _delegatee.deserialize(jp,  ctxt);
@@ -112,8 +123,7 @@ public class WrapperHandlingDeserializer
     @SuppressWarnings("unchecked")
     @Override
     public Object deserialize(JsonParser jp, DeserializationContext ctxt,
-            Object intoValue)
-        throws IOException, JsonProcessingException
+            Object intoValue) throws IOException
     {
         _configureParser(jp);
         return ((JsonDeserializer<Object>)_delegatee).deserialize(jp, ctxt, intoValue);
@@ -121,8 +131,7 @@ public class WrapperHandlingDeserializer
 
     @Override
     public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt,
-            TypeDeserializer typeDeserializer)
-        throws IOException, JsonProcessingException
+            TypeDeserializer typeDeserializer) throws IOException
     {
         _configureParser(jp);
         return _delegatee.deserializeWithType(jp, ctxt, typeDeserializer);
@@ -134,8 +143,7 @@ public class WrapperHandlingDeserializer
     /**********************************************************************
      */
 
-    protected final void _configureParser(JsonParser jp)
-        throws IOException, JsonProcessingException
+    protected final void _configureParser(JsonParser jp) throws IOException
     {
         /* 19-Aug-2013, tatu: Although we should not usually get called with
          *   parser of other types, there are some cases where this may happen:

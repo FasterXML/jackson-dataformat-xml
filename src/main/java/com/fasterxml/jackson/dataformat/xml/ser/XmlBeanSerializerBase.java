@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
+import java.util.BitSet;
 
 import javax.xml.namespace.QName;
 
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
  * of some xml-specific aspects, such as distinction between attributes
  * and elements.
  */
+@SuppressWarnings("serial")
 public abstract class XmlBeanSerializerBase extends BeanSerializerBase
 {
     /**
@@ -49,10 +51,17 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      */
     protected final QName[] _xmlNames;
 
+    /**
+     * Optional set of indexes of properties that should be serialized as CDATA,
+     * instead of regular XML text segment. Left as null in cases where none of
+     * element values are to be written in such a way.
+     */
+    protected final BitSet _cdata;
+    
     public XmlBeanSerializerBase(BeanSerializerBase src)
     {
         super(src);
-        
+
         /* Then make sure attributes are sorted before elements, keep track
          * of how many there are altogether
          */
@@ -65,6 +74,19 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         }
         _attributeCount = attrCount;
 
+        // also: pre-compute need, if any, for CDATA handling:
+        BitSet cdata = null;
+        for (int i = 0, len = _props.length; i < len; ++i) {
+            BeanPropertyWriter bpw = _props[i];
+            if (_isCData(bpw)) {
+                if (cdata == null) {
+                    cdata = new BitSet(len);
+                }
+                cdata.set(i);
+            }
+        }
+        _cdata = cdata;
+        
         // And then collect namespace information
         _xmlNames = new QName[_props.length];
         int textIndex = -1;
@@ -89,6 +111,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _attributeCount = src._attributeCount;
         _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;
+        _cdata = src._cdata;
     }
 
     protected XmlBeanSerializerBase(XmlBeanSerializerBase src, ObjectIdWriter objectIdWriter, Object filterId)
@@ -97,6 +120,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _attributeCount = src._attributeCount;
         _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;
+        _cdata = src._cdata;
     }
 
     protected XmlBeanSerializerBase(XmlBeanSerializerBase src, String[] toIgnore)
@@ -105,6 +129,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _attributeCount = src._attributeCount;
         _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;
+        _cdata = src._cdata;
     }
     
     public XmlBeanSerializerBase(XmlBeanSerializerBase src, NameTransformer transformer)
@@ -113,6 +138,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _attributeCount = src._attributeCount;
         _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;
+        _cdata = src._cdata;
     }
 
     /*
@@ -127,16 +153,16 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      * elements.
      */
     @Override
-    protected void serializeFields(Object bean, JsonGenerator jgen0, SerializerProvider provider)
-        throws IOException, JsonGenerationException
+    protected void serializeFields(Object bean, JsonGenerator gen0, SerializerProvider provider)
+        throws IOException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
-        if (!(jgen0 instanceof ToXmlGenerator)) {
-            super.serializeFields(bean, jgen0, provider);
+        if (!(gen0 instanceof ToXmlGenerator)) {
+            super.serializeFields(bean, gen0, provider);
             return;
         }
         
-        final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
+        final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         final BeanPropertyWriter[] props;
         if (_filteredProps != null && provider.getActiveView() != null) {
             props = _filteredProps;
@@ -152,6 +178,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         final int textIndex = _textPropertyIndex;
         final QName[] xmlNames = _xmlNames;
         int i = 0;
+        final BitSet cdata = _cdata;
 
         try {
             for (final int len = props.length; i < len; ++i) {
@@ -167,14 +194,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 xgen.setNextName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
-                    if(_isCData(prop)) {
+                    if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                    }
-
-                    prop.serializeAsField(bean, xgen, provider);
-
-                    if(_isCData(prop)) {
+                        prop.serializeAsField(bean, xgen, provider);
                         xgen.setNextIsCData(false);
+                    } else {
+                        prop.serializeAsField(bean, xgen, provider);
                     }
                 }
                 // Reset to avoid next value being written as unwrapped, 
@@ -201,17 +226,17 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     @Override
-    protected void serializeFieldsFiltered(Object bean, JsonGenerator jgen0,
+    protected void serializeFieldsFiltered(Object bean, JsonGenerator gen0,
             SerializerProvider provider)
-        throws IOException, JsonGenerationException
+        throws IOException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
-        if (!(jgen0 instanceof ToXmlGenerator)) {
-            super.serializeFieldsFiltered(bean, jgen0, provider);
+        if (!(gen0 instanceof ToXmlGenerator)) {
+            super.serializeFieldsFiltered(bean, gen0, provider);
             return;
         }
         
-        final ToXmlGenerator xgen = (ToXmlGenerator) jgen0;
+        final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         
         final BeanPropertyWriter[] props;
         if (_filteredProps != null && provider.getActiveView() != null) {
@@ -222,7 +247,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         final PropertyFilter filter = findPropertyFilter(provider, _propertyFilterId, bean);
         // better also allow missing filter actually..
         if (filter == null) {
-            serializeFields(bean, jgen0, provider);
+            serializeFields(bean, gen0, provider);
             return;
         }
 
@@ -233,6 +258,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         }
         final int textIndex = _textPropertyIndex;
         final QName[] xmlNames = _xmlNames;
+        final BitSet cdata = _cdata;
 
         int i = 0;
         try {
@@ -249,7 +275,13 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 xgen.setNextName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
-                    filter.serializeAsField(bean, xgen, provider, prop);
+                    if ((cdata != null) && cdata.get(i)) {
+                        xgen.setNextIsCData(true);
+                        filter.serializeAsField(bean, xgen, provider, prop);
+                        xgen.setNextIsCData(false);
+                    } else {
+                        filter.serializeAsField(bean, xgen, provider, prop);
+                    }
                 }
             }
             if (_anyGetterWriter != null) {
@@ -270,43 +302,43 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
     
     @Override
-    public void serializeWithType(Object bean, JsonGenerator jgen, SerializerProvider provider,
+    public void serializeWithType(Object bean, JsonGenerator gen, SerializerProvider provider,
             TypeSerializer typeSer)
-        throws IOException, JsonGenerationException
+        throws IOException
     {
         if (_objectIdWriter != null) {
-            _serializeWithObjectId(bean, jgen, provider, typeSer);
+            _serializeWithObjectId(bean, gen, provider, typeSer);
             return;
         }
         /* Ok: let's serialize type id as attribute, but if (and only if!)
          * we are using AS_PROPERTY
          */
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
-            ToXmlGenerator xgen = (ToXmlGenerator)jgen;
+            ToXmlGenerator xgen = (ToXmlGenerator)gen;
             xgen.setNextIsAttribute(true);
-            super.serializeWithType(bean, jgen, provider, typeSer);
+            super.serializeWithType(bean, gen, provider, typeSer);
             if (_attributeCount == 0) { // if no attributes, need to reset
                 xgen.setNextIsAttribute(false);
             }
         } else {
-            super.serializeWithType(bean, jgen, provider, typeSer);
+            super.serializeWithType(bean, gen, provider, typeSer);
         }
     }
     
     @Override
-    protected void _serializeObjectId(Object bean, JsonGenerator jgen, SerializerProvider provider,
+    protected void _serializeObjectId(Object bean, JsonGenerator gen, SerializerProvider provider,
             TypeSerializer typeSer, WritableObjectId objectId) throws IOException
     {
         // Ok: let's serialize type id as attribute, but if (and only if!) we are using AS_PROPERTY
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
-            ToXmlGenerator xgen = (ToXmlGenerator)jgen;
+            ToXmlGenerator xgen = (ToXmlGenerator)gen;
             xgen.setNextIsAttribute(true);
-            super._serializeObjectId(bean, jgen, provider, typeSer, objectId);
+            super._serializeObjectId(bean, gen, provider, typeSer, objectId);
             if (_attributeCount == 0) { // if no attributes, need to reset
                 xgen.setNextIsAttribute(false);
             }
         } else {
-            super._serializeObjectId(bean, jgen, provider, typeSer, objectId);
+            super._serializeObjectId(bean, gen, provider, typeSer, objectId);
         }
     }
 

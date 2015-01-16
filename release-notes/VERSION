@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.5.1 (not yet released)
+
+#133: Performance regression (2.4->2.5), 10% slower write via databind
+
 2.5.0 (01-Jan-2015)
 
 #120: Encoding not taken in account
