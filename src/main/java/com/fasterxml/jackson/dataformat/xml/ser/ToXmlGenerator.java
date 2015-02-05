@@ -942,6 +942,10 @@ public final class ToXmlGenerator
     @Override
     public final JsonGenerator useDefaultPrettyPrinter()
     {
+        // related to [dataformat-xml#136], need to verify:
+        if (_cfgPrettyPrinter != null) {
+            return this;
+        }
         return setPrettyPrinter(new DefaultXmlPrettyPrinter());
     }
 
