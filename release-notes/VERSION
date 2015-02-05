@@ -19,6 +19,11 @@ Project: jackson-dataformat-xml
 #129: Unwrapped collection containing empty CDATA not deserialized correctly
  (reported by tjconsult@github)
 
+2.4.6 (not yet released)
+
+- Improvement to `JsonParser.useDefaultPrettyPrinter()` override (wrt #136)
+
+2.4.5 (13-Jan-2015)
 2.4.4 (24-Nov-2014)
 2.4.3 (04-Oct-2014)
 2.4.2 (15-Aug-2014)

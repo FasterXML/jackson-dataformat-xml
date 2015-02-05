@@ -60,7 +60,7 @@ public final class ToXmlGenerator
 
         final boolean _defaultState;
         final int _mask;
-        
+
         /**
          * Method that calculates bit set (flags) of all features that
          * are enabled by default.
@@ -75,16 +75,16 @@ public final class ToXmlGenerator
             }
             return flags;
         }
-        
+
         private Feature(boolean defaultState) {
             _defaultState = defaultState;
             _mask = (1 << ordinal());
         }
-        
+
         public boolean enabledByDefault() { return _defaultState; }
         public int getMask() { return _mask; }
     }
-    
+
     /*
     /**********************************************************
     /* Configuration
@@ -184,7 +184,7 @@ public final class ToXmlGenerator
      * Method called before writing any other output, to optionally
      * output XML declaration.
      */
-    public void initGenerator()  throws IOException, JsonGenerationException
+    public void initGenerator()  throws IOException
     {
         if (_initialized) {
             return;
@@ -299,7 +299,7 @@ public final class ToXmlGenerator
      * @param wrappedName Element used around individual content items (can not
      *   be null)
      */
-    public void startWrappedValue(QName wrapperName, QName wrappedName) throws IOException, JsonGenerationException
+    public void startWrappedValue(QName wrapperName, QName wrappedName) throws IOException
     {
         if (wrapperName != null) {
             try {
@@ -319,7 +319,7 @@ public final class ToXmlGenerator
     /**
      * Method called after a structured collection output has completed
      */
-    public void finishWrappedValue(QName wrapperName, QName wrappedName) throws IOException, JsonGenerationException
+    public void finishWrappedValue(QName wrapperName, QName wrappedName) throws IOException
     {
         // First: wrapper to close?
         if (wrapperName != null) {
@@ -340,7 +340,7 @@ public final class ToXmlGenerator
      * 
      * @since 2.2
      */
-    public void writeRepeatedFieldName() throws IOException, JsonGenerationException
+    public void writeRepeatedFieldName() throws IOException
     {
         if (_writeContext.writeFieldName(_nextName.getLocalPart()) == JsonWriteContext.STATUS_EXPECT_VALUE) {
             _reportError("Can not write a field name, expecting a value");
@@ -358,7 +358,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public final void writeFieldName(String name)  throws IOException, JsonGenerationException
+    public final void writeFieldName(String name)  throws IOException
     {
         if (_writeContext.writeFieldName(name) == JsonWriteContext.STATUS_EXPECT_VALUE) {
             _reportError("Can not write a field name, expecting a value");
@@ -369,8 +369,7 @@ public final class ToXmlGenerator
     }
     
     @Override
-    public final void writeStringField(String fieldName, String value)
-        throws IOException, JsonGenerationException
+    public final void writeStringField(String fieldName, String value) throws IOException
     {
         writeFieldName(fieldName);
         writeString(value);
@@ -383,7 +382,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public final void writeStartArray() throws IOException, JsonGenerationException
+    public final void writeStartArray() throws IOException
     {
         _verifyValueWrite("start an array");
         _writeContext = _writeContext.createChildArrayContext();
@@ -395,7 +394,7 @@ public final class ToXmlGenerator
     }
     
     @Override
-    public final void writeEndArray() throws IOException, JsonGenerationException
+    public final void writeEndArray() throws IOException
     {
         if (!_writeContext.inArray()) {
             _reportError("Current context not an ARRAY but "+_writeContext.getTypeDesc());
@@ -409,7 +408,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public final void writeStartObject() throws IOException, JsonGenerationException
+    public final void writeStartObject() throws IOException
     {
         _verifyValueWrite("start an object");
         _writeContext = _writeContext.createChildObjectContext();
@@ -421,7 +420,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public final void writeEndObject() throws IOException, JsonGenerationException
+    public final void writeEndObject() throws IOException
     {
         if (!_writeContext.inObject()) {
             _reportError("Current context not an object but "+_writeContext.getTypeDesc());
@@ -437,7 +436,7 @@ public final class ToXmlGenerator
     }
 
     // note: public just because pretty printer needs to make a callback
-    public final void _handleStartObject() throws IOException, JsonGenerationException
+    public final void _handleStartObject() throws IOException
     {
         if (_nextName == null) {
             handleMissingName();
@@ -452,7 +451,7 @@ public final class ToXmlGenerator
     }
     
     // note: public just because pretty printer needs to make a callback
-    public final void _handleEndObject() throws IOException, JsonGenerationException
+    public final void _handleEndObject() throws IOException
     {
         // We may want to repeat same element, so:
         if (_elementNameStack.isEmpty()) {
@@ -475,14 +474,13 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public void writeFieldName(SerializableString name)
-        throws IOException, JsonGenerationException
+    public void writeFieldName(SerializableString name) throws IOException
     {
         writeFieldName(name.getValue());
     }
     
     @Override
-    public void writeString(String text) throws IOException,JsonGenerationException
+    public void writeString(String text) throws IOException
     {
         _verifyValueWrite("write String value");
         if (_nextName == null) {
@@ -519,7 +517,7 @@ public final class ToXmlGenerator
     }    
     
     @Override
-    public void writeString(char[] text, int offset, int len) throws IOException, JsonGenerationException
+    public void writeString(char[] text, int offset, int len) throws IOException
     {
         _verifyValueWrite("write String value");
         if (_nextName == null) {
@@ -554,21 +552,19 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeString(SerializableString text) throws IOException, JsonGenerationException {
+    public void writeString(SerializableString text) throws IOException {
         writeString(text.getValue());
     }
     
     @Override
-    public void writeRawUTF8String(byte[] text, int offset, int length)
-        throws IOException, JsonGenerationException
+    public void writeRawUTF8String(byte[] text, int offset, int length) throws IOException
     {
         // could add support for this case if we really want it (and can make Stax2 support it)
         _reportUnsupportedOperation();
     }
 
     @Override
-    public void writeUTF8String(byte[] text, int offset, int length)
-        throws IOException, JsonGenerationException
+    public void writeUTF8String(byte[] text, int offset, int length) throws IOException
     {
         // could add support for this case if we really want it (and can make Stax2 support it)
         _reportUnsupportedOperation();
@@ -581,7 +577,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public void writeRaw(String text) throws IOException, JsonGenerationException
+    public void writeRaw(String text) throws IOException
     {
         // [Issue#39]
         if (_stax2Emulation) {
@@ -595,7 +591,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeRaw(String text, int offset, int len) throws IOException, JsonGenerationException
+    public void writeRaw(String text, int offset, int len) throws IOException
     {
         // [Issue#39]
         if (_stax2Emulation) {
@@ -609,7 +605,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeRaw(char[] text, int offset, int len) throws IOException, JsonGenerationException
+    public void writeRaw(char[] text, int offset, int len) throws IOException
     {
         // [Issue#39]
         if (_stax2Emulation) {
@@ -623,7 +619,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeRaw(char c) throws IOException, JsonGenerationException
+    public void writeRaw(char c) throws IOException
     {
         writeRaw(String.valueOf(c));
     }
@@ -636,8 +632,7 @@ public final class ToXmlGenerator
 
     @Override
     public void writeBinary(Base64Variant b64variant,
-    		byte[] data, int offset, int len)
-        throws IOException, JsonGenerationException
+    		byte[] data, int offset, int len) throws IOException
     {
         if (data == null) {
             writeNull();
@@ -691,7 +686,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public void writeBoolean(boolean value) throws IOException, JsonGenerationException
+    public void writeBoolean(boolean value) throws IOException
     {
         _verifyValueWrite("write boolean value");
         if (_nextName == null) {
@@ -720,7 +715,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNull() throws IOException, JsonGenerationException
+    public void writeNull() throws IOException
     {
         _verifyValueWrite("write null value");
         if (_nextName == null) {
@@ -748,7 +743,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(int i) throws IOException, JsonGenerationException
+    public void writeNumber(int i) throws IOException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -777,7 +772,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(long l) throws IOException, JsonGenerationException
+    public void writeNumber(long l) throws IOException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -805,7 +800,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(double d) throws IOException, JsonGenerationException
+    public void writeNumber(double d) throws IOException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -833,7 +828,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(float f) throws IOException, JsonGenerationException
+    public void writeNumber(float f) throws IOException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -861,7 +856,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(BigDecimal dec) throws IOException, JsonGenerationException
+    public void writeNumber(BigDecimal dec) throws IOException
     {
         if (dec == null) {
             writeNull();
@@ -907,8 +902,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(BigInteger value)
-		throws IOException, JsonGenerationException
+    public void writeNumber(BigInteger value) throws IOException
     {
         if (value == null) {
             writeNull();
@@ -953,8 +947,7 @@ public final class ToXmlGenerator
      */
     
     @Override
-    protected final void _verifyValueWrite(String typeMsg)
-        throws IOException, JsonGenerationException
+    protected final void _verifyValueWrite(String typeMsg) throws IOException
     {
         int status = _writeContext.writeValue();
         if (status == JsonWriteContext.STATUS_EXPECT_NAME) {
@@ -965,11 +958,23 @@ public final class ToXmlGenerator
     /**
      * Standard JSON indenter does not work well with XML, use
      * default XML indenter instead.
+     *<p>
+     * !!! TODO: same as implementation in core 2.6; override may be
+     * removed from 2.7
      */
     @Override
     public final JsonGenerator useDefaultPrettyPrinter()
     {
-        return setPrettyPrinter(new DefaultXmlPrettyPrinter());
+        // related to [dataformat-xml#136], need to verify:
+        if (_cfgPrettyPrinter != null) {
+            return this;
+        }
+        return setPrettyPrinter(_constructDefaultPrettyPrinter());
+    }
+
+    @Override
+    protected PrettyPrinter _constructDefaultPrettyPrinter() {
+        return new DefaultXmlPrettyPrinter();
     }
 
     @Override
@@ -979,7 +984,8 @@ public final class ToXmlGenerator
         		(XmlPrettyPrinter) pp : null;
         return this;
     }
-    
+
+
     /*
     /**********************************************************
     /* Low-level output handling
@@ -987,7 +993,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public final void flush() throws IOException
+    public void flush() throws IOException
     {
         if (isEnabled(JsonGenerator.Feature.FLUSH_PASSED_TO_STREAM)) {
             try {
@@ -1063,8 +1069,7 @@ public final class ToXmlGenerator
         return false;
     }
     
-    protected void handleMissingName()
-    {
+    protected void handleMissingName() {
         throw new IllegalStateException("No element/attribute name specified when trying to output element");
     }
 
