@@ -81,16 +81,26 @@ public class TestIndentation extends XmlTestBase
     // Verify [JACKSON-444], Issue #1
     public void testSimpleStringBean() throws Exception
     {
-        String xml = _xmlMapper.writeValueAsString(new StringWrapperBean("abc")); 
+        StringWrapperBean input = new StringWrapperBean("abc");
+        String xml = _xmlMapper.writeValueAsString(input); 
+
         // should have at least one linefeed, space...
         if (xml.indexOf('\n') < 0 || xml.indexOf(' ') < 0) {
-        	fail("No indentation: XML == "+xml);
+            fail("No indentation: XML == "+xml);
         }
         // Let's verify we get similar stuff back, first:
         StringWrapperBean result = _xmlMapper.readValue(xml, StringWrapperBean.class);
         assertNotNull(result);
         assertEquals("abc", result.string.str);
 
+        // Try via ObjectWriter as well
+        xml = _xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+        if (xml.indexOf('\n') < 0 || xml.indexOf(' ') < 0) {
+            fail("No indentation: XML == "+xml);
+        }
+        result = _xmlMapper.readValue(xml, StringWrapperBean.class);
+        assertNotNull(result);
+        assertEquals("abc", result.string.str);
     }
 
     public void testSimpleIntBean() throws Exception
