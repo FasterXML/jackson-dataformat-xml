@@ -23,17 +23,20 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  *<p>
  * Mapper itself overrides some aspects of functionality to try to handle
  * data binding aspects as similar to JAXB as possible.
+ *<p>
+ * Note that most of configuration should be done by pre-constructing
+ * {@link JacksonXmlModule} explicitly, instead of relying on default settings.
  */
 public class XmlMapper extends ObjectMapper
 {
-    // as of 2.5
-    private static final long serialVersionUID = -1212805483143619605L;
+    // as of 2.6
+    private static final long serialVersionUID = 1L;
 
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
     
     // need to hold on to module instance just in case copy() is used
     protected final JacksonXmlModule _xmlModule;
-    
+
     /*
     /**********************************************************
     /* Life-cycle: construction, configuration
@@ -96,7 +99,9 @@ public class XmlMapper extends ObjectMapper
 
     /**
      * Method called by {@link JacksonXmlModule} to pass configuration
-     * information to {@link XmlFactory}, during registration.
+     * information to {@link XmlFactory}, during registration; NOT
+     * exposed as public method since configuration should be done
+     * via {@link JacksonXmlModule}.
      * 
      * @since 2.1
      */
