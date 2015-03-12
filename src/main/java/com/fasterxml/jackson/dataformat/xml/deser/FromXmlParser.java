@@ -1,6 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
@@ -150,6 +152,13 @@ public class FromXmlParser
      * than once.
      */
     protected byte[] _binaryValue;
+    
+    /**
+     * At construction time we will determine if the data being
+     * parsed represents a scalar value (e.g. Integer).  If so,
+     * we need to handle the XML differently.
+     */
+    protected boolean _isScalarValue;
 
     /*
     /**********************************************************
@@ -168,6 +177,10 @@ public class FromXmlParser
         // and thereby start a scope
         _nextToken = JsonToken.START_OBJECT;
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference());
+       
+        // Examine token stream here to see if the root object should be interpreted as a scalar
+        String xml = _extractXmlFromReader((StringReader) ctxt.getSourceReference());
+        _isScalarValue = (null == xml) ? false : _xmlIsScalarValue(xml);
     }
 
     @Override
@@ -433,6 +446,17 @@ public class FromXmlParser
             switch (t) {
             case START_OBJECT:
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                if (_isScalarValue)
+                {
+                	while (null != t &&
+                		   JsonToken.VALUE_STRING != t &&
+                		   JsonToken.VALUE_NUMBER_INT != t &&
+                		   JsonToken.VALUE_NUMBER_FLOAT != t &&
+                		   JsonToken.VALUE_TRUE != t &&
+                		   JsonToken.VALUE_FALSE != t &&
+                		   JsonToken.VALUE_NULL != t)
+                		t = nextToken();
+                }
                 break;
             case START_ARRAY:
                 _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
@@ -925,5 +949,64 @@ public class FromXmlParser
             }
         }
         return true;
+    }
+    
+    protected String _extractXmlFromReader(StringReader sReader)
+    {
+    	try
+    	{
+    		// Detect if we are at the end of the string.  You can't skip backward
+    		// if you are at the end.
+			boolean atReaderEnd = (0 == sReader.skip(-1));
+			
+			// If we weren't at the end, we need to remember the mark we started
+			// with, then rewind the reader.
+			if (! atReaderEnd)
+			{
+				sReader.skip(1);
+				sReader.mark(0);
+				while (0 != sReader.skip(-1));
+			}
+			// Otherwise just reset the reader.
+			else
+			{
+				sReader.reset();
+			}
+			
+	        BufferedReader reader = new BufferedReader(sReader);
+	        StringBuilder sb = new StringBuilder();
+	        for (String nextLine = reader.readLine(); nextLine != null; nextLine = reader.readLine())
+	        {
+	        	sb.append(nextLine);
+	        }
+	        
+	        // If we weren't at the end of the reader when we started,
+	        // we need to reset the reader to the mark we set.
+	        if (! atReaderEnd)
+	        {
+	        	sReader.reset();
+	        }
+	        // Otherwise we were at the end when we began, and we should
+	        // be there again, so no need to reset.
+	        
+	        return sb.toString();
+    	}
+    	catch (IOException e)
+    	{
+    		return null;
+    	}
+    }
+    
+    protected boolean _xmlIsScalarValue(String xml)
+    {
+        String sType = xml.split("[\\s>]", 2)[0];
+        return
+        		sType.equalsIgnoreCase("<Byte") ||
+        		sType.equalsIgnoreCase("<Character") ||
+        		sType.equalsIgnoreCase("<Short") ||
+        		sType.equalsIgnoreCase("<Integer") ||
+        		sType.equalsIgnoreCase("<Long") ||
+        		sType.equalsIgnoreCase("<Float") ||
+        		sType.equalsIgnoreCase("<Double");
     }
 }
