@@ -73,7 +73,7 @@ public class WrapperHandlingDeserializer
         JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
         */
 
-        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property);
+        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, _type);
         BeanDeserializerBase newDelegatee = _verifyDeserType(del);
         
         // Let's go through the properties now...
