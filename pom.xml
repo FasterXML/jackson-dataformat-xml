@@ -107,9 +107,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
          (needs to block this dep)
       -->
     <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>woodstox-core-asl</artifactId>
-      <version>4.3.0</version>
+      <groupId>com.fasterxml.woodstox</groupId>
+      <artifactId>woodstox-core</artifactId>
+      <version>5.0.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
