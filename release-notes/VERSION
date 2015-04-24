@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.4.6 (not yet released)
+2.4.6 (23-Apr-2015)
 
 - Improvement to `JsonParser.useDefaultPrettyPrinter()` override (wrt #136)
 
