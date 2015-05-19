@@ -132,7 +132,6 @@ public class XmlBeanPropertyWriter
             }
         }
 
-        @SuppressWarnings("resource")
         final ToXmlGenerator xmlGen = (jgen instanceof ToXmlGenerator) ? (ToXmlGenerator) jgen : null;
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
         // 19-Aug-2013, tatu: ... except for those nasty 'convertValue()' calls...

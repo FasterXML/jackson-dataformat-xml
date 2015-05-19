@@ -122,7 +122,7 @@ public class RootListHandlingTest extends XmlTestBase
         // and then try reading back
         JavaType resListType = xmlMapper.getTypeFactory()
                 .constructCollectionType(List.class, SampleResource.class);
-        Object ob = xmlMapper.reader(resListType).readValue(xml);
+        Object ob = xmlMapper.readerFor(resListType).readValue(xml);
         assertNotNull(ob);
 
 //      System.err.println("XML -> "+xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ob));
@@ -179,7 +179,7 @@ public class RootListHandlingTest extends XmlTestBase
         }
 
         // and then try reading back
-        SampleResource[] result = xmlMapper.reader(SampleResource[].class).readValue(xml);
+        SampleResource[] result = xmlMapper.readerFor(SampleResource[].class).readValue(xml);
         assertNotNull(result);
 
 //      System.err.println("XML -> "+xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ob));

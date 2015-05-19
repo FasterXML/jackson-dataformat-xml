@@ -33,7 +33,7 @@ public class RoundtripContentTest extends XmlTestBase
 
 //System.err.println("DEBUG: Xml == "+xml);
 
-        ObjectReader r = MAPPER.reader(MediaItem.class);
+        ObjectReader r = MAPPER.readerFor(MediaItem.class);
         MediaItem result = r.readValue(xml);
         assertNotNull(result);
         assertEquals(content.getTitle(), result.getContent().getTitle());

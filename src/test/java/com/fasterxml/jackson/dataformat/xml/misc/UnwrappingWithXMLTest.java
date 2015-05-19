@@ -90,7 +90,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
     {
         final String XML = "<Unwrapping><name>Joe</name><loc.x>15</loc.x><loc.y>27</loc.y></Unwrapping>";
         ObjectMapper mapper = xmlMapper(false);
-        Unwrapping wrapper = mapper.reader(Unwrapping.class).readValue(XML);
+        Unwrapping wrapper = mapper.readerFor(Unwrapping.class).readValue(XML);
         assertNotNull(wrapper);
         assertNotNull(wrapper.location);
         assertEquals(15, wrapper.location.x);
@@ -105,7 +105,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
     {
         final String XML = "<UnwrappingWithAttributes name=\"Joe\" loc.x=\"15\" loc.y=\"27\"/>";
         ObjectMapper mapper = xmlMapper(false);
-        UnwrappingWithAttributes wrapper = mapper.reader(UnwrappingWithAttributes.class).readValue(XML);
+        UnwrappingWithAttributes wrapper = mapper.readerFor(UnwrappingWithAttributes.class).readValue(XML);
         assertNotNull(wrapper);
         assertNotNull(wrapper.location);
         assertEquals(15, wrapper.location.x);
@@ -120,7 +120,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
     {
         final String XML = "<UnwrappingSubWithAttributes name=\"Joe\" loc.x=\"15\"><loc.y>27</loc.y></UnwrappingSubWithAttributes>";
         ObjectMapper mapper = xmlMapper(false);
-        UnwrappingSubWithAttributes wrapper = mapper.reader(UnwrappingSubWithAttributes.class).readValue(XML);
+        UnwrappingSubWithAttributes wrapper = mapper.readerFor(UnwrappingSubWithAttributes.class).readValue(XML);
         assertNotNull(wrapper);
         assertNotNull(wrapper.location);
         assertEquals(15, wrapper.location.x);

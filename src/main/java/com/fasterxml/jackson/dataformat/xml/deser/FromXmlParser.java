@@ -809,6 +809,7 @@ public class FromXmlParser
         return _binaryValue;
     }
 
+    @SuppressWarnings("resource")
     protected byte[] _decodeBase64(Base64Variant b64variant) throws IOException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();
