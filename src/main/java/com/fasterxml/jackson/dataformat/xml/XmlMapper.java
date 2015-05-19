@@ -33,7 +33,9 @@ public class XmlMapper extends ObjectMapper
     private static final long serialVersionUID = 1L;
 
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
-    
+
+    protected final static DefaultXmlPrettyPrinter DEFAULT_XML_PRETTY_PRINTER = new DefaultXmlPrettyPrinter();
+
     // need to hold on to module instance just in case copy() is used
     protected final JacksonXmlModule _xmlModule;
 
@@ -60,11 +62,11 @@ public class XmlMapper extends ObjectMapper
     public XmlMapper(XmlFactory xmlFactory) {
         this(xmlFactory, DEFAULT_XML_MODULE);
     }
-    
+
     public XmlMapper(JacksonXmlModule module) {
         this(new XmlFactory(), module);
     }
-    
+
     public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
     {
         /* Need to override serializer provider (due to root name handling);
@@ -76,8 +78,10 @@ public class XmlMapper extends ObjectMapper
         if (module != null) {
             registerModule(module);
         }
+        // 19-May-2015, tatu: Must ensure we use XML-specific indenter
+        _serializationConfig = _serializationConfig.withDefaultPrettyPrinter(DEFAULT_XML_PRETTY_PRINTER);
     }
-    
+
     // @since 2.1
     @Override
     public XmlMapper copy()
@@ -85,7 +89,7 @@ public class XmlMapper extends ObjectMapper
         _checkInvalidCopy(XmlMapper.class);
         return new XmlMapper((XmlFactory) _jsonFactory.copy(), _xmlModule);
     }
-    
+
     @Override
     public Version version() {
         return PackageVersion.VERSION;

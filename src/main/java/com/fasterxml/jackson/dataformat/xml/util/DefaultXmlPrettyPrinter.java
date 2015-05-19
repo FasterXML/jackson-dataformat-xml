@@ -27,7 +27,7 @@ public class DefaultXmlPrettyPrinter
     implements XmlPrettyPrinter, Instantiatable<DefaultXmlPrettyPrinter>,
         java.io.Serializable
 {
-    private static final long serialVersionUID = -1811120944652457526L;
+    private static final long serialVersionUID = 1L; // since 2.6
 
     /**
      * Interface that defines objects that can produce indentation used
@@ -436,8 +436,10 @@ public class DefaultXmlPrettyPrinter
      * Dummy implementation that adds no indentation whatsoever
      */
     protected static class NopIndenter
-        implements Indenter
+        implements Indenter, java.io.Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         public NopIndenter() { }
         @Override public void writeIndentation(JsonGenerator jg, int level) { }
         @Override public boolean isInline() { return true; }
@@ -450,8 +452,10 @@ public class DefaultXmlPrettyPrinter
      * indenter for array values.
      */
     protected static class FixedSpaceIndenter
-        implements Indenter
+        implements Indenter, java.io.Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         public FixedSpaceIndenter() { }
 
         @Override
@@ -477,8 +481,10 @@ public class DefaultXmlPrettyPrinter
      * 2 spaces for indentation per level.
      */
     protected static class Lf2SpacesIndenter
-        implements Indenter
+        implements Indenter, java.io.Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         final static String SYSTEM_LINE_SEPARATOR;
         static {
             String lf = null;

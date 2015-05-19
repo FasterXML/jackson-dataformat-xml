@@ -84,6 +84,8 @@ public class TestIndentation extends XmlTestBase
         StringWrapperBean input = new StringWrapperBean("abc");
         String xml = _xmlMapper.writeValueAsString(input); 
 
+System.err.println("XML == "+xml);        
+        
         // should have at least one linefeed, space...
         if (xml.indexOf('\n') < 0 || xml.indexOf(' ') < 0) {
             fail("No indentation: XML == "+xml);
