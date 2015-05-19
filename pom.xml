@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion> 
-
   <parent>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-parent</artifactId>
     <version>2.5.1</version>
   </parent>
-
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.6.0-SNAPSHOT</version>
+  <version>2.6.0-rc1-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
@@ -19,18 +17,16 @@ Support implemented on top of Stax API (javax.xml.stream), by implementing core 
 Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMapper).
   </description>
   <url>http://wiki.fasterxml.com/JacksonExtensionXmlDataBinding</url>
-
   <scm>
     <connection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</connection>
     <developerConnection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</developerConnection>
     <url>http://github.com/FasterXML/jackson-dataformat-xml</url>    
     <tag>HEAD</tag>
   </scm>
-
   <properties>
-    <version.jackson.annotations>2.5.0</version.jackson.annotations>
-    <version.jackson.core>2.6.0-SNAPSHOT</version.jackson.core>
-    <version.jackson.jaxb>2.6.0-SNAPSHOT</version.jackson.jaxb>
+    <version.jackson.annotations>2.6.0-rc1</version.jackson.annotations>
+    <version.jackson.core>2.6.0-rc1</version.jackson.core>
+    <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
