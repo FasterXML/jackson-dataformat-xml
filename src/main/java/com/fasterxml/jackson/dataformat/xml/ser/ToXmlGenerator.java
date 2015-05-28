@@ -39,7 +39,8 @@ public final class ToXmlGenerator
     /**
      * Enumeration that defines all togglable extra XML-specific features
      */
-    public enum Feature {
+    public enum Feature implements FormatFeature
+    {
         /**
          * Feature that controls whether XML declaration should be written before
          * when generator is initialized (true) or not (false)
@@ -81,8 +82,9 @@ public final class ToXmlGenerator
             _mask = (1 << ordinal());
         }
 
-        public boolean enabledByDefault() { return _defaultState; }
-        public int getMask() { return _mask; }
+        @Override public boolean enabledByDefault() { return _defaultState; }
+        @Override public int getMask() { return _mask; }
+        @Override public boolean enabledIn(int flags) { return (flags & getMask()) != 0; }
     }
 
     /*

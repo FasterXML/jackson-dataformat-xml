@@ -29,9 +29,11 @@ public class FromXmlParser
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
     
     /**
-     * Enumeration that defines all togglable features for XML parsers
+     * Enumeration that defines all togglable features for XML parsers.
+     * None defined so far (2.6), so just a placeholder.
      */
-    public enum Feature {
+    public enum Feature implements FormatFeature
+    {
         ;
 
         final boolean _defaultState;
@@ -56,9 +58,10 @@ public class FromXmlParser
             _defaultState = defaultState;
             _mask = (1 << ordinal());
         }
-        
-        public boolean enabledByDefault() { return _defaultState; }
-        public int getMask() { return _mask; }
+
+        @Override public boolean enabledByDefault() { return _defaultState; }
+        @Override public int getMask() { return _mask; }
+        @Override public boolean enabledIn(int flags) { return (flags & getMask()) != 0; }
     }
 
     /**
@@ -86,8 +89,8 @@ public class FromXmlParser
      * {@link FromXmlParser.Feature}s
      * are enabled.
      */
-    protected int _xmlFeatures;
-    
+    protected int _formatFeatures;
+
     protected ObjectCodec _objectCodec;
 
     /*
@@ -102,7 +105,7 @@ public class FromXmlParser
      * ({@link #close}) or when end-of-input is reached.
      */
     protected boolean _closed;
-    
+
     final protected IOContext _ioContext;
 
     /*
@@ -161,7 +164,7 @@ public class FromXmlParser
             ObjectCodec codec, XMLStreamReader xmlReader)
     {
         super(genericParserFeatures);
-        _xmlFeatures = xmlFeatures;
+        _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
@@ -210,17 +213,17 @@ public class FromXmlParser
      */
 
     public FromXmlParser enable(Feature f) {
-        _xmlFeatures |= f.getMask();
+        _formatFeatures |= f.getMask();
         return this;
     }
 
     public FromXmlParser disable(Feature f) {
-        _xmlFeatures &= ~f.getMask();
+        _formatFeatures &= ~f.getMask();
         return this;
     }
 
     public final boolean isEnabled(Feature f) {
-        return (_xmlFeatures & f.getMask()) != 0;
+        return (_formatFeatures & f.getMask()) != 0;
     }
 
     public FromXmlParser configure(Feature f, boolean state) {
@@ -229,6 +232,23 @@ public class FromXmlParser
         } else {
             disable(f);
         }
+        return this;
+    }
+
+    /*                                                                                       
+    /**********************************************************                              
+    /* FormatFeature support                                                                             
+    /**********************************************************                              
+     */
+
+    @Override
+    public int getFormatFeatures() {
+        return _formatFeatures;
+    }
+
+    @Override
+    public JsonParser overrideFormatFeatures(int values, int mask) {
+        _formatFeatures = (_formatFeatures & ~mask) | (values & mask);
         return this;
     }
 

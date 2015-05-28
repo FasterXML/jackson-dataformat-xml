@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.VersionUtil;
+
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -27,8 +28,7 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 */
 public class XmlFactory extends JsonFactory
 {
-    // For 2.5:
-    private static final long serialVersionUID = 1897624416641000209L;
+    private static final long serialVersionUID = 1; // 2.6
 
     /**
      * Name used to identify XML format
@@ -384,10 +384,10 @@ public class XmlFactory extends JsonFactory
 
     /*
     /**********************************************************
-    /* Capability overrides
+    /* Capability introspection
     /**********************************************************
      */
-    
+
     /**
      * As of 2.4, we do have actual capability for passing char arrays
      * efficiently, but unfortunately
@@ -396,6 +396,16 @@ public class XmlFactory extends JsonFactory
      */
     @Override
     public boolean canUseCharArrays() { return false; }
+
+    @Override // since 2.6
+    public Class<FromXmlParser.Feature> getFormatReadFeatureType() {
+        return FromXmlParser.Feature.class;
+    }
+
+    @Override // since 2.6
+    public Class<ToXmlGenerator.Feature> getFormatWriteFeatureType() {
+        return ToXmlGenerator.Feature.class;
+    }
 
     /*
     /**********************************************************
