@@ -231,6 +231,7 @@ public class XmlMapper extends ObjectMapper
      * XML indentation differs from JSON indentation, thereby
      * need to change default pretty-printer
      */
+    @Deprecated // since 2.6
     @Override
     protected PrettyPrinter _defaultPrettyPrinter() {
         return new DefaultXmlPrettyPrinter();

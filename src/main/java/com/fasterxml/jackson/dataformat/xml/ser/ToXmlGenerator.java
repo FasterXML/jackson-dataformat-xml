@@ -202,7 +202,59 @@ public final class ToXmlGenerator
             StaxUtil.throwXmlAsIOException(e);
         }
     }
-    
+
+    /*
+    /**********************************************************
+    /* Overridden methods, configuration
+    /**********************************************************
+     */
+
+    /**
+     * Standard JSON indenter does not work well with XML, use
+     * default XML indenter instead.
+     *<p>
+     * !!! TODO: same as implementation in core 2.6; override may be
+     * removed from 2.7
+     */
+    @Override
+    public final JsonGenerator useDefaultPrettyPrinter()
+    {
+        // related to [dataformat-xml#136], need to verify:
+        if (_cfgPrettyPrinter != null) {
+            return this;
+        }
+        return setPrettyPrinter(_constructDefaultPrettyPrinter());
+    }
+
+    @Override
+    protected PrettyPrinter _constructDefaultPrettyPrinter() {
+        return new DefaultXmlPrettyPrinter();
+    }
+
+    @Override
+    public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
+        _cfgPrettyPrinter = pp;
+        _xmlPrettyPrinter = (pp instanceof XmlPrettyPrinter) ?
+               (XmlPrettyPrinter) pp : null;
+        return this;
+    }
+
+    @Override
+    public Object getOutputTarget() {
+        // Stax2 does not expose underlying target, so best we can do is to return
+        // the Stax XMLStreamWriter instance:
+        return _originalXmlWriter;
+    }
+
+    /**
+     * Stax2 does not expose buffered content amount, so we can only return
+     * <code>-1</code> from here
+     */
+    @Override
+    public int getOutputBuffered() {
+        return -1;
+    }
+
     /*
     /**********************************************************
     /* Extended API, configuration
@@ -937,7 +989,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public void writeNumber(String encodedValue) throws IOException,JsonGenerationException, UnsupportedOperationException
+    public void writeNumber(String encodedValue) throws IOException, UnsupportedOperationException
     {
         writeString(encodedValue);
     }
@@ -956,37 +1008,6 @@ public final class ToXmlGenerator
             _reportError("Can not "+typeMsg+", expecting field name");
         }
     }
-
-    /**
-     * Standard JSON indenter does not work well with XML, use
-     * default XML indenter instead.
-     *<p>
-     * !!! TODO: same as implementation in core 2.6; override may be
-     * removed from 2.7
-     */
-    @Override
-    public final JsonGenerator useDefaultPrettyPrinter()
-    {
-        // related to [dataformat-xml#136], need to verify:
-        if (_cfgPrettyPrinter != null) {
-            return this;
-        }
-        return setPrettyPrinter(_constructDefaultPrettyPrinter());
-    }
-
-    @Override
-    protected PrettyPrinter _constructDefaultPrettyPrinter() {
-        return new DefaultXmlPrettyPrinter();
-    }
-
-    @Override
-    public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
-        _cfgPrettyPrinter = pp;
-        _xmlPrettyPrinter = (pp instanceof XmlPrettyPrinter) ?
-        		(XmlPrettyPrinter) pp : null;
-        return this;
-    }
-
 
     /*
     /**********************************************************
