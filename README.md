@@ -32,7 +32,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.4.0</version>
+  <version>2.5.3</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ You can do this by adding this in your `pom.xml`:
 <dependency>
   <groupId>org.codehaus.woodstox</groupId>
   <artifactId>woodstox-core-asl</artifactId>
-  <version>4.1.4</version>
+  <version>4.4.1</version>
 </dependency>
 ```
 
