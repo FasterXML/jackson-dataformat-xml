@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2002-2014 Nu Echo Inc. All rights reserved.
- */
-
 package com.fasterxml.jackson.dataformat.xml.failing;
 
 import static org.junit.Assert.*;
@@ -17,7 +13,7 @@ import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**
- * @author Nu Echo Inc.
+ * @author pgelinas
  */
 public class Issue97Test extends XmlTestBase
 {
