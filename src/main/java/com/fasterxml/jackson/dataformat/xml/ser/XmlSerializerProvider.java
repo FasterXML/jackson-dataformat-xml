@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
@@ -240,8 +241,15 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     protected QName _rootNameFromConfig()
     {
-        String name = _config.getRootName();
-        return (name == null) ? null : new QName(name);
+        PropertyName name = _config.getFullRootName();
+        if (name == null) {
+            return null;
+        }
+        String ns = name.getNamespace();
+        if (ns == null || ns.isEmpty()) {
+            return new QName(name.getSimpleName());
+        }
+        return new QName(ns, name.getSimpleName());
     }
 
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator jgen)

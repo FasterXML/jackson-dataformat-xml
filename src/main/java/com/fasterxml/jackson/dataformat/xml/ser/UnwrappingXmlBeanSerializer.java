@@ -87,7 +87,7 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     @Override
-    protected BeanSerializerBase withFilterId(Object filterId)
+    public BeanSerializerBase withFilterId(Object filterId)
     {
         return new UnwrappingXmlBeanSerializer(this, _objectIdWriter, filterId);
     }
