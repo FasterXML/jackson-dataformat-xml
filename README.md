@@ -142,12 +142,13 @@ It is also possible to do incremental writes. This is done by creating Stax
 
 ```java
 // First create Stax components we need
-XMLInputFactory f = XMLInputFactory.newFactory();
+XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
 StringWriter out = new StringWriter();
-XMLStreamWriter sw = f.createXMLStreamWriter(out);
+XMLStreamWriter sw = xmlOutputFactory.createXMLStreamWriter(out);
 
 // then Jackson components
-XmlMapper mapper = new XmlMapper(f);
+XmlMapper mapper = new XmlMapper(xmlInputFactory);
 
 sw.writeStartDocument();
 sw.writeStartElement("root");
