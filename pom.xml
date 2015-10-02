@@ -4,11 +4,11 @@
   <parent>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-parent</artifactId>
-    <version>2.6.1</version>
+    <version>2.6.2</version>
   </parent>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.6.3-SNAPSHOT</version>
+  <version>2.7.0-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
@@ -25,32 +25,16 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   </scm>
   <properties>
     <version.jackson.annotations>2.6.0</version.jackson.annotations>
-    <version.jackson.core>2.6.2</version.jackson.core>
+    <version.jackson.core>2.7.0-SNAPSHOT</version.jackson.core>
+<!--
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
+-->
+    <version.jackson.jaxb>2.6.2</version.jackson.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
-    <osgi.export>com.fasterxml.jackson.dataformat.xml
-,com.fasterxml.jackson.dataformat.xml.annotation
-,com.fasterxml.jackson.dataformat.xml.deser
-,com.fasterxml.jackson.dataformat.xml.jaxb
-,com.fasterxml.jackson.dataformat.xml.ser
-,com.fasterxml.jackson.dataformat.xml.util</osgi.export>
-    <osgi.import>javax.xml.bind.annotation, javax.xml.namespace, javax.xml.stream, javax.xml.transform
-,org.codehaus.stax2, org.codehaus.stax2.io, org.codehaus.stax2.ri
-,com.fasterxml.jackson.annotation
-,com.fasterxml.jackson.core
-,com.fasterxml.jackson.core.base, com.fasterxml.jackson.core.format, com.fasterxml.jackson.core.json
-,com.fasterxml.jackson.core.io, com.fasterxml.jackson.core.type, com.fasterxml.jackson.core.util
-,com.fasterxml.jackson.databind
-,com.fasterxml.jackson.databind.cfg
-,com.fasterxml.jackson.databind.deser
-,com.fasterxml.jackson.databind.deser.std
-,com.fasterxml.jackson.databind.introspect, com.fasterxml.jackson.databind.module
-,com.fasterxml.jackson.databind.jsontype, com.fasterxml.jackson.databind.jsontype.impl
-,com.fasterxml.jackson.databind.ser, com.fasterxml.jackson.databind.ser.impl, com.fasterxml.jackson.databind.ser.std
-,com.fasterxml.jackson.databind.type, com.fasterxml.jackson.databind.util
-,com.fasterxml.jackson.module.jaxb</osgi.import>
+    <!-- Default export should work fine... -->
+    <!-- And presumably import too? -->
   </properties>
 
   <dependencies>
