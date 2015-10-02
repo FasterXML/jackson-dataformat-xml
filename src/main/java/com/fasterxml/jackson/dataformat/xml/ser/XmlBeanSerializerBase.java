@@ -218,7 +218,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) { // Bit tricky, can't do more calls as stack is full; so:
-            JsonMappingException mapE = new JsonMappingException("Infinite recursion (StackOverflowError)");
+            JsonMappingException mapE = JsonMappingException.from(gen0,
+                    "Infinite recursion (StackOverflowError)");
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             mapE.prependPath(new JsonMappingException.Reference(bean, name));
             throw mapE;
@@ -294,7 +295,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) {
-            JsonMappingException mapE = new JsonMappingException("Infinite recursion (StackOverflowError)", e);
+            JsonMappingException mapE = JsonMappingException.from(gen0, "Infinite recursion (StackOverflowError)", e);
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             mapE.prependPath(new JsonMappingException.Reference(bean, name));
             throw mapE;

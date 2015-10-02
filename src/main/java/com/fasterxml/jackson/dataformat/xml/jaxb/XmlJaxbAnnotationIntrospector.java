@@ -14,7 +14,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
  * implementation that
  * builds on {@link JaxbAnnotationIntrospector}.
  *<p>
- * NOTE: since version 2.4, it should NOT be necessary to use this class;
+ * NOTE: since version 2.4, it may NOT be necessary to use this class;
  * instead, plain {@link JaxbAnnotationIntrospector} should fully work.
  * With previous versions some aspects were not fully working and this
  * class was necessary.
@@ -23,7 +23,7 @@ public class XmlJaxbAnnotationIntrospector
     extends JaxbAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
-    private static final long serialVersionUID = 6477843393758275877L;
+    private static final long serialVersionUID = 1L; // since 2.7
 
     @Deprecated
     public XmlJaxbAnnotationIntrospector() {
@@ -40,19 +40,16 @@ public class XmlJaxbAnnotationIntrospector
     /**********************************************************************
      */
     
-    // Since 2.4.0, JaxbAnnotationIntrospector has implementation, so delegate
     @Override
     public String findNamespace(Annotated ann) {
         return super.findNamespace(ann);
     }
 
-    // Since 2.4.0, JaxbAnnotationIntrospector has implementation, so delegate
     @Override
     public Boolean isOutputAsAttribute(Annotated ann) {
         return super.isOutputAsAttribute(ann);
     }
     
-    // Since 2.4.0, JaxbAnnotationIntrospector has implementation, so delegate
     @Override
     public Boolean isOutputAsText(Annotated ann) {
         return super.isOutputAsText(ann);
@@ -62,6 +59,11 @@ public class XmlJaxbAnnotationIntrospector
     public Boolean isOutputAsCData(Annotated ann) {
         //There is no CData annotation in JAXB
         return null;
+    }
+
+    @Override
+    public void setDefaultUseWrapper(boolean b) {
+        // nothing to do with JAXB
     }
 
     /*

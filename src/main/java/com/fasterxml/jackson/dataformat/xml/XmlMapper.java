@@ -82,7 +82,6 @@ public class XmlMapper extends ObjectMapper
         _serializationConfig = _serializationConfig.withDefaultPrettyPrinter(DEFAULT_XML_PRETTY_PRINTER);
     }
 
-    // @since 2.1
     @Override
     public XmlMapper copy()
     {
@@ -112,21 +111,25 @@ public class XmlMapper extends ObjectMapper
     protected void setXMLTextElementName(String name) {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
+    /**
+     * Since 2.7
+     */
+    public XmlMapper setDefaultUseWrapper(boolean state) {
+        // ser and deser configs should usually have the same introspector, so:
+        AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
+        for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
+            if (ai instanceof XmlAnnotationIntrospector) {
+                ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);
+            }
+        }
+        return this;
+    }
 
     /*
     /**********************************************************
     /* Access to configuration settings
     /**********************************************************
      */
-
-    /**
-     * @deprecated Since 2.1, use {@link #getFactory} instead
-     */
-    @Override
-    @Deprecated
-    public XmlFactory getJsonFactory() {
-        return (XmlFactory) _jsonFactory;
-    }
 
     @Override
     public XmlFactory getFactory() {

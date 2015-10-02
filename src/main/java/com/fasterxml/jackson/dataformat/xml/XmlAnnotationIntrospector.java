@@ -42,6 +42,11 @@ public interface XmlAnnotationIntrospector
      */
     public Boolean isOutputAsCData(Annotated ann);
 
+    /**
+     * @since 2.7
+     */
+    public void setDefaultUseWrapper(boolean b);
+    
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -89,7 +94,7 @@ public interface XmlAnnotationIntrospector
         public String findNamespace(Annotated ann)
         {
             String value = (_xmlPrimary == null) ? null : _xmlPrimary.findNamespace(ann);
-            if (value == null && _xmlSecondary != null) {
+            if ((value == null) && (_xmlSecondary != null)) {
                 value = _xmlSecondary.findNamespace(ann);
             }
             return value;
@@ -99,7 +104,7 @@ public interface XmlAnnotationIntrospector
         public Boolean isOutputAsAttribute(Annotated ann)
         {
             Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsAttribute(ann);
-            if (value == null && _xmlSecondary != null) {
+            if ((value == null) && (_xmlSecondary != null)) {
                 value = _xmlSecondary.isOutputAsAttribute(ann);
             }
             return value;
@@ -109,7 +114,7 @@ public interface XmlAnnotationIntrospector
         public Boolean isOutputAsText(Annotated ann)
         {
             Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsText(ann);
-            if (value == null && _xmlSecondary != null) {
+            if ((value == null) && (_xmlSecondary != null)) {
                 value = _xmlSecondary.isOutputAsText(ann);
             }
             return value;
@@ -118,10 +123,20 @@ public interface XmlAnnotationIntrospector
         @Override
         public Boolean isOutputAsCData(Annotated ann) {
             Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsCData(ann);
-            if (value == null && _xmlSecondary != null) {
+            if ((value == null) && (_xmlSecondary != null)) {
                 value = _xmlSecondary.isOutputAsCData(ann);
             }
             return value;
+        }
+
+        @Override
+        public void setDefaultUseWrapper(boolean b) {
+            if (_xmlPrimary != null) {
+                _xmlPrimary.setDefaultUseWrapper(b);
+            }
+            if (_xmlSecondary != null) {
+                _xmlSecondary.setDefaultUseWrapper(b);
+            }
         }
     }
 
@@ -165,6 +180,11 @@ public interface XmlAnnotationIntrospector
         public Boolean isOutputAsCData(Annotated ann) {
             //There is no CData annotation in JAXB
             return null;
+        }
+
+        @Override
+        public void setDefaultUseWrapper(boolean b) {
+            // not used with JAXB
         }
     }
 }

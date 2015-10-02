@@ -63,16 +63,16 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     
     @SuppressWarnings("resource")
     @Override
-    public void serializeValue(JsonGenerator jgen, Object value)
+    public void serializeValue(JsonGenerator gen, Object value)
         throws IOException
     {
         if (value == null) {
-            _serializeXmlNull(jgen);
+            _serializeXmlNull(gen);
             return;
         }
         final Class<?> cls = value.getClass();
         final boolean asArray;
-        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
+        final ToXmlGenerator xgen = _asXmlGenerator(gen);
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
@@ -90,7 +90,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         // From super-class implementation
         final JsonSerializer<Object> ser = findTypedValueSerializer(cls, true, null);
         try {
-            ser.serialize(value, jgen, this);
+            ser.serialize(value, gen, this);
         } catch (IOException ioe) { // As per [JACKSON-99], pass IOException and subtypes as-is
             throw ioe;
         } catch (Exception e) { // but wrap RuntimeExceptions, to get path information
@@ -98,26 +98,26 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             if (msg == null) {
                 msg = "[no message for "+e.getClass().getName()+"]";
             }
-            throw new JsonMappingException(msg, e);
+            throw JsonMappingException.from(gen, msg, e);
         }
         // end of super-class implementation
 
         if (asArray) {
-            jgen.writeEndObject();
+            gen.writeEndObject();
         }
     }
 
     @SuppressWarnings("resource")
     @Override
-    public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType)
+    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType)
         throws IOException
     {
         if (value == null) {
-            _serializeXmlNull(jgen);
+            _serializeXmlNull(gen);
             return;
         }
         final boolean asArray;
-        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
+        final ToXmlGenerator xgen = _asXmlGenerator(gen);
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
@@ -135,7 +135,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         final JsonSerializer<Object> ser = findTypedValueSerializer(rootType, true, null);
         // From super-class implementation
         try {
-            ser.serialize(value, jgen, this);
+            ser.serialize(value, gen, this);
         } catch (IOException ioe) { // no wrapping for IO (and derived)
             throw ioe;
         } catch (Exception e) { // but others do need to be, to get path etc
@@ -143,27 +143,27 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             if (msg == null) {
                 msg = "[no message for "+e.getClass().getName()+"]";
             }
-            throw new JsonMappingException(msg, e);
+            throw JsonMappingException.from(gen, msg, e);
         }
         // end of super-class implementation
 
         if (asArray) {
-            jgen.writeEndObject();
+            gen.writeEndObject();
         }
     }
     
     // @since 2.1
     @SuppressWarnings("resource")
     @Override
-    public void serializeValue(JsonGenerator jgen, Object value, JavaType rootType,
+    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType,
             JsonSerializer<Object> ser) throws IOException
     {
         if (value == null) {
-            _serializeXmlNull(jgen);
+            _serializeXmlNull(gen);
             return;
         }
         final boolean asArray;
-        final ToXmlGenerator xgen = _asXmlGenerator(jgen);
+        final ToXmlGenerator xgen = _asXmlGenerator(gen);
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
@@ -182,7 +182,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
         // From super-class implementation
         try {
-            ser.serialize(value, jgen, this);
+            ser.serialize(value, gen, this);
         } catch (IOException ioe) { // no wrapping for IO (and derived)
             throw ioe;
         } catch (Exception e) { // but others do need to be, to get path etc
@@ -190,11 +190,11 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             if (msg == null) {
                 msg = "[no message for "+e.getClass().getName()+"]";
             }
-            throw new JsonMappingException(msg, e);
+            throw JsonMappingException.from(gen, msg, e);
         }
         // end of super-class implementation
         if (asArray) {
-            jgen.writeEndObject();
+            gen.writeEndObject();
         }
     }
 
@@ -252,18 +252,18 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         return new QName(ns, name.getSimpleName());
     }
 
-    protected ToXmlGenerator _asXmlGenerator(JsonGenerator jgen)
+    protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
         throws JsonMappingException
     {
         // [Issue#71]: When converting, we actually get TokenBuffer, which is fine
-        if (!(jgen instanceof ToXmlGenerator)) {
+        if (!(gen instanceof ToXmlGenerator)) {
             // but verify
-            if (!(jgen instanceof TokenBuffer)) {
-                throw new JsonMappingException("XmlMapper does not with generators of type other than ToXmlGenerator; got: "
-                            +jgen.getClass().getName());
-                }
-                return null;
+            if (!(gen instanceof TokenBuffer)) {
+                throw JsonMappingException.from(gen,
+                        "XmlMapper does not with generators of type other than ToXmlGenerator; got: "+gen.getClass().getName());
+            }
+            return null;
         }
-        return (ToXmlGenerator) jgen;
+        return (ToXmlGenerator) gen;
     }    
 }

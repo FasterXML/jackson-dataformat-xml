@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
-
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -25,7 +24,8 @@ public class JacksonXmlAnnotationIntrospector
      */
     public final static boolean DEFAULT_USE_WRAPPER = true;
 
-    protected final boolean _cfgDefaultUseWrapper;
+    // non-final from 2.7 on, to allow mapper to change
+    protected boolean _cfgDefaultUseWrapper;
     
     public JacksonXmlAnnotationIntrospector() {
         this(DEFAULT_USE_WRAPPER);
@@ -132,7 +132,12 @@ public class JacksonXmlAnnotationIntrospector
         }
         return null;
     }
-    
+
+    @Override
+    public void setDefaultUseWrapper(boolean b) {
+        _cfgDefaultUseWrapper = b;
+    }
+
     /*
     /**********************************************************************
     /* Overrides for name, property detection

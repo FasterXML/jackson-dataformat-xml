@@ -40,9 +40,8 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
     public void setUp() throws Exception
     {
         super.setUp();
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        _xmlMapper = new XmlMapper(module);
+        _xmlMapper = new XmlMapper()
+            .setDefaultUseWrapper(false);
         _xmlMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.PascalCaseStrategy());
         _xmlMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
     }
