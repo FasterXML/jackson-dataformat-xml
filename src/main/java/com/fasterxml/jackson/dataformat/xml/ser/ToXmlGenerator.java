@@ -30,6 +30,8 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 public final class ToXmlGenerator
     extends GeneratorBase
 {
+    private final static String NEWLINE = System.getProperty("line.separator", "\n");
+
     /**
      * If we support optional definition of element names, this is the element
      * name to use...
@@ -195,8 +197,14 @@ public final class ToXmlGenerator
         try {
             if ((_xmlFeatures & Feature.WRITE_XML_1_1.getMask()) != 0) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.1");
+                if (_xmlPrettyPrinter != null) {
+                  _xmlWriter.writeRaw(NEWLINE);
+                }
             } else if ((_xmlFeatures & Feature.WRITE_XML_DECLARATION.getMask()) != 0) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.0");
+                if (_xmlPrettyPrinter != null) {
+                  _xmlWriter.writeRaw(NEWLINE);
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
