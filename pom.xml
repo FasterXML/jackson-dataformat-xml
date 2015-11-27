@@ -4,11 +4,11 @@
   <parent>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-parent</artifactId>
-    <version>2.6.2</version>
+    <version>2.7.0-rc1</version>
   </parent>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.7.0-SNAPSHOT</version>
+  <version>2.7.0-rc1-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
@@ -24,12 +24,12 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <version.jackson.annotations>2.6.0</version.jackson.annotations>
-    <version.jackson.core>2.7.0-SNAPSHOT</version.jackson.core>
+    <version.jackson.annotations>2.7.0-rc1</version.jackson.annotations>
+    <version.jackson.core>2.7.0-rc1</version.jackson.core>
 <!--
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
 -->
-    <version.jackson.jaxb>2.6.2</version.jackson.jaxb>
+    <version.jackson.jaxb>2.7.0-rc1-SNAPSHOT</version.jackson.jaxb>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
