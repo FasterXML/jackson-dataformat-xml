@@ -8,6 +8,12 @@ Project: jackson-dataformat-xml
 
 #156: Add `XmlMapper.setDefaultUseWrapper()` for convenience.
 
+2.6.4 (not yet released)
+
+#172: XML INDENT_OUTPUT property fails to add newline/indent initial elements
+ (reported by rpatrick00@github)
+
+2.6.3 (12-Oct-2015)
 2.6.2 (15-Sep-2015)
 2.6.1 (09-Aug-2015)
 2.6.0 (20-Jul-2015)

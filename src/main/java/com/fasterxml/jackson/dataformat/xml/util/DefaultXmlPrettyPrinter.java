@@ -238,9 +238,8 @@ public class DefaultXmlPrettyPrinter
         if (!_objectIndenter.isInline()) {
             if (_justHadStartElement) {
                 _justHadStartElement = false;
-            } else {
-                _objectIndenter.writeIndentation(sw, _nesting);
             }
+            _objectIndenter.writeIndentation(sw, _nesting);
             ++_nesting;
         }
         sw.writeStartElement(nsURI, localName);
