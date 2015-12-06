@@ -255,6 +255,10 @@ public abstract class XmlTestBase
     /**********************************************************
      */
 
+    protected static String aposToQuotes(String json) {
+        return json.replace("'", "\"");
+    }
+
     protected byte[] utf8Bytes(String str) {
         try {
             return str.getBytes("UTF-8");

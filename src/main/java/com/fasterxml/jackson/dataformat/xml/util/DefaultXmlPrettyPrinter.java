@@ -37,12 +37,10 @@ public class DefaultXmlPrettyPrinter
      */
     public interface Indenter
     {
-        public void writeIndentation(JsonGenerator jg, int level)
-            throws IOException, JsonGenerationException;
+        public void writeIndentation(JsonGenerator g, int level) throws IOException;
 
-        public void writeIndentation(XMLStreamWriter2 sw, int level)
-            throws XMLStreamException;
-        
+        public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException;
+
         /**
          * @return True if indenter is considered inline (does not add linefeeds),
          *   false otherwise
@@ -137,9 +135,9 @@ public class DefaultXmlPrettyPrinter
      */
 
     @Override
-    public void writeRootValueSeparator(JsonGenerator jgen) throws IOException, JsonGenerationException {
+    public void writeRootValueSeparator(JsonGenerator gen) throws IOException {
         // Not sure if this should ever be applicable; but if multiple roots were allowed, we'd use linefeed
-        jgen.writeRaw('\n');
+        gen.writeRaw('\n');
     }
     
     /*
@@ -149,26 +147,22 @@ public class DefaultXmlPrettyPrinter
      */
     
     @Override
-    public void beforeArrayValues(JsonGenerator jgen) throws IOException, JsonGenerationException {
+    public void beforeArrayValues(JsonGenerator gen) throws IOException {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeStartArray(JsonGenerator jgen)
-    		throws IOException, JsonGenerationException
-    {
+    public void writeStartArray(JsonGenerator gen) throws IOException {
         // anything to do here?
     }
 
     @Override
-    public void writeArrayValueSeparator(JsonGenerator jgen)  throws IOException, JsonGenerationException {
+    public void writeArrayValueSeparator(JsonGenerator gen)  throws IOException {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeEndArray(JsonGenerator jgen, int nrOfValues)
-    		throws IOException, JsonGenerationException
-    {
+    public void writeEndArray(JsonGenerator gen, int nrOfValues) throws IOException {
         // anything to do here?
     }
     
@@ -179,39 +173,37 @@ public class DefaultXmlPrettyPrinter
      */
 
     @Override
-    public void beforeObjectEntries(JsonGenerator jgen)
+    public void beforeObjectEntries(JsonGenerator gen)
         throws IOException, JsonGenerationException
     {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeStartObject(JsonGenerator jgen) throws IOException, JsonGenerationException
+    public void writeStartObject(JsonGenerator gen) throws IOException
     {
         if (!_objectIndenter.isInline()) {
             if (_nesting > 0) {
-                _objectIndenter.writeIndentation(jgen, _nesting);
+                _objectIndenter.writeIndentation(gen, _nesting);
             }
             ++_nesting;
         }
         _justHadStartElement = true;
-        ((ToXmlGenerator) jgen)._handleStartObject();
+        ((ToXmlGenerator) gen)._handleStartObject();
     }
 
     @Override
-    public void writeObjectEntrySeparator(JsonGenerator jgen)
-            throws IOException, JsonGenerationException
-    {
+    public void writeObjectEntrySeparator(JsonGenerator gen) throws IOException {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeObjectFieldValueSeparator(JsonGenerator jgen) throws IOException, JsonGenerationException {
+    public void writeObjectFieldValueSeparator(JsonGenerator gen) throws IOException {
         // never called for ToXmlGenerator
     }
     
     @Override
-    public void writeEndObject(JsonGenerator jgen, int nrOfEntries) throws IOException, JsonGenerationException
+    public void writeEndObject(JsonGenerator gen, int nrOfEntries) throws IOException
     {
         if (!_objectIndenter.isInline()) {
             --_nesting;
@@ -220,9 +212,9 @@ public class DefaultXmlPrettyPrinter
         if (_justHadStartElement) {
             _justHadStartElement = false;
         } else {
-            _objectIndenter.writeIndentation(jgen, _nesting);
+            _objectIndenter.writeIndentation(gen, _nesting);
         }
-        ((ToXmlGenerator) jgen)._handleEndObject();
+        ((ToXmlGenerator) gen)._handleEndObject();
     }
     
     /*
@@ -422,7 +414,14 @@ public class DefaultXmlPrettyPrinter
         sw.writeEmptyElement(nsURI, localName);
         _justHadStartElement = false;
     }
-    
+
+    @Override // since 2.7
+    public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException
+    {
+        // 06-Dec-2015, tatu: Alternatively could try calling `writeSpace()`...
+        sw.writeRaw(Lf2SpacesIndenter.SYSTEM_LINE_SEPARATOR);
+    }
+
     /*
     /**********************************************************
     /* Helper classes
@@ -465,10 +464,9 @@ public class DefaultXmlPrettyPrinter
         }
         
         @Override
-        public void writeIndentation(JsonGenerator jg, int level)
-            throws IOException, JsonGenerationException
+        public void writeIndentation(JsonGenerator g, int level) throws IOException
         {
-            jg.writeRaw(' ');
+            g.writeRaw(' ');
         }
 
         @Override
@@ -505,8 +503,7 @@ public class DefaultXmlPrettyPrinter
         public boolean isInline() { return false; }
 
         @Override
-        public void writeIndentation(XMLStreamWriter2 sw, int level)
-            throws XMLStreamException
+        public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
             sw.writeRaw(SYSTEM_LINE_SEPARATOR);
             level += level; // 2 spaces per level
@@ -518,8 +515,7 @@ public class DefaultXmlPrettyPrinter
         }
         
         @Override
-        public void writeIndentation(JsonGenerator jg, int level)
-            throws IOException, JsonGenerationException
+        public void writeIndentation(JsonGenerator jg, int level) throws IOException
         {
             jg.writeRaw(SYSTEM_LINE_SEPARATOR);
             level += level; // 2 spaces per level

@@ -101,9 +101,9 @@ public class TextValueTest extends XmlTestBase
     {
         String xml = MAPPER.writeValueAsString(new Simple());
         assertEquals("<Simple a=\"13\">something</Simple>", xml);
-        // [Issue#56]: should work with indentation as well
+        // [dataformat-xml#56]: should work with indentation as well
         xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(new Simple());
-        assertEquals("<Simple a=\"13\">something</Simple>", xml);
+        assertEquals("<Simple a=\"13\">something</Simple>\n", xml);
     }
 
     public void testDeserializeAsText() throws IOException

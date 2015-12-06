@@ -110,7 +110,7 @@ public final class ToXmlGenerator
      * {@link ToXmlGenerator.Feature}s
      * are enabled.
      */
-    protected int _xmlFeatures;
+    protected int _formatFeatures;
 
     /**
      * We may need to use XML-specific indentation as well
@@ -169,11 +169,11 @@ public final class ToXmlGenerator
     /**********************************************************
      */
 
-    public ToXmlGenerator(IOContext ctxt, int genericGeneratorFeatures, int xmlFeatures,
+    public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
             ObjectCodec codec, XMLStreamWriter sw)
     {
-        super(genericGeneratorFeatures, codec);
-        _xmlFeatures = xmlFeatures;
+        super(stdFeatures, codec);
+        _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
@@ -193,10 +193,19 @@ public final class ToXmlGenerator
         }
         _initialized = true;
         try {
-            if ((_xmlFeatures & Feature.WRITE_XML_1_1.getMask()) != 0) {
+            if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures)) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.1");
-            } else if ((_xmlFeatures & Feature.WRITE_XML_DECLARATION.getMask()) != 0) {
+            } else if (Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.0");
+            } else {
+                return;
+            }
+            // as per [dataformat-xml#172], try adding indentation
+            if (_xmlPrettyPrinter != null) {
+                // ... but only if it is likely to succeed:
+                if (!_stax2Emulation) {
+                    _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
+                }
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
@@ -214,7 +223,7 @@ public final class ToXmlGenerator
      * default XML indenter instead.
      *<p>
      * !!! TODO: same as implementation in core 2.6; override may be
-     * removed from 2.7
+     * removed from 2.8
      */
     @Override
     public final JsonGenerator useDefaultPrettyPrinter()
@@ -255,6 +264,23 @@ public final class ToXmlGenerator
         return -1;
     }
 
+    @Override
+    public int getFormatFeatures() {
+        return _formatFeatures;
+    }
+
+    @Override // since 2.7
+    public JsonGenerator overrideFormatFeatures(int values, int mask)
+    {
+        int oldF = _formatFeatures;
+        int newF = (_formatFeatures & ~mask) | (values & mask);
+
+        if (oldF != newF) {
+            _formatFeatures = newF;
+        }
+        return this;
+    }
+
     /*
     /**********************************************************
     /* Extended API, configuration
@@ -262,17 +288,17 @@ public final class ToXmlGenerator
      */
 
     public ToXmlGenerator enable(Feature f) {
-        _xmlFeatures |= f.getMask();
+        _formatFeatures |= f.getMask();
         return this;
     }
 
     public ToXmlGenerator disable(Feature f) {
-        _xmlFeatures &= ~f.getMask();
+        _formatFeatures &= ~f.getMask();
         return this;
     }
 
     public final boolean isEnabled(Feature f) {
-        return (_xmlFeatures & f.getMask()) != 0;
+        return (_formatFeatures & f.getMask()) != 0;
     }
 
     public ToXmlGenerator configure(Feature f, boolean state) {
@@ -412,7 +438,7 @@ public final class ToXmlGenerator
      */
 
     @Override
-    public final void writeFieldName(String name)  throws IOException
+    public final void writeFieldName(String name) throws IOException
     {
         if (_writeContext.writeFieldName(name) == JsonWriteContext.STATUS_EXPECT_VALUE) {
             _reportError("Can not write a field name, expecting a value");
@@ -516,6 +542,13 @@ public final class ToXmlGenerator
             // note: since attributes don't nest, can only have one attribute active, so:
             _nextIsAttribute = false;
             _xmlWriter.writeEndElement();
+            // [databind-xml#172]: possibly also need indentation
+            if (_elementNameStack.isEmpty() && (_xmlPrettyPrinter != null)) {
+                // ... but only if it is likely to succeed:
+                if (!_stax2Emulation) {
+                    _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
+                }
+            }
         } catch (XMLStreamException e) {
             StaxUtil.throwXmlAsIOException(e);
         }
@@ -633,7 +666,7 @@ public final class ToXmlGenerator
     @Override
     public void writeRaw(String text) throws IOException
     {
-        // [Issue#39]
+        // [dataformat-xml#39]
         if (_stax2Emulation) {
             _reportUnimplementedStax2("writeRaw");
         }
@@ -647,7 +680,7 @@ public final class ToXmlGenerator
     @Override
     public void writeRaw(String text, int offset, int len) throws IOException
     {
-        // [Issue#39]
+        // [dataformat-xml#39]
         if (_stax2Emulation) {
             _reportUnimplementedStax2("writeRaw");
         }
@@ -661,7 +694,7 @@ public final class ToXmlGenerator
     @Override
     public void writeRaw(char[] text, int offset, int len) throws IOException
     {
-        // [Issue#39]
+        // [dataformat-xml#39]
         if (_stax2Emulation) {
             _reportUnimplementedStax2("writeRaw");
         }

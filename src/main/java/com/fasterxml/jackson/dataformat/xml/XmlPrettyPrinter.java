@@ -34,6 +34,15 @@ public interface XmlPrettyPrinter extends PrettyPrinter
      */
     public void writeEndElement(XMLStreamWriter2 sw, int nrOfEntries) throws XMLStreamException;
 
+    /**
+     * Method for trying to write a linefeed to separate entities outside of the
+     * root element (that is, in prolog or epilog), most often called to separate
+     * XML declaration from the root element.
+     *
+     * @since 2.7
+     */
+    public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException;
+    
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, String text, boolean isCData)
         throws XMLStreamException;

@@ -93,7 +93,7 @@ public class TestIndentation extends XmlTestBase
     /**********************************************************
      */
 
-    // Verify [JACKSON-444], Issue #1
+    // Verify [dataformat-xml#1]
     public void testSimpleStringBean() throws Exception
     {
         StringWrapperBean input = new StringWrapperBean("abc");
@@ -153,31 +153,37 @@ public class TestIndentation extends XmlTestBase
     public void testWithAttr() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrBean());
-        assertEquals("<AttrBean count=\"3\"/>", xml);
+        assertEquals("<AttrBean count=\"3\"/>\n", xml);
         String xml2 = _xmlMapper.writeValueAsString(new AttrBean2());
-        assertEquals("<AttrBean2 count=\"3\">\n  <value>14</value>\n</AttrBean2>", xml2);
+        assertEquals("<AttrBean2 count=\"3\">\n  <value>14</value>\n</AttrBean2>\n", xml2);
     }
 
     public void testEmptyElem() throws Exception
     {
         PojoFor123 simple = new PojoFor123("foobar");
         String xml = _xmlMapper.writeValueAsString(simple);
-        assertEquals("<PojoFor123 name=\"foobar\"/>", xml);
+        assertEquals("<PojoFor123 name=\"foobar\"/>\n", xml);
     }
 
     public void testMultiLevel172() throws Exception
     {
         Company root = new Company();
         root.employee.add(new Employee("abc"));
-        String xml = _xmlMapper.writeValueAsString(root);
-        assertEquals("<Company>\n"
+        String xml = _xmlMapper.writer()
+                .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = aposToQuotes(xml);
+        // with indentation, should get linefeeds in prolog/epilog too
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                +"<Company>\n"
                 +"  <e>\n"
                 +"    <employee>\n"
                 +"      <id>abc</id>\n"
                 +"      <type>FULL_TIME</type>\n"
                 +"    </employee>\n"
                 +"  </e>\n"
-                +"</Company>",
+                +"</Company>\n",
                 xml);
     }
 }
