@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ser.impl.PropertySerializerMap;
 public class XmlBeanPropertyWriter
     extends BeanPropertyWriter
 {
+    private static final long serialVersionUID = 1L;
+
     /*
     /**********************************************************
     /* Config settings
@@ -29,7 +31,7 @@ public class XmlBeanPropertyWriter
      * Element name used for items in the collection
      */
     protected final QName _wrappedQName;
-    
+
     /*
     /**********************************************************
     /* Life-cycle: construction, configuration
