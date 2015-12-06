@@ -6,16 +6,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class TestIndentation extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     static class StringWrapperBean {
         public StringWrapper string;
         
@@ -30,7 +25,7 @@ public class TestIndentation extends XmlTestBase
         public IntWrapperBean(int i) { wrapped = new IntWrapper(i); }
     }
 
-    // [Issue#45]
+    // [dataformat-xml#45]
     static class AttrBean {
         @JacksonXmlProperty(isAttribute=true)
         public int count = 3;
@@ -54,6 +49,26 @@ public class TestIndentation extends XmlTestBase
         public PojoFor123(String name) {
             this.name = name;       
         }
+    }
+
+    // for [dataformat-xml#172]
+    static class Company {
+        @JacksonXmlElementWrapper(localName="e")
+        public List<Employee> employee = new ArrayList<Employee>();
+    }
+
+    static class Employee {
+        public String id;
+        public EmployeeType type;
+
+        public Employee(String id) {
+            this.id = id;
+            type = EmployeeType.FULL_TIME;
+        }
+    }
+
+    static enum EmployeeType {
+        FULL_TIME;
     }
 
     /*
@@ -84,8 +99,6 @@ public class TestIndentation extends XmlTestBase
         StringWrapperBean input = new StringWrapperBean("abc");
         String xml = _xmlMapper.writeValueAsString(input); 
 
-System.err.println("XML == "+xml);        
-        
         // should have at least one linefeed, space...
         if (xml.indexOf('\n') < 0 || xml.indexOf(' ') < 0) {
             fail("No indentation: XML == "+xml);
@@ -136,7 +149,7 @@ System.err.println("XML == "+xml);
         assertEquals("b", map.get("a"));
     }
 
-    // [Issue#45]: Use of attributes should not force linefeed for empty elements
+    // [dataformat-xml#45]: Use of attributes should not force linefeed for empty elements
     public void testWithAttr() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrBean());
@@ -152,4 +165,19 @@ System.err.println("XML == "+xml);
         assertEquals("<PojoFor123 name=\"foobar\"/>", xml);
     }
 
+    public void testMultiLevel172() throws Exception
+    {
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+        String xml = _xmlMapper.writeValueAsString(root);
+        assertEquals("<Company>\n"
+                +"  <e>\n"
+                +"    <employee>\n"
+                +"      <id>abc</id>\n"
+                +"      <type>FULL_TIME</type>\n"
+                +"    </employee>\n"
+                +"  </e>\n"
+                +"</Company>",
+                xml);
+    }
 }
