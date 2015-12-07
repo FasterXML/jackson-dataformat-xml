@@ -23,7 +23,7 @@ public class TextValueTest extends XmlTestBase
         public String text = "something";
     }
 	
-    // [Issue#24]
+    // [dataformat-xml#24]
 
     static class Main {
         @JsonProperty("com.test.stack") public Stack stack;
@@ -56,7 +56,7 @@ public class TextValueTest extends XmlTestBase
         public String value;
     }
 
-    // [Issue#66]
+    // [dataformat-xml#66]
     static class Issue66Bean
     {
         @JacksonXmlProperty(isAttribute = true)
@@ -66,7 +66,7 @@ public class TextValueTest extends XmlTestBase
         protected String textValue;
     }
 
-    // [Issue#72]
+    // [dataformat-xml#72]
     
     static class TextOnlyBean
     {
@@ -130,7 +130,7 @@ public class TextValueTest extends XmlTestBase
         assertEquals(TEXT, main.stack.slot.value);
     }
 
-    // for [Issue#36]
+    // for [dataformat-xml#36]
     public void testAlternateTextElementName() throws IOException
     {
         final String XML = "<JAXBStyle>foo</JAXBStyle>";
@@ -148,7 +148,7 @@ public class TextValueTest extends XmlTestBase
         assertEquals("foo", pojo.value);
     }
 
-    // [Issue#66], implicit property from "XmlText"
+    // [dataformat-xml#66], implicit property from "XmlText"
     public void testIssue66() throws Exception
     {
         JacksonXmlModule module = new JacksonXmlModule();
@@ -166,7 +166,7 @@ public class TextValueTest extends XmlTestBase
         assertEquals(XML, json);
     }
 
-    // [Issue#72]
+    // [dataformat-xml#72]
     public void testTextOnlyPojo() throws Exception
     {
         XmlMapper mapper = xmlMapper(true);

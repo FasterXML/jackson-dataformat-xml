@@ -20,3 +20,8 @@ Dan Jasek: (oillio@github)
 
 * Contributed #126: Allow specifying properties that should be written as CData
  (2.5.0)
+
+Leo Wang (wanglingsong@github)
+
+* Reported #171: `@JacksonXmlRootElement` malfunction in multi-thread environment
+ (2.6.4)

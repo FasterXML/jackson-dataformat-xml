@@ -51,7 +51,17 @@ public class XmlRootNameLookup
         if (name != null) {
             return name;
         }
-
+        name = _findRootName(rootType, config);
+        synchronized (_rootNames) {
+            _rootNames.put(key, name);
+        }
+        return name;
+    }
+    
+    // NOTE: needed to be synchronized in 2.6.4, but 2.7.0 adds a proper fix
+    // for annotation introspection hence not needed any more
+    protected QName _findRootName(Class<?> rootType, MapperConfig<?> config)
+    {
         BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
         AnnotationIntrospector intr = config.getAnnotationIntrospector();
         AnnotatedClass ac = beanDesc.getClassInfo();
@@ -68,21 +78,16 @@ public class XmlRootNameLookup
             // Should we strip out enclosing class tho? For now, nope:
             // one caveat: array simple names end with "[]"; also, "$" needs replacing
             localName = StaxUtil.sanitizeXmlTypeName(rootType.getSimpleName());
-            name = new QName("", localName);
-        } else {
-            // Otherwise let's see if there's namespace, too (if we are missing it)
-            if (ns == null || ns.length() == 0) {
-                ns = findNamespace(intr, ac);
-            }
+            return new QName("", localName);
+        }
+        // Otherwise let's see if there's namespace, too (if we are missing it)
+        if (ns == null || ns.length() == 0) {
+            ns = findNamespace(intr, ac);
         }
         if (ns == null) { // some QName impls barf on nulls...
             ns = "";
         }
-        name = new QName(ns, localName);
-        synchronized (_rootNames) {
-            _rootNames.put(key, name);
-        }
-        return name;
+        return new QName(ns, localName);
     }
 
     private String findNamespace(AnnotationIntrospector ai, AnnotatedClass ann)

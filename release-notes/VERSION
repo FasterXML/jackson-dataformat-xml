@@ -10,6 +10,8 @@ Project: jackson-dataformat-xml
 
 2.6.4 (not yet released)
 
+#171: `@JacksonXmlRootElement` malfunction in multi-thread environment
+ (reported by Leo W)
 #172: XML INDENT_OUTPUT property fails to add newline/indent initial elements
  (reported by rpatrick00@github)
 
