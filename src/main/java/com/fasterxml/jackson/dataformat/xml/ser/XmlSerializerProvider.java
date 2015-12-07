@@ -25,17 +25,17 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlSerializerProvider extends DefaultSerializerProvider
 {
-    // As of 2.5
-    private static final long serialVersionUID = -4138605166320336475L;
+    // As of 2.7
+    private static final long serialVersionUID = 1L;
 
     /**
      * If all we get to serialize is a null, there's no way to figure out
      * expected root name; so let's just default to something like "&lt;null>"...
      */
     protected final static QName ROOT_NAME_FOR_NULL = new QName("null");
-    
+
     protected final XmlRootNameLookup _rootNameLookup;
-    
+
     public XmlSerializerProvider(XmlRootNameLookup rootNames)
     {
         super();
@@ -48,7 +48,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         super(src, config, f);
         _rootNameLookup  = src._rootNameLookup;
     }
-    
+
     /*
     /**********************************************************************
     /* Overridden methods
@@ -60,11 +60,10 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             SerializerFactory jsf) {
         return new XmlSerializerProvider(this, config, jsf);
     }
-    
+
     @SuppressWarnings("resource")
     @Override
-    public void serializeValue(JsonGenerator gen, Object value)
-        throws IOException
+    public void serializeValue(JsonGenerator gen, Object value) throws IOException
     {
         if (value == null) {
             _serializeXmlNull(gen);
