@@ -27,7 +27,7 @@ public class FromXmlParser
      * String ("").
      */
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
-    
+
     /**
      * Enumeration that defines all togglable features for XML parsers.
      * None defined so far (2.6), so just a placeholder.
@@ -319,8 +319,7 @@ public class FromXmlParser
      * the current event.
      */
     @Override
-    public String getCurrentName()
-        throws IOException, JsonParseException
+    public String getCurrentName() throws IOException
     {
         // [JACKSON-395]: start markers require information from parent
         String name;
@@ -705,7 +704,7 @@ public class FromXmlParser
      */
 
     @Override
-    public String getText() throws IOException, JsonParseException
+    public String getText() throws IOException
     {
         if (_currToken == null) {
             return null;
@@ -722,12 +721,12 @@ public class FromXmlParser
 
     // @since 2.1
     @Override
-    public final String getValueAsString() throws IOException, JsonParseException {
+    public final String getValueAsString() throws IOException {
         return getValueAsString(null);
     }
 
     @Override
-    public String getValueAsString(String defValue) throws IOException, JsonParseException
+    public String getValueAsString(String defValue) throws IOException
     {
         JsonToken t = _currToken;
         if (t == null) {
@@ -770,19 +769,19 @@ public class FromXmlParser
     }
     
     @Override
-    public char[] getTextCharacters() throws IOException, JsonParseException {
+    public char[] getTextCharacters() throws IOException {
         String text = getText();
         return (text == null)  ? null : text.toCharArray();
     }
 
     @Override
-    public int getTextLength() throws IOException, JsonParseException {
+    public int getTextLength() throws IOException {
         String text = getText();
         return (text == null)  ? 0 : text.length();
     }
 
     @Override
-    public int getTextOffset() throws IOException, JsonParseException {
+    public int getTextOffset() throws IOException {
         return 0;
     }
 
@@ -803,14 +802,13 @@ public class FromXmlParser
      */
 
     @Override
-    public Object getEmbeddedObject() throws IOException, JsonParseException {
+    public Object getEmbeddedObject() throws IOException {
         // no way to embed POJOs for now...
         return null;
     }
 
     @Override
-    public byte[] getBinaryValue(Base64Variant b64variant)
-        throws IOException, JsonParseException
+    public byte[] getBinaryValue(Base64Variant b64variant) throws IOException
     {
         if (_currToken != JsonToken.VALUE_STRING &&
                 (_currToken != JsonToken.VALUE_EMBEDDED_OBJECT || _binaryValue == null)) {

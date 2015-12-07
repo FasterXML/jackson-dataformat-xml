@@ -14,7 +14,7 @@ public class TestStringValues extends XmlTestBase
             return "[a="+a+",b="+b+"]";
         }
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
@@ -38,6 +38,7 @@ public class TestStringValues extends XmlTestBase
         assertNotNull(bean);
         // empty String or null?
         // 22-Sep-2012, tatu: Seems to be 'null', but should probably be fixed to ""
+        // Also see [dataformat-xml#162]
 //        assertEquals("", bean.text);
         assertNull(bean.text);
     }
