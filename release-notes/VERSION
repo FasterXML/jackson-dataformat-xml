@@ -7,6 +7,7 @@ Project: jackson-dataformat-xml
 2.7.0 (not yet released)
 
 #156: Add `XmlMapper.setDefaultUseWrapper()` for convenience.
+#169: Fail to deserialize "empty" polymorphic classes
 
 2.6.4 (not yet released)
 

@@ -203,7 +203,7 @@ public class FromXmlParser
      */
     @Override
     public boolean requiresCustomCodec() {
-        return false;
+        return true;
     }
     
     /*

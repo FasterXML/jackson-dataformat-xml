@@ -26,7 +26,7 @@ public class PolymorphicTypesTest extends XmlTestBase
         public SubTypeWithClassProperty() { }
         public SubTypeWithClassProperty(String s) { name = s; }
     }
-    
+
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
     protected static class BaseTypeWithClassObject { }
 
@@ -67,7 +67,7 @@ public class PolymorphicTypesTest extends XmlTestBase
         super.setUp();
         _xmlMapper = new XmlMapper();
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
@@ -79,9 +79,6 @@ public class PolymorphicTypesTest extends XmlTestBase
         String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassProperty("Foobar"));
 
         // Type info should be written as an attribute, so:
-        /* 13-Jan-2010, tatu: With Jackson 1.7.1, it is possible to override type information
-         *   inclusion, which allows use of attribute over element, so:
-         */
         final String exp = 
             "<SubTypeWithClassProperty _class=\"com.fasterxml.jackson.dataformat.xml.misc.PolymorphicTypesTest..SubTypeWithClassProperty\">"
             //"<SubTypeWithClassProperty><_class>com.fasterxml.jackson.xml.types.TestPolymorphic..SubTypeWithClassProperty</_class>"
@@ -105,7 +102,7 @@ public class PolymorphicTypesTest extends XmlTestBase
     }
 
     /**
-     * Test for issue 81
+     * Test for [dataformat-xml#81]
      */
     public void testAsPropertyWithObjectId() throws Exception
     {
