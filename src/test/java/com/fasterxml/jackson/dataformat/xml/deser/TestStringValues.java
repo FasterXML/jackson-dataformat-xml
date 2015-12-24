@@ -15,6 +15,10 @@ public class TestStringValues extends XmlTestBase
         }
     }
 
+    static class Issue167Bean {
+        public String d;
+    }
+
     /*
     /**********************************************************
     /* Unit tests
@@ -89,5 +93,16 @@ public class TestStringValues extends XmlTestBase
         assertEquals("Pulla", beans[0].text);
         assertEquals("Bulla", beans[1].text);
         assertEquals("Good stuff", beans[2].text);
+    }
+
+    public void testEmptyElementToString() throws Exception
+    {
+        final String XML =
+"<a xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+
+"<d xsi:nil='true'/>\n"+
+"</a>\n";
+        Issue167Bean result = MAPPER.readValue(XML, Issue167Bean.class);
+        assertNotNull(result);
+        assertEquals("", result.d);
     }
 }

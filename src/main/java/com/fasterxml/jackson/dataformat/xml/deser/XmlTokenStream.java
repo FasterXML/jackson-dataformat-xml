@@ -270,7 +270,12 @@ public class XmlTokenStream
         }
         try {
             String text = _collectUntilTag();
-            if (text != null && _xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
+            // 23-Dec-2015, tatu: Used to require text not to be null, but as per
+            //   [dataformat-xml#167], empty tag does count
+            if (_xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
+                if (text == null) {
+                    text = "";
+                }
                 if (_currentWrapper != null) {
                     _currentWrapper = _currentWrapper.getParent();
                 }
