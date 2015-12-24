@@ -9,6 +9,10 @@ Project: jackson-dataformat-xml
 #156: Add `XmlMapper.setDefaultUseWrapper()` for convenience.
 #169: Fail to deserialize "empty" polymorphic classes
 
+2.6.5 (not yet released)
+
+#177: Failure to deserialize unwrapped list where entry has empty content, attribute(s)
+
 2.6.4 (07-Dec-2015)
 
 #171: `@JacksonXmlRootElement` malfunction in multi-thread environment
