@@ -412,7 +412,7 @@ public class FromXmlParser
 //System.out.println(" isExpectedArrayStart: OBJ->Array, wraps now: "+_parsingContext.getNamesToWrap());
             // And just in case a field name was to be returned, wipe it
             _nextToken = null;
-            // and last thing, [Issue#33], better ignore attributes
+            // and last thing, [dataformat-xml#33], better ignore attributes
             _xmlTokens.skipAttributes();
             return true;
         }
@@ -423,7 +423,7 @@ public class FromXmlParser
     // DEBUGGING
     /*
     @Override
-    public JsonToken nextToken() throws IOException, JsonParseException
+    public JsonToken nextToken() throws IOException
     {
         JsonToken t = nextToken0();
         if (t != null) {
@@ -445,7 +445,7 @@ public class FromXmlParser
     @Override
     public JsonToken nextToken() throws IOException
     {
-        _binaryValue = null; // to fix [Issue-29]
+        _binaryValue = null;
         if (_nextToken != null) {
             JsonToken t = _nextToken;
             _currToken = t;
@@ -472,9 +472,8 @@ public class FromXmlParser
         }
         int token = _xmlTokens.next();
 
-        /* Need to have a loop just because we may have to eat/convert
-         * a start-element that indicates an array element.
-         */
+        // Need to have a loop just because we may have to eat/convert
+        // a start-element that indicates an array element.
         while (token == XmlTokenStream.XML_START_ELEMENT) {
             // If we thought we might get leaf, no such luck
             if (_mayBeLeaf) {
@@ -484,9 +483,8 @@ public class FromXmlParser
                 return (_currToken = JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
-                /* Yup: in array, so this element could be verified; but it won't be reported
-                 * anyway, and we need to process following event.
-                 */
+                // Yup: in array, so this element could be verified; but it won't be
+                // reported anyway, and we need to process following event.
                 token = _xmlTokens.next();
                 _mayBeLeaf = true;
                 continue;
@@ -494,18 +492,15 @@ public class FromXmlParser
             String name = _xmlTokens.getLocalName();
             _parsingContext.setCurrentName(name);
 
-            /* Ok: virtual wrapping can be done by simply repeating
-             * current START_ELEMENT. Couple of ways to do it; but
-             * start by making _xmlTokens replay the thing...
-             */
+            // Ok: virtual wrapping can be done by simply repeating current START_ELEMENT.
+            // Couple of ways to do it; but start by making _xmlTokens replay the thing...
             if (_namesToWrap != null && _namesToWrap.contains(name)) {
                 _xmlTokens.repeatStartElement();
             }
 
             _mayBeLeaf = true;
-            /* Ok: in array context we need to skip reporting field names. But what's the best way
-             * to find next token?
-             */
+            // Ok: in array context we need to skip reporting field names.
+            // But what's the best way to find next token?
             return (_currToken = JsonToken.FIELD_NAME);
         }
 
@@ -556,8 +551,17 @@ public class FromXmlParser
                     }
                 }
                 return (_currToken = JsonToken.VALUE_STRING);
+            } else {
+                // [dataformat-xml#177]: empty text may also need to be skipped
+                if (_parsingContext.inObject()
+                        && (_currToken != JsonToken.FIELD_NAME) && _isEmpty(_currText)) {
+                    _currToken = JsonToken.END_OBJECT;
+                    _parsingContext = _parsingContext.getParent();
+                    _namesToWrap = _parsingContext.getNamesToWrap();
+                    return _currToken;
+                }
             }
-            // If not a leaf, need to transform into property...
+            // If not a leaf (or otherwise ignorable), need to transform into property...
             _parsingContext.setCurrentName(_cfgNameForTextElement);
             _nextToken = JsonToken.VALUE_STRING;
             return (_currToken = JsonToken.FIELD_NAME);

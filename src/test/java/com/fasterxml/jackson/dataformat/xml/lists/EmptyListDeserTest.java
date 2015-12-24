@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 // for [dataformat-xml#177]
-public class EmptyList177Test extends XmlTestBase
+public class EmptyListDeserTest extends XmlTestBase
 {
     static class Config
     {
