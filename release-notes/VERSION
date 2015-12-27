@@ -4,7 +4,9 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.6.5 (not yet released)
+2.6.4-1 (27-Dec-2015)
+
+Special micro-patch for:
 
 #177: Failure to deserialize unwrapped list where entry has empty content, attribute(s)
 
