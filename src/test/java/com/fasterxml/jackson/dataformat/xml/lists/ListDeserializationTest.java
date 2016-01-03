@@ -127,7 +127,7 @@ public class ListDeserializationTest extends XmlTestBase
         assertEquals(Integer.valueOf(3), bean.values.get(2));
     }
 
-    // for [Issue#33]
+    // for [dataformat-xml#33]
     public void testWrappedListWithAttribute() throws Exception
     {
         ListBeanWrapped bean = MAPPER.readValue(

@@ -49,12 +49,16 @@ public class XmlMapper extends ObjectMapper
         this(new XmlFactory());
     }
 
-    /** @since 2.4 */
+    /**
+     * @since 2.4
+     */
     public XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF) {
         this(new XmlFactory(inputF, outF));
     }
 
-    /** @since 2.4 */
+    /**
+     * @since 2.4
+     */
     public XmlMapper(XMLInputFactory inputF) {
         this(new XmlFactory(inputF));
     }
@@ -111,6 +115,7 @@ public class XmlMapper extends ObjectMapper
     protected void setXMLTextElementName(String name) {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
+
     /**
      * Since 2.7
      */
