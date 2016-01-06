@@ -15,13 +15,17 @@ import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
 
 public class JAXBObjectId170Test extends XmlTestBase
 {
-    static class Company {
-        public List<Computer> computers;
-        public List<Employee> employees;
-        
-        public Company() {
-            computers = new ArrayList<Computer>();
-        }
+    static class Company
+    {
+        @XmlElementWrapper(name = "computers")
+        @XmlElement(name = "computer")
+        public List<Computer> computers = new ArrayList<Computer>();
+
+        @XmlElementWrapper(name = "employees")
+        @XmlElement(name = "employee")
+        public List<Employee> employees = new ArrayList<Employee>();
+
+        public Company() { }
 
         public Company add(Computer computer) {
             if (computers == null) {
@@ -113,13 +117,21 @@ public class JAXBObjectId170Test extends XmlTestBase
                 ;
 
         XmlMapper mapper = new XmlMapper();
+        XmlJaxbAnnotationIntrospector xmlIntr = new XmlJaxbAnnotationIntrospector(mapper.getTypeFactory());
+        xmlIntr.setDefaultUseWrapper(false);
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-                (new XmlJaxbAnnotationIntrospector(mapper.getTypeFactory()), new JacksonAnnotationIntrospector());
-        mapper.setAnnotationIntrospector(intr);
+                (xmlIntr, new JacksonAnnotationIntrospector());
+
         // should be default but doesn't seem to be?
-        mapper.setDefaultUseWrapper(true);
+        mapper.setAnnotationIntrospector(intr);
 
         Company result = mapper.readValue(XML, Company.class);
         assertNotNull(result);
+        assertNotNull(result.employees);
+        assertEquals(2, result.employees.size());
+        Employee empl2 = result.employees.get(1);
+        Computer comp2 = empl2.computer;
+        assertEquals(DesktopComputer.class, comp2.getClass());
+        assertEquals("Pattaya", ((DesktopComputer) comp2).location);
     }
 }
