@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
@@ -52,7 +52,7 @@ public class NestedUnwrappedLists180Test  extends XmlTestBase
 "<Records>\n"
 // Important: it's the empty CDATA here that causes breakage -- empty element alone would be fine
 //+"<records>\n</records>\n"
-+"<records> </records>\n"
++"<records></records>\n"
 +"  <records>\n"
 +"   <fields name='b'/>\n"
 +"  </records>\n"
@@ -64,7 +64,11 @@ public class NestedUnwrappedLists180Test  extends XmlTestBase
         Records result = MAPPER.readValue(xml, Records.class);
         assertNotNull(result.records);
         assertEquals(2, result.records.size());
+        assertNotNull(result.records.get(1));
         assertEquals(1, result.records.get(1).fields.size());
         assertEquals("b", result.records.get(1).fields.get(0).name);
+
+        // also, first one ought not be null should it? Ideally not...
+        assertNotNull(result.records.get(0));
     }
 }

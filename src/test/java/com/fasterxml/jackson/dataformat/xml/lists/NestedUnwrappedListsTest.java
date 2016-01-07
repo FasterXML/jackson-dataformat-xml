@@ -96,7 +96,8 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         ServiceDelivery svc = _xmlMapper.readValue(XML, ServiceDelivery.class);
         assertNotNull(svc);
         assertNotNull(svc.vehicleMonitoringDelivery);
-        assertEquals(0, svc.vehicleMonitoringDelivery.size());
+        // 06-Jan-2015, tatu: Really should have one empty entry, not 0
+        assertEquals(1, svc.vehicleMonitoringDelivery.size());
     }
 
     public void testNestedWithEmpty2() throws Exception
@@ -117,7 +118,8 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         assertEquals(1, svc.vehicleMonitoringDelivery.size());
         VehicleMonitoringDelivery del = svc.vehicleMonitoringDelivery.get(0);
         assertNotNull(del.vehicleActivity);
-        assertEquals(0, del.vehicleActivity.size());
+        // 06-Jan-2015, tatu: Really should have one empty entry, not 0
+        assertEquals(1, del.vehicleActivity.size());
     }
     
     public void testNested1_2b() throws Exception
@@ -152,7 +154,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         assertNotNull(act);
         assertEquals("2013-09-12T09:29:07.536-04:00", act.recordedAtTime);
     }
-    
+
     public void testNested2_1() throws Exception
     {
         final String XML =

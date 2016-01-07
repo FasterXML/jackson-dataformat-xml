@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;

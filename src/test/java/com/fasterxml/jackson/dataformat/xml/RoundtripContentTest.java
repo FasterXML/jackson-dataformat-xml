@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class RoundtripContentTest extends XmlTestBase
 {
+    private final XmlMapper MAPPER = new XmlMapper();
+
     public void testRoundtrip() throws Exception
     {
-        final XmlMapper MAPPER = new XmlMapper();
-        
         MediaItem.Content content = new MediaItem.Content();
         content.setTitle("content");
         content.addPerson("William");
@@ -20,22 +20,19 @@ public class RoundtripContentTest extends XmlTestBase
 
         ObjectWriter w = MAPPER.writerFor(MediaItem.class);
 
-        /*
-        StringWriter sw = new StringWriter();
-        try {
-        w.writeValue(sw, input);
-        } finally {
-            System.err.println("So far -> ["+sw+"]");
-        }
-        */
-        
-        String xml = w.writeValueAsString(input);
+        // two variants; first without indentation
+        _verifyRoundtrip(w.writeValueAsString(input), input);
 
-//System.err.println("DEBUG: Xml == "+xml);
+        // and then with indentation
+        _verifyRoundtrip(w.withDefaultPrettyPrinter()
+                .writeValueAsString(input), input);
+    }
 
+    private void _verifyRoundtrip(String xml, MediaItem exp) throws Exception
+    {
         ObjectReader r = MAPPER.readerFor(MediaItem.class);
         MediaItem result = r.readValue(xml);
         assertNotNull(result);
-        assertEquals(content.getTitle(), result.getContent().getTitle());
+        assertEquals(exp.getContent().getTitle(), result.getContent().getTitle());
     }
 }

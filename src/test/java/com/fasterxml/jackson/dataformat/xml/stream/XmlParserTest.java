@@ -46,6 +46,8 @@ public class XmlParserTest extends XmlTestBase
 
     public void testSimpleWithEmpty() throws Exception
     {
+        // 06-Jan-2015, tatu: Not superbly simple, actually; whether we'll have `null`
+        //    or `{}` depends on context; if in array context, latter; otherwise former
         assertEquals("{\"leaf\":null}",
                 _readXmlWriteJson("<root><leaf /></root>"));
     }

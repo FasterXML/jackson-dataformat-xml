@@ -65,7 +65,7 @@ public class ListRoundtripTest extends XmlTestBase
         public List<Point> points;
     }
 
-    // For [Issue#64]
+    // For [dataformat-xml#64]
     static class Optional {
         @JacksonXmlText
         public String number = "NOT SET";

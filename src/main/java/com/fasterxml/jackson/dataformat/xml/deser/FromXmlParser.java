@@ -321,7 +321,7 @@ public class FromXmlParser
     @Override
     public String getCurrentName() throws IOException
     {
-        // [JACKSON-395]: start markers require information from parent
+        // start markers require information from parent
         String name;
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             XmlReadContext parent = _parsingContext.getParent();
@@ -420,7 +420,7 @@ public class FromXmlParser
     }
 
     // DEBUGGING
-    /*
+/*
     @Override
     public JsonToken nextToken() throws IOException
     {
@@ -438,8 +438,8 @@ public class FromXmlParser
             }
         }
         return t;
-    } 
-    */
+    }
+*/
 
     @Override
     public JsonToken nextToken() throws IOException
@@ -509,6 +509,13 @@ public class FromXmlParser
             // Simple, except that if this is a leaf, need to suppress end:
             if (_mayBeLeaf) {
                 _mayBeLeaf = false;
+                if (_parsingContext.inArray()) {
+                    // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
+                    //    expose as empty Object, not null
+                    _nextToken = JsonToken.END_OBJECT;
+                    _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                    return (_currToken = JsonToken.START_OBJECT);
+                }
                 return (_currToken = JsonToken.VALUE_NULL);
             }
             _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
@@ -534,19 +541,20 @@ public class FromXmlParser
             _currText = _xmlTokens.getText();
             if (_mayBeLeaf) {
                 _mayBeLeaf = false;
-                // Also: must skip following END_ELEMENT
-                _xmlTokens.skipEndElement();
                 /* One more refinement (pronunced like "hack") is that if
                  * we had an empty String (or all white space), and we are
-                 * deserializing an array, we better just hide the text
-                 * altogether.
+                 * deserializing an array, we better hide the empty text.
                  */
+                // Also: must skip following END_ELEMENT
+                _xmlTokens.skipEndElement();
                 if (_parsingContext.inArray()) {
                     if (_isEmpty(_currText)) {
-                        _currToken = JsonToken.END_ARRAY;
-                        _parsingContext = _parsingContext.getParent();
-                        _namesToWrap = _parsingContext.getNamesToWrap();
-                        return _currToken;
+                        // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
+                        //    expose as empty Object, not null (or, worse, as used to
+                        //    be done, by swallowing the token)
+                        _nextToken = JsonToken.END_OBJECT;
+                        _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                        return (_currToken = JsonToken.START_OBJECT);
                     }
                 }
                 return (_currToken = JsonToken.VALUE_STRING);

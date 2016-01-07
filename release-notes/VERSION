@@ -9,6 +9,7 @@ Project: jackson-dataformat-xml
 #156: Add `XmlMapper.setDefaultUseWrapper()` for convenience.
 #167: Exception on deserializing empty element with an xsi attribute
 #169: Fail to deserialize "empty" polymorphic classes
+#180: Problem with deserialization of nested non-wrapped lists, with empty inner list
 
 2.6.5 (not yet released)
 
