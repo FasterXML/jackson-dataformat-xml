@@ -50,14 +50,9 @@ public class NestedUnwrappedLists180Test  extends XmlTestBase
 
         String xml =
 "<Records>\n"
-+"  <records>\n"
-+"    <fields name='a'/>\n"
-+"  </records>\n"
-
-// Important: it's the empty CDATA here that causes breakage -- empty element would be fine
-
-+"  <records>\n"
-+"  </records>\n"
+// Important: it's the empty CDATA here that causes breakage -- empty element alone would be fine
+//+"<records>\n</records>\n"
++"<records></records>\n"
 +"  <records>\n"
 +"   <fields name='b'/>\n"
 +"  </records>\n"
@@ -68,8 +63,8 @@ public class NestedUnwrappedLists180Test  extends XmlTestBase
 
         Records result = MAPPER.readValue(xml, Records.class);
         assertNotNull(result.records);
-        assertEquals(3, result.records.size());
-        assertEquals(1, result.records.get(2).fields.size());
-        assertEquals("b", result.records.get(2).fields.get(0).name);
+        assertEquals(2, result.records.size());
+        assertEquals(1, result.records.get(1).fields.size());
+        assertEquals("b", result.records.get(1).fields.get(0).name);
     }
 }
