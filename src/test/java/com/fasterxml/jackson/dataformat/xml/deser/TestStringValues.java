@@ -34,19 +34,7 @@ public class TestStringValues extends XmlTestBase
         assertNotNull(bean);
         assertEquals("text!", bean.text);
     }
-    
-    public void testEmptyStringElement() throws Exception
-    {
-        // then with empty element
-        StringBean bean = MAPPER.readValue("<StringBean><text></text></StringBean>", StringBean.class);
-        assertNotNull(bean);
-        // empty String or null?
-        // 22-Sep-2012, tatu: Seems to be 'null', but should probably be fixed to ""
-        // Also see [dataformat-xml#162]
-//        assertEquals("", bean.text);
-        assertNull(bean.text);
-    }
-    
+
     public void testMissingString() throws Exception
     {
         StringBean baseline = new StringBean();
