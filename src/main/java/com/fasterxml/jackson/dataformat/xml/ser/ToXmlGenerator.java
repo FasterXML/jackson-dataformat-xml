@@ -535,7 +535,7 @@ public final class ToXmlGenerator
     {
         // We may want to repeat same element, so:
         if (_elementNameStack.isEmpty()) {
-            throw new JsonGenerationException("Can not write END_ELEMENT without open START_ELEMENT");
+            throw new JsonGenerationException("Can not write END_ELEMENT without open START_ELEMENT", this);
         }
         _nextName = _elementNameStack.removeLast();
         try {
@@ -1066,9 +1066,6 @@ public final class ToXmlGenerator
 //        boolean wasClosed = _closed;
         super.close();
 
-        /* 05-Dec-2008, tatu: To add [JACKSON-27], need to close open
-         *   scopes.
-         */
         // First: let's see that we still have buffers...
         if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)) {
             try {
@@ -1086,7 +1083,7 @@ public final class ToXmlGenerator
                 /* 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
                  *   hit by this as a collateral problem in some cases. Yuck.
                  */
-                throw new JsonGenerationException(e);
+                throw new JsonGenerationException(e, this);
             }
         }
         try {
@@ -1130,7 +1127,7 @@ public final class ToXmlGenerator
     }
 
     /**
-     * Method called 
+     * Method called in case access to native Stax2 API implementation is required.
      */
     protected void  _reportUnimplementedStax2(String missingMethod) throws IOException
     {
@@ -1138,6 +1135,7 @@ public final class ToXmlGenerator
                 +_originalXmlWriter.getClass().getName()
                 +") does not implement Stax2 API natively and is missing method '"
                 +missingMethod+"': this breaks functionality such as indentation that relies on it. "
-                +"You need to upgrade to using compliant Stax implementation like Woodstox or Aalto");
+                +"You need to upgrade to using compliant Stax implementation like Woodstox or Aalto",
+                this);
     }
 }
