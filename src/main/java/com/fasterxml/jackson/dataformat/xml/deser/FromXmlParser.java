@@ -410,7 +410,12 @@ public class FromXmlParser
             _parsingContext.convertToArray();
 //System.out.println(" isExpectedArrayStart: OBJ->Array, wraps now: "+_parsingContext.getNamesToWrap());
             // And just in case a field name was to be returned, wipe it
-            _nextToken = null;
+            // 06-Jan-2015, tatu: Actually, could also be empty Object buffered; if so, convert...
+            if (_nextToken == JsonToken.END_OBJECT) {
+                _nextToken = JsonToken.END_ARRAY;
+            } else {
+                _nextToken = null;
+            }
             // and last thing, [dataformat-xml#33], better ignore attributes
             _xmlTokens.skipAttributes();
             return true;
