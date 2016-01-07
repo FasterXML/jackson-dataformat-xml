@@ -56,7 +56,6 @@ public class ListSerializationTest extends XmlTestBase
     {
         String xml = MAPPER.writeValueAsString(new ListBean(1, 2, 3));
         xml = removeSjsxpNamespace(xml);
-        // 06-Dec-2010, tatu: Not completely ok; should default to not using wrapper...
         assertEquals("<ListBean><values><values>1</values><values>2</values><values>3</values></values></ListBean>", xml);
     }
 
@@ -65,7 +64,6 @@ public class ListSerializationTest extends XmlTestBase
         StringListBean list = new StringListBean("a", "b", "c");
         String xml = MAPPER.writeValueAsString(list);
         xml = removeSjsxpNamespace(xml);
-        // 06-Dec-2010, tatu: Not completely ok; should default to not using wrapper... but it's what we have now
         assertEquals("<StringListBean><stringList>"
                 +"<strings><text>a</text></strings>"
                 +"<strings><text>b</text></strings>"

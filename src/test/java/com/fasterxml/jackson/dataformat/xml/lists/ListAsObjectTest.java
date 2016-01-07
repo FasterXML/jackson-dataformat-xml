@@ -55,12 +55,5 @@ public class ListAsObjectTest extends XmlTestBase
         assertEquals("d", values.getValues().get(1).getV());
     
         assertEquals("array", values.getType());
-
-        // Passes with 2.1.2
-        /*
-        assertEquals(2, values.size());
-        assertEquals("c", values.get(0).getV());
-        assertEquals("d", values.get(1).getV());
-        */
     }
 }

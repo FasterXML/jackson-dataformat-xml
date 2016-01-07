@@ -24,7 +24,7 @@ public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
         MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
-    // for [#129]
+    // for [dataformat-xml#129]
     public void testListWithEmptyCData() throws Exception
     {
         _testListWithEmptyCData(" ");
@@ -42,7 +42,7 @@ public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
 
         List<String> values = result.value;
 
-        assertEquals(3, values.size()); // expecting 3 values, getting only 1
+        assertEquals(3, values.size()); // expecting 3 values
         assertEquals("A", values.get(0));
         assertEquals(cdata, values.get(1)); // expecting empty string in second position
         assertEquals("C", values.get(2));

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-// for [Issue#55]
+// for [dataformat-xml#55]
 public class ListAnnotationSharingTest extends XmlTestBase
 {
     static class Wrapper {

@@ -39,5 +39,9 @@ public class EmptyListDeserTest extends XmlTestBase
                 "</Config>\n",
                 Config.class);
         assertNotNull(r);
+        assertEquals("123", r.id);
+        assertNotNull(r.entry);
+        assertEquals(1, r.entry.size());
+        assertEquals("foo", r.entry.get(0).id);
     }
 }
