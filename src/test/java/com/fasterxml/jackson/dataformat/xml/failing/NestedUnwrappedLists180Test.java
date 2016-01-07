@@ -52,7 +52,7 @@ public class NestedUnwrappedLists180Test  extends XmlTestBase
 "<Records>\n"
 // Important: it's the empty CDATA here that causes breakage -- empty element alone would be fine
 //+"<records>\n</records>\n"
-+"<records></records>\n"
++"<records> </records>\n"
 +"  <records>\n"
 +"   <fields name='b'/>\n"
 +"  </records>\n"
