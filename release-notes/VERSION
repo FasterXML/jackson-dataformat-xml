@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.7.0 (not yet released)
+2.7.0 (10-Jan-2016)
 
 #156: Add `XmlMapper.setDefaultUseWrapper()` for convenience.
 #167: Exception on deserializing empty element with an xsi attribute
