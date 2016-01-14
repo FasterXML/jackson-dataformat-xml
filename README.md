@@ -19,6 +19,8 @@ Specifically:
  * This module may, however, also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
 
 [![Build Status](https://fasterxml.ci.cloudbees.com/job/jackson-dataformat-xml-master/badge/icon)](https://fasterxml.ci.cloudbees.com/job/jackson-dataformat-xml-master/)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/)
+[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
 
 # Status
 
