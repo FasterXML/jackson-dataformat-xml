@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.7.1 (02-Feb-2016)
+
+No changes since 2.7.0
+
 2.7.0 (10-Jan-2016)
 
 #156: Add `XmlMapper.setDefaultUseWrapper()` for convenience.
