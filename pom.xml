@@ -26,6 +26,11 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
   <properties>
     <version.jackson.core>2.7.1</version.jackson.core>
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
+
+    <!-- 23-Feb-2016, tatu: Try to keep JDK6 runtime for 2.7 at least -->
+    <javac.src.version>1.6</javac.src.version>
+    <javac.target.version>1.6</javac.target.version>
+
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 

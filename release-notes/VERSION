@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.7.2 (not yet released)
+
+- Change build to produce JDK6-compatible jar, to allow use on JDK6 runtime
+
 2.7.1 (02-Feb-2016)
 
 No changes since 2.7.0
