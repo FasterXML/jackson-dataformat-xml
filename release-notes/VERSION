@@ -23,7 +23,11 @@ No changes since 2.7.0
 #169: Fail to deserialize "empty" polymorphic classes
 #180: Problem with deserialization of nested non-wrapped lists, with empty inner list
 
-2.6.5 (not yet released)
+2.6.6 (05-Apr-2016)
+
+No changes since 2.6.5.
+
+2.6.5 (19-Jan-2016)
 
 #177: Failure to deserialize unwrapped list where entry has empty content, attribute(s)
 
