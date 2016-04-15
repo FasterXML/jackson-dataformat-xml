@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.7.4 (not yet released)
+
+#190: Ensure that defaults for `XMLInputFactory` have expansion of external
+    parsed general entities disabled
+
 2.7.3 (16-Mar-2016)
 
 No changes since 2.7.2

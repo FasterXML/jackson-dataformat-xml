@@ -111,6 +111,8 @@ public class XmlFactory extends JsonFactory
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
             xmlIn = XMLInputFactory.newInstance();
+            // as per [dataformat-xml#190], disable external entity expansion by default
+            xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         }
         if (xmlOut == null) {
             xmlOut = XMLOutputFactory.newInstance();
