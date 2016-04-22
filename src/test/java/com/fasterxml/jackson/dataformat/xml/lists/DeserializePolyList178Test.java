@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,8 @@ public class DeserializePolyList178Test extends XmlTestBase
     {
         Company input = new Company();
         input.add(new DesktopComputer().with("1", "http://foo.com"));
-        input.add(new DesktopComputer().with("2", "http://bar.com"));
+        final String LOC2 = "http://bar.com";
+        input.add(new DesktopComputer().with("2", LOC2));
         String xml = MAPPER.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(input);
 //System.out.println("XML:\n"+xml);
@@ -76,5 +77,10 @@ public class DeserializePolyList178Test extends XmlTestBase
         Company result = MAPPER.readValue(xml, Company.class);
         assertNotNull(result.computers);
         assertEquals(2, result.computers.size());
+        Computer comp = result.computers.get(1);
+        assertNotNull(comp);
+        assertEquals(DesktopComputer.class, comp.getClass());
+        DesktopComputer dt = (DesktopComputer) comp;
+        assertEquals(LOC2, dt.location);
     }
 }

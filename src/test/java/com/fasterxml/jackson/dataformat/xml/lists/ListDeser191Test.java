@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.ArrayList;
 
@@ -27,8 +27,7 @@ public class ListDeser191Test extends XmlTestBase
 "<TestList>\n"+
 "    <items>\n"+
 "        <item name='Item1'/>\n"+
-"        <item name='Item2'>\n"+
-"        </item>\n"+
+"        <item name='Item2'> </item>\n"+ // important: at least one ws char between start/end
 "        <item name='Item3'/>\n"+
 "    </items>\n"+
 "</TestList>"

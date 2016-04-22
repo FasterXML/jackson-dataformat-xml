@@ -152,7 +152,7 @@ public class XmlTokenStream
         return n;
     }
     */
-    
+
     public int next() throws IOException 
     {
         if (_repeatElement != 0) {
