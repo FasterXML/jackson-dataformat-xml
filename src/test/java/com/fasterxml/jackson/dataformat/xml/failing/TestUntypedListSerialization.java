@@ -45,7 +45,7 @@ public class TestUntypedListSerialization extends XmlTestBase
     private final XmlMapper MAPPER = new XmlMapper();
 
     /*
-     *  For [Issue#8] -- Will not use wrapping, if type is not statically known
+     *  For [dataformat-xml#8] -- Will not use wrapping, if type is not statically known
      *  to be a Collection
      */
     public void testListAsObject() throws IOException

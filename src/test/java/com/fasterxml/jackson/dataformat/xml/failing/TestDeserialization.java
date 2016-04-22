@@ -15,7 +15,7 @@ public class TestDeserialization extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
 
-    // [Issue#25]
+    // [dataformat-xml#25]
     public void testEmptyStringFromElemAndAttr() throws Exception
     {
         EmptyStrings ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
