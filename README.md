@@ -170,7 +170,7 @@ Similarly it is possible to read content, sub-tree by sub-tree; assuming similar
 we would use
 
 ```java
-XMLOutputFactory f = XMLOutputFactory.newFactory();
+XMLInputFactory f = XMLInputFactory.newFactory();
 File inputFile = ...;
 XMLStreamReader sr = f.createXMLStreamReader(new FileInputStream(inputFile));
 
