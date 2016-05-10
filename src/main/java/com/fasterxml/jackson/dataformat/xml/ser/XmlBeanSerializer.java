@@ -1,9 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -39,7 +39,7 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
         super(src, objectIdWriter);
     }
 
-    public XmlBeanSerializer(XmlBeanSerializerBase src, String[] toIgnore) {
+    public XmlBeanSerializer(XmlBeanSerializerBase src, Set<String> toIgnore) {
         super(src, toIgnore);
     }
 
@@ -48,7 +48,6 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
     /* Life-cycle: factory methods, fluent factories
     /**********************************************************
      */
-
 
     @Override
     public JsonSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
@@ -66,7 +65,7 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     @Override
-    protected BeanSerializerBase withIgnorals(String[] toIgnore) {
+    protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
         return new XmlBeanSerializer(this, toIgnore);
     }
 

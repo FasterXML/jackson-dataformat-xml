@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -123,7 +124,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _cdata = src._cdata;
     }
 
-    protected XmlBeanSerializerBase(XmlBeanSerializerBase src, String[] toIgnore)
+    protected XmlBeanSerializerBase(XmlBeanSerializerBase src, Set<String> toIgnore)
     {
         super(src, toIgnore);
         _attributeCount = src._attributeCount;

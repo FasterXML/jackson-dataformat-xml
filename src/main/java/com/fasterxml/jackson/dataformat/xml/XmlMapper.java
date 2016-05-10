@@ -235,12 +235,10 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************
      */
 
-    /**
-     * XML indentation differs from JSON indentation, thereby
-     * need to change default pretty-printer
-     */
+    // 09-May-2016, tatu: Was removed from `jackson-databind` in 2.8; remove from
+    //    here in 2.9.
     @Deprecated // since 2.6
-    @Override
+//    @Override
     protected PrettyPrinter _defaultPrettyPrinter() {
         return new DefaultXmlPrettyPrinter();
     }

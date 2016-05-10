@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
@@ -55,7 +56,7 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         _nameTransformer = src._nameTransformer;
     }
 
-    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src, String[] toIgnore)
+    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src, Set<String> toIgnore)
     {
         super(src, toIgnore);
         _nameTransformer = src._nameTransformer;
@@ -92,9 +93,8 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         return new UnwrappingXmlBeanSerializer(this, _objectIdWriter, filterId);
     }
 
-    @Override
-    protected BeanSerializerBase withIgnorals(String[] toIgnore)
-    {
+    @Override // since 2.8
+    protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
         return new UnwrappingXmlBeanSerializer(this, toIgnore);
     }
 
@@ -103,8 +103,7 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
      * so implementation will simply return 'this'.
      */
     @Override
-    protected BeanSerializerBase asArraySerializer()
-    {
+    protected BeanSerializerBase asArraySerializer() {
         return this;
     }
 
