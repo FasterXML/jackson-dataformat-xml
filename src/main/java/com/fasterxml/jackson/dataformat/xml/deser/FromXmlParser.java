@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
@@ -813,6 +814,17 @@ public class FromXmlParser
         return false;
     }
 
+    @Override // since 2.8
+    public int getText(Writer writer) throws IOException
+    {
+        String str = getText();
+        if (str == null) {
+            return 0;
+        }
+        writer.write(str);
+        return str.length();
+    }
+    
     /*
     /**********************************************************
     /* Public API, access to token information, binary

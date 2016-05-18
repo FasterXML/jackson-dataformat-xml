@@ -10,7 +10,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
-
 public class XmlParserTest extends XmlTestBase
 {
     /*
@@ -76,74 +75,74 @@ public class XmlParserTest extends XmlTestBase
         // Former could be worked around; latter less so at this point.
 
         // So, for now, let's just do sort of minimal verification, manually
-        JsonParser jp = _xmlMapper.getFactory().createParser(xml);
+        JsonParser p = _xmlMapper.getFactory().createParser(xml);
         
-        assertToken(JsonToken.START_OBJECT, jp.nextToken()); // main object
+        assertToken(JsonToken.START_OBJECT, p.nextToken()); // main object
 
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Image'
-        verifyFieldName(jp, "Image");
-        assertToken(JsonToken.START_OBJECT, jp.nextToken()); // 'image' object
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Width'
-        verifyFieldName(jp, "Width");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_WIDTH), jp.getText());
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Height'
-        verifyFieldName(jp, "Height");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_HEIGHT), jp.getText());
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Title'
-        verifyFieldName(jp, "Title");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(SAMPLE_SPEC_VALUE_TITLE, getAndVerifyText(jp));
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Thumbnail'
-        verifyFieldName(jp, "Thumbnail");
-        assertToken(JsonToken.START_OBJECT, jp.nextToken()); // 'thumbnail' object
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Url'
-        verifyFieldName(jp, "Url");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(SAMPLE_SPEC_VALUE_TN_URL, getAndVerifyText(jp));
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Height'
-        verifyFieldName(jp, "Height");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_HEIGHT), jp.getText());
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'Width'
-        verifyFieldName(jp, "Width");
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Image'
+        verifyFieldName(p, "Image");
+        assertToken(JsonToken.START_OBJECT, p.nextToken()); // 'image' object
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Width'
+        verifyFieldName(p, "Width");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_WIDTH), p.getText());
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Height'
+        verifyFieldName(p, "Height");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_HEIGHT), p.getText());
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Title'
+        verifyFieldName(p, "Title");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(SAMPLE_SPEC_VALUE_TITLE, getAndVerifyText(p));
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Thumbnail'
+        verifyFieldName(p, "Thumbnail");
+        assertToken(JsonToken.START_OBJECT, p.nextToken()); // 'thumbnail' object
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Url'
+        verifyFieldName(p, "Url");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(SAMPLE_SPEC_VALUE_TN_URL, getAndVerifyText(p));
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Height'
+        verifyFieldName(p, "Height");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_HEIGHT), p.getText());
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Width'
+        verifyFieldName(p, "Width");
         // Width value is actually a String in the example
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(SAMPLE_SPEC_VALUE_TN_WIDTH, getAndVerifyText(jp));
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(SAMPLE_SPEC_VALUE_TN_WIDTH, getAndVerifyText(p));
 
-        assertToken(JsonToken.END_OBJECT, jp.nextToken()); // 'thumbnail' object
+        assertToken(JsonToken.END_OBJECT, p.nextToken()); // 'thumbnail' object
 
         // Note: arrays are "eaten"; wrapping is done using BeanPropertyWriter, so:
-        //assertToken(JsonToken.FIELD_NAME, jp.nextToken()); // 'IDs'
-        //verifyFieldName(jp, "IDs");
-        //assertToken(JsonToken.START_OBJECT, jp.nextToken()); // 'ids' array
+        //assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'IDs'
+        //verifyFieldName(p, "IDs");
+        //assertToken(JsonToken.START_OBJECT, p.nextToken()); // 'ids' array
 
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken());
-        verifyFieldName(jp, "IDs");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID1), getAndVerifyText(jp));
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); 
-        verifyFieldName(jp, "IDs");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID2), getAndVerifyText(jp));
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken());
-        verifyFieldName(jp, "IDs");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID3), getAndVerifyText(jp));
-        assertToken(JsonToken.FIELD_NAME, jp.nextToken()); 
-        verifyFieldName(jp, "IDs");
-        assertToken(JsonToken.VALUE_STRING, jp.nextToken());
-        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID4), getAndVerifyText(jp));
+        assertToken(JsonToken.FIELD_NAME, p.nextToken());
+        verifyFieldName(p, "IDs");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID1), getAndVerifyText(p));
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); 
+        verifyFieldName(p, "IDs");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID2), getAndVerifyText(p));
+        assertToken(JsonToken.FIELD_NAME, p.nextToken());
+        verifyFieldName(p, "IDs");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID3), getAndVerifyText(p));
+        assertToken(JsonToken.FIELD_NAME, p.nextToken()); 
+        verifyFieldName(p, "IDs");
+        assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID4), getAndVerifyText(p));
 
         // no matching entry for array:
-        //assertToken(JsonToken.END_OBJECT, jp.nextToken()); // 'ids' array
+        //assertToken(JsonToken.END_OBJECT, p.nextToken()); // 'ids' array
 
-        assertToken(JsonToken.END_OBJECT, jp.nextToken()); // 'image' object
+        assertToken(JsonToken.END_OBJECT, p.nextToken()); // 'image' object
 
-        assertToken(JsonToken.END_OBJECT, jp.nextToken()); // main object
+        assertToken(JsonToken.END_OBJECT, p.nextToken()); // main object
         
-        jp.close();
+        p.close();
     }
 
     /**
@@ -202,6 +201,11 @@ public class XmlParserTest extends XmlTestBase
         assertEquals("property", xp.getCurrentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("123", xp.getText());
+
+        StringWriter w = new StringWriter();
+        assertEquals(3, xp.getText(w));
+        assertEquals("123", w.toString());
+        
         assertTrue(xp.getParsingContext().inObject());
         assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </property>
         assertTrue(xp.getParsingContext().inArray());
@@ -237,9 +241,18 @@ public class XmlParserTest extends XmlTestBase
 
         assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <offset>
         assertEquals("offset", xp.getCurrentName());
+
+        StringWriter w = new StringWriter();
+        assertEquals(6, xp.getText(w));
+        assertEquals("offset", w.toString());
+        
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("9", xp.getText());
 
+        w = new StringWriter();
+        assertEquals(1, xp.getText(w));
+        assertEquals("9", w.toString());
+        
         assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </data>
         xp.close();
     }
@@ -248,12 +261,12 @@ public class XmlParserTest extends XmlTestBase
     {
         StringWriter w = new StringWriter();
 
-        JsonParser jp = _xmlFactory.createParser(xml);
+        JsonParser p = _xmlFactory.createParser(xml);
         JsonGenerator jg = _jsonFactory.createGenerator(w);
-        while (jp.nextToken() != null) {
-            jg.copyCurrentEvent(jp);
+        while (p.nextToken() != null) {
+            jg.copyCurrentEvent(p);
         }
-        jp.close();
+        p.close();
         jg.close();
         return w.toString();
     }
