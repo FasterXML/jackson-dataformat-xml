@@ -218,23 +218,6 @@ public final class ToXmlGenerator
     /**********************************************************
      */
 
-    /**
-     * Standard JSON indenter does not work well with XML, use
-     * default XML indenter instead.
-     *<p>
-     * !!! TODO: same as implementation in core 2.6; override may be
-     * removed from 2.8
-     */
-    @Override
-    public final JsonGenerator useDefaultPrettyPrinter()
-    {
-        // related to [dataformat-xml#136], need to verify:
-        if (_cfgPrettyPrinter != null) {
-            return this;
-        }
-        return setPrettyPrinter(_constructDefaultPrettyPrinter());
-    }
-
     @Override
     protected PrettyPrinter _constructDefaultPrettyPrinter() {
         return new DefaultXmlPrettyPrinter();
@@ -309,6 +292,9 @@ public final class ToXmlGenerator
         }
         return this;
     }
+
+    @Override
+    public boolean canWriteFormattedNumbers() { return true; }
 
     /*
     /**********************************************************
