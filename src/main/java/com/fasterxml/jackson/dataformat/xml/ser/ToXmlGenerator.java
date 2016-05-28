@@ -310,6 +310,11 @@ public final class ToXmlGenerator
         return this;
     }
 
+    // @since 2.7.5
+    public boolean inRoot() {
+        return _writeContext.inRoot();
+    }
+
     /*
     /**********************************************************
     /* Extended API, access to some internal components
@@ -1070,7 +1075,12 @@ public final class ToXmlGenerator
         if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)) {
             try {
                 while (true) {
-                    JsonStreamContext ctxt = getOutputContext();
+		    /* 28-May-2016, tatu: To work around incompatibility introduced by
+		     *     `jackson-core` 2.8 where return type of `getOutputContext()`
+		     *     changed, let's do direct access here.
+		     */
+//                    JsonStreamContext ctxt = getOutputContext();
+		    JsonStreamContext ctxt = _writeContext;
                     if (ctxt.inArray()) {
                         writeEndArray();
                     } else if (ctxt.inObject()) {

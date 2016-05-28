@@ -8,6 +8,10 @@ Project: jackson-dataformat-xml
 
 No changes since 2.7.
 
+2.7.5 (not yet released)
+
+No changes since 2.7.4
+
 2.7.4 (29-Apr-2016)
 
 #178: Problem with polymorphic serialization, inclusion type of

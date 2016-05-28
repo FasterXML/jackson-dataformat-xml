@@ -214,12 +214,12 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws IOException
     {
         /* 28-Nov-2012, tatu: We should only initialize the root
-         *  name if no name has been set, as per [Issue#42],
+         *  name if no name has been set, as per [dataformat-xml#42],
          *  to allow for custom serializers to work.
          */
         if (!xgen.setNextNameIfMissing(rootName)) {
             // however, if we are root, we... insist
-            if (xgen.getOutputContext().inRoot()) {
+            if (xgen.inRoot()) {
                 xgen.setNextName(rootName);
             }
         }
