@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -127,7 +128,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
 
         @Override
-        public JavaType typeFromId(DatabindContext context, String id) {
+        public JavaType typeFromId(DatabindContext context, String id) throws IOException {
             return super.typeFromId(context, decodeXmlClassName(id));
         }
     }
@@ -147,7 +148,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
 
         @Override
-        public JavaType typeFromId(DatabindContext context, String id) {
+        public JavaType typeFromId(DatabindContext context, String id) throws IOException {
             return super.typeFromId(context, decodeXmlClassName(id));
         }
     }
