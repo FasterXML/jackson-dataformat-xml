@@ -935,10 +935,15 @@ public class FromXmlParser
     protected void _handleEOF() throws JsonParseException
     {
         if (!_parsingContext.inRoot()) {
-            _reportInvalidEOF(": expected close marker for "+_parsingContext.getTypeDesc()+" (from "+_parsingContext.getStartLocation(_ioContext.getSourceReference())+")");
+            String marker = _parsingContext.inArray() ? "Array" : "Object";
+            _reportInvalidEOF(String.format(
+                    ": expected close marker for %s (start marker at %s)",
+                    marker,
+                    _parsingContext.getStartLocation(_ioContext.getSourceReference())),
+                    null);
         }
     }
-    
+
     /*
     /**********************************************************
     /* Internal methods
