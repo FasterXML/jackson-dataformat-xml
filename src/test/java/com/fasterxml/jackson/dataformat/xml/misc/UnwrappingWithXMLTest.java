@@ -82,7 +82,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
      */
 
     /**
-   * Simple test to verify that explicit schema mapping works fine
+     * Simple test to verify that explicit schema mapping works fine
      * with unwrapped entities
      */
     public void testSimpleUnwrappingRoundtrip()

@@ -29,6 +29,30 @@ public class XmlTextTest extends XmlTestBase
         public String phoneNumber = "555-1234";
     }
 
+    static class WindSpeed {
+        @JacksonXmlProperty(isAttribute = true)
+        public String units;
+
+        @JacksonXmlText
+        public int value;
+
+        public Radius radius;
+    }
+
+    static class Radius {
+        @JacksonXmlText
+        public int value;
+    }
+
+        
+    /*
+    /**********************************************************
+    /* Test methods
+    /**********************************************************
+     */
+
+    private final XmlMapper MAPPER = xmlMapper(true);
+    
     public void testXmlTextWithSuppressedValue() throws Exception
     {
         final XmlMapper mapper = new XmlMapper();
@@ -38,12 +62,21 @@ public class XmlTextTest extends XmlTestBase
         assertEquals(expectedXml, xml);
     }
 
+    // for [dataformat-xml#196]
+    public void testMixedContent() throws Exception
+    {
+        WindSpeed result = MAPPER.readValue("<windSpeed units='kt'> 27 <radius>20</radius></windSpeed>",
+                WindSpeed.class);
+        assertEquals(27, result.value);
+        assertNotNull(result.radius);
+        assertEquals(20, result.radius.value);
+    }
+
     // for [dataformat-xml#198]
     public void testSimple198() throws Exception
     {
-        final XmlMapper mapper = new XmlMapper();
-        String xml = mapper.writeValueAsString(new Phone());
-        Phone result = mapper.readValue(xml, Phone.class);
+        String xml = MAPPER.writeValueAsString(new Phone());
+        Phone result = MAPPER.readValue(xml, Phone.class);
         assertNotNull(result);
     }
 }

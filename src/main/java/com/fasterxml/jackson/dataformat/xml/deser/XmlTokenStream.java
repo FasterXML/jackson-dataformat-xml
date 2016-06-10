@@ -53,7 +53,14 @@ public class XmlTokenStream
     protected int _currentState;
 
     protected int _attributeCount;
-    
+
+    /**
+     * If true we have a START_ELEMENT with mixed text
+     *
+     * @since 2.8
+     */
+    protected boolean _mixedText;
+
     /**
      * Index of the next attribute of the current START_ELEMENT
      * to return (as field name and value pair), if any; -1
@@ -293,7 +300,7 @@ public class XmlTokenStream
         // Anything to do in failed case? Roll back whatever we found or.. ?
         return null;
     }
-    
+
     /*
     /**********************************************************************
     /* Internal methods, parsing
@@ -315,21 +322,36 @@ public class XmlTokenStream
             }
             // otherwise need to find START/END_ELEMENT or text
             String text = _collectUntilTag();
-            // If it's START_ELEMENT, ignore any text
-            if (_xmlReader.getEventType() == XMLStreamReader.START_ELEMENT) {
-                return _initStartElement();
-            }
-            // For END_ELEMENT we will return text, if any
-            if (text != null) {
+            final boolean startElementNext = _xmlReader.getEventType() == XMLStreamReader.START_ELEMENT;
+            // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
+            if (startElementNext) {
+                if (text == null || _allWs(text)) {
+                    _mixedText = false;
+                    return _initStartElement();
+                }
+                _mixedText = true;
                 _textValue = text;
                 return (_currentState = XML_TEXT);
             }
+            // For END_ELEMENT we will return text, if any
+            if (text != null) {
+                _mixedText = false;
+                _textValue = text;
+                return (_currentState = XML_TEXT);
+            }
+            _mixedText = false;
             return _handleEndElement();
+
         case XML_ATTRIBUTE_NAME:
             // if we just returned name, will need to just send value next
             return (_currentState = XML_ATTRIBUTE_VALUE);
         case XML_TEXT:
-            // text is always followed by END_ELEMENT
+            // mixed text with other elements
+            if (_mixedText){
+                _mixedText = false;
+                return _initStartElement();
+            }
+            // text followed by END_ELEMENT
             return _handleEndElement();
         case XML_END:
             return XML_END;
@@ -494,6 +516,20 @@ public class XmlTokenStream
                 location.getColumnNumber());
     }
 
+
+    protected boolean _allWs(String str)
+    {
+        final int len = (str == null) ? 0 : str.length();
+        if (len > 0) {
+            for (int i = 0; i < len; ++i) {
+                if (str.charAt(i) > ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     // for DEBUGGING
     @Override
     public String toString()
