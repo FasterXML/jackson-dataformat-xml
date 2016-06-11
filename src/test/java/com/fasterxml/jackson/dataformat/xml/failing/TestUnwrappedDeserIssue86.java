@@ -1,9 +1,11 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -79,4 +81,6 @@ public class TestUnwrappedDeserIssue86 extends XmlTestBase
         final Issue86 after = mapper.readValue(xml, Issue86.class);
         assertEquals(before, after);
     }
+
+
 }
