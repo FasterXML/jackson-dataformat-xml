@@ -9,7 +9,7 @@ Project: jackson-dataformat-xml
 #196: Mixed content not supported if there are child elements
  (reported by hvdp31@github)
 
-2.7.5 (not yet released)
+2.7.5 (11-Jun-2016)
 
 No changes since 2.7.4
 
