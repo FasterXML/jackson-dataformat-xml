@@ -8,7 +8,7 @@
   </parent>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.8.0</version>
+  <version>2.8.1-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
   <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
@@ -21,7 +21,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <connection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</connection>
     <developerConnection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</developerConnection>
     <url>http://github.com/FasterXML/jackson-dataformat-xml</url>    
-    <tag>jackson-dataformat-xml-2.8.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <properties>
     <version.jackson.core>2.8.0</version.jackson.core>
