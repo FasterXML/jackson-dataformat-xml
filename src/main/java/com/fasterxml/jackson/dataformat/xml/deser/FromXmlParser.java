@@ -652,7 +652,6 @@ public class FromXmlParser
             _parsingContext = _parsingContext.getParent();
             _namesToWrap = _parsingContext.getNamesToWrap();
             break;
-            
         case XmlTokenStream.XML_ATTRIBUTE_NAME:
             // If there was a chance of leaf node, no more...
             if (_mayBeLeaf) {
@@ -667,9 +666,8 @@ public class FromXmlParser
             }
             break;
         case XmlTokenStream.XML_ATTRIBUTE_VALUE:
-            _currText = _xmlTokens.getText();
             _currToken = JsonToken.VALUE_STRING;
-            break;
+            return (_currText = _xmlTokens.getText());
         case XmlTokenStream.XML_TEXT:
             _currText = _xmlTokens.getText();
             if (_mayBeLeaf) {
