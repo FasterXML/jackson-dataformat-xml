@@ -3,22 +3,17 @@ package com.fasterxml.jackson.dataformat.xml.stream;
 import java.io.*;
 
 import com.fasterxml.jackson.core.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
-
 public class XmlParserTest extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Set up
-    /**********************************************************
-     */
-
     protected JsonFactory _jsonFactory;
     protected XmlFactory _xmlFactory;
     protected XmlMapper _xmlMapper;
@@ -215,13 +210,6 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
     }
 
-    /*
-    /**********************************************************
-    /* Helper methods
-    /**********************************************************
-     */
-
-
     public void testXmlAttributes() throws Exception
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";
@@ -244,6 +232,12 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
     }
 
+    /*
+    /**********************************************************
+    /* Helper methods
+    /**********************************************************
+     */
+    
     private String _readXmlWriteJson(String xml) throws IOException
     {
         StringWriter w = new StringWriter();
