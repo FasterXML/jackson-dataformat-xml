@@ -981,9 +981,9 @@ public final class ToXmlGenerator
                 } else {
 	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
 	                if (usePlain) {
-	                    _xmlWriter.writeDecimal(dec);
-	                } else {
                          _xmlWriter.writeCharacters(dec.toPlainString());
+	                } else {
+                         _xmlWriter.writeDecimal(dec);
 	                }
 	                _xmlWriter.writeEndElement();
                 }
