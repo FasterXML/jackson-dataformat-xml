@@ -8,7 +8,7 @@ Project: jackson-dataformat-xml
 
 No changes since 2.7.
 
-2.7.8 (not yet released)
+2.7.8 (26-Sep-2016)
 
 #210: In `ToXmlGenerator` `WRITE_BIGDECIMAL_AS_PLAIN` is used the wrong way round
  (reported by xmluzr@github)
