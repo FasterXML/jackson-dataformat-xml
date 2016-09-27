@@ -113,6 +113,8 @@ public class XmlFactory extends JsonFactory
             xmlIn = XMLInputFactory.newInstance();
             // as per [dataformat-xml#190], disable external entity expansion by default
             xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+            // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
+            xmlIn.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         }
         if (xmlOut == null) {
             xmlOut = XMLOutputFactory.newInstance();
