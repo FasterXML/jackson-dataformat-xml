@@ -47,7 +47,7 @@ public class JacksonXmlModule
     
     public JacksonXmlModule()
     {
-        super("JackxonXmlModule", PackageVersion.VERSION);
+        super("JacksonXmlModule", PackageVersion.VERSION);
     }
     
     @Override
