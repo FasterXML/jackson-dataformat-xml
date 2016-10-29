@@ -2,3 +2,9 @@ language: java
 
 jdk:
   - oraclejdk7
+  - oraclejdk8
+
+branches:
+  only:
+    - master
+    - "2.8"
