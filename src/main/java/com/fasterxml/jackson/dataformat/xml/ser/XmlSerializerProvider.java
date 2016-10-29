@@ -90,14 +90,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         final JsonSerializer<Object> ser = findTypedValueSerializer(cls, true, null);
         try {
             ser.serialize(value, gen, this);
-        } catch (IOException ioe) { // As per [JACKSON-99], pass IOException and subtypes as-is
-            throw ioe;
         } catch (Exception e) { // but wrap RuntimeExceptions, to get path information
-            String msg = e.getMessage();
-            if (msg == null) {
-                msg = "[no message for "+e.getClass().getName()+"]";
-            }
-            throw JsonMappingException.from(gen, msg, e);
+            throw _wrapAsIOE(gen, e);
         }
         // end of super-class implementation
 
@@ -106,51 +100,6 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
-    @SuppressWarnings("resource")
-    @Override
-    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType)
-        throws IOException
-    {
-        if (value == null) {
-            _serializeXmlNull(gen);
-            return;
-        }
-        final boolean asArray;
-        final ToXmlGenerator xgen = _asXmlGenerator(gen);
-        if (xgen == null) { // called by convertValue()
-            asArray = false;
-        } else {
-            QName rootName = _rootNameFromConfig();
-            if (rootName == null) {
-                rootName = _rootNameLookup.findRootName(rootType, _config);
-            }
-            _initWithRootName(xgen, rootName);
-            asArray = TypeUtil.isIndexedType(rootType);
-            if (asArray) {
-                _startRootArray(xgen, rootName);
-            }
-        }
-
-        final JsonSerializer<Object> ser = findTypedValueSerializer(rootType, true, null);
-        // From super-class implementation
-        try {
-            ser.serialize(value, gen, this);
-        } catch (IOException ioe) { // no wrapping for IO (and derived)
-            throw ioe;
-        } catch (Exception e) { // but others do need to be, to get path etc
-            String msg = e.getMessage();
-            if (msg == null) {
-                msg = "[no message for "+e.getClass().getName()+"]";
-            }
-            throw JsonMappingException.from(gen, msg, e);
-        }
-        // end of super-class implementation
-
-        if (asArray) {
-            gen.writeEndObject();
-        }
-    }
-    
     // @since 2.1
     @SuppressWarnings("resource")
     @Override
@@ -182,14 +131,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         // From super-class implementation
         try {
             ser.serialize(value, gen, this);
-        } catch (IOException ioe) { // no wrapping for IO (and derived)
-            throw ioe;
         } catch (Exception e) { // but others do need to be, to get path etc
-            String msg = e.getMessage();
-            if (msg == null) {
-                msg = "[no message for "+e.getClass().getName()+"]";
-            }
-            throw JsonMappingException.from(gen, msg, e);
+            throw _wrapAsIOE(gen, e);
         }
         // end of super-class implementation
         if (asArray) {
@@ -265,4 +208,15 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
         return (ToXmlGenerator) gen;
     }    
+
+    protected IOException _wrapAsIOE(JsonGenerator g, Exception e) {
+        if (e instanceof IOException) {
+            return (IOException) e;
+        }
+        String msg = e.getMessage();
+        if (msg == null) {
+            msg = "[no message for "+e.getClass().getName()+"]";
+        }
+        return new JsonMappingException(g, msg, e);
+    }
 }
