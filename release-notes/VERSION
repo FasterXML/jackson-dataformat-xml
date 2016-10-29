@@ -7,6 +7,9 @@ Project: jackson-dataformat-xml
 2.9.0 (not yet released)
 
 2.8.5 (not yet released)
+
+- Update woodstox dependency to 5.0.3
+
 2.8.4 (14-Oct-2016)
 2.8.3 (17-Sep-2016)
 2.8.2 (30-Aug-2016)
