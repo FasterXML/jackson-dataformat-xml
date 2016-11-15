@@ -11,17 +11,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @SuppressWarnings("serial")
 public class TestSerialization extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     static class StringBean2
     {
         public String text = "foobar";
@@ -56,23 +49,11 @@ public class TestSerialization extends XmlTestBase
         public MapBean() { }
         public MapBean(Map<String,Integer> v) { map = v; }
     }
-    
+
     static class NsElemBean
     {
         @JacksonXmlProperty(namespace="http://foo")
         public String text = "blah";
-    }
-
-    @JacksonXmlRootElement(localName="root")
-    static class RootBean
-    {
-        public String value = "123";
-    }
-
-    @JacksonXmlRootElement(localName="nsRoot", namespace="http://foo")
-    static class NsRootBean
-    {
-        public String value = "abc";
     }
 
     static class CDataStringBean
@@ -99,66 +80,20 @@ public class TestSerialization extends XmlTestBase
     }
 
     static class CustomMap extends LinkedHashMap<String, Integer> { }
-    
-    /*
-    /**********************************************************
-    /* Set up
-    /**********************************************************
-     */
 
-    protected XmlMapper _xmlMapper;
-
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _xmlMapper = new XmlMapper();
-    }
-    
     /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
-    // Unit test to verify that root name is properly set
-    public void testRootName() throws IOException
-    {
-        String xml = _xmlMapper.writeValueAsString(new StringBean());
-        
-        // Hmmh. Looks like JDK Stax may adds bogus ns declaration. As such,
-        // let's just check that name starts ok...
-        if (!xml.startsWith("<StringBean")) {
-            fail("Expected root name of 'StringBean'; but XML document is ["+xml+"]");
-        }
+    protected XmlMapper _xmlMapper = new XmlMapper();
 
-        // and then see that basic non-namespace root is ok
-        xml = _xmlMapper.writeValueAsString(new RootBean());
-        assertEquals("<root><value>123</value></root>", xml);
-
-        // and namespace one too
-        xml = _xmlMapper.writeValueAsString(new NsRootBean());
-        if (xml.indexOf("nsRoot") < 0) { // verify localName
-            fail("Expected root name of 'nsRoot'; but XML document is ["+xml+"]");
-        }
-        // and NS declaration
-        if (xml.indexOf("http://foo") < 0) {
-            fail("Expected NS declaration for 'http://foo', not found, XML document is ["+xml+"]");
-        }
-    }
-    
     public void testSimpleAttribute() throws IOException
     {
         String xml = _xmlMapper.writeValueAsString(new AttributeBean());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<AttributeBean attr=\"something\"/>", xml);
-    }
-
-    public void testSimpleAttrAndElem() throws IOException
-    {
-        String xml = _xmlMapper.writeValueAsString(new AttrAndElem());
-        xml = removeSjsxpNamespace(xml);
-        assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
     public void testSimpleNsElem() throws IOException
@@ -167,6 +102,13 @@ public class TestSerialization extends XmlTestBase
         xml = removeSjsxpNamespace(xml);
         // here we assume woodstox automatic prefixes, not very robust but:
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
+    }
+    
+    public void testSimpleAttrAndElem() throws IOException
+    {
+        String xml = _xmlMapper.writeValueAsString(new AttrAndElem());
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
     @SuppressWarnings("boxing")
@@ -225,7 +167,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<CDataStringArrayBean><value><value><![CDATA[<some<data\"]]></value><value><![CDATA[abc]]></value></value></CDataStringArrayBean>", xml);
     }
     
-    // for [Issue#41]
+    // for [dataformat-xml#41]
     public void testCustomSerializer() throws Exception
     {
         JacksonXmlModule module = new JacksonXmlModule();

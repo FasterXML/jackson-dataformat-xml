@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 2.8.5 (14-Nov-2016)
 
+#213: `XmlSerializerProvider` does not use `withRootName` config for null
+ (reported by gitlabbtr@github)
 - Update woodstox dependency to 5.0.3
 
 2.8.4 (14-Oct-2016)
