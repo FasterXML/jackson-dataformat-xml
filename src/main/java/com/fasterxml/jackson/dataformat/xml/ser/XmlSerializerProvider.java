@@ -142,8 +142,15 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     protected void _serializeXmlNull(JsonGenerator jgen) throws IOException
     {
-        if (jgen instanceof ToXmlGenerator)
-        _initWithRootName((ToXmlGenerator) jgen, ROOT_NAME_FOR_NULL);
+        // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly
+        //    configured root name...
+        QName rootName = _rootNameFromConfig();
+        if (rootName == null) {
+            rootName = ROOT_NAME_FOR_NULL;
+        }
+        if (jgen instanceof ToXmlGenerator) {
+            _initWithRootName((ToXmlGenerator) jgen, rootName);
+        }
         super.serializeValue(jgen, null);
     }
     
@@ -168,7 +175,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
         xgen.initGenerator();
         String ns = rootName.getNamespaceURI();
-        /* [Issue#26] If we just try writing root element with namespace,
+        /* [dataformat-xml#26] If we just try writing root element with namespace,
          * we will get an explicit prefix. But we'd rather use the default
          * namespace, so let's try to force that.
          */
