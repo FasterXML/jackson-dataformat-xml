@@ -371,21 +371,23 @@ public class XmlTokenStream
     
     private final String _collectUntilTag() throws XMLStreamException
     {
-        String text = null;
+        if (_xmlReader.isEmptyElement()) {
+            _xmlReader.next();
+            return null;
+        }
+
+        StringBuilder text = new StringBuilder();
+
         while (true) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
-                return text;
-                // note: SPACE is ignorable (and seldom seen), not to be included
+                return text.toString();
+            // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
-                if (text == null) {
-                    text = _xmlReader.getText();
-                } else { // can be optimized in future, if need be:
-                    text += _xmlReader.getText();
-                }
+                text.append(_xmlReader.getText());
                 break;
             default:
                 // any other type (proc instr, comment etc) is just ignored
