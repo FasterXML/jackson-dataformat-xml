@@ -6,6 +6,7 @@ Project: jackson-dataformat-xml
 
 2.9.0 (not yet released)
 
+2.8.6 (12-Jan-2017)
 2.8.5 (14-Nov-2016)
 
 #213: `XmlSerializerProvider` does not use `withRootName` config for null
