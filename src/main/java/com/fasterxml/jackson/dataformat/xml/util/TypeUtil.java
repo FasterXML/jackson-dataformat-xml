@@ -21,7 +21,7 @@ public class TypeUtil
                 return false;
             }
             // issue#5: also, should not add wrapping for Maps
-            if (Map.class.isAssignableFrom(cls)) {
+            if (type.isMapLikeType()) {
                 return false;
             }
             return true;
