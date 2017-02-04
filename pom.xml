@@ -24,7 +24,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <version.jackson.core>2.7.8</version.jackson.core>
+    <version.jackson.core>2.7.9</version.jackson.core>
     <version.jackson.jaxb>${version.jackson.core}</version.jackson.jaxb>
 
     <!-- 23-Feb-2016, tatu: Try to keep JDK6 runtime for 2.7 at least -->
