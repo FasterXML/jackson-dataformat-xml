@@ -1,7 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.util;
 
 import java.util.Collection;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.JavaType;
 
@@ -20,8 +19,9 @@ public class TypeUtil
             if (cls == byte[].class || cls == char[].class) {
                 return false;
             }
-            // issue#5: also, should not add wrapping for Maps
-            if (Map.class.isAssignableFrom(cls)) {
+            // Also, should not add wrapping for Maps
+            // [dataformat-xml#220]: nor map-like (Scala Map) types
+            if (type.isMapLikeType()) {
                 return false;
             }
             return true;

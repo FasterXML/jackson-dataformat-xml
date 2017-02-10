@@ -6,6 +6,10 @@ Project: jackson-dataformat-xml
 
 2.9.0 (not yet released)
 
+2.8.7 (not yet released)
+
+#220: Avoid root-level wrapping for Map-like types, not just Maps
+
 2.8.6 (12-Jan-2017)
 2.8.5 (14-Nov-2016)
 
