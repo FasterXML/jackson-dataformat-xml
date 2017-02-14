@@ -125,7 +125,11 @@ public class DefaultXmlPrettyPrinter
     
     @Override
     public DefaultXmlPrettyPrinter createInstance() {
-        return new DefaultXmlPrettyPrinter();
+        DefaultXmlPrettyPrinter instance = new DefaultXmlPrettyPrinter();
+        instance.indentArraysWith(_arrayIndenter);
+        instance.indentObjectsWith(_objectIndenter);
+        instance.spacesInObjectEntries(_spacesInObjectEntries);
+        return instance;
     }
 
     /*
