@@ -9,6 +9,8 @@ Project: jackson-dataformat-xml
 2.8.7 (not yet released)
 
 #220: Avoid root-level wrapping for Map-like types, not just Maps
+#222: DefaultXmlPrettyPrinter indentation configuration not preserved
+ (reported by jtuc@github)
 
 2.8.6 (12-Jan-2017)
 2.8.5 (14-Nov-2016)
@@ -28,6 +30,12 @@ No changes since 2.8.0.
 
 #196: Mixed content not supported if there are child elements
  (reported by hvdp31@github)
+
+2.7.10 (not yet released)
+
+2.7.9 (04-Feb-2017)
+
+No changes since 2.7.8
 
 2.7.8 (26-Sep-2016)
 

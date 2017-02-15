@@ -93,7 +93,7 @@ public class DefaultXmlPrettyPrinter
      * is encountered. Used for suppressing indentation to allow empty
      * elements.
      * 
-     * @since 2.3.0
+     * @since 2.3
      */
     protected transient boolean _justHadStartElement;
     
@@ -104,6 +104,14 @@ public class DefaultXmlPrettyPrinter
     */
 
     public DefaultXmlPrettyPrinter() { }
+
+    protected DefaultXmlPrettyPrinter(DefaultXmlPrettyPrinter base)
+    {
+        _arrayIndenter = base._arrayIndenter;
+        _objectIndenter = base._objectIndenter;
+        _spacesInObjectEntries = base._spacesInObjectEntries;
+        _nesting = base._nesting;
+    }
 
     public void indentArraysWith(Indenter i)
     {
@@ -125,7 +133,7 @@ public class DefaultXmlPrettyPrinter
     
     @Override
     public DefaultXmlPrettyPrinter createInstance() {
-        return new DefaultXmlPrettyPrinter();
+        return new DefaultXmlPrettyPrinter(this);
     }
 
     /*
