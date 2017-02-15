@@ -8,6 +8,11 @@ Project: jackson-dataformat-xml
 
 No changes since 2.7.
 
+2.7.10 (not yet released)
+
+#222: DefaultXmlPrettyPrinter indentation configuration not preserved
+ (reported by jtuc@github)
+
 2.7.9 (04-Feb-2017)
 
 No changes since 2.7.8
