@@ -29,6 +29,15 @@ No changes since 2.8.0.
 #196: Mixed content not supported if there are child elements
  (reported by hvdp31@github)
 
+2.7.10 (not yet released)
+
+#222: DefaultXmlPrettyPrinter indentation configuration not preserved
+ (reported by jtuc@github)
+
+2.7.9 (04-Feb-2017)
+
+No changes since 2.7.8
+
 2.7.8 (26-Sep-2016)
 
 #210: In `ToXmlGenerator` `WRITE_BIGDECIMAL_AS_PLAIN` is used the wrong way round
