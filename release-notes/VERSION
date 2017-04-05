@@ -6,7 +6,8 @@ Project: jackson-dataformat-xml
 
 2.9.0 (not yet released)
 
-2.8.7 (not yet released)
+2.8.8 (05-Apr-2017)
+2.8.7 (21-Feb-2017)
 
 #220: Avoid root-level wrapping for Map-like types, not just Maps
 #222: DefaultXmlPrettyPrinter indentation configuration not preserved
