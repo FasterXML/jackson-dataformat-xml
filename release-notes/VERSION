@@ -6,6 +6,11 @@ Project: jackson-dataformat-xml
 
 2.9.0 (not yet released)
 
+2.8.9 (not yet released)
+
+#228: `XmlReadContext` should hold current value
+ (suggested by kfypmqqw@github)
+
 2.8.8 (05-Apr-2017)
 2.8.7 (21-Feb-2017)
 

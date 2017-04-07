@@ -29,13 +29,18 @@ public final class XmlReadContext
 
     protected String _currentName;
 
+    /**
+     * @since 2.9
+     */
+    protected Object _currentValue;
+
     protected Set<String> _namesToWrap;
 
     /**
      * Name of property that requires wrapping
      */
     protected String _wrappedName;
-    
+
     /*
     /**********************************************************
     /* Simple instance reuse slots; speeds up things
@@ -70,10 +75,25 @@ public final class XmlReadContext
         _lineNr = lineNr;
         _columnNr = colNr;
         _currentName = null;
+        _currentValue = null;
         _namesToWrap = null;
     }
-    
-    // // // Factory methods
+
+    @Override
+    public Object getCurrentValue() {
+        return _currentValue;
+    }
+
+    @Override
+    public void setCurrentValue(Object v) {
+        _currentValue = v;
+    }
+
+    /*
+    /**********************************************************
+    /* Factory methods
+    /**********************************************************
+     */
 
     public static XmlReadContext createRootContext(int lineNr, int colNr) {
         return new XmlReadContext(null, TYPE_ROOT, lineNr, colNr);
