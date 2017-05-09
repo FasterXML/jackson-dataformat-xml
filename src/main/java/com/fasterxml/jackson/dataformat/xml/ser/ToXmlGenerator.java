@@ -655,6 +655,82 @@ public final class ToXmlGenerator
      */
 
     @Override
+    public void writeRawValue(String text) throws IOException {
+        // [dataformat-xml#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRawValue");
+        }
+        try {
+            _verifyValueWrite("write raw value");
+            if (_nextName == null) {
+                handleMissingName();
+            }
+
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeRaw(text);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwXmlAsIOException(e);
+        }
+    }
+
+    @Override
+    public void writeRawValue(String text, int offset, int len) throws IOException {
+        // [dataformat-xml#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRawValue");
+        }
+        try {
+            _verifyValueWrite("write raw value");
+            if (_nextName == null) {
+                handleMissingName();
+            }
+
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text.substring(offset, offset + len));
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeRaw(text, offset, len);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwXmlAsIOException(e);
+        }
+    }
+
+    @Override
+    public void writeRawValue(char[] text, int offset, int len) throws IOException {
+        // [dataformat-xml#39]
+        if (_stax2Emulation) {
+            _reportUnimplementedStax2("writeRawValue");
+        }
+        _verifyValueWrite("write raw value");
+        if (_nextName == null) {
+            handleMissingName();
+        }
+        try {
+            if (_nextIsAttribute) {
+                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeRaw(text, offset, len);
+                _xmlWriter.writeEndElement();
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwXmlAsIOException(e);
+        }
+    }
+
+    @Override
+    public void writeRawValue(SerializableString text) throws IOException {
+        _reportUnsupportedOperation();
+    }
+
+    @Override
     public void writeRaw(String text) throws IOException
     {
         // [dataformat-xml#39]
