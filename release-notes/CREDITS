@@ -25,3 +25,9 @@ Leo Wang (wanglingsong@github)
 
 * Reported #171: `@JacksonXmlRootElement` malfunction in multi-thread environment
  (2.6.4)
+
+Yury Vasyutinskiy (Falland@github)
+
+* Contributed #232: Implement `writeRawValue` in `ToXmlGenerator`
+ (2.9.0)
+
