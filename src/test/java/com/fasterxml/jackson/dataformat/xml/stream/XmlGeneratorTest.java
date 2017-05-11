@@ -105,5 +105,119 @@ public class XmlGeneratorTest extends XmlTestBase
 
         assertEquals("<IntWrapper><i>42</i></IntWrapper>", xml);
         f.delete();
-    }    
+    }
+
+    public void testRawSimpleValue() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = f.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeFieldName("elem");
+        gen.writeRawValue("value");
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root><elem>value</elem></root>", xml);
+    }
+
+    public void testRawOffsetValue() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = f.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeFieldName("elem");
+        gen.writeRawValue("NotAValue_value_NotAValue", 10, 5);
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root><elem>value</elem></root>", xml);
+    }
+
+    public void testRawCharArrayValue() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = f.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeFieldName("elem");
+        gen.writeRawValue(new char[] {'!', 'v', 'a', 'l', 'u', 'e', '!'}, 1, 5);
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root><elem>value</elem></root>", xml);
+    }
+
+    public void testRawSimpleAttribute() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = f.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        // and also need to force attribute
+        gen.setNextIsAttribute(true);
+        gen.writeFieldName("attr");
+        gen.writeRawValue("value");
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root attr=\"value\"/>", xml);
+    }
+
+    public void testRawOffsetAttribute() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = f.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        // and also need to force attribute
+        gen.setNextIsAttribute(true);
+        gen.writeFieldName("attr");
+        gen.writeRawValue("NotAValue_value_NotAValue", 10, 5);
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root attr=\"value\"/>", xml);
+    }
+
+    public void testRawCharArratAttribute() throws Exception
+    {
+        XmlFactory f = new XmlFactory();
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = f.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        // and also need to force attribute
+        gen.setNextIsAttribute(true);
+        gen.writeFieldName("attr");
+        gen.writeRawValue(new char[]{'!', 'v', 'a', 'l', 'u', 'e', '!'}, 1, 5);
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root attr=\"value\"/>", xml);
+    }
 }
