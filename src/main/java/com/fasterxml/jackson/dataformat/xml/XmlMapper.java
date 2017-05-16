@@ -1,20 +1,22 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import java.io.IOException;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-
-import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.IOException;
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
@@ -86,11 +88,16 @@ public class XmlMapper extends ObjectMapper
         _serializationConfig = _serializationConfig.withDefaultPrettyPrinter(DEFAULT_XML_PRETTY_PRINTER);
     }
 
+    protected XmlMapper(XmlMapper mapper) {
+        super(mapper);
+        this._xmlModule = mapper._xmlModule;
+    }
+
     @Override
     public XmlMapper copy()
     {
         _checkInvalidCopy(XmlMapper.class);
-        return new XmlMapper((XmlFactory) _jsonFactory.copy(), _xmlModule);
+        return new XmlMapper(this);
     }
 
     @Override
