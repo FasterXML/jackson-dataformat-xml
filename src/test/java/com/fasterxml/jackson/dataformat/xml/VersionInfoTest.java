@@ -1,15 +1,15 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.*;
+
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
+import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 public class VersionInfoTest extends XmlTestBase
 {
@@ -49,6 +49,12 @@ public class VersionInfoTest extends XmlTestBase
             sc1.getSerializationFeatures(),
             sc2.getSerializationFeatures()
         );
+    }
+
+    public void testSerializerProviderCopy() {
+        DefaultSerializerProvider provider = new XmlSerializerProvider(new XmlRootNameLookup());
+        DefaultSerializerProvider copy = provider.copy();
+        assertNotSame(provider, copy);
     }
 
     // Another test for [Issue#48]
