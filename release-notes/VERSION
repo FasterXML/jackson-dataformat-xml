@@ -10,6 +10,8 @@ Project: jackson-dataformat-xml
 
 #228: `XmlReadContext` should hold current value
  (suggested by kfypmqqw@github)
+#233: XmlMapper.copy() doesn't properly copy internal configurations
+ (reported by gtrog@github)
 
 2.8.8 (05-Apr-2017)
 2.8.7 (21-Feb-2017)
