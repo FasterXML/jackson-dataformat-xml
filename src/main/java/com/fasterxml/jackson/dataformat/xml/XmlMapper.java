@@ -86,9 +86,12 @@ public class XmlMapper extends ObjectMapper
         _serializationConfig = _serializationConfig.withDefaultPrettyPrinter(DEFAULT_XML_PRETTY_PRINTER);
     }
 
-    protected XmlMapper(XmlMapper mapper) {
-        super(mapper);
-        this._xmlModule = mapper._xmlModule;
+    /**
+     * @since 2.8.9
+     */
+    protected XmlMapper(XmlMapper src) {
+        super(src);
+        _xmlModule = src._xmlModule;
     }
 
     @Override

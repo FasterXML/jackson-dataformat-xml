@@ -49,9 +49,12 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         _rootNameLookup  = src._rootNameLookup;
     }
 
-    protected XmlSerializerProvider(XmlSerializerProvider toCopy) {
-        super(toCopy);
-        this._rootNameLookup = toCopy._rootNameLookup;
+    /**
+     * @since 2.8.9
+     */
+    protected XmlSerializerProvider(XmlSerializerProvider src) {
+        super(src);
+        _rootNameLookup = src._rootNameLookup;
     }
 
     /*
