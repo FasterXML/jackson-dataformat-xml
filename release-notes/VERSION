@@ -9,7 +9,7 @@ Project: jackson-dataformat-xml
 #232: Implement `writeRawValue` in `ToXmlGenerator`
  (contributed by Yury V)
 
-2.8.9 (not yet released)
+2.8.9 (12-Jun-2017)
 
 #228: `XmlReadContext` should hold current value
  (suggested by kfypmqqw@github)
