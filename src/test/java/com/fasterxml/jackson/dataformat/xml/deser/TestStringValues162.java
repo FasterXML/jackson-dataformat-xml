@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,14 @@ public class TestStringValues162 extends XmlTestBase
                 Name.class);
         assertNotNull(name);
         assertEquals("Ryan", name.first);
+        assertEquals("", name.last);
+    }
+
+    public void testEmptyElement() throws Exception
+    {
+        Name name = MAPPER.readValue("<name><first/><last></last></name>", Name.class);
+        assertNotNull(name);
+        assertNull(name.first);
         assertEquals("", name.last);
     }
 
