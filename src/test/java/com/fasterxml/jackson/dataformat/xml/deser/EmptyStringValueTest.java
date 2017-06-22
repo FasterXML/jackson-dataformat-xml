@@ -42,9 +42,19 @@ public class EmptyStringValueTest extends XmlTestBase
 
     public void testEmptyElement() throws Exception
     {
-        Name name = MAPPER.readValue("<name><first/><last></last></name>", Name.class);
+        final String XML = "<name><first/><last></last></name>";
+        // Default settings: empty element becomes `null`:
+        Name name = MAPPER.readValue(XML, Name.class);
         assertNotNull(name);
         assertNull(name.first);
+        assertEquals("", name.last);
+
+        // but can be changed
+        XmlMapper mapper2 = new XmlMapper();
+        mapper2.disable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
+        name = mapper2.readValue(XML, Name.class);
+        assertNotNull(name);
+        assertEquals("", name.first);
         assertEquals("", name.last);
     }
 

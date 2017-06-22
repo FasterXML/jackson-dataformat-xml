@@ -10,6 +10,7 @@ Project: jackson-dataformat-xml
  (contributed by Yury V)
 #245: Default `DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT`
   to "enabled" for `XmlMapper`
+#246: Add new feature, `FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL`
 
 2.8.9 (12-Jun-2017)
 

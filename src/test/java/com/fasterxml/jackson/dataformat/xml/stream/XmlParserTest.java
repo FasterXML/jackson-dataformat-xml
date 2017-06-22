@@ -41,10 +41,15 @@ public class XmlParserTest extends XmlTestBase
 
     public void testSimpleWithEmpty() throws Exception
     {
-        // 06-Jan-2015, tatu: Not superbly simple, actually; whether we'll have `null`
-        //    or `{}` depends on context; if in array context, latter; otherwise former
+        // 21-Jun-2017, tatu: Depends on setting actually...
+        XmlFactory f = new XmlFactory();
+
+        f.enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
         assertEquals("{\"leaf\":null}",
-                _readXmlWriteJson("<root><leaf /></root>"));
+                _readXmlWriteJson(f, "<root><leaf /></root>"));
+        f.disable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
+        assertEquals("{\"leaf\":\"\"}",
+                _readXmlWriteJson(f, "<root><leaf /></root>"));
     }
 
     public void testSimpleNested() throws Exception
@@ -251,12 +256,17 @@ public class XmlParserTest extends XmlTestBase
     /* Helper methods
     /**********************************************************
      */
-    
+
     private String _readXmlWriteJson(String xml) throws IOException
+    {
+        return _readXmlWriteJson(_xmlFactory, xml);
+    }
+
+    private String _readXmlWriteJson(XmlFactory xmlFactory, String xml) throws IOException
     {
         StringWriter w = new StringWriter();
 
-        JsonParser p = _xmlFactory.createParser(xml);
+        JsonParser p = xmlFactory.createParser(xml);
         JsonGenerator jg = _jsonFactory.createGenerator(w);
         while (p.nextToken() != null) {
             jg.copyCurrentEvent(p);
