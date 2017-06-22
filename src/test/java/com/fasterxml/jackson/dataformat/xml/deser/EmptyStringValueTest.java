@@ -6,7 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestStringValues162 extends XmlTestBase
+public class EmptyStringValueTest extends XmlTestBase
 {
     static class Name {
         public String first;
@@ -57,25 +57,5 @@ public class TestStringValues162 extends XmlTestBase
         // As per [dataformat-xml#162], really should be "", not null:
         assertEquals("", bean.text);
 //        assertNull(bean.text);
-    }
-
-    public void testStringsInList() throws Exception
-    {
-        Names input = new Names();
-        input.names.add(new Name("Bob", "Lee"));
-        input.names.add(new Name("", ""));
-        input.names.add(new Name("Sponge", "Bob"));
-        String xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
-        
-//System.err.println("XML:\n"+xml);
-
-        Names result = MAPPER.readValue(xml, Names.class);
-        assertNotNull(result);
-        assertNotNull(result.names);
-        assertEquals(3, result.names.size());
-        assertEquals("Bob", result.names.get(2).last);
-
-        // [dataformat-xml#162]: should get empty String, not null
-        assertEquals("", result.names.get(1).first);
     }
 }

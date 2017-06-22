@@ -2,8 +2,10 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.deser.EmptyStringValueTest.Name;
+import com.fasterxml.jackson.dataformat.xml.deser.EmptyStringValueTest.Names;
 
-public class TestStringValues extends XmlTestBase
+public class SimpleStringValuesTest extends XmlTestBase
 {
     protected static class Bean2
     {
@@ -21,7 +23,7 @@ public class TestStringValues extends XmlTestBase
 
     /*
     /**********************************************************
-    /* Unit tests
+    /* Tests, basic
     /**********************************************************
      */
 
@@ -44,6 +46,12 @@ public class TestStringValues extends XmlTestBase
         assertEquals(baseline.text, bean.text);
     }
 
+    /*
+    /**********************************************************
+    /* Tests, with attributes
+    /**********************************************************
+     */
+    
     public void testStringWithAttribute() throws Exception
     {
         // and then the money shot: with 'standard' attribute...
@@ -92,5 +100,31 @@ public class TestStringValues extends XmlTestBase
         Issue167Bean result = MAPPER.readValue(XML, Issue167Bean.class);
         assertNotNull(result);
         assertEquals("", result.d);
+    }
+
+    /*
+    /**********************************************************
+    /* Tests, Lists
+    /**********************************************************
+     */
+    
+    public void testStringsInList() throws Exception
+    {
+        Names input = new Names();
+        input.names.add(new Name("Bob", "Lee"));
+        input.names.add(new Name("", ""));
+        input.names.add(new Name("Sponge", "Bob"));
+        String xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
+        
+//System.err.println("XML:\n"+xml);
+
+        Names result = MAPPER.readValue(xml, Names.class);
+        assertNotNull(result);
+        assertNotNull(result.names);
+        assertEquals(3, result.names.size());
+        assertEquals("Bob", result.names.get(2).last);
+
+        // [dataformat-xml#162]: should get empty String, not null
+        assertEquals("", result.names.get(1).first);
     }
 }

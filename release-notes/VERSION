@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #232: Implement `writeRawValue` in `ToXmlGenerator`
  (contributed by Yury V)
+#245: Default `DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT`
+  to "enabled" for `XmlMapper`
 
 2.8.9 (12-Jun-2017)
 
