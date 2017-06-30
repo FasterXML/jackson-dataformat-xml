@@ -43,6 +43,13 @@ public class XmlTokenStream
     final protected XMLStreamReader2 _xmlReader;
 
     final protected Object _sourceReference;
+
+    /**
+     * Bit flag composed of bits that indicate which
+     * {@link FromXmlParser.Feature}s
+     * are enabled.
+     */
+    protected int _formatFeatures;
     
     /*
     /**********************************************************************
@@ -104,7 +111,8 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
-    public XmlTokenStream(XMLStreamReader xmlReader, Object sourceRef)
+    public XmlTokenStream(XMLStreamReader xmlReader, Object sourceRef,
+            int formatFeatures)
     {
         _sourceReference = sourceRef;
         // Let's ensure we point to START_ELEMENT...
@@ -117,12 +125,20 @@ public class XmlTokenStream
         _localName = _xmlReader.getLocalName();
         _namespaceURI = _xmlReader.getNamespaceURI();
         _attributeCount = _xmlReader.getAttributeCount();
+        _formatFeatures = formatFeatures;
     }
 
     public XMLStreamReader2 getXmlReader() {
         return _xmlReader;
     }
 
+    /**
+     * @since 2.9
+     */
+    protected void setFormatFeatures(int f) {
+        _formatFeatures = f;
+    }
+    
     /*
     /**********************************************************************
     /* Public API
@@ -368,26 +384,33 @@ public class XmlTokenStream
         // START_ELEMENT...
         return _initStartElement();
     }
-    
+
     private final String _collectUntilTag() throws XMLStreamException
     {
+        // 21-Jun-2017, tatu: Whether exposed as `null` or "" is now configurable...
         if (_xmlReader.isEmptyElement()) {
             _xmlReader.next();
-            return null;
+            if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
+                return null;
+            }
+            return "";
         }
 
-        StringBuilder text = new StringBuilder();
-
+        String text = null;
         while (true) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
-                return text.toString();
+                return (text == null) ? "" : text;
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
-                text.append(_xmlReader.getText());
+                if (text == null) {
+                    text = _xmlReader.getText();
+                } else {
+                    text += _xmlReader.getText();
+                }
                 break;
             default:
                 // any other type (proc instr, comment etc) is just ignored

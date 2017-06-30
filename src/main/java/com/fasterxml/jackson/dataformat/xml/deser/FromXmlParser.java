@@ -31,10 +31,21 @@ public class FromXmlParser
 
     /**
      * Enumeration that defines all togglable features for XML parsers.
-     * None defined so far (2.6), so just a placeholder.
      */
     public enum Feature implements FormatFeature
     {
+        /**
+         * Feature that indicates whether XML Empty elements (ones where there are
+         * no separate start and end tages, but just one tag that ends with "/>")
+         * are exposed as {@link JsonToken#VALUE_NULL}) or not. If they are not
+         * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
+         * tokens with textual value of "" (empty String).
+         *<p>
+         * Default setting is `true` for backwards compatibility.
+         *
+         * @since 2.9
+         */
+        EMPTY_ELEMENT_AS_NULL(true)
         ;
 
         final boolean _defaultState;
@@ -171,7 +182,8 @@ public class FromXmlParser
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         // and thereby start a scope
         _nextToken = JsonToken.START_OBJECT;
-        _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference());
+        _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference(),
+                _formatFeatures);
     }
 
     @Override
@@ -215,11 +227,13 @@ public class FromXmlParser
 
     public FromXmlParser enable(Feature f) {
         _formatFeatures |= f.getMask();
+        _xmlTokens.setFormatFeatures(_formatFeatures);
         return this;
     }
 
     public FromXmlParser disable(Feature f) {
         _formatFeatures &= ~f.getMask();
+        _xmlTokens.setFormatFeatures(_formatFeatures);
         return this;
     }
 

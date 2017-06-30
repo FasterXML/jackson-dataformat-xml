@@ -84,6 +84,9 @@ public class XmlMapper extends ObjectMapper
         }
         // 19-May-2015, tatu: Must ensure we use XML-specific indenter
         _serializationConfig = _serializationConfig.withDefaultPrettyPrinter(DEFAULT_XML_PRETTY_PRINTER);
+        // 21-Jun-2017, tatu: Seems like there are many cases in XML where ability to coerce empty
+        //    String into `null` (where it otherwise is an error) is very useful.
+        enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
     }
 
     /**
