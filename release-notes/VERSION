@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.9.0 (not yet released)
 
+#162: XML Empty tag to Empty string in the object during xml deserialization
+ (reported by thefalconfeat@github)
 #232: Implement `writeRawValue` in `ToXmlGenerator`
  (contributed by Yury V)
 
