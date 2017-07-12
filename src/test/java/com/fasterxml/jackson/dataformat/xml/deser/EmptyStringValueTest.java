@@ -22,10 +22,10 @@ public class EmptyStringValueTest extends XmlTestBase
     static class Names {
         public List<Name> names = new ArrayList<Name>();
     }
-    
+
     /*
     /**********************************************************
-    /* Unit tests
+    /* Test methods
     /**********************************************************
      */
 
