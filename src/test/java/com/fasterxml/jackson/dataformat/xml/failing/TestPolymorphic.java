@@ -12,6 +12,7 @@ public class TestPolymorphic extends XmlTestBase
     /**********************************************************
      */
 
+    /*
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY)
     static class BaseTypeWithClassProperty { }
 
@@ -21,7 +22,8 @@ public class TestPolymorphic extends XmlTestBase
         public SubTypeWithClassProperty() { }
         public SubTypeWithClassProperty(String s) { name = s; }
     }
-    
+    */
+
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_ARRAY)
     static class BaseTypeWithClassArray { }
 
@@ -41,7 +43,7 @@ public class TestPolymorphic extends XmlTestBase
         public SubTypeWithClassObject() { }
         public SubTypeWithClassObject(String s) { name = s; }
     }
-    
+
     /**
      * If not used as root element, need to use a wrapper
      */

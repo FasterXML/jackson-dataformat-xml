@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 
@@ -22,8 +24,6 @@ public class StaxUtil
     public static <T> T throwXmlAsIOException(XMLStreamException e) throws IOException
     {
         Throwable t = _unwrap(e);
-        if (t instanceof Error) throw (Error) t;
-        if (t instanceof RuntimeException) throw (RuntimeException) t;
         throw new IOException(t);
     }
 
@@ -34,27 +34,34 @@ public class StaxUtil
             JsonParser p) throws IOException
     {
         Throwable t = _unwrap(e);
-        if (t instanceof Error) throw (Error) t;
-        if (t instanceof RuntimeException) throw (RuntimeException) t;
-        throw new JsonParseException(p, e.getMessage(), t);
+        throw new JsonParseException(p, _message(t, e), t);
     }
 
     /**
      * @since 2.9
      */
-    public static <T> T throwAsGenerationException(XMLStreamException e) throws IOException
+    public static <T> T throwAsGenerationException(XMLStreamException e,
+            JsonGenerator g) throws IOException
     {
         Throwable t = _unwrap(e);
-        if (t instanceof Error) throw (Error) t;
-        if (t instanceof RuntimeException) throw (RuntimeException) t;
-        throw new IOException(t);
+        throw new JsonGenerationException(_message(t, e), t, g);
     }
 
-    private final static Throwable _unwrap(Throwable t) {
+    private static Throwable _unwrap(Throwable t) {
         while (t.getCause() != null) {
             t = t.getCause();
         }
+        if (t instanceof Error) throw (Error) t;
+        if (t instanceof RuntimeException) throw (RuntimeException) t;
         return t;
+    }
+
+    private static String _message(Throwable t1, Throwable t2) {
+        String msg = t1.getMessage();
+        if (msg == null) {
+            msg = t2.getMessage();
+        }
+        return msg;
     }
 
     /**

@@ -196,7 +196,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             try {
                 xgen.getStaxWriter().setDefaultNamespace(ns);
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsGenerationException(e);
+                StaxUtil.throwAsGenerationException(e, xgen);
             }
         }
     }

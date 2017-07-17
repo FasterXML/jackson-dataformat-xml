@@ -618,7 +618,7 @@ public class XmlFactory extends JsonFactory
         try {
             sw = _xmlOutputFactory.createXMLStreamWriter(out, "UTF-8");
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsGenerationException(e);
+            return StaxUtil.throwAsGenerationException(e, null);
         }
         return _initializeXmlWriter(sw);
     }
@@ -629,7 +629,7 @@ public class XmlFactory extends JsonFactory
         try {
             sw = _xmlOutputFactory.createXMLStreamWriter(w);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsGenerationException(e);
+            return StaxUtil.throwAsGenerationException(e, null);
         }
         return _initializeXmlWriter(sw);
     }
@@ -641,7 +641,7 @@ public class XmlFactory extends JsonFactory
         try {
             sw.setDefaultNamespace("");
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsGenerationException(e);
+            return StaxUtil.throwAsGenerationException(e, null);
         }
         return sw;
     }
