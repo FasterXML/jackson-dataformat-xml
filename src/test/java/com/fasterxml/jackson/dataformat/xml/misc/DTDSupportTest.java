@@ -1,11 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.Map;
 
 import com.fasterxml.jackson.dataformat.xml.*;
 
 // for [databind-xml#211]
-public class SupportDTDDefaultsTest extends XmlTestBase
+public class DTDSupportTest extends XmlTestBase
 {
     public void testDTDAttempt() throws Exception
     {

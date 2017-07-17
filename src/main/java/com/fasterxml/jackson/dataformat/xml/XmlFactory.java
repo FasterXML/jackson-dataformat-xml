@@ -491,11 +491,7 @@ public class XmlFactory extends JsonFactory
     {
         // note: should NOT move parser if already pointing to START_ELEMENT
         if (sr.getEventType() != XMLStreamConstants.START_ELEMENT) {
-            try {
-                sr = _initializeXmlReader(sr);
-            } catch (XMLStreamException e) {
-                return StaxUtil.throwXmlAsIOException(e);
-            }
+            sr = _initializeXmlReader(sr);
         }
 
         // false -> not managed
@@ -516,11 +512,7 @@ public class XmlFactory extends JsonFactory
      */
     public ToXmlGenerator createGenerator(XMLStreamWriter sw) throws IOException
     {
-        try {
-            sw = _initializeXmlWriter(sw);
-        } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
-        }
+        sw = _initializeXmlWriter(sw);
         IOContext ctxt = _createContext(sw, false);
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sw);
@@ -538,10 +530,10 @@ public class XmlFactory extends JsonFactory
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(in);
-            sr = _initializeXmlReader(sr);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+            return StaxUtil.throwAsParseException(e);
         }
+        sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr);
         if (_cfgNameForTextElement != null) {
@@ -556,10 +548,10 @@ public class XmlFactory extends JsonFactory
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(r);
-            sr = _initializeXmlReader(sr);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+            return StaxUtil.throwAsParseException(e);
         }
+        sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr);
         if (_cfgNameForTextElement != null) {
@@ -577,10 +569,10 @@ public class XmlFactory extends JsonFactory
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
-            sr = _initializeXmlReader(sr);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+            return StaxUtil.throwAsParseException(e);
         }
+        sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr);
         if (_cfgNameForTextElement != null) {
@@ -595,10 +587,10 @@ public class XmlFactory extends JsonFactory
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
-            sr = _initializeXmlReader(sr);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+            return StaxUtil.throwAsParseException(e);
         }
+        sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr);
         if (_cfgNameForTextElement != null) {
@@ -622,35 +614,47 @@ public class XmlFactory extends JsonFactory
 
     protected XMLStreamWriter _createXmlWriter(OutputStream out) throws IOException
     {
+        XMLStreamWriter sw;
         try {
-            return _initializeXmlWriter(_xmlOutputFactory.createXMLStreamWriter(out, "UTF-8"));
+            sw = _xmlOutputFactory.createXMLStreamWriter(out, "UTF-8");
         } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+            return StaxUtil.throwAsGenerationException(e);
         }
+        return _initializeXmlWriter(sw);
     }
 
     protected XMLStreamWriter _createXmlWriter(Writer w) throws IOException
     {
+        XMLStreamWriter sw;
         try {
-            return _initializeXmlWriter(_xmlOutputFactory.createXMLStreamWriter(w));
+            sw = _xmlOutputFactory.createXMLStreamWriter(w);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwXmlAsIOException(e);
+            return StaxUtil.throwAsGenerationException(e);
         }
+        return _initializeXmlWriter(sw);
     }
 
-    protected final XMLStreamWriter _initializeXmlWriter(XMLStreamWriter sw) throws IOException, XMLStreamException
+    protected final XMLStreamWriter _initializeXmlWriter(XMLStreamWriter sw) throws IOException
     {
         // And just for Sun Stax parser (JDK default), seems that we better define default namespace
         // (Woodstox doesn't care) -- otherwise it'll add unnecessary odd declaration
-        sw.setDefaultNamespace("");
+        try {
+            sw.setDefaultNamespace("");
+        } catch (XMLStreamException e) {
+            return StaxUtil.throwAsGenerationException(e);
+        }
         return sw;
     }
 
-    protected final XMLStreamReader _initializeXmlReader(XMLStreamReader sr) throws IOException, XMLStreamException
+    protected final XMLStreamReader _initializeXmlReader(XMLStreamReader sr) throws IOException
     {
-        // for now, nothing to do... except let's find the root element
-        while (sr.next() != XMLStreamConstants.START_ELEMENT) {
-            ;
+        try {
+            // for now, nothing to do... except let's find the root element
+            while (sr.next() != XMLStreamConstants.START_ELEMENT) {
+                ;
+            }
+        } catch (XMLStreamException e) {
+            return StaxUtil.throwAsParseException(e);
         }
         return sr;
     }

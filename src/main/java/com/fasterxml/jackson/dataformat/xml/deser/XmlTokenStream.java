@@ -184,7 +184,7 @@ public class XmlTokenStream
         try {
             return _next();
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsParseException(e);
             return -1;
         }
     }
@@ -211,7 +211,7 @@ public class XmlTokenStream
         try {
             _xmlReader.closeCompletely();
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsParseException(e);
         }
     }
 
@@ -220,13 +220,14 @@ public class XmlTokenStream
         try {
             _xmlReader.close();
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsParseException(e);
         }
     }
 
     public JsonLocation getCurrentLocation() {
         return _extractLocation(_xmlReader.getLocationInfo().getCurrentLocation());
     }
+
     public JsonLocation getTokenLocation() {
         return _extractLocation(_xmlReader.getLocationInfo().getStartLocation());
     }
@@ -311,7 +312,7 @@ public class XmlTokenStream
                 return text;
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsParseException(e);
         }
         // Anything to do in failed case? Roll back whatever we found or.. ?
         return null;
@@ -406,10 +407,14 @@ public class XmlTokenStream
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
-                if (text == null) {
-                    text = _xmlReader.getText();
-                } else {
-                    text += _xmlReader.getText();
+                // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
+                {
+                    String str = _getText(_xmlReader);
+                    if (text == null) {
+                        text = str;
+                    } else {
+                        text += str;
+                    }
                 }
                 break;
             default:
@@ -433,7 +438,20 @@ public class XmlTokenStream
         }
         throw new IllegalStateException("Expected to find a tag, instead reached end of input");
     }
-    
+
+    private final String _getText(XMLStreamReader2 r) throws XMLStreamException
+    {
+        try {
+            return r.getText();
+        } catch (RuntimeException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof XMLStreamException) {
+                throw (XMLStreamException) cause;
+            }
+            throw e;
+        }
+    }
+
     /*
     /**********************************************************************
     /* Internal methods, other
@@ -554,23 +572,14 @@ public class XmlTokenStream
         }
         return true;
     }
-    
+
     // for DEBUGGING
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(Token stream:");
-        sb.append(" state=").append(_currentState);
-        sb.append(" attr#=").append(_attributeCount);
-        sb.append(" nextAttr#=").append(_nextAttributeIndex);
-        sb.append(" name=").append(_localName);
-        sb.append(" text=").append(_textValue);
-        sb.append(" repeat?=").append(_repeatElement);
-        sb.append(" wrapper=[").append(_currentWrapper);
-        sb.append("] repeatElement=").append(_repeatElement);
-        sb.append(" nextName=").append(_nextLocalName);
-        sb.append(")");
-        return sb.toString();
+        return String.format("(Token stream: state=%s attr=%s nextAttr=%s"
+                +" name=%s text=%s repeat?=%s wrapper=[%s] repeatElement=%s nextName=%s)",
+                _currentState, _attributeCount, _nextAttributeIndex,
+                _localName, _textValue, _repeatElement, _currentWrapper, _repeatElement, _nextLocalName);
     }
 }

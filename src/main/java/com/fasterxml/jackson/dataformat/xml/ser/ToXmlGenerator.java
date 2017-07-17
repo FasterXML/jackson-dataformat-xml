@@ -208,7 +208,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -381,7 +381,7 @@ public final class ToXmlGenerator
                     _xmlWriter.writeStartElement(wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
                 }
             } catch (XMLStreamException e) {
-                StaxUtil.throwXmlAsIOException(e);
+                StaxUtil.throwAsGenerationException(e);
             }
         }
         this.setNextName(wrappedName);
@@ -401,7 +401,7 @@ public final class ToXmlGenerator
                     _xmlWriter.writeEndElement();
                 }
             } catch (XMLStreamException e) {
-                StaxUtil.throwXmlAsIOException(e);
+                StaxUtil.throwAsGenerationException(e);
             }
         }
     }
@@ -517,7 +517,7 @@ public final class ToXmlGenerator
         try {
             _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
     
@@ -541,7 +541,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
     
@@ -590,7 +590,7 @@ public final class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             } 
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }    
     
@@ -625,7 +625,7 @@ public final class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -674,7 +674,7 @@ public final class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -698,7 +698,7 @@ public final class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -721,7 +721,7 @@ public final class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -740,7 +740,7 @@ public final class ToXmlGenerator
         try {
             _xmlWriter.writeRaw(text);
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -754,7 +754,7 @@ public final class ToXmlGenerator
         try {
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -768,7 +768,7 @@ public final class ToXmlGenerator
         try {
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -816,7 +816,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -864,7 +864,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -892,7 +892,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -921,7 +921,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -949,7 +949,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -977,7 +977,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -1005,7 +1005,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -1051,7 +1051,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -1084,7 +1084,7 @@ public final class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 
@@ -1099,7 +1099,7 @@ public final class ToXmlGenerator
     /* Implementations, overrides for other methods
     /**********************************************************
      */
-    
+
     @Override
     protected final void _verifyValueWrite(String typeMsg) throws IOException
     {
@@ -1122,7 +1122,7 @@ public final class ToXmlGenerator
             try {
                 _xmlWriter.flush();
             } catch (XMLStreamException e) {
-                StaxUtil.throwXmlAsIOException(e);
+                StaxUtil.throwAsGenerationException(e);
             }
         }
     }
@@ -1165,7 +1165,7 @@ public final class ToXmlGenerator
                 _xmlWriter.close();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwXmlAsIOException(e);
+            StaxUtil.throwAsGenerationException(e);
         }
     }
 

@@ -12,16 +12,45 @@ public class StaxUtil
      *<p>
      * Note: dummy type variable is used for convenience, to allow caller to claim
      * that this method returns result of any necessary type.
+     *
+     * @deprecated Since 2.9
      */
+    @Deprecated
     public static <T> T throwXmlAsIOException(XMLStreamException e) throws IOException
     {
-        Throwable t = e;
-        while (t.getCause() != null) {
-            t = t.getCause();
-        }
+        Throwable t = _unwrap(e);
         if (t instanceof Error) throw (Error) t;
         if (t instanceof RuntimeException) throw (RuntimeException) t;
         throw new IOException(t);
+    }
+
+    /**
+     * @since 2.9
+     */
+    public static <T> T throwAsParseException(XMLStreamException e) throws IOException
+    {
+        Throwable t = _unwrap(e);
+        if (t instanceof Error) throw (Error) t;
+        if (t instanceof RuntimeException) throw (RuntimeException) t;
+        throw new IOException(t);
+    }
+
+    /**
+     * @since 2.9
+     */
+    public static <T> T throwAsGenerationException(XMLStreamException e) throws IOException
+    {
+        Throwable t = _unwrap(e);
+        if (t instanceof Error) throw (Error) t;
+        if (t instanceof RuntimeException) throw (RuntimeException) t;
+        throw new IOException(t);
+    }
+
+    private final static Throwable _unwrap(Throwable t) {
+        while (t.getCause() != null) {
+            t = t.getCause();
+        }
+        return t;
     }
 
     /**

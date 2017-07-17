@@ -164,6 +164,7 @@ public final class XmlReadContext
      * @return Location pointing to the point where the context
      *   start marker was found
      */
+    @Override
     public final JsonLocation getStartLocation(Object srcRef) {
         // We don't keep track of offsets at this level (only reader does)
         long totalChars = -1L;
