@@ -24,9 +24,8 @@ public class DeserErrorHandling236Test extends XmlTestBase
         try {
             MAPPER.readValue(XML, Employee.class);
         } catch (JsonProcessingException e) {
-            verifyException(e, "foobar");
+            verifyException(e, "Unexpected character");
         } catch (Exception e) {
-            e.printStackTrace();
             fail("Wrong exception: "+e);
         }
     }

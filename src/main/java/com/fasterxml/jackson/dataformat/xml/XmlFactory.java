@@ -531,7 +531,7 @@ public class XmlFactory extends JsonFactory
         try {
             sr = _xmlInputFactory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e);
+            return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
@@ -549,7 +549,7 @@ public class XmlFactory extends JsonFactory
         try {
             sr = _xmlInputFactory.createXMLStreamReader(r);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e);
+            return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
@@ -570,7 +570,7 @@ public class XmlFactory extends JsonFactory
         try {
             sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e);
+            return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
@@ -588,7 +588,7 @@ public class XmlFactory extends JsonFactory
         try {
             sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e);
+            return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
@@ -654,7 +654,7 @@ public class XmlFactory extends JsonFactory
                 ;
             }
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e);
+            return StaxUtil.throwAsParseException(e, null);
         }
         return sr;
     }

@@ -176,20 +176,15 @@ public class XmlTokenStream
     }
     */
 
-    public int next() throws IOException 
+    public int next() throws XMLStreamException 
     {
         if (_repeatElement != 0) {
             return (_currentState = _handleRepeatElement());
         }
-        try {
-            return _next();
-        } catch (XMLStreamException e) {
-            StaxUtil.throwAsParseException(e);
-            return -1;
-        }
+        return _next();
     }
-    
-    public void skipEndElement() throws IOException
+
+    public void skipEndElement() throws IOException, XMLStreamException
     {
         int type = next();
         if (type != XML_END_ELEMENT) {
@@ -206,22 +201,12 @@ public class XmlTokenStream
         return (_currentState == XML_START_ELEMENT) && (_attributeCount > 0);
     }
     
-    public void closeCompletely() throws IOException
-    {
-        try {
-            _xmlReader.closeCompletely();
-        } catch (XMLStreamException e) {
-            StaxUtil.throwAsParseException(e);
-        }
+    public void closeCompletely() throws XMLStreamException {
+        _xmlReader.closeCompletely();
     }
 
-    public void close() throws IOException
-    {
-        try {
-            _xmlReader.close();
-        } catch (XMLStreamException e) {
-            StaxUtil.throwAsParseException(e);
-        }
+    public void close() throws XMLStreamException {
+        _xmlReader.close();
     }
 
     public JsonLocation getCurrentLocation() {
@@ -286,33 +271,29 @@ public class XmlTokenStream
         }
     }
 
-    protected String convertToString() throws IOException
+    protected String convertToString() throws XMLStreamException
     {
         // only applicable to cases where START_OBJECT was induced by attributes
         if (_currentState != XML_ATTRIBUTE_NAME || _nextAttributeIndex != 0) {
             return null;
         }
-        try {
-            String text = _collectUntilTag();
-            // 23-Dec-2015, tatu: Used to require text not to be null, but as per
-            //   [dataformat-xml#167], empty tag does count
-            if (_xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
-                if (text == null) {
-                    text = "";
-                }
-                if (_currentWrapper != null) {
-                    _currentWrapper = _currentWrapper.getParent();
-                }
-                // just for diagnostics, reset to element name (from first attribute name)
-                _localName = _xmlReader.getLocalName();
-                _namespaceURI = _xmlReader.getNamespaceURI();
-                _attributeCount = 0;
-                _currentState = XML_TEXT;
-                _textValue = text;
-                return text;
+        String text = _collectUntilTag();
+        // 23-Dec-2015, tatu: Used to require text not to be null, but as per
+        //   [dataformat-xml#167], empty tag does count
+        if (_xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
+            if (text == null) {
+                text = "";
             }
-        } catch (XMLStreamException e) {
-            StaxUtil.throwAsParseException(e);
+            if (_currentWrapper != null) {
+                _currentWrapper = _currentWrapper.getParent();
+            }
+            // just for diagnostics, reset to element name (from first attribute name)
+            _localName = _xmlReader.getLocalName();
+            _namespaceURI = _xmlReader.getNamespaceURI();
+            _attributeCount = 0;
+            _currentState = XML_TEXT;
+            _textValue = text;
+            return text;
         }
         // Anything to do in failed case? Roll back whatever we found or.. ?
         return null;
@@ -495,7 +476,7 @@ public class XmlTokenStream
      * Method called to handle details of repeating "virtual"
      * start/end elements, needed for handling 'unwrapped' lists.
      */
-    protected int _handleRepeatElement() throws IOException 
+    protected int _handleRepeatElement() throws XMLStreamException 
     {
         int type = _repeatElement;
         _repeatElement = 0;

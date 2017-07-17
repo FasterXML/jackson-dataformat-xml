@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+
 public class StaxUtil
 {
     /**
@@ -27,12 +30,13 @@ public class StaxUtil
     /**
      * @since 2.9
      */
-    public static <T> T throwAsParseException(XMLStreamException e) throws IOException
+    public static <T> T throwAsParseException(XMLStreamException e,
+            JsonParser p) throws IOException
     {
         Throwable t = _unwrap(e);
         if (t instanceof Error) throw (Error) t;
         if (t instanceof RuntimeException) throw (RuntimeException) t;
-        throw new IOException(t);
+        throw new JsonParseException(p, e.getMessage(), t);
     }
 
     /**

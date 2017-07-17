@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as
@@ -373,8 +375,9 @@ public class FromXmlParser
                 } else {
                     _xmlTokens.close();
                 }
+            } catch (XMLStreamException e) {
+                StaxUtil.throwAsParseException(e, this);
             } finally {
-                // as per [JACKSON-324], do in finally block
                 // Also, internal buffer(s) can now be released as well
                 _releaseBuffers();
             }
@@ -492,8 +495,12 @@ public class FromXmlParser
             }
             return t;
         }
-        int token = _xmlTokens.next();
-
+        int token;
+        try {
+            token = _xmlTokens.next();
+        } catch (XMLStreamException e) {
+            token = StaxUtil.throwAsParseException(e, this);
+        }
         // Need to have a loop just because we may have to eat/convert
         // a start-element that indicates an array element.
         while (token == XmlTokenStream.XML_START_ELEMENT) {
@@ -507,7 +514,11 @@ public class FromXmlParser
             if (_parsingContext.inArray()) {
                 // Yup: in array, so this element could be verified; but it won't be
                 // reported anyway, and we need to process following event.
-                token = _xmlTokens.next();
+                try {
+                    token = _xmlTokens.next();
+                } catch (XMLStreamException e) {
+                    StaxUtil.throwAsParseException(e, this);
+                }
                 _mayBeLeaf = true;
                 continue;
             }
@@ -569,7 +580,11 @@ public class FromXmlParser
                     // we had an empty String (or all white space), and we are
                     // deserializing an array, we better hide the empty text.
                     // Also: must skip following END_ELEMENT
-                    _xmlTokens.skipEndElement();
+                    try {
+                        _xmlTokens.skipEndElement();
+                    } catch (XMLStreamException e) {
+                        StaxUtil.throwAsParseException(e, this);
+                    }
                     if (_parsingContext.inArray()) {
                         if (_isEmpty(_currText)) {
                             // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
@@ -587,7 +602,11 @@ public class FromXmlParser
                     // loop over again
                     if (_parsingContext.inObject()) {
                         if ((_currToken != JsonToken.FIELD_NAME) && _isEmpty(_currText)) {
-                            token = _xmlTokens.next();
+                            try {
+                                token = _xmlTokens.next();
+                            } catch (XMLStreamException e) {
+                                StaxUtil.throwAsParseException(e, this);
+                            }
                             continue;
                         }
                     }
@@ -601,7 +620,7 @@ public class FromXmlParser
             }
         }
     }
-    
+
     /*
     /**********************************************************
     /* Overrides of specialized nextXxx() methods
@@ -629,7 +648,13 @@ public class FromXmlParser
             return null;
         }
 
-        int token = _xmlTokens.next();
+        int token;
+
+        try {
+            token = _xmlTokens.next();
+        } catch (XMLStreamException e) {
+            token = StaxUtil.throwAsParseException(e, this);
+        }
 
         // mostly copied from 'nextToken()'
         while (token == XmlTokenStream.XML_START_ELEMENT) {
@@ -640,7 +665,11 @@ public class FromXmlParser
                 return null;
             }
             if (_parsingContext.inArray()) {
-                token = _xmlTokens.next();
+                try {
+                    token = _xmlTokens.next();
+                } catch (XMLStreamException e) {
+                    StaxUtil.throwAsParseException(e, this);
+                }
                 _mayBeLeaf = true;
                 continue;
             }
@@ -688,8 +717,11 @@ public class FromXmlParser
             if (_mayBeLeaf) {
                 _mayBeLeaf = false;
                 // Also: must skip following END_ELEMENT
-                _xmlTokens.skipEndElement();
-
+                try {
+                    _xmlTokens.skipEndElement();
+                } catch (XMLStreamException e) {
+                    StaxUtil.throwAsParseException(e, this);
+                }
                 // NOTE: this is different from nextToken() -- NO work-around
                 // for otherwise empty List/array
                 _currToken = JsonToken.VALUE_STRING;
@@ -772,7 +804,7 @@ public class FromXmlParser
             // the interesting case; may be able to convert certain kinds of
             // elements (specifically, ones with attributes, CDATA only content)
             // into VALUE_STRING
-            {
+            try {
                 String str = _xmlTokens.convertToString();
                 if (str != null) {
                     // need to convert token, as well as "undo" START_OBJECT
@@ -782,13 +814,16 @@ public class FromXmlParser
                     _namesToWrap = _parsingContext.getNamesToWrap();
                     _currToken = JsonToken.VALUE_STRING;
                     _nextToken = null;
-                    /* One more thing: must explicitly skip the END_OBJECT that
-                     * would follow.
-                     */
-                    _xmlTokens.skipEndElement();
+                    // One more thing: must explicitly skip the END_OBJECT that would follow
+                    try {
+                        _xmlTokens.skipEndElement();
+                    } catch (XMLStreamException e) {
+                        StaxUtil.throwAsParseException(e, this);
+                    }
                     return (_currText = str);
                 }
-                
+            } catch (XMLStreamException e) {
+                StaxUtil.throwAsParseException(e, this);
             }
             return null;
         default:

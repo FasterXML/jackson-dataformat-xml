@@ -10,6 +10,8 @@ Project: jackson-dataformat-xml
  (reported by thefalconfeat@github)
 #232: Implement `writeRawValue` in `ToXmlGenerator`
  (contributed by Yury V)
+#236: `ObjectReader.readValue()` throws unexpected exception `com.ctc.wstx.exc.WstxUnexpectedCharException'
+ (reported by agyina@github)
 #245: Default `DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT`
   to "enabled" for `XmlMapper`
 #246: Add new feature, `FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL`
