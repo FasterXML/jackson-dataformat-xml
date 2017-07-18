@@ -82,7 +82,6 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
          * 
          * - have Object Id (may be allowed in future)
          * - have any getter
-         * 
          */
         if ((_objectIdWriter == null)
                 && (_anyGetterWriter == null)
@@ -105,19 +104,19 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
      * {@link BeanPropertyWriter} instances.
      */
     @Override
-    public void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider) throws IOException
+    public void serialize(Object bean, JsonGenerator g, SerializerProvider provider) throws IOException
     {
         if (_objectIdWriter != null) {
-            _serializeWithObjectId(bean, jgen, provider, true);
+            _serializeWithObjectId(bean, g, provider, true);
             return;
         }
-        jgen.writeStartObject();
+        g.writeStartObject();
         if (_propertyFilterId != null) {
-            serializeFieldsFiltered(bean, jgen, provider);
+            serializeFieldsFiltered(bean, g, provider);
         } else {
-            serializeFields(bean, jgen, provider);
+            serializeFields(bean, g, provider);
         }
-        jgen.writeEndObject();
+        g.writeEndObject();
     }
 
     /*

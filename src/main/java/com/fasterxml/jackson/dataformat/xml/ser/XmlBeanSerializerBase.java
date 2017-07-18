@@ -162,7 +162,6 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             super.serializeFields(bean, gen0, provider);
             return;
         }
-        
         final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         final BeanPropertyWriter[] props;
         if (_filteredProps != null && provider.getActiveView() != null) {
