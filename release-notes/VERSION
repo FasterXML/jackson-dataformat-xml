@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.9.0 (not yet released)
+2.9.0 (30-Jul-2017)
 
 #162: XML Empty tag to Empty string in the object during xml deserialization
  (reported by thefalconfeat@github)
