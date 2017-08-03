@@ -35,7 +35,7 @@ public class TypeAttributeOrder242Test extends XmlTestBase
 
     /*
     /**********************************************************
-    /* Unit tests
+    /* Test methods
     /**********************************************************
      */
 

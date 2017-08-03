@@ -4,7 +4,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestPolymorphic extends XmlTestBase
+// for:
+//
+// [dataformat-xml#4]
+// [dataformat-xml#9] (enums)
+
+public class PolymorphicIssue4Test extends XmlTestBase
 {
     /*
     /**********************************************************

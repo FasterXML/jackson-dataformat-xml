@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TestEnums extends XmlTestBase
+// related to [dataformat-xml#9] (and possibly others)
+public class EnumIssue9Test extends XmlTestBase
 {
     static enum TestEnum { A, B, C; }
     
@@ -41,7 +42,7 @@ public class TestEnums extends XmlTestBase
         Object ob = result.value;
         
         if (TestEnum.class != ob.getClass()) {
-            fail("Failed to deserialize TestEnum (got "+ob.getClass()+getName()+") from: "+xml);
+            fail("Failed to deserialize TestEnum (got "+ob.getClass().getName()+") from: "+xml);
         }
 
         assertEquals(TestEnum.B, result.value);

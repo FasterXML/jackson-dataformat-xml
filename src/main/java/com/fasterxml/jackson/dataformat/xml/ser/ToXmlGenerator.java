@@ -445,7 +445,27 @@ public final class ToXmlGenerator
         writeFieldName(fieldName);
         writeString(value);
     }
+
+    // 03-Aug-2017, tatu: We could use this as mentioned in comment below BUT
+    //    since there is no counterpart for deserialization this will not
+    //    help us. Approaches that could/would help probably require different
+    //    handling...
+    //
+    //    See [dataformat-xml#4] for more context.
     
+    /*
+    // @since 2.9
+    public WritableTypeId writeTypePrefix(WritableTypeId typeIdDef) throws IOException
+    {
+        // 03-Aug-2017, tatu: Due to XML oddities, we do need to massage things
+        //     a bit: specifically, change WRAPPER_ARRAY into WRAPPER_OBJECT, always
+        if (typeIdDef.include == WritableTypeId.Inclusion.WRAPPER_ARRAY) {
+            typeIdDef.include = WritableTypeId.Inclusion.WRAPPER_OBJECT;
+        }
+        return super.writeTypePrefix(typeIdDef);
+    }
+    */
+
     /*
     /**********************************************************
     /* JsonGenerator output method implementations, structural
