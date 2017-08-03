@@ -93,7 +93,12 @@ public class XmlBeanDeserializerModifier
 
         // Heuristics are bit tricky; but for now let's assume that if POJO
         // can already work with VALUE_STRING, it's ok and doesn't need extra support
-        if (!deser.getValueInstantiator().canCreateFromString()) {
+        ValueInstantiator inst = deser.getValueInstantiator();
+        // 03-Aug-2017, tatu: [dataformat-xml#254] suggests we also should
+        //    allow passing `int`/`Integer`/`long`/`Long` cases, BUT
+        //    unfortunately we can not simple use default handling. Would need
+        //    coercion.
+        if (!inst.canCreateFromString()) {
             SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
             if (textProp != null) {
                 return new XmlTextDeserializer(deser, textProp);

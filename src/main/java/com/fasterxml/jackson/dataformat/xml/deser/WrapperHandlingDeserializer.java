@@ -63,17 +63,11 @@ public class WrapperHandlingDeserializer
             BeanProperty property)
         throws JsonMappingException
     {
-        // !!! 16-Jan-2015, tatu: TODO: change to be like so in 2.6.0 -- leaving
-        //    out for 2.5 just to increase compatibility slightly with 2.4 databind
-        /*
         JavaType vt = _type;
         if (vt == null) {
             vt = ctxt.constructType(_delegatee.handledType());
         }
         JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
-        */
-
-        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, _type);
         BeanDeserializerBase newDelegatee = _verifyDeserType(del);
         
         // Let's go through the properties now...
@@ -81,16 +75,15 @@ public class WrapperHandlingDeserializer
         HashSet<String> unwrappedNames = null;
         while (it.hasNext()) {
             SettableBeanProperty prop = it.next();
-            /* First things first: only consider array/Collection types
-             * (not perfect check, but simplest reasonable check)
-             */
+            // First things first: only consider array/Collection types
+            // (not perfect check, but simplest reasonable check)
             JavaType type = prop.getType();
             if (!TypeUtil.isIndexedType(type)) {
                 continue;
             }
             PropertyName wrapperName = prop.getWrapperName();
             // skip anything with wrapper (should work as is)
-            if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
+            if ((wrapperName != null) && (wrapperName != PropertyName.NO_NAME)) {
                 continue;
             }
             if (unwrappedNames == null) {
@@ -114,27 +107,27 @@ public class WrapperHandlingDeserializer
      */
 
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
     {
-        _configureParser(jp);
-        return _delegatee.deserialize(jp,  ctxt);
+        _configureParser(p);
+        return _delegatee.deserialize(p,  ctxt);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt,
+    public Object deserialize(JsonParser p, DeserializationContext ctxt,
             Object intoValue) throws IOException
     {
-        _configureParser(jp);
-        return ((JsonDeserializer<Object>)_delegatee).deserialize(jp, ctxt, intoValue);
+        _configureParser(p);
+        return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
     }
 
     @Override
-    public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt,
+    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt,
             TypeDeserializer typeDeserializer) throws IOException
     {
-        _configureParser(jp);
-        return _delegatee.deserializeWithType(jp, ctxt, typeDeserializer);
+        _configureParser(p);
+        return _delegatee.deserializeWithType(p, ctxt, typeDeserializer);
     }
     
     /*
@@ -143,14 +136,13 @@ public class WrapperHandlingDeserializer
     /**********************************************************************
      */
 
-    protected final void _configureParser(JsonParser jp) throws IOException
+    protected final void _configureParser(JsonParser p) throws IOException
     {
-        /* 19-Aug-2013, tatu: Although we should not usually get called with
-         *   parser of other types, there are some cases where this may happen:
-         *   specifically, during structural value conversions.
-         */
-        if (jp instanceof FromXmlParser) {
-            ((FromXmlParser) jp).addVirtualWrapping(_namesToWrap);
+        // 19-Aug-2013, tatu: Although we should not usually get called with
+        //   parser of other types, there are some cases where this may happen:
+        //   specifically, during structural value conversions.
+        if (p instanceof FromXmlParser) {
+            ((FromXmlParser) p).addVirtualWrapping(_namesToWrap);
         }
     }
     

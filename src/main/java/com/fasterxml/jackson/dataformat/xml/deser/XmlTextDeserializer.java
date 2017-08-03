@@ -26,7 +26,7 @@ public class XmlTextDeserializer
      * may change, but index will remain constant.
      */
     protected final int _xmlTextPropertyIndex;
-    
+
     /**
      * Actual property that is indicated to be of type "XML Text" (and
      * is the only element-valued property)
@@ -34,7 +34,7 @@ public class XmlTextDeserializer
     protected final SettableBeanProperty _xmlTextProperty;
 
     protected final ValueInstantiator _valueInstantiator;
-    
+
     /*
     /**********************************************************************
     /* Construction
@@ -48,7 +48,7 @@ public class XmlTextDeserializer
         _xmlTextPropertyIndex = prop.getPropertyIndex();
         _valueInstantiator = delegate.getValueInstantiator();
     }
-    
+
     public XmlTextDeserializer(BeanDeserializerBase delegate, int textPropIndex)
     {
         super(delegate);
@@ -85,36 +85,35 @@ public class XmlTextDeserializer
      */
 
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt)
-        throws IOException, JsonProcessingException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt)
+        throws IOException
     {
-        if (jp.getCurrentToken() == JsonToken.VALUE_STRING) {
+        if (p.getCurrentToken() == JsonToken.VALUE_STRING) {
             Object bean = _valueInstantiator.createUsingDefault(ctxt);
-            _xmlTextProperty.deserializeAndSet(jp, ctxt, bean);
+            _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
             return bean;
         }
-        return _delegatee.deserialize(jp,  ctxt);
+        return _delegatee.deserialize(p,  ctxt);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt,
-            Object bean)
-        throws IOException, JsonProcessingException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt,
+            Object bean) throws IOException
     {
-        if (jp.getCurrentToken() == JsonToken.VALUE_STRING) {
-            _xmlTextProperty.deserializeAndSet(jp, ctxt, bean);
+        if (p.getCurrentToken() == JsonToken.VALUE_STRING) {
+            _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
             return bean;
         }
-        return ((JsonDeserializer<Object>)_delegatee).deserialize(jp, ctxt, bean);
+        return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, bean);
     }
 
     @Override
-    public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt,
+    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt,
             TypeDeserializer typeDeserializer)
-        throws IOException, JsonProcessingException
+        throws IOException
     {
-        return _delegatee.deserializeWithType(jp, ctxt, typeDeserializer);
+        return _delegatee.deserializeWithType(p, ctxt, typeDeserializer);
     }
     
     /*
