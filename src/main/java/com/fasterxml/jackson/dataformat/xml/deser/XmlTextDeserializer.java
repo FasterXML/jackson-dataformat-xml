@@ -88,7 +88,7 @@ public class XmlTextDeserializer
     public Object deserialize(JsonParser p, DeserializationContext ctxt)
         throws IOException
     {
-        if (p.getCurrentToken() == JsonToken.VALUE_STRING) {
+        if (p.currentToken() == JsonToken.VALUE_STRING) {
             Object bean = _valueInstantiator.createUsingDefault(ctxt);
             _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
             return bean;
@@ -101,7 +101,7 @@ public class XmlTextDeserializer
     public Object deserialize(JsonParser p, DeserializationContext ctxt,
             Object bean) throws IOException
     {
-        if (p.getCurrentToken() == JsonToken.VALUE_STRING) {
+        if (p.currentToken() == JsonToken.VALUE_STRING) {
             _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
             return bean;
         }

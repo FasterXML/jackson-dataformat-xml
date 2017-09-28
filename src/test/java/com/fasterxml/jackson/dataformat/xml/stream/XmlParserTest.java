@@ -189,7 +189,7 @@ public class XmlParserTest extends XmlTestBase
 
         // must request 'as-array' handling, which will "convert" current token:
         assertTrue("Should 'convert' START_OBJECT to START_ARRAY", xp.isExpectedStartArrayToken());
-        assertToken(JsonToken.START_ARRAY, xp.getCurrentToken()); // <elem>
+        assertToken(JsonToken.START_ARRAY, xp.currentToken()); // <elem>
         assertTrue(xp.getParsingContext().inArray());
 
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());

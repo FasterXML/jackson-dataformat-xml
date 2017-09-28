@@ -3,7 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.*;
-
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -88,9 +88,9 @@ public class TestViews extends XmlTestBase
 
         ObjectMapper xmlMapper = new XmlMapper();
 
-        xmlMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, false );
-        xmlMapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false );
-        xmlMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false );
+        xmlMapper.setVisibility(PropertyAccessor.FIELD, Visibility.NONE);
+        xmlMapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
+        xmlMapper.setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
         xmlMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false );
 
         String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);

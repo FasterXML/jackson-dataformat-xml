@@ -8,8 +8,6 @@ import org.codehaus.stax2.io.Stax2ByteArraySource;
 import org.codehaus.stax2.io.Stax2CharArraySource;
 
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.format.InputAccessor;
-import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
@@ -372,11 +370,6 @@ public class XmlFactory extends JsonFactory
         return FORMAT_NAME_XML;
     }
 
-    @Override
-    public MatchStrength hasFormat(InputAccessor acc) throws IOException {
-        return hasXMLFormat(acc);
-    }
-
     /**
      * XML format does require support from custom {@link ObjectCodec}
      * (that is, {@link XmlMapper}), so need to return true here.
@@ -658,166 +651,4 @@ public class XmlFactory extends JsonFactory
         }
         return sr;
     }
-
-    /*
-    /**********************************************************************
-    /* Internal methods, format auto-detection
-    /**********************************************************************
-     */
-
-    private final static byte UTF8_BOM_1 = (byte) 0xEF;
-    private final static byte UTF8_BOM_2 = (byte) 0xBB;
-    private final static byte UTF8_BOM_3 = (byte) 0xBF;
-
-    private final static byte BYTE_x = (byte) 'x';
-    private final static byte BYTE_m = (byte) 'm';
-    private final static byte BYTE_l = (byte) 'l';
-    private final static byte BYTE_D = (byte) 'D';
-
-    private final static byte BYTE_LT = (byte) '<';
-    private final static byte BYTE_QMARK = (byte) '?';
-    private final static byte BYTE_EXCL = (byte) '!';
-    private final static byte BYTE_HYPHEN = (byte) '-';
-    
-    /**
-     * Method that tries to figure out if content seems to be in some kind
-     * of XML format.
-     * Note that implementation here is not nearly as robust as what underlying
-     * Stax parser will do; the idea is to first support common encodings,
-     * then expand as needed (for example, it is not all that hard to support
-     * UTF-16; but it is some work and not needed quite yet)
-     */
-    public static MatchStrength hasXMLFormat(InputAccessor acc) throws IOException
-    {
-        /* Basically we just need to find "<!", "<?" or "<NAME"... but ideally
-         * we would actually see the XML declaration
-         */
-        if (!acc.hasMoreBytes()) {
-            return MatchStrength.INCONCLUSIVE;
-        }
-        byte b = acc.nextByte();
-        // Very first thing, a UTF-8 BOM? (later improvements: other BOM's, heuristics)
-        if (b == UTF8_BOM_1) { // yes, looks like UTF-8 BOM
-            if (!acc.hasMoreBytes()) {
-                return MatchStrength.INCONCLUSIVE;
-            }
-            if (acc.nextByte() != UTF8_BOM_2) {
-                return MatchStrength.NO_MATCH;
-            }
-            if (!acc.hasMoreBytes()) {
-                return MatchStrength.INCONCLUSIVE;
-            }
-            if (acc.nextByte() != UTF8_BOM_3) {
-                return MatchStrength.NO_MATCH;
-            }
-            if (!acc.hasMoreBytes()) {
-                return MatchStrength.INCONCLUSIVE;
-            }
-            b = acc.nextByte();
-        }
-        // otherwise: XML declaration?
-        boolean maybeXmlDecl = (b == BYTE_LT);
-        if (!maybeXmlDecl) {
-            int ch = skipSpace(acc, b);
-            if (ch < 0) {
-                return MatchStrength.INCONCLUSIVE;
-            }
-            b = (byte) ch;
-            // If we did not get an LT, shouldn't be valid XML (minus encoding issues etc)
-           if (b != BYTE_LT) {
-                return MatchStrength.NO_MATCH;
-            }
-        }
-        if (!acc.hasMoreBytes()) {
-            return MatchStrength.INCONCLUSIVE;
-        }
-        b = acc.nextByte();
-        // Couple of choices here
-        if (b == BYTE_QMARK) { // <?
-            b = acc.nextByte();
-            if (b == BYTE_x) {
-                if (maybeXmlDecl) {
-                    if (acc.hasMoreBytes() && acc.nextByte() == BYTE_m) {
-                        if (acc.hasMoreBytes() && acc.nextByte() == BYTE_l) {
-                            return MatchStrength.FULL_MATCH;
-                        }
-                    }
-                }
-                // but even with just partial match, we ought to be fine
-                return MatchStrength.SOLID_MATCH;
-            }
-            // Ok to start with some other char too; just not xml declaration
-            if (validXmlNameStartChar(acc, b)) {
-                return MatchStrength.SOLID_MATCH;
-            }
-        } else if (b == BYTE_EXCL) {
-            /* must be <!-- comment --> or <!DOCTYPE ...>, since
-             * <![CDATA[ ]]> can NOT come outside of root
-             */
-            if (!acc.hasMoreBytes()) {
-                return MatchStrength.INCONCLUSIVE;
-            }
-            b = acc.nextByte();
-            if (b == BYTE_HYPHEN) {
-                if (!acc.hasMoreBytes()) {
-                    return MatchStrength.INCONCLUSIVE;
-                }
-                if (acc.nextByte() == BYTE_HYPHEN) {
-                    return MatchStrength.SOLID_MATCH;
-                }
-            } else if (b == BYTE_D) {
-                return tryMatch(acc, "OCTYPE", MatchStrength.SOLID_MATCH);
-            }
-        } else {
-            // maybe root element? Just needs to match first char.
-            if (validXmlNameStartChar(acc, b)) {
-                return MatchStrength.SOLID_MATCH;
-            }
-        }
-        return MatchStrength.NO_MATCH;
-    }
-
-    private final static boolean validXmlNameStartChar(InputAccessor acc, byte b)
-        throws IOException
-    {
-        /* Can make it actual real XML check in future; for now we do just crude
-         * check for ASCII range
-         */
-        int ch = (int) b & 0xFF;
-        if (ch >= 'A') { // in theory, colon could be; in practice it should never be valid (wrt namespace)
-            // This is where we'd check for multi-byte UTF-8 chars (or whatever encoding is in use)...
-            return true;
-        }
-        return false;
-    }
-    
-    private final static MatchStrength tryMatch(InputAccessor acc, String matchStr, MatchStrength fullMatchStrength)
-        throws IOException
-    {
-        for (int i = 0, len = matchStr.length(); i < len; ++i) {
-            if (!acc.hasMoreBytes()) {
-                return MatchStrength.INCONCLUSIVE;
-            }
-            if (acc.nextByte() != matchStr.charAt(i)) {
-                return MatchStrength.NO_MATCH;
-            }
-        }
-        return fullMatchStrength;
-    }
-    
-    private final static int skipSpace(InputAccessor acc, byte b) throws IOException
-    {
-        while (true) {
-            int ch = (int) b & 0xFF;
-            if (!(ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t')) {
-                return ch;
-            }
-            if (!acc.hasMoreBytes()) {
-                return -1;
-            }
-            b = acc.nextByte();
-            ch = (int) b & 0xFF;
-        }
-    }
-
 }

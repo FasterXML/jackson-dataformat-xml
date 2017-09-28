@@ -204,7 +204,7 @@ public abstract class XmlTestBase
 
     protected void assertToken(JsonToken expToken, JsonParser jp)
     {
-        assertToken(expToken, jp.getCurrentToken());
+        assertToken(expToken, jp.currentToken());
     }
 
     /**
@@ -222,7 +222,7 @@ public abstract class XmlTestBase
         String str = jp.getText();
 
         if (str.length() !=  actLen) {
-            fail("Internal problem (jp.token == "+jp.getCurrentToken()+"): jp.getText().length() ['"+str+"'] == "+str.length()+"; jp.getTextLength() == "+actLen);
+            fail("Internal problem (jp.token == "+jp.currentToken()+"): jp.getText().length() ['"+str+"'] == "+str.length()+"; jp.getTextLength() == "+actLen);
         }
         assertEquals("String access via getText(), getTextXxx() must be the same", str, str2);
 
