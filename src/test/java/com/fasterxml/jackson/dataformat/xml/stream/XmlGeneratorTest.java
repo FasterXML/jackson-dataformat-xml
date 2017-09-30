@@ -16,7 +16,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -34,7 +34,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -54,7 +54,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
         gen.writeFieldName("elem");
@@ -76,7 +76,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
         // and also need to force attribute
@@ -111,7 +111,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -129,7 +129,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -147,7 +147,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -165,7 +165,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -185,7 +185,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -205,7 +205,7 @@ public class XmlGeneratorTest extends XmlTestBase
     {
         XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();

@@ -4,7 +4,6 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -103,23 +102,23 @@ public class TestJDKSerializability extends XmlTestBase
     {
         if (useBytes) {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            ToXmlGenerator jg = f.createGenerator(bytes);
-            _write(f, jg);
+            ToXmlGenerator jg = (ToXmlGenerator) f.createGenerator(bytes);
+            _write(jg);
             return bytes.toString("UTF-8");
         }
         StringWriter sw = new StringWriter();
-        ToXmlGenerator jg = f.createGenerator(sw);
-        _write(f, jg);
+        ToXmlGenerator xg = (ToXmlGenerator) f.createGenerator(sw);
+        _write(xg);
         return sw.toString();
     }
         
-    protected void _write(JsonFactory f, ToXmlGenerator jg) throws IOException
+    protected void _write(ToXmlGenerator xg) throws IOException
     {
-        jg.setNextName(new QName("root"));
-        jg.writeStartObject();
-        jg.writeFieldName("a");
-        jg.writeString("text");
-        jg.writeEndObject();
-        jg.close();
+        xg.setNextName(new QName("root"));
+        xg.writeStartObject();
+        xg.writeFieldName("a");
+        xg.writeString("text");
+        xg.writeEndObject();
+        xg.close();
     }
 }

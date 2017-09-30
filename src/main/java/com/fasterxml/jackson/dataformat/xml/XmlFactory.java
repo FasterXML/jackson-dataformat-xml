@@ -8,8 +8,8 @@ import org.codehaus.stax2.io.Stax2ByteArraySource;
 import org.codehaus.stax2.io.Stax2CharArraySource;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.base.DecoratableFactory;
 import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.util.VersionUtil;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -24,9 +24,11 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 * 
 * @author Tatu Saloranta (tatu.saloranta@iki.fi)
 */
-public class XmlFactory extends JsonFactory
+public class XmlFactory
+    extends DecoratableFactory
+    implements java.io.Serializable
 {
-    private static final long serialVersionUID = 1; // 2.6
+    private static final long serialVersionUID = 2; // 3.0
 
     /**
      * Name used to identify XML format
@@ -62,7 +64,7 @@ public class XmlFactory extends JsonFactory
     protected transient XMLOutputFactory _xmlOutputFactory;
 
     protected String _cfgNameForTextElement;
-    
+
     /*
     /**********************************************************
     /* Factory construction, configuration
@@ -122,9 +124,6 @@ public class XmlFactory extends JsonFactory
         _xmlOutputFactory = xmlOut;
     }
 
-    /**
-     * @since 2.2.1
-     */
     protected XmlFactory(XmlFactory src, ObjectCodec oc)
     {
         super(src, oc);
@@ -147,18 +146,10 @@ public class XmlFactory extends JsonFactory
      * Note: compared to base implementation by {@link JsonFactory},
      * here the copy will actually share underlying XML input and
      * output factories, as there is no way to make copies of those.
-     * 
-     * @since 2.1
      */
     @Override
     public XmlFactory copy() {
-        _checkInvalidCopy(XmlFactory.class);
         return new XmlFactory(this, null);
-    }
-
-    @Override
-    public Version version() {
-        return PackageVersion.VERSION;
     }
 
     /*
@@ -181,7 +172,6 @@ public class XmlFactory extends JsonFactory
      * Method that we need to override to actually make restoration go
      * through constructors etc.
      */
-    @Override // since JsonFactory already implemented it
     protected Object readResolve() {
         if (_jdkXmlInFactory == null) {
             throw new IllegalStateException("No XMLInputFactory class name read during JDK deserialization");
@@ -224,23 +214,33 @@ public class XmlFactory extends JsonFactory
         out.writeUTF(_xmlInputFactory.getClass().getName());
         out.writeUTF(_xmlOutputFactory.getClass().getName());
     }
-    
+
+    /*
+    /**********************************************************
+    /* Introspection: version, capabilities
+    /**********************************************************
+     */
+
+    @Override
+    public Version version() {
+        return PackageVersion.VERSION;
+    }
+
+    @Override
+    public boolean canParseAsync() {
+        return false;
+    }
+
     /*
     /**********************************************************
     /* Configuration, XML-specific
     /**********************************************************
      */
-    
-    /**
-     * @since 2.1
-     */
+
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
     }
 
-    /**
-     * @since 2.2
-     */
     public String getXMLTextElementName() {
         return _cfgNameForTextElement;
     }
@@ -354,7 +354,7 @@ public class XmlFactory extends JsonFactory
 
     /*
     /**********************************************************
-    /* Format detection functionality
+    /* Format/Schema
     /**********************************************************
      */
 
@@ -370,15 +370,11 @@ public class XmlFactory extends JsonFactory
         return FORMAT_NAME_XML;
     }
 
-    /**
-     * XML format does require support from custom {@link ObjectCodec}
-     * (that is, {@link XmlMapper}), so need to return true here.
-     * 
-     * @return True since XML format does require support from codec
-     */
     @Override
-    public boolean requiresCustomCodec() { return true; }
-
+    public boolean canUseSchema(FormatSchema schema) {
+        return false; // no FormatSchema for json
+    }
+    
     /*
     /**********************************************************
     /* Capability introspection
@@ -394,12 +390,12 @@ public class XmlFactory extends JsonFactory
     @Override
     public boolean canUseCharArrays() { return false; }
 
-    @Override // since 2.6
+    @Override
     public Class<FromXmlParser.Feature> getFormatReadFeatureType() {
         return FromXmlParser.Feature.class;
     }
 
-    @Override // since 2.6
+    @Override
     public Class<ToXmlGenerator.Feature> getFormatWriteFeatureType() {
         return ToXmlGenerator.Feature.class;
     }
@@ -420,12 +416,16 @@ public class XmlFactory extends JsonFactory
     public JsonParser createParser(String content) throws IOException {
         Reader r = new StringReader(content);
         IOContext ctxt = _createContext(r, true);
-        if (_inputDecorator != null) {
-            r = _inputDecorator.decorate(ctxt, r);
-        }
+        r = _decorate(r, ctxt);
         return _createParser(r, ctxt);
     }
-    
+
+    @Override
+    protected JsonParser _createParser(DataInput input, IOContext ctxt)
+            throws IOException {
+        return _unsupported();
+    }
+
     /*
     /**********************************************************
     /* Overrides of public methods: generation
@@ -433,38 +433,18 @@ public class XmlFactory extends JsonFactory
      */
 
     @Override
-    public ToXmlGenerator createGenerator(OutputStream out) throws IOException {
-        return createGenerator(out, JsonEncoding.UTF8);
-    }
-    
-    @Override
-    public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
-    {
-        // false -> we won't manage the stream unless explicitly directed to
-        IOContext ctxt = _createContext(out, false);
-        ctxt.setEncoding(enc);
+    protected JsonGenerator _createGenerator(Writer out, IOContext ctxt)
+            throws IOException {
         return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
-    
-    @Override
-    public ToXmlGenerator createGenerator(Writer out) throws IOException
-    {
-        return new ToXmlGenerator(_createContext(out, false),
-                _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
-    }
 
-    @SuppressWarnings("resource")
     @Override
-    public ToXmlGenerator createGenerator(File f, JsonEncoding enc) throws IOException
-    {
-        OutputStream out = new FileOutputStream(f);
-        // true -> yes, we have to manage the stream since we created it
-        IOContext ctxt = _createContext(out, true);
-        ctxt.setEncoding(enc);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+    protected JsonGenerator _createUTF8Generator(OutputStream out,
+            IOContext ctxt) throws IOException {
+        return new ToXmlGenerator(ctxt,
+                _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(out));
     }
 
@@ -477,8 +457,6 @@ public class XmlFactory extends JsonFactory
     /**
      * Factory method that wraps given {@link XMLStreamReader}, usually to allow
      * partial data-binding.
-     * 
-     * @since 2.4
      */
     public FromXmlParser createParser(XMLStreamReader sr) throws IOException
     {
@@ -500,8 +478,6 @@ public class XmlFactory extends JsonFactory
      * Factory method that wraps given {@link XMLStreamWriter}, usually to allow
      * incremental serialization to compose large output by serializing a sequence
      * of individual objects.
-     *
-     * @since 2.4
      */
     public ToXmlGenerator createGenerator(XMLStreamWriter sw) throws IOException
     {
@@ -590,13 +566,6 @@ public class XmlFactory extends JsonFactory
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
         return xp;
-    }
-
-    @Override
-    protected JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException {
-        // this method should never get called here, so:
-        VersionUtil.throwInternal();
-        return null;
     }
 
     /*
