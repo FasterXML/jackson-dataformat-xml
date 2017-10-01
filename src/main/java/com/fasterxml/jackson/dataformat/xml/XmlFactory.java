@@ -8,7 +8,7 @@ import org.codehaus.stax2.io.Stax2ByteArraySource;
 import org.codehaus.stax2.io.Stax2CharArraySource;
 
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.base.DecoratableFactory;
+import com.fasterxml.jackson.core.base.TextualTSFactory;
 import com.fasterxml.jackson.core.io.IOContext;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 * @author Tatu Saloranta (tatu.saloranta@iki.fi)
 */
 public class XmlFactory
-    extends DecoratableFactory
+    extends TextualTSFactory
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 2; // 3.0
