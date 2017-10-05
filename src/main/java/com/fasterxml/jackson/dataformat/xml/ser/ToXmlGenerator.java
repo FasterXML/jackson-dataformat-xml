@@ -167,13 +167,13 @@ public final class ToXmlGenerator
     /**********************************************************
      */
 
-    public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
+    public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt, int stdFeatures, int xmlFeatures,
             ObjectCodec codec, XMLStreamWriter sw,
             XmlPrettyPrinter pp)
     {
-        super(stdFeatures, codec);
+        super(writeCtxt, stdFeatures, codec);
         _formatFeatures = xmlFeatures;
-        _ioContext = ctxt;
+        _ioContext = ioCtxt;
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
@@ -285,9 +285,8 @@ public final class ToXmlGenerator
     @Override
     public boolean canWriteFormattedNumbers() { return true; }
 
-    // @since 2.7.5
     public boolean inRoot() {
-        return _writeContext.inRoot();
+        return _outputContext.inRoot();
     }
 
     /*
@@ -385,7 +384,7 @@ public final class ToXmlGenerator
         if (wrapperName != null) {
             try {
                 if (_xmlPrettyPrinter != null) {
-                    _xmlPrettyPrinter.writeEndElement(_xmlWriter, _writeContext.getEntryCount());
+                    _xmlPrettyPrinter.writeEndElement(_xmlWriter, _outputContext.getEntryCount());
                 } else {
                     _xmlWriter.writeEndElement();
                 }
@@ -402,7 +401,7 @@ public final class ToXmlGenerator
      */
     public void writeRepeatedFieldName() throws IOException
     {
-        if (_writeContext.writeFieldName(_nextName.getLocalPart()) == JsonWriteContext.STATUS_EXPECT_VALUE) {
+        if (_outputContext.writeFieldName(_nextName.getLocalPart()) == JsonWriteContext.STATUS_EXPECT_VALUE) {
             _reportError("Can not write a field name, expecting a value");
         }
     }
@@ -420,7 +419,7 @@ public final class ToXmlGenerator
     @Override
     public final void writeFieldName(String name) throws IOException
     {
-        if (_writeContext.writeFieldName(name) == JsonWriteContext.STATUS_EXPECT_VALUE) {
+        if (_outputContext.writeFieldName(name) == JsonWriteContext.STATUS_EXPECT_VALUE) {
             _reportError("Can not write a field name, expecting a value");
         }
         // Should this ever get called?
@@ -465,7 +464,7 @@ public final class ToXmlGenerator
     public final void writeStartArray() throws IOException
     {
         _verifyValueWrite("start an array");
-        _writeContext = _writeContext.createChildArrayContext();
+        _outputContext = _outputContext.createChildArrayContext();
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartArray(this);
         } else {
@@ -476,22 +475,22 @@ public final class ToXmlGenerator
     @Override
     public final void writeEndArray() throws IOException
     {
-        if (!_writeContext.inArray()) {
-            _reportError("Current context not Array but "+_writeContext.typeDesc());
+        if (!_outputContext.inArray()) {
+            _reportError("Current context not Array but "+_outputContext.typeDesc());
         }
         if (_xmlPrettyPrinter != null) {
-            _xmlPrettyPrinter.writeEndArray(this, _writeContext.getEntryCount());
+            _xmlPrettyPrinter.writeEndArray(this, _outputContext.getEntryCount());
         } else {
             // nothing to do here; no-operation
         }
-        _writeContext = _writeContext.getParent();
+        _outputContext = _outputContext.getParent();
     }
 
     @Override
     public final void writeStartObject() throws IOException
     {
         _verifyValueWrite("start an object");
-        _writeContext = _writeContext.createChildObjectContext();
+        _outputContext = _outputContext.createChildObjectContext();
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartObject(this);
         } else {
@@ -502,13 +501,13 @@ public final class ToXmlGenerator
     @Override
     public final void writeEndObject() throws IOException
     {
-        if (!_writeContext.inObject()) {
-            _reportError("Current context not Object but "+_writeContext.typeDesc());
+        if (!_outputContext.inObject()) {
+            _reportError("Current context not Object but "+_outputContext.typeDesc());
         }
-        _writeContext = _writeContext.getParent();
+        _outputContext = _outputContext.getParent();
         if (_xmlPrettyPrinter != null) {
             // as per [Issue#45], need to suppress indentation if only attributes written:
-            int count = _nextIsAttribute ? 0 : _writeContext.getEntryCount();
+            int count = _nextIsAttribute ? 0 : _outputContext.getEntryCount();
             _xmlPrettyPrinter.writeEndObject(this, count);
         } else {
             _handleEndObject();
@@ -1112,7 +1111,7 @@ public final class ToXmlGenerator
     @Override
     protected final void _verifyValueWrite(String typeMsg) throws IOException
     {
-        int status = _writeContext.writeValue();
+        int status = _outputContext.writeValue();
         if (status == JsonWriteContext.STATUS_EXPECT_NAME) {
             _reportError("Can not "+typeMsg+", expecting field name");
         }
@@ -1151,7 +1150,7 @@ public final class ToXmlGenerator
 		     *     changed, let's do direct access here.
 		     */
 //                    JsonStreamContext ctxt = getOutputContext();
-		    JsonStreamContext ctxt = _writeContext;
+		    JsonStreamContext ctxt = _outputContext;
                     if (ctxt.inArray()) {
                         writeEndArray();
                     } else if (ctxt.inObject()) {

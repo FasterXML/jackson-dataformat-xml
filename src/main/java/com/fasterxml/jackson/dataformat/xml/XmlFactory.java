@@ -426,13 +426,13 @@ public class XmlFactory
 
     @Override
     protected JsonGenerator _createGenerator(ObjectWriteContext writeCtxt,
-            Writer out, IOContext ctxt)
+            Writer out, IOContext ioCtxt)
             throws IOException
     {
         // Only care about features and pretty-printer, for now;
         // may add CharacterEscapes in future?
         
-        return new ToXmlGenerator(ctxt,
+        return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
                 writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
                 _objectCodec, _createXmlWriter(out),
@@ -441,9 +441,9 @@ public class XmlFactory
 
     @Override
     protected JsonGenerator _createUTF8Generator(ObjectWriteContext writeCtxt,
-            OutputStream out, IOContext ctxt) throws IOException
+            OutputStream out, IOContext ioCtxt) throws IOException
     {
-        return new ToXmlGenerator(ctxt,
+        return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
                 writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
                 _objectCodec, _createXmlWriter(out),
@@ -499,8 +499,8 @@ public class XmlFactory
             XMLStreamWriter sw) throws IOException
     {
         sw = _initializeXmlWriter(sw);
-        IOContext ctxt = _createContext(sw, false);
-        return new ToXmlGenerator(ctxt,
+        IOContext ioCtxt = _createContext(sw, false);
+        return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
                 writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
                 _objectCodec, sw,
