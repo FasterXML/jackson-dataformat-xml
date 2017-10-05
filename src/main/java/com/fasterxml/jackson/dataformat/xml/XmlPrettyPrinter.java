@@ -19,8 +19,6 @@ public interface XmlPrettyPrinter extends PrettyPrinter
      * Method for forcibly writing a start element, without going
      * through Jackson generator (and thus, without updating currently
      * active element stack)
-     * 
-     * @since 2.1
      */
     public void writeStartElement(XMLStreamWriter2 sw,
             String nsURI, String localName) throws XMLStreamException;
@@ -29,8 +27,6 @@ public interface XmlPrettyPrinter extends PrettyPrinter
      * Method for forcibly writing an end element, without going
      * through Jackson generator (and thus, without updating currently
      * active element stack)
-     * 
-     * @since 2.1
      */
     public void writeEndElement(XMLStreamWriter2 sw, int nrOfEntries) throws XMLStreamException;
 
@@ -38,8 +34,6 @@ public interface XmlPrettyPrinter extends PrettyPrinter
      * Method for trying to write a linefeed to separate entities outside of the
      * root element (that is, in prolog or epilog), most often called to separate
      * XML declaration from the root element.
-     *
-     * @since 2.7
      */
     public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException;
     

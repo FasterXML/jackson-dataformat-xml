@@ -231,6 +231,25 @@ public class XmlFactory
         return false;
     }
 
+    /**
+     * As of 2.4, we do have actual capability for passing char arrays
+     * efficiently, but unfortunately
+     * have no working mechanism for recycling buffers. So we have to 
+     * admit that can not make efficient use.
+     */
+    @Override
+    public boolean canUseCharArrays() { return false; }
+
+    @Override
+    public Class<FromXmlParser.Feature> getFormatReadFeatureType() {
+        return FromXmlParser.Feature.class;
+    }
+
+    @Override
+    public Class<ToXmlGenerator.Feature> getFormatWriteFeatureType() {
+        return ToXmlGenerator.Feature.class;
+    }
+    
     /*
     /**********************************************************
     /* Configuration, XML-specific
@@ -334,7 +353,6 @@ public class XmlFactory
     /**********************************************************
      */
 
-    /** @since 2.4 */
     public XMLInputFactory getXMLInputFactory() {
         return _xmlInputFactory;
     }
@@ -343,7 +361,6 @@ public class XmlFactory
         _xmlInputFactory = f;
     }
 
-    /** @since 2.4 */
     public XMLOutputFactory getXMLOutputFactory() {
         return _xmlOutputFactory;
     }
@@ -373,31 +390,6 @@ public class XmlFactory
     @Override
     public boolean canUseSchema(FormatSchema schema) {
         return false; // no FormatSchema for json
-    }
-    
-    /*
-    /**********************************************************
-    /* Capability introspection
-    /**********************************************************
-     */
-
-    /**
-     * As of 2.4, we do have actual capability for passing char arrays
-     * efficiently, but unfortunately
-     * have no working mechanism for recycling buffers. So we have to 
-     * admit that can not make efficient use.
-     */
-    @Override
-    public boolean canUseCharArrays() { return false; }
-
-    @Override
-    public Class<FromXmlParser.Feature> getFormatReadFeatureType() {
-        return FromXmlParser.Feature.class;
-    }
-
-    @Override
-    public Class<ToXmlGenerator.Feature> getFormatWriteFeatureType() {
-        return ToXmlGenerator.Feature.class;
     }
 
     /*
@@ -433,19 +425,43 @@ public class XmlFactory
      */
 
     @Override
-    protected JsonGenerator _createGenerator(Writer out, IOContext ctxt)
-            throws IOException {
+    protected JsonGenerator _createGenerator(ObjectWriteContext writeCtxt,
+            Writer out, IOContext ctxt)
+            throws IOException
+    {
+        // Only care about features and pretty-printer, for now;
+        // may add CharacterEscapes in future?
+        
         return new ToXmlGenerator(ctxt,
-                _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+                writeCtxt.getGeneratorFeatures(_generatorFeatures),
+                writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
+                _objectCodec, _createXmlWriter(out),
+                _xmlPrettyPrinter(writeCtxt));
     }
 
     @Override
-    protected JsonGenerator _createUTF8Generator(OutputStream out,
-            IOContext ctxt) throws IOException {
+    protected JsonGenerator _createUTF8Generator(ObjectWriteContext writeCtxt,
+            OutputStream out, IOContext ctxt) throws IOException
+    {
         return new ToXmlGenerator(ctxt,
-                _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+                writeCtxt.getGeneratorFeatures(_generatorFeatures),
+                writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
+                _objectCodec, _createXmlWriter(out),
+                _xmlPrettyPrinter(writeCtxt));
+    }
+
+    private final XmlPrettyPrinter _xmlPrettyPrinter(ObjectWriteContext writeCtxt)
+    {
+        PrettyPrinter pp = writeCtxt.getPrettyPrinter();
+        if (pp == null) {
+            return null;
+        }
+        // Ideally should catch earlier, but just in case....
+        if (!(pp instanceof XmlPrettyPrinter)) {
+            throw new IllegalStateException("Configured PrettyPrinter not of type `XmlPrettyPrinter` but `"
+                    +pp.getClass().getName()+"`");
+        }
+        return (XmlPrettyPrinter) pp;
     }
 
     /*
@@ -479,12 +495,16 @@ public class XmlFactory
      * incremental serialization to compose large output by serializing a sequence
      * of individual objects.
      */
-    public ToXmlGenerator createGenerator(XMLStreamWriter sw) throws IOException
+    public ToXmlGenerator createGenerator(ObjectWriteContext writeCtxt,
+            XMLStreamWriter sw) throws IOException
     {
         sw = _initializeXmlWriter(sw);
         IOContext ctxt = _createContext(sw, false);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, sw);
+        return new ToXmlGenerator(ctxt,
+                writeCtxt.getGeneratorFeatures(_generatorFeatures),
+                writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
+                _objectCodec, sw,
+                _xmlPrettyPrinter(writeCtxt));
     }
 
     /*

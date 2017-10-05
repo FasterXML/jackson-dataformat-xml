@@ -125,8 +125,6 @@ public final class ToXmlGenerator
 
     /**
      * Marker set when {@link #initGenerator()} has been called or not.
-     * 
-     * @since 2.2
      */
     protected boolean _initialized;
     
@@ -156,13 +154,13 @@ public final class ToXmlGenerator
      * value should be as CData
      */
     protected boolean _nextIsCData = false;
-    
+
     /**
      * To support proper serialization of arrays it is necessary to keep
      * stack of element names, so that we can "revert" to earlier 
      */
     protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
-    
+
     /*
     /**********************************************************
     /* Life-cycle
@@ -170,7 +168,8 @@ public final class ToXmlGenerator
      */
 
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
-            ObjectCodec codec, XMLStreamWriter sw)
+            ObjectCodec codec, XMLStreamWriter sw,
+            XmlPrettyPrinter pp)
     {
         super(stdFeatures, codec);
         _formatFeatures = xmlFeatures;
@@ -178,8 +177,7 @@ public final class ToXmlGenerator
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
-        _xmlPrettyPrinter = (_cfgPrettyPrinter instanceof XmlPrettyPrinter) ?
-        		(XmlPrettyPrinter) _cfgPrettyPrinter : null;
+        _xmlPrettyPrinter = pp;
     }
 
     /**
@@ -224,10 +222,13 @@ public final class ToXmlGenerator
     }
 
     @Override
+    public XmlPrettyPrinter getPrettyPrinter() {
+        return _xmlPrettyPrinter;
+    }
+
+    @Override
     public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
-        _cfgPrettyPrinter = pp;
-        _xmlPrettyPrinter = (pp instanceof XmlPrettyPrinter) ?
-               (XmlPrettyPrinter) pp : null;
+        _xmlPrettyPrinter = (XmlPrettyPrinter) pp;
         return this;
     }
 
@@ -250,18 +251,6 @@ public final class ToXmlGenerator
     @Override
     public int getFormatFeatures() {
         return _formatFeatures;
-    }
-
-    @Override // since 2.7
-    public JsonGenerator overrideFormatFeatures(int values, int mask)
-    {
-        int oldF = _formatFeatures;
-        int newF = (_formatFeatures & ~mask) | (values & mask);
-
-        if (oldF != newF) {
-            _formatFeatures = newF;
-        }
-        return this;
     }
 
     /*
@@ -477,8 +466,8 @@ public final class ToXmlGenerator
     {
         _verifyValueWrite("start an array");
         _writeContext = _writeContext.createChildArrayContext();
-        if (_cfgPrettyPrinter != null) {
-            _cfgPrettyPrinter.writeStartArray(this);
+        if (_xmlPrettyPrinter != null) {
+            _xmlPrettyPrinter.writeStartArray(this);
         } else {
             // nothing to do here; no-operation
         }
@@ -490,8 +479,8 @@ public final class ToXmlGenerator
         if (!_writeContext.inArray()) {
             _reportError("Current context not Array but "+_writeContext.typeDesc());
         }
-        if (_cfgPrettyPrinter != null) {
-            _cfgPrettyPrinter.writeEndArray(this, _writeContext.getEntryCount());
+        if (_xmlPrettyPrinter != null) {
+            _xmlPrettyPrinter.writeEndArray(this, _writeContext.getEntryCount());
         } else {
             // nothing to do here; no-operation
         }
@@ -503,8 +492,8 @@ public final class ToXmlGenerator
     {
         _verifyValueWrite("start an object");
         _writeContext = _writeContext.createChildObjectContext();
-        if (_cfgPrettyPrinter != null) {
-            _cfgPrettyPrinter.writeStartObject(this);
+        if (_xmlPrettyPrinter != null) {
+            _xmlPrettyPrinter.writeStartObject(this);
         } else {
             _handleStartObject();
         }
@@ -517,10 +506,10 @@ public final class ToXmlGenerator
             _reportError("Current context not Object but "+_writeContext.typeDesc());
         }
         _writeContext = _writeContext.getParent();
-        if (_cfgPrettyPrinter != null) {
+        if (_xmlPrettyPrinter != null) {
             // as per [Issue#45], need to suppress indentation if only attributes written:
             int count = _nextIsAttribute ? 0 : _writeContext.getEntryCount();
-            _cfgPrettyPrinter.writeEndObject(this, count);
+            _xmlPrettyPrinter.writeEndObject(this, count);
         } else {
             _handleEndObject();
         }

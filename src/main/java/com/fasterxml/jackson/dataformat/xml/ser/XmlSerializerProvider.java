@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
@@ -25,7 +26,6 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlSerializerProvider extends DefaultSerializerProvider
 {
-    // As of 2.7
     private static final long serialVersionUID = 1L;
 
     /**
@@ -43,15 +43,13 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     }
 
     public XmlSerializerProvider(XmlSerializerProvider src,
-            SerializationConfig config, SerializerFactory f)
+            SerializationConfig config, GeneratorSettings genSettings,
+            SerializerFactory f)
     {
-        super(src, config, f);
+        super(src, config, genSettings, f);
         _rootNameLookup  = src._rootNameLookup;
     }
 
-    /**
-     * @since 2.8.9
-     */
     protected XmlSerializerProvider(XmlSerializerProvider src) {
         super(src);
         _rootNameLookup = src._rootNameLookup;
@@ -70,8 +68,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     @Override
     public DefaultSerializerProvider createInstance(SerializationConfig config,
-            SerializerFactory jsf) {
-        return new XmlSerializerProvider(this, config, jsf);
+            GeneratorSettings genSettings, SerializerFactory jsf) {
+        return new XmlSerializerProvider(this, config, genSettings, jsf);
     }
 
     @SuppressWarnings("resource")
@@ -113,7 +111,6 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
-    // @since 2.1
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator gen, Object value, JavaType rootType,
@@ -217,7 +214,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
         throws JsonMappingException
     {
-        // [Issue#71]: When converting, we actually get TokenBuffer, which is fine
+        // When converting, we actually get TokenBuffer, which is fine
         if (!(gen instanceof ToXmlGenerator)) {
             // but verify
             if (!(gen instanceof TokenBuffer)) {

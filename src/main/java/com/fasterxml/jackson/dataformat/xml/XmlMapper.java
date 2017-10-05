@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 import javax.xml.stream.XMLInputFactory;
@@ -10,6 +11,7 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
@@ -29,7 +31,6 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  */
 public class XmlMapper extends ObjectMapper
 {
-    // as of 2.6
     private static final long serialVersionUID = 1L;
 
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
@@ -49,16 +50,10 @@ public class XmlMapper extends ObjectMapper
         this(new XmlFactory());
     }
 
-    /**
-     * @since 2.4
-     */
     public XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF) {
         this(new XmlFactory(inputF, outF));
     }
 
-    /**
-     * @since 2.4
-     */
     public XmlMapper(XMLInputFactory inputF) {
         this(new XmlFactory(inputF));
     }
@@ -89,9 +84,6 @@ public class XmlMapper extends ObjectMapper
         enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
     }
 
-    /**
-     * @since 2.8.9
-     */
     protected XmlMapper(XmlMapper src) {
         super(src);
         _xmlModule = src._xmlModule;
@@ -120,16 +112,11 @@ public class XmlMapper extends ObjectMapper
      * information to {@link XmlFactory}, during registration; NOT
      * exposed as public method since configuration should be done
      * via {@link JacksonXmlModule}.
-     * 
-     * @since 2.1
      */
     protected void setXMLTextElementName(String name) {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
 
-    /**
-     * Since 2.7
-     */
     public XmlMapper setDefaultUseWrapper(boolean state) {
         // ser and deser configs should usually have the same introspector, so:
         AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
@@ -192,8 +179,6 @@ public class XmlMapper extends ObjectMapper
      * Method for reading a single XML value from given XML-specific input
      * source; useful for incremental data-binding, combining traversal using
      * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
-     * 
-     * @since 2.4
      */
     public <T> T readValue(XMLStreamReader r, Class<T> valueType) throws IOException {
         return readValue(r, _typeFactory.constructType(valueType));
@@ -203,8 +188,6 @@ public class XmlMapper extends ObjectMapper
      * Method for reading a single XML value from given XML-specific input
      * source; useful for incremental data-binding, combining traversal using
      * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
-     * 
-     * @since 2.4
      */
     public <T> T readValue(XMLStreamReader r, TypeReference<T> valueTypeRef) throws IOException {
         return readValue(r, _typeFactory.constructType(valueTypeRef));
@@ -214,8 +197,6 @@ public class XmlMapper extends ObjectMapper
      * Method for reading a single XML value from given XML-specific input
      * source; useful for incremental data-binding, combining traversal using
      * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
-     * 
-     * @since 2.4
      */
     @SuppressWarnings("resource")
     public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException
@@ -228,29 +209,24 @@ public class XmlMapper extends ObjectMapper
      * Method for serializing given value using specific {@link XMLStreamReader}:
      * useful when building large XML files by binding individual items, one at
      * a time.
-     * 
-     * @since 2.4
      */
-    public void writeValue(XMLStreamWriter w0, Object value) throws IOException {
-        @SuppressWarnings("resource")
-        ToXmlGenerator g = getFactory().createGenerator(w0);
-        super.writeValue(g, value);
-        /* NOTE: above call should do flush(); and we should NOT close here.
-         * Finally, 'g' has no buffers to release.
-         */
-    }
-    
-    /*
-    /**********************************************************
-    /* Overridden methods
-    /**********************************************************
-     */
+    @SuppressWarnings("resource")
+    public void writeValue(XMLStreamWriter w0, Object value) throws IOException
+    {
+        // 04-Oct-2017, tatu: Unfortunately can not simply delegate to super-class implementation
+        //   because we need the context first...
+        
+        SerializationConfig config = getSerializationConfig();
+        DefaultSerializerProvider prov = _serializerProvider(getSerializationConfig());
+        ToXmlGenerator g = getFactory().createGenerator(prov, w0);
 
-    // 09-May-2016, tatu: Was removed from `jackson-databind` in 2.8; remove from
-    //    here in 2.9.
-    @Deprecated // since 2.6
-//    @Override
-    protected PrettyPrinter _defaultPrettyPrinter() {
-        return new DefaultXmlPrettyPrinter();
+        if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {
+            _writeCloseableValue(g, value, config);
+        } else {
+            _serializerProvider(config).serializeValue(g, value);
+            if (config.isEnabled(SerializationFeature.FLUSH_AFTER_WRITE_VALUE)) {
+                g.flush();
+            }
+        }
     }
 }
