@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.io.CharTypes;
 
 /**
- * Extension of {@link JsonStreamContext}, which implements
+ * Extension of {@link TokenStreamContext}, which implements
  * core methods needed, and adds small amount of additional
  * state data we need.
  *<p>
@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.io.CharTypes;
  * support wrapped/unwrapped Collection/array values.
  */
 public final class XmlReadContext
-    extends JsonStreamContext
+    extends TokenStreamContext
 {
     // // // Configuration
 

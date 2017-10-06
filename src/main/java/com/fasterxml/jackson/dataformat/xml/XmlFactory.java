@@ -407,9 +407,8 @@ public class XmlFactory
     @Override
     public JsonParser createParser(String content) throws IOException {
         Reader r = new StringReader(content);
-        IOContext ctxt = _createContext(r, true);
-        r = _decorate(r, ctxt);
-        return _createParser(r, ctxt);
+        IOContext ioCtxt = _createContext(r, true);
+        return _createParser(_decorate(ioCtxt, r), ioCtxt);
     }
 
     @Override
@@ -426,7 +425,7 @@ public class XmlFactory
 
     @Override
     protected JsonGenerator _createGenerator(ObjectWriteContext writeCtxt,
-            Writer out, IOContext ioCtxt)
+            IOContext ioCtxt, Writer out)
             throws IOException
     {
         // Only care about features and pretty-printer, for now;
@@ -441,7 +440,7 @@ public class XmlFactory
 
     @Override
     protected JsonGenerator _createUTF8Generator(ObjectWriteContext writeCtxt,
-            OutputStream out, IOContext ioCtxt) throws IOException
+            IOContext ioCtxt, OutputStream out) throws IOException
     {
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),

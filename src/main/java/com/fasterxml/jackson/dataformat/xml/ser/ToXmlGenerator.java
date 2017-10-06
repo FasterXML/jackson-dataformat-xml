@@ -1150,7 +1150,7 @@ public final class ToXmlGenerator
 		     *     changed, let's do direct access here.
 		     */
 //                    JsonStreamContext ctxt = getOutputContext();
-		    JsonStreamContext ctxt = _outputContext;
+		    TokenStreamContext ctxt = _outputContext;
                     if (ctxt.inArray()) {
                         writeEndArray();
                     } else if (ctxt.inObject()) {
