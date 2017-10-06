@@ -84,26 +84,13 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <artifactId>woodstox-core</artifactId>
       <version>5.0.3</version>
     </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <!-- Inherited from oss-base. Generate PackageVersion.java.-->
+      <plugin> <!-- default settings are fine, just need to enable here -->
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <executions>
-          <execution>
-            <id>process-packageVersion</id>
-            <phase>generate-sources</phase>
-          </execution>
-        </executions>
       </plugin>
       <!--  Need to skip known-failing tests for build... -->
       <plugin>
