@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.ser;
+package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -8,7 +8,10 @@ import javax.xml.namespace.QName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator.Feature;
 
+// Temporarily failing with Jackson 3.x until there are methods for
+// constructing "fully-configured and linked" generators
 public class TestSerializationManual extends XmlTestBase
 {
     public static class Value {
