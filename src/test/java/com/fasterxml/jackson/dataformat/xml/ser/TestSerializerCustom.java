@@ -12,7 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 /**
- * Unit test(s) for [Issue#42], problems with custom (de)serializer.
+ * Unit test(s) for [dataformat-xml#42], problems with custom (de)serializer.
  */
 @SuppressWarnings("serial")
 public class TestSerializerCustom extends XmlTestBase
@@ -41,15 +41,14 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public Item deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-          ObjectCodec oc = jp.getCodec();
-          JsonNode json = oc.readTree(jp);
+        public Item deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+          JsonNode json = ctxt.readTree(p);
           JsonNode foo = json.get("obj");
           if (foo == null) {
               throw new IllegalStateException("missing foo property");
           }
           return new Item(json.path("name").asText(),
-                  oc.treeToValue(foo, Foo.class));
+                  ctxt.treeToValue(foo, Foo.class));
         }
     }
 

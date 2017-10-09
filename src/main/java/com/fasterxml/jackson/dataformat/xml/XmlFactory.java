@@ -81,31 +81,22 @@ public class XmlFactory
      * and this reuse only works within context of a single
      * factory instance.
      */
-    public XmlFactory() { this(null, null, null); }
-
-    public XmlFactory(ObjectCodec oc) {
-        this(oc, null, null);
-    }
+    public XmlFactory() { this(null, null); }
 
     public XmlFactory(XMLInputFactory xmlIn) {
-        this(null, xmlIn, null);
+        this(xmlIn, null);
     }
     
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
-        this(null, xmlIn, xmlOut);
-    }
-    
-    public XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
-    {
-        this(oc, DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
+        this(DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
                 xmlIn, xmlOut, null);
     }
 
-    protected XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
+    protected XmlFactory(int xpFeatures, int xgFeatures,
             XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
             String nameForTextElem)
     {
-        super(oc);
+        super();
         _xmlParserFeatures = xpFeatures;
         _xmlGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
@@ -124,9 +115,9 @@ public class XmlFactory
         _xmlOutputFactory = xmlOut;
     }
 
-    protected XmlFactory(XmlFactory src, ObjectCodec oc)
+    protected XmlFactory(XmlFactory src)
     {
-        super(src, oc);
+        super(src);
         _xmlParserFeatures = src._xmlParserFeatures;
         _xmlGeneratorFeatures = src._xmlGeneratorFeatures;
         _cfgNameForTextElement = src._cfgNameForTextElement;
@@ -149,7 +140,7 @@ public class XmlFactory
      */
     @Override
     public XmlFactory copy() {
-        return new XmlFactory(this, null);
+        return new XmlFactory(this);
     }
 
     /*
@@ -182,7 +173,7 @@ public class XmlFactory
         try {
             XMLInputFactory inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).newInstance();
             XMLOutputFactory outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).newInstance();
-            return new XmlFactory(_objectCodec, _xmlParserFeatures, _xmlGeneratorFeatures,
+            return new XmlFactory(_xmlParserFeatures, _xmlGeneratorFeatures,
                     inf, outf, _cfgNameForTextElement);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
@@ -405,14 +396,14 @@ public class XmlFactory
      */
     @SuppressWarnings("resource")
     @Override
-    public JsonParser createParser(String content) throws IOException {
+    public JsonParser createParser(ObjectReadContext readCtxt, String content) throws IOException {
         Reader r = new StringReader(content);
         IOContext ioCtxt = _createContext(r, true);
-        return _createParser(_decorate(ioCtxt, r), ioCtxt);
+        return _createParser(readCtxt, ioCtxt, _decorate(ioCtxt, r));
     }
 
     @Override
-    protected JsonParser _createParser(DataInput input, IOContext ctxt)
+    protected JsonParser _createParser(ObjectReadContext readCtxt, IOContext ctxt, DataInput input)
             throws IOException {
         return _unsupported();
     }
@@ -434,7 +425,7 @@ public class XmlFactory
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
                 writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
-                _objectCodec, _createXmlWriter(out),
+                _createXmlWriter(out),
                 _xmlPrettyPrinter(writeCtxt));
     }
 
@@ -445,7 +436,7 @@ public class XmlFactory
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
                 writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
-                _objectCodec, _createXmlWriter(out),
+                _createXmlWriter(out),
                 _xmlPrettyPrinter(writeCtxt));
     }
 
@@ -473,7 +464,8 @@ public class XmlFactory
      * Factory method that wraps given {@link XMLStreamReader}, usually to allow
      * partial data-binding.
      */
-    public FromXmlParser createParser(XMLStreamReader sr) throws IOException
+    public FromXmlParser createParser(ObjectReadContext readCtxt,
+            XMLStreamReader sr) throws IOException
     {
         // note: should NOT move parser if already pointing to START_ELEMENT
         if (sr.getEventType() != XMLStreamConstants.START_ELEMENT) {
@@ -481,8 +473,8 @@ public class XmlFactory
         }
 
         // false -> not managed
-        FromXmlParser xp = new FromXmlParser(_createContext(sr, false),
-                _parserFeatures, _xmlParserFeatures, _objectCodec, sr);
+        FromXmlParser xp = new FromXmlParser(readCtxt, _createContext(sr, false),
+                _parserFeatures, _xmlParserFeatures, sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -502,7 +494,7 @@ public class XmlFactory
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
                 writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
-                _objectCodec, sw,
+                sw,
                 _xmlPrettyPrinter(writeCtxt));
     }
 
@@ -513,7 +505,8 @@ public class XmlFactory
      */
 
     @Override
-    protected FromXmlParser _createParser(InputStream in, IOContext ctxt) throws IOException
+    protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
+            InputStream in) throws IOException
     {
         XMLStreamReader sr;
         try {
@@ -522,8 +515,8 @@ public class XmlFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr);
+        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+                _parserFeatures, _xmlParserFeatures, sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -531,7 +524,8 @@ public class XmlFactory
     }
 
     @Override
-    protected FromXmlParser _createParser(Reader r, IOContext ctxt) throws IOException
+    protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
+            Reader r) throws IOException
     {
         XMLStreamReader sr;
         try {
@@ -540,8 +534,8 @@ public class XmlFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr);
+        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+                _parserFeatures, _xmlParserFeatures, sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -549,7 +543,8 @@ public class XmlFactory
     }
 
     @Override
-    protected FromXmlParser _createParser(char[] data, int offset, int len, IOContext ctxt,
+    protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
+            char[] data, int offset, int len,
             boolean recycleBuffer) throws IOException
     {
         // !!! TODO: add proper handling of 'recycleBuffer'; currently its handling
@@ -561,8 +556,8 @@ public class XmlFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr);
+        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+                _parserFeatures, _xmlParserFeatures, sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -570,7 +565,8 @@ public class XmlFactory
     }
     
     @Override
-    protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
+    protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
+            byte[] data, int offset, int len) throws IOException
     {
         XMLStreamReader sr;
         try {
@@ -579,8 +575,8 @@ public class XmlFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr);
+        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+                _parserFeatures, _xmlParserFeatures, sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }

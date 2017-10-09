@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
@@ -105,8 +104,6 @@ public class FromXmlParser
      */
     protected int _formatFeatures;
 
-    protected ObjectCodec _objectCodec;
-
     /*
     /**********************************************************
     /* I/O state
@@ -174,13 +171,13 @@ public class FromXmlParser
     /**********************************************************
      */
 
-    public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-            ObjectCodec codec, XMLStreamReader xmlReader)
+    public FromXmlParser(ObjectReadContext readCtxt, IOContext ctxt,
+            int parserFeatures, int xmlFeatures,
+            XMLStreamReader xmlReader)
     {
-        super(genericParserFeatures);
+        super(readCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
-        _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         // and thereby start a scope
         _nextToken = JsonToken.START_OBJECT;
@@ -192,32 +189,20 @@ public class FromXmlParser
     public Version version() {
         return PackageVersion.VERSION;
     }
-    
-    @Override
-    public ObjectCodec getCodec() {
-        return _objectCodec;
-    }
 
-    @Override
-    public void setCodec(ObjectCodec c) {
-        _objectCodec = c;
-    }
-
-    /**
-     * @since 2.1
-     */
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
     }
     
     /**
-     * XML format does require support from custom {@link ObjectCodec}
-     * (that is, {@link XmlMapper}), so need to return true here.
+     * XML format does require support from databinding so need to return true here.
      * 
      * @return True since XML format does require support from codec
+     *
+     * @since 3.0
      */
     @Override
-    public boolean requiresCustomCodec() {
+    public boolean canSynthesizeNulls() {
         return true;
     }
     

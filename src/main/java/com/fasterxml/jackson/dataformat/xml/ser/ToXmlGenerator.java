@@ -167,11 +167,11 @@ public final class ToXmlGenerator
     /**********************************************************
      */
 
-    public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt, int stdFeatures, int xmlFeatures,
-            ObjectCodec codec, XMLStreamWriter sw,
-            XmlPrettyPrinter pp)
+    public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
+            int stdFeatures, int xmlFeatures,
+            XMLStreamWriter sw, XmlPrettyPrinter pp)
     {
-        super(writeCtxt, stdFeatures, codec);
+        super(writeCtxt, stdFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ioCtxt;
         _originalXmlWriter = sw;
