@@ -394,7 +394,6 @@ public class XmlFactory
      * while nice idea, problem is that we don't have proper hooks to ensure
      * that temporary buffer gets recycled; so let's just use StringReader.
      */
-    @SuppressWarnings("resource")
     @Override
     public JsonParser createParser(ObjectReadContext readCtxt, String content) throws IOException {
         Reader r = new StringReader(content);
@@ -474,7 +473,9 @@ public class XmlFactory
 
         // false -> not managed
         FromXmlParser xp = new FromXmlParser(readCtxt, _createContext(sr, false),
-                _parserFeatures, _xmlParserFeatures, sr);
+                readCtxt.getParserFeatures(_parserFeatures),
+                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -516,7 +517,9 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                _parserFeatures, _xmlParserFeatures, sr);
+                readCtxt.getParserFeatures(_parserFeatures),
+                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -535,7 +538,9 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                _parserFeatures, _xmlParserFeatures, sr);
+                readCtxt.getParserFeatures(_parserFeatures),
+                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -557,7 +562,9 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                _parserFeatures, _xmlParserFeatures, sr);
+                readCtxt.getParserFeatures(_parserFeatures),
+                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -576,7 +583,9 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                _parserFeatures, _xmlParserFeatures, sr);
+                readCtxt.getParserFeatures(_parserFeatures),
+                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }

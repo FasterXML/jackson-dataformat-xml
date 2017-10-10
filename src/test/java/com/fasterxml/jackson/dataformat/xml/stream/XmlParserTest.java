@@ -6,8 +6,8 @@ import com.fasterxml.jackson.core.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
@@ -40,14 +40,14 @@ public class XmlParserTest extends XmlTestBase
     public void testSimpleWithEmpty() throws Exception
     {
         // 21-Jun-2017, tatu: Depends on setting actually...
-        XmlFactory f = new XmlFactory();
+        ObjectReader r = _xmlMapper.reader();
 
-        f.enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
         assertEquals("{\"leaf\":null}",
-                _readXmlWriteJson(f, "<root><leaf /></root>"));
-        f.disable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
+                _readXmlWriteJson(r.with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL),
+                        "<root><leaf /></root>"));
         assertEquals("{\"leaf\":\"\"}",
-                _readXmlWriteJson(f, "<root><leaf /></root>"));
+                _readXmlWriteJson(r.without(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL),
+                        "<root><leaf /></root>"));
     }
 
     public void testSimpleNested() throws Exception
@@ -257,19 +257,19 @@ public class XmlParserTest extends XmlTestBase
 
     private String _readXmlWriteJson(String xml) throws IOException
     {
-        return _readXmlWriteJson(_xmlMapper.tokenStreamFactory(), xml);
+        return _readXmlWriteJson(_xmlMapper.reader(), xml);
     }
 
-    private String _readXmlWriteJson(XmlFactory xmlFactory, String xml) throws IOException
+    private String _readXmlWriteJson(ObjectReader xmlReader, String xml) throws IOException
     {
         StringWriter w = new StringWriter();
 
-        JsonParser p = _xmlMapper.createParser(xml);
+        JsonParser xp = xmlReader.createParser(xml);
         JsonGenerator jg = _jsonMapper.createGenerator(w);
-        while (p.nextToken() != null) {
-            jg.copyCurrentEvent(p);
+        while (xp.nextToken() != null) {
+            jg.copyCurrentEvent(xp);
         }
-        p.close();
+        xp.close();
         jg.close();
         return w.toString();
     }

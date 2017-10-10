@@ -4,19 +4,18 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 public class XmlGeneratorTest extends XmlTestBase
 {
+    private final XmlMapper MAPPER = xmlMapper(true);
+
     public void testSimpleElement() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -32,9 +31,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testSimpleAttribute() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -52,9 +50,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testSecondLevelAttribute() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
         gen.writeFieldName("elem");
@@ -74,9 +71,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testAttrAndElem() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
         // and also need to force attribute
@@ -97,9 +93,8 @@ public class XmlGeneratorTest extends XmlTestBase
     // [Issue#6], missing overrides for File-backed generator
     public void testWriteToFile() throws Exception
     {
-        ObjectMapper mapper = new XmlMapper();
         File f = File.createTempFile("test", ".tst");
-        mapper.writeValue(f, new IntWrapper(42));
+        MAPPER.writeValue(f, new IntWrapper(42));
 
         String xml = readAll(f).trim();
 
@@ -109,9 +104,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testRawSimpleValue() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -127,9 +121,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testRawOffsetValue() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -145,9 +138,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testRawCharArrayValue() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -163,9 +155,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testRawSimpleAttribute() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -183,9 +174,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testRawOffsetAttribute() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
@@ -203,9 +193,8 @@ public class XmlGeneratorTest extends XmlTestBase
 
     public void testRawCharArratAttribute() throws Exception
     {
-        XmlFactory f = new XmlFactory();
         StringWriter out = new StringWriter();
-        ToXmlGenerator gen = (ToXmlGenerator) f.createGenerator(out);
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
