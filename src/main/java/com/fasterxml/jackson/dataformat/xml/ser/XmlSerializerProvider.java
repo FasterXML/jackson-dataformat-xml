@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -36,9 +37,10 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     protected final XmlRootNameLookup _rootNameLookup;
 
-    public XmlSerializerProvider(XmlRootNameLookup rootNames)
+    public XmlSerializerProvider(XmlFactory xmlFactory,
+            XmlRootNameLookup rootNames)
     {
-        super();
+        super(xmlFactory);
         _rootNameLookup = rootNames;
     }
 

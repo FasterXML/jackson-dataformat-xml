@@ -30,7 +30,7 @@ public class TestSerializationManual extends XmlTestBase
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION);
         StringWriter sw = new StringWriter();
-        ToXmlGenerator generator = (ToXmlGenerator) xmlMapper.getFactory().createGenerator(sw);
+        ToXmlGenerator generator = (ToXmlGenerator) xmlMapper.createGenerator(sw);
         generator.initGenerator();
 
         generator.setNextName(new QName("items"));

@@ -71,7 +71,7 @@ public class XmlMapper extends ObjectMapper
         /* Need to override serializer provider (due to root name handling);
          * deserializer provider fine as is
          */
-        super(xmlFactory, new XmlSerializerProvider(new XmlRootNameLookup()), null);
+        super(xmlFactory, new XmlSerializerProvider(xmlFactory, new XmlRootNameLookup()), null);
         _xmlModule = module;
         // but all the rest is done via Module interface!
         if (module != null) {
@@ -135,7 +135,7 @@ public class XmlMapper extends ObjectMapper
      */
 
     @Override
-    public XmlFactory getFactory() {
+    public XmlFactory tokenStreamFactory() {
         return (XmlFactory) _jsonFactory;
     }
     
@@ -201,8 +201,9 @@ public class XmlMapper extends ObjectMapper
     @SuppressWarnings("resource")
     public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException
     {
-        FromXmlParser p = getFactory().createParser(r);
-        return super.readValue(p,  valueType);
+        DeserializationContext ctxt = createDeserializationContext();
+        FromXmlParser p = tokenStreamFactory().createParser(ctxt, r);
+        return super.readValue(p, valueType);
     } 
 
     /**
@@ -218,7 +219,7 @@ public class XmlMapper extends ObjectMapper
         
         SerializationConfig config = getSerializationConfig();
         DefaultSerializerProvider prov = _serializerProvider(getSerializationConfig());
-        ToXmlGenerator g = getFactory().createGenerator(prov, w0);
+        ToXmlGenerator g = tokenStreamFactory().createGenerator(prov, w0);
 
         if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {
             _writeCloseableValue(g, value, config);

@@ -14,7 +14,7 @@ public class IncrementalWritingTest extends XmlTestBase
     public void testSimple() throws Exception
     {
         StringWriter strw = new StringWriter();
-        XMLStreamWriter sw = MAPPER.getFactory().getXMLOutputFactory().createXMLStreamWriter(strw);
+        XMLStreamWriter sw = MAPPER.tokenStreamFactory().getXMLOutputFactory().createXMLStreamWriter(strw);
         sw.writeStartElement("root");
 
         MAPPER.writeValue(sw, new NameBean(13, "Grizabella", "Glamour"));

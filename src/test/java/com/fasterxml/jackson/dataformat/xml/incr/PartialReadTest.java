@@ -15,7 +15,7 @@ public class PartialReadTest extends XmlTestBase
         final String XML = "<?xml version='1.0'?><root>"
                 +"<NameBean age=\"13\"><first>Grizabella</first><last>Glamour</last></NameBean>"
                 +"<NameBean age=\"17\"><first>Growl</first><last>Tiger</last></NameBean></root>";
-        XMLStreamReader sr = MAPPER.getFactory().getXMLInputFactory().createXMLStreamReader(
+        XMLStreamReader sr = MAPPER.tokenStreamFactory().getXMLInputFactory().createXMLStreamReader(
                 new StringReader(XML));
         assertEquals(sr.next(), XMLStreamConstants.START_ELEMENT);
         assertEquals("root", sr.getLocalName());

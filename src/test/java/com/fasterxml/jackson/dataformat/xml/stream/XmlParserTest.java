@@ -14,16 +14,14 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 public class XmlParserTest extends XmlTestBase
 {
-    protected JsonFactory _jsonFactory;
-    protected XmlFactory _xmlFactory;
+    protected ObjectMapper _jsonMapper;
     protected XmlMapper _xmlMapper;
 
     // let's actually reuse XmlMapper to make things bit faster
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        _jsonFactory = new JsonFactory();
-        _xmlFactory = new XmlFactory();
+        _jsonMapper = new ObjectMapper();
         _xmlMapper = new XmlMapper();
     }
 
@@ -76,7 +74,7 @@ public class XmlParserTest extends XmlTestBase
         // Former could be worked around; latter less so at this point.
 
         // So, for now, let's just do sort of minimal verification, manually
-        JsonParser p = _xmlMapper.getFactory().createParser(xml);
+        JsonParser p = _xmlMapper.createParser(xml);
         
         assertToken(JsonToken.START_OBJECT, p.nextToken()); // main object
 
@@ -154,7 +152,7 @@ public class XmlParserTest extends XmlTestBase
     {
         final String XML = "<array><elem>value</elem><elem><property>123</property></elem><elem>1</elem></array>";
 
-        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
+        FromXmlParser xp = (FromXmlParser) _xmlMapper.createParser(new StringReader(XML));
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
@@ -181,7 +179,7 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
 
         // And then with array handling:
-        xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
+        xp = (FromXmlParser) _xmlMapper.createParser(new StringReader(XML));
         assertTrue(xp.getParsingContext().inRoot());
 
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
@@ -224,7 +222,7 @@ public class XmlParserTest extends XmlTestBase
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";
 
-        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
+        FromXmlParser xp = (FromXmlParser) _xmlMapper.createParser(new StringReader(XML));
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
@@ -259,15 +257,15 @@ public class XmlParserTest extends XmlTestBase
 
     private String _readXmlWriteJson(String xml) throws IOException
     {
-        return _readXmlWriteJson(_xmlFactory, xml);
+        return _readXmlWriteJson(_xmlMapper.tokenStreamFactory(), xml);
     }
 
     private String _readXmlWriteJson(XmlFactory xmlFactory, String xml) throws IOException
     {
         StringWriter w = new StringWriter();
 
-        JsonParser p = xmlFactory.createParser(xml);
-        JsonGenerator jg = _jsonFactory.createGenerator(w);
+        JsonParser p = _xmlMapper.createParser(xml);
+        JsonGenerator jg = _jsonMapper.createGenerator(w);
         while (p.nextToken() != null) {
             jg.copyCurrentEvent(p);
         }

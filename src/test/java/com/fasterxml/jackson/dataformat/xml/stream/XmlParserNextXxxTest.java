@@ -1,25 +1,12 @@
 package com.fasterxml.jackson.dataformat.xml.stream;
 
-import java.io.*;
-
 import com.fasterxml.jackson.core.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 public class XmlParserNextXxxTest extends XmlTestBase
 {
-    protected JsonFactory _jsonFactory;
-    protected XmlFactory _xmlFactory;
-
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _xmlFactory = new XmlFactory();
-    }
-
     /*
     /**********************************************************
     /* Unit tests
@@ -31,7 +18,7 @@ public class XmlParserNextXxxTest extends XmlTestBase
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";
 
-        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
+        JsonParser xp = (FromXmlParser) xmlMapper(false).createParser(XML);
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>

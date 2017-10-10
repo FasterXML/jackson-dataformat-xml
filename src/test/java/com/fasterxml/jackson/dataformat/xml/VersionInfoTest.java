@@ -30,8 +30,8 @@ public class VersionInfoTest extends XmlTestBase
 
         XmlMapper mapper2 = mapper1.copy();
         assertNotSame(mapper1, mapper2);
-        XmlFactory xf1 = mapper1.getFactory();
-        XmlFactory xf2 = mapper2.getFactory();
+        XmlFactory xf1 = mapper1.tokenStreamFactory();
+        XmlFactory xf2 = mapper2.tokenStreamFactory();
         assertNotSame(xf1, xf2);
         assertEquals(XmlFactory.class, xf2.getClass());
 
@@ -52,17 +52,17 @@ public class VersionInfoTest extends XmlTestBase
     }
 
     public void testSerializerProviderCopy() {
-        DefaultSerializerProvider provider = new XmlSerializerProvider(new XmlRootNameLookup());
+        DefaultSerializerProvider provider = new XmlSerializerProvider(new XmlFactory(),
+                new XmlRootNameLookup());
         DefaultSerializerProvider copy = provider.copy();
         assertNotSame(provider, copy);
     }
 
-    // Another test for [Issue#48]
     public void testMapperSerialization() throws Exception
     {
         XmlMapper mapper1 = new XmlMapper();
         mapper1.setXMLTextElementName("foo");
-        assertEquals("foo", mapper1.getFactory().getXMLTextElementName());
+        assertEquals("foo", mapper1.tokenStreamFactory().getXMLTextElementName());
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream objectStream = new ObjectOutputStream(bytes);
@@ -73,7 +73,7 @@ public class VersionInfoTest extends XmlTestBase
         XmlMapper mapper2 = (XmlMapper) input.readObject();
         input.close();
 
-        assertEquals("foo", mapper2.getFactory().getXMLTextElementName());
+        assertEquals("foo", mapper2.tokenStreamFactory().getXMLTextElementName());
     }
     
     /*

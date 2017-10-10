@@ -248,12 +248,6 @@ public class FromXmlParser
         return _formatFeatures;
     }
 
-    @Override
-    public JsonParser overrideFormatFeatures(int values, int mask) {
-        _formatFeatures = (_formatFeatures & ~mask) | (values & mask);
-        return this;
-    }
-
     /*
     /**********************************************************
     /* Extended API, access to some internal components
