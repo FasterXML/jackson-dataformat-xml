@@ -75,7 +75,11 @@ public class XmlTextDeserializer
             BeanProperty property)
         throws JsonMappingException
     {
-        return new XmlTextDeserializer(_verifyDeserType(_delegatee), _xmlTextPropertyIndex);
+        // 15-Nov-2017, tatu: Important -- MUST contextualize thing we delegate to
+        JavaType vt = ctxt.constructType(_delegatee.handledType());
+        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee,
+                property, vt);
+        return new XmlTextDeserializer(_verifyDeserType(del), _xmlTextPropertyIndex);
     }
 
     /*
