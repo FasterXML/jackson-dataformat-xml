@@ -154,12 +154,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      * elements.
      */
     @Override
-    protected void serializeFields(Object bean, JsonGenerator gen0, SerializerProvider provider)
+    protected void _serializeFields(Object bean, JsonGenerator gen0, SerializerProvider provider)
         throws IOException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super.serializeFields(bean, gen0, provider);
+            super._serializeFields(bean, gen0, provider);
             return;
         }
         final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
@@ -227,13 +227,13 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     @Override
-    protected void serializeFieldsFiltered(Object bean, JsonGenerator gen0,
-            SerializerProvider provider)
+    protected void _serializeFieldsFiltered(Object bean, JsonGenerator gen0,
+            SerializerProvider provider, Object filterId)
         throws IOException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super.serializeFieldsFiltered(bean, gen0, provider);
+            super._serializeFieldsFiltered(bean, gen0, provider, filterId);
             return;
         }
         
@@ -248,7 +248,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         final PropertyFilter filter = findPropertyFilter(provider, _propertyFilterId, bean);
         // better also allow missing filter actually..
         if (filter == null) {
-            serializeFields(bean, gen0, provider);
+            _serializeFields(bean, gen0, provider);
             return;
         }
 
@@ -311,9 +311,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             _serializeWithObjectId(bean, gen, provider, typeSer);
             return;
         }
-        /* Ok: let's serialize type id as attribute, but if (and only if!)
-         * we are using AS_PROPERTY
-         */
+        // Ok: let's serialize type id as attribute, but if (and only if!)
+        // we are using AS_PROPERTY
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
             ToXmlGenerator xgen = (ToXmlGenerator)gen;
             xgen.setNextIsAttribute(true);

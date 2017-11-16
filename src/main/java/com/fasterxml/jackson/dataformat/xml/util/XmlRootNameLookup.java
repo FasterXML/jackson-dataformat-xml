@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.type.ClassKey;
-import com.fasterxml.jackson.databind.util.LRUMap;
+import com.fasterxml.jackson.databind.util.SimpleLookupCache;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
 /**
@@ -25,7 +25,7 @@ public class XmlRootNameLookup
      * Note: changed to <code>transient</code> for 2.3; no point in serializing such
      * state
      */
-    protected final transient LRUMap<ClassKey,QName> _rootNames = new LRUMap<ClassKey,QName>(40, 200);
+    protected final transient SimpleLookupCache<ClassKey,QName> _rootNames = new SimpleLookupCache<>(40, 200);
 
     public XmlRootNameLookup() { }
     
