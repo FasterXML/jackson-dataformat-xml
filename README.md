@@ -201,6 +201,11 @@ for longer description, check out [XML module annotations](https://github.com/Fa
 
 Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 
+* Streaming model is only meant to be used through databinding: direct usage is possible but not supported
+* Tree Model is only supported in limited fashion and its use is recommended against: since tree model is based on JSON information model, it does not match XML infoset
+    * Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
+    * Mixed content (both textual content and elements as children of an element) not supported: text, if any, is lost
+    * Repeated elements with same name are handled so that only the last element is included, others are ignored
 * Root value should be a POJO; and specifically following types can be serialized as properties but may not work as intended as root values
     * Primitive/Wrapper values (like `java.lang.Integer`)
     * `Enum`s
@@ -208,10 +213,8 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
     * `java.util.Collection` values (Lists, Sets)
     * Note: over time some level of support has been added, and `Collection`s, for example, often work.
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
-    * Unwrapped List/array support was added in Jackson 2.1 (2.0 does NOT support them; arrays are always wrapped)
     * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
     * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
-* Tree Model is only supported in limited fashion: specifically, Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
 
 # See Also
 
