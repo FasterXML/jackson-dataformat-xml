@@ -132,9 +132,8 @@ public final class XmlReadContext
      */
 
     @Override
-    public final String getCurrentName() { return _currentName; }
+    public final String currentName() { return _currentName; }
 
-    // @since 2.9
     @Override public boolean hasCurrentName() { return _currentName != null; }
 
     @Override

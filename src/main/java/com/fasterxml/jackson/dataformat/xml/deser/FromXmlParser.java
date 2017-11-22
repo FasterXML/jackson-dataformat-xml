@@ -315,15 +315,15 @@ public class FromXmlParser
      * the current event.
      */
     @Override
-    public String getCurrentName() throws IOException
+    public String currentName() throws IOException
     {
         // start markers require information from parent
         String name;
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             XmlReadContext parent = _parsingContext.getParent();
-            name = parent.getCurrentName();
+            name = parent.currentName();
         } else {
-            name = _parsingContext.getCurrentName();
+            name = _parsingContext.currentName();
         }
         // sanity check
         if (name == null) {
@@ -430,7 +430,7 @@ public class FromXmlParser
         if (t != null) {
             switch (t) {
             case FIELD_NAME:
-                System.out.println("JsonToken: FIELD_NAME '"+_parsingContext.getCurrentName()+"'");
+                System.out.println("JsonToken: FIELD_NAME '"+_parsingContext.currentName()+"'");
                 break;
             case VALUE_STRING:
                 System.out.println("JsonToken: VALUE_STRING '"+getText()+"'");
@@ -753,7 +753,7 @@ public class FromXmlParser
         }
         switch (_currToken) {
         case FIELD_NAME:
-            return getCurrentName();
+            return currentName();
         case VALUE_STRING:
             return _currText;
         default:
@@ -776,7 +776,7 @@ public class FromXmlParser
         }
         switch (t) {
         case FIELD_NAME:
-            return getCurrentName();
+            return currentName();
         case VALUE_STRING:
             return _currText;
         case START_OBJECT:
