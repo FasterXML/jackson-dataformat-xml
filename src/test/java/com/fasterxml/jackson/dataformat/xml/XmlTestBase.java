@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public abstract class XmlTestBase
@@ -182,13 +183,17 @@ public abstract class XmlTestBase
         super();
     }
 
+    protected static ObjectMapper newObjectMapper() {
+        return new XmlMapper();
+    }
+
     protected XmlMapper xmlMapper(boolean useListWrapping)
     {
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(useListWrapping);
         return new XmlMapper(module);
     }
-    
+
     /*
     /**********************************************************
     /* Additional assertion methods
@@ -246,7 +251,8 @@ public abstract class XmlTestBase
                 return;
             }
         }
-        fail("Expected an exception with one of substrings ("+Arrays.asList(matches)+"): got one with message \""+msg+"\"");
+        fail("Expected an exception with one of substrings ("+Arrays.asList(matches)+"): got one ("+
+                e.getClass().getName()+") with message \""+msg+"\"");
     }
     
     /*
