@@ -20,7 +20,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     }
 
     @Override
-    protected XmlFactory build() {
+    public XmlFactory build() {
         // 28-Dec-2017, tatu: No special settings beyond base class ones, so:
         return new XmlFactory(this);
     }

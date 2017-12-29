@@ -20,7 +20,7 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
- * using XML-backed {@link com.fasterxml.jackson.core.JsonFactory}
+ * using XML-backed {@link com.fasterxml.jackson.core.TokenStreamFactory}
  * implementation ({@link XmlFactory}).
  *<p>
  * Mapper itself overrides some aspects of functionality to try to handle
