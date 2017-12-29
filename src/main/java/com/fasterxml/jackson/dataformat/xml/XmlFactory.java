@@ -10,7 +10,7 @@ import org.codehaus.stax2.io.Stax2CharArraySource;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.TextualTSFactory;
 import com.fasterxml.jackson.core.io.IOContext;
-
+import com.fasterxml.jackson.core.json.JsonFactoryBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -19,7 +19,7 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 * Factory used for constructing {@link FromXmlParser} and {@link ToXmlGenerator}
 * instances.
 *<p>
-* Implements {@link JsonFactory} since interface for constructing XML backed
+* Implements {@link TokenStreamFactory} since interface for constructing XML backed
 * parsers and generators is quite similar to dealing with JSON.
 * 
 * @author Tatu Saloranta (tatu.saloranta@iki.fi)
@@ -115,6 +115,16 @@ public class XmlFactory
         _xmlOutputFactory = xmlOut;
     }
 
+    /**
+     * Constructors used by {@link JsonFactoryBuilder} for instantiation.
+     *
+     * @since 3.0
+     */
+    protected XmlFactory(XmlFactoryBuilder b)
+    {
+        super(b);
+    }
+
     protected XmlFactory(XmlFactory src)
     {
         super(src);
@@ -133,8 +143,21 @@ public class XmlFactory
         xmlIn.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
     }
 
+    @Override
+    public XmlFactoryBuilder rebuild() {
+        return new XmlFactoryBuilder(this);
+    }
+
     /**
-     * Note: compared to base implementation by {@link JsonFactory},
+     * Main factory method to use for constructing {@link XmlFactory} instances with
+     * different configuration.
+     */
+    public static XmlFactoryBuilder builder() {
+        return new XmlFactoryBuilder();
+    }
+
+    /**
+     * Note: compared to base implementation by {@link TokenStreamFactory},
      * here the copy will actually share underlying XML input and
      * output factories, as there is no way to make copies of those.
      */
