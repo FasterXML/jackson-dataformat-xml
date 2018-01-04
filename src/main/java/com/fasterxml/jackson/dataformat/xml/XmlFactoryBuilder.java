@@ -4,7 +4,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import com.fasterxml.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
-
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
@@ -139,6 +138,10 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
+    public XmlFactoryBuilder set(FromXmlParser.Feature f, boolean state) {
+        return state ? with(f) : without(f);
+    }
+
     // // // Generator features
 
     public XmlFactoryBuilder with(ToXmlGenerator.Feature f) {
@@ -165,6 +168,10 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
             _formatGeneratorFeatures &= ~f.getMask();
         }
         return _this();
+    }
+
+    public XmlFactoryBuilder set(ToXmlGenerator.Feature f, boolean state) {
+        return state ? with(f) : without(f);
     }
 
     // // // Other config
