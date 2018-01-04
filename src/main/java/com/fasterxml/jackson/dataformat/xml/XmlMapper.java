@@ -107,12 +107,7 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************
      */
 
-    /**
-     * Method called by {@link JacksonXmlModule} to pass configuration
-     * information to {@link XmlFactory}, during registration; NOT
-     * exposed as public method since configuration should be done
-     * via {@link JacksonXmlModule}.
-     */
+    @Deprecated
     protected void setXMLTextElementName(String name) {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
@@ -137,36 +132,6 @@ public class XmlMapper extends ObjectMapper
     @Override
     public XmlFactory tokenStreamFactory() {
         return (XmlFactory) _jsonFactory;
-    }
-    
-    public ObjectMapper configure(ToXmlGenerator.Feature f, boolean state) {
-        ((XmlFactory)_jsonFactory).configure(f, state);
-        return this;
-    }
-
-    public ObjectMapper configure(FromXmlParser.Feature f, boolean state) {
-        ((XmlFactory)_jsonFactory).configure(f, state);
-        return this;
-    }
-
-    public ObjectMapper enable(ToXmlGenerator.Feature f) {
-        ((XmlFactory)_jsonFactory).enable(f);
-        return this;
-    }
-
-    public ObjectMapper enable(FromXmlParser.Feature f) {
-        ((XmlFactory)_jsonFactory).enable(f);
-        return this;
-    }
-
-    public ObjectMapper disable(ToXmlGenerator.Feature f) {
-        ((XmlFactory)_jsonFactory).disable(f);
-        return this;
-    }
-
-    public ObjectMapper disable(FromXmlParser.Feature f) {
-        ((XmlFactory)_jsonFactory).disable(f);
-        return this;
     }
 
     /*

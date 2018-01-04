@@ -24,8 +24,6 @@ public class JacksonXmlModule
      *<p>
      * Note that JAXB annotation introspector always assumes "do not wrap by default".
      * Jackson annotations have different default due to backwards compatibility.
-     * 
-     * @since 2.1
      */
     protected boolean _cfgDefaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
 
@@ -34,8 +32,6 @@ public class JacksonXmlModule
      * not have actual element name to use). Defaults to empty String, but
      * may be changed for interoperability reasons: JAXB, for example, uses
      * "value" as name.
-     * 
-     * @since 2.1
      */
     protected String _cfgNameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
     
@@ -89,8 +85,6 @@ public class JacksonXmlModule
      * will not have any effect.
      * 
      * @param state Whether to enable or disable "use wrapper for non-annotated List properties"
-     * 
-     * @since 2.1
      */
     public void setDefaultUseWrapper(boolean state) {
         _cfgDefaultUseWrapper = state;
@@ -106,8 +100,6 @@ public class JacksonXmlModule
      * will not have any effect.
      * 
      * @param name Virtual name to use when exposing XML character data sections
-     * 
-     * @since 2.1
      */
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;

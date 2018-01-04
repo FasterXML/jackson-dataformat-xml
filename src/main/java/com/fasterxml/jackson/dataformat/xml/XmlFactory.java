@@ -59,9 +59,9 @@ public class XmlFactory
     protected int _xmlGeneratorFeatures;
 
     // non-final for setters (why are they needed again?)
-    protected transient XMLInputFactory _xmlInputFactory;
+    protected transient final XMLInputFactory _xmlInputFactory;
 
-    protected transient XMLOutputFactory _xmlOutputFactory;
+    protected transient final XMLOutputFactory _xmlOutputFactory;
 
     protected String _cfgNameForTextElement;
 
@@ -101,14 +101,10 @@ public class XmlFactory
         _xmlGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
-            xmlIn = XMLInputFactory.newInstance();
-            // as per [dataformat-xml#190], disable external entity expansion by default
-            xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
-            // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
-            xmlIn.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+            xmlIn = XmlFactoryBuilder.defaultInputFactory();
         }
         if (xmlOut == null) {
-            xmlOut = XMLOutputFactory.newInstance();
+            xmlOut = XmlFactoryBuilder.defaultOutputFactory();
         }
         _initFactories(xmlIn, xmlOut);
         _xmlInputFactory = xmlIn;
@@ -123,6 +119,12 @@ public class XmlFactory
     protected XmlFactory(XmlFactoryBuilder b)
     {
         super(b);
+        _xmlParserFeatures = b.xmlParserFeaturesMask();
+        _xmlGeneratorFeatures = b.xmlGeneratorFeaturesMask();
+        _cfgNameForTextElement = b.nameForTextElement();
+        _xmlInputFactory = b.xmlInputFactory();
+        _xmlOutputFactory = b.xmlOutputFactory();
+        _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 
     protected XmlFactory(XmlFactory src)
@@ -246,7 +248,7 @@ public class XmlFactory
     }
 
     /**
-     * As of 2.4, we do have actual capability for passing char arrays
+     * Since 2.4, we do have actual capability for passing char arrays
      * efficiently, but unfortunately
      * have no working mechanism for recycling buffers. So we have to 
      * admit that can not make efficient use.
@@ -270,6 +272,7 @@ public class XmlFactory
     /**********************************************************
      */
 
+    @Deprecated
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
     }
@@ -277,110 +280,13 @@ public class XmlFactory
     public String getXMLTextElementName() {
         return _cfgNameForTextElement;
     }
-    
-    /*
-    /**********************************************************
-    /* Configuration, XML, parser setting
-    /**********************************************************
-     */
-
-    /**
-     * Method for enabling or disabling specified XML parser feature.
-     */
-    public final XmlFactory configure(FromXmlParser.Feature f, boolean state)
-    {
-        if (state) {
-            enable(f);
-        } else {
-            disable(f);
-        }
-        return this;
-    }
-
-    /**
-     * Method for enabling specified XML parser feature.
-     */
-    public XmlFactory enable(FromXmlParser.Feature f) {
-        _xmlParserFeatures |= f.getMask();
-        return this;
-    }
-
-    /**
-     * Method for disabling specified XML parser feature.
-     */
-    public XmlFactory disable(FromXmlParser.Feature f) {
-        _xmlParserFeatures &= ~f.getMask();
-        return this;
-    }
-
-    /**
-     * Checked whether specified XML parser feature is enabled.
-     */
-    public final boolean isEnabled(FromXmlParser.Feature f) {
-        return (_xmlParserFeatures & f.getMask()) != 0;
-    }
-
-    /*
-    /******************************************************
-    /* Configuration, XML, generator settings
-    /******************************************************
-     */
-
-    /**
-     * Method for enabling or disabling specified XML generator feature.
-     */
-    public final XmlFactory configure(ToXmlGenerator.Feature f, boolean state) {
-        if (state) {
-            enable(f);
-        } else {
-            disable(f);
-        }
-        return this;
-    }
-
-    /**
-     * Method for enabling specified XML generator feature.
-     */
-    public XmlFactory enable(ToXmlGenerator.Feature f) {
-        _xmlGeneratorFeatures |= f.getMask();
-        return this;
-    }
-
-    /**
-     * Method for disabling specified XML generator feature.
-     */
-    public XmlFactory disable(ToXmlGenerator.Feature f) {
-        _xmlGeneratorFeatures &= ~f.getMask();
-        return this;
-    }
-
-    /**
-     * Check whether specified XML generator feature is enabled.
-     */
-    public final boolean isEnabled(ToXmlGenerator.Feature f) {
-        return (_xmlGeneratorFeatures & f.getMask()) != 0;
-    }
-
-    /*
-    /**********************************************************
-    /* Additional configuration
-    /**********************************************************
-     */
 
     public XMLInputFactory getXMLInputFactory() {
         return _xmlInputFactory;
     }
 
-    public void setXMLInputFactory(XMLInputFactory f) {
-        _xmlInputFactory = f;
-    }
-
     public XMLOutputFactory getXMLOutputFactory() {
         return _xmlOutputFactory;
-    }
-    
-    public void setXMLOutputFactory(XMLOutputFactory f) {
-        _xmlOutputFactory = f;
     }
 
     /*

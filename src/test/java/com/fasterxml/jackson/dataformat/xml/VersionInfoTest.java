@@ -19,13 +19,13 @@ public class VersionInfoTest extends XmlTestBase
         assertVersion(new XmlFactory());
     }
 
-    // @since 2.1
-    // [Issue#48]: ObjectMapper.copy()
+    // Test XmlMapper.copy()
     public void testMapperCopy()
     {
-        XmlMapper mapper1 = new XmlMapper();
-        mapper1.setXMLTextElementName("foo");
-        mapper1.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+        XmlMapper mapper1 = new XmlMapper(XmlFactory.builder()
+                .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .nameForTextElement("foo")
+                .build());
         mapper1.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         XmlMapper mapper2 = mapper1.copy();
@@ -35,12 +35,12 @@ public class VersionInfoTest extends XmlTestBase
         assertNotSame(xf1, xf2);
         assertEquals(XmlFactory.class, xf2.getClass());
 
-        // and [Issue#48] as well, incomplete copy...
+        // and [dataformat-xml#48] as well, incomplete copy...
         assertEquals(xf1.getXMLTextElementName(), xf2.getXMLTextElementName());
         assertEquals(xf1._xmlGeneratorFeatures, xf2._xmlGeneratorFeatures);
         assertEquals(xf1._xmlParserFeatures, xf2._xmlParserFeatures);
 
-        // and [Issue#233]
+        // and [dataformat-xml#233]
         SerializationConfig sc1 = mapper1.getSerializationConfig();
         SerializationConfig sc2 = mapper2.getSerializationConfig();
         assertNotSame(sc1, sc2);
@@ -60,8 +60,9 @@ public class VersionInfoTest extends XmlTestBase
 
     public void testMapperSerialization() throws Exception
     {
-        XmlMapper mapper1 = new XmlMapper();
-        mapper1.setXMLTextElementName("foo");
+        XmlMapper mapper1 = new XmlMapper(XmlFactory.builder()
+                .nameForTextElement("foo")
+                .build());
         assertEquals("foo", mapper1.tokenStreamFactory().getXMLTextElementName());
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
