@@ -26,12 +26,12 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     /**
      * Set of {@link FromXmlParser.Feature}s enabled, as bitmask.
      */
-    protected int _xmlParserFeatures;
+    protected int _formatParserFeatures;
 
     /**
      * Set of {@link ToXmlGenerator.Feature}s enabled, as bitmask.
      */
-    protected int _xmlGeneratorFeatures;
+    protected int _formatGeneratorFeatures;
 
     /**
      * Stax factory for creating underlying input stream readers;
@@ -56,7 +56,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      * "value" as name.
      */
     protected String _nameForTextElement;
-    
+
     /*
     /**********************************************************
     /* Life cycle
@@ -64,14 +64,14 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      */
     
     protected XmlFactoryBuilder() {
-        _xmlParserFeatures = XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS;
-        _xmlGeneratorFeatures = XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
+        _formatParserFeatures = XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS;
+        _formatGeneratorFeatures = XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
         super(base);
-        _xmlParserFeatures = base._xmlParserFeatures;
-        _xmlGeneratorFeatures = base._xmlGeneratorFeatures;
+        _formatParserFeatures = base._xmlParserFeatures;
+        _formatGeneratorFeatures = base._xmlGeneratorFeatures;
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
@@ -79,8 +79,8 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     // // // Accessors
 
-    public int xmlParserFeaturesMask() { return _xmlParserFeatures; }
-    public int xmlGeneratorFeaturesMask() { return _xmlGeneratorFeatures; }
+    public int formatParserFeaturesMask() { return _formatParserFeatures; }
+    public int formatGeneratorFeaturesMask() { return _formatGeneratorFeatures; }
 
     public String nameForTextElement() { return _nameForTextElement; }
 
@@ -114,27 +114,27 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     // // // Parser features
 
     public XmlFactoryBuilder with(FromXmlParser.Feature f) {
-        _xmlParserFeatures |= f.getMask();
+        _formatParserFeatures |= f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder with(FromXmlParser.Feature first, FromXmlParser.Feature... other) {
-        _xmlParserFeatures |= first.getMask();
+        _formatParserFeatures |= first.getMask();
         for (FromXmlParser.Feature f : other) {
-            _xmlParserFeatures |= f.getMask();
+            _formatParserFeatures |= f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder without(FromXmlParser.Feature f) {
-        _xmlParserFeatures &= ~f.getMask();
+        _formatParserFeatures &= ~f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder without(FromXmlParser.Feature first, FromXmlParser.Feature... other) {
-        _xmlParserFeatures &= ~first.getMask();
+        _formatParserFeatures &= ~first.getMask();
         for (FromXmlParser.Feature f : other) {
-            _xmlParserFeatures &= ~f.getMask();
+            _formatParserFeatures &= ~f.getMask();
         }
         return _this();
     }
@@ -142,27 +142,27 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     // // // Generator features
 
     public XmlFactoryBuilder with(ToXmlGenerator.Feature f) {
-        _xmlGeneratorFeatures |= f.getMask();
+        _formatGeneratorFeatures |= f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder with(ToXmlGenerator.Feature first, ToXmlGenerator.Feature... other) {
-        _xmlGeneratorFeatures |= first.getMask();
+        _formatGeneratorFeatures |= first.getMask();
         for (ToXmlGenerator.Feature f : other) {
-            _xmlGeneratorFeatures |= f.getMask();
+            _formatGeneratorFeatures |= f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder without(ToXmlGenerator.Feature f) {
-        _xmlGeneratorFeatures &= ~f.getMask();
+        _formatGeneratorFeatures &= ~f.getMask();
         return _this();
     }
     
     public XmlFactoryBuilder without(ToXmlGenerator.Feature first, ToXmlGenerator.Feature... other) {
-        _xmlGeneratorFeatures &= ~first.getMask();
+        _formatGeneratorFeatures &= ~first.getMask();
         for (ToXmlGenerator.Feature f : other) {
-            _xmlGeneratorFeatures &= ~f.getMask();
+            _formatGeneratorFeatures &= ~f.getMask();
         }
         return _this();
     }

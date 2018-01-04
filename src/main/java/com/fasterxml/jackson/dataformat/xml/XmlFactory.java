@@ -119,8 +119,8 @@ public class XmlFactory
     protected XmlFactory(XmlFactoryBuilder b)
     {
         super(b);
-        _xmlParserFeatures = b.xmlParserFeaturesMask();
-        _xmlGeneratorFeatures = b.xmlGeneratorFeaturesMask();
+        _xmlParserFeatures = b.formatParserFeaturesMask();
+        _xmlGeneratorFeatures = b.formatGeneratorFeaturesMask();
         _cfgNameForTextElement = b.nameForTextElement();
         _xmlInputFactory = b.xmlInputFactory();
         _xmlOutputFactory = b.xmlOutputFactory();
