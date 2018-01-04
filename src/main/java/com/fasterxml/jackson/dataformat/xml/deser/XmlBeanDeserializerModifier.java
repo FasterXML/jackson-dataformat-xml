@@ -21,13 +21,13 @@ public class XmlBeanDeserializerModifier
     /**
      * Virtual name used for text segments.
      */
-    protected String _cfgNameForTextValue = "";
+    protected final String _cfgNameForTextValue;
 
     public XmlBeanDeserializerModifier(String nameForTextValue)
     {
         _cfgNameForTextValue = nameForTextValue;
     }
-    
+
     @Override
     public List<BeanPropertyDefinition> updateProperties(DeserializationConfig config,
             BeanDescription beanDesc, List<BeanPropertyDefinition> propDefs)
