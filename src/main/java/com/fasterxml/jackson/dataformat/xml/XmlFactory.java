@@ -54,16 +54,18 @@ public class XmlFactory
     /**********************************************************
      */
 
-    protected int _xmlParserFeatures;
+    protected final int _xmlParserFeatures;
 
-    protected int _xmlGeneratorFeatures;
+    protected final int _xmlGeneratorFeatures;
 
-    // non-final for setters (why are they needed again?)
+    // !!! 09-Jan-2018, tatu: make final ASAP
+    protected String _cfgNameForTextElement;
+
+    // // Transient just because JDK serializability requires some trickery
+
     protected transient final XMLInputFactory _xmlInputFactory;
 
     protected transient final XMLOutputFactory _xmlOutputFactory;
-
-    protected String _cfgNameForTextElement;
 
     /*
     /**********************************************************
@@ -174,14 +176,10 @@ public class XmlFactory
     /**********************************************************
      */
 
-    /**
-     * Hiding place for JDK-serialization unthawed factories...
-     */
+    // Hiding place for JDK-serialization unthawed factories...
     protected transient String _jdkXmlInFactory;
 
-    /**
-     * Hiding place for JDK-serialization unthawed factories...
-     */
+    // Hiding place for JDK-serialization unthawed factories...
     protected transient String _jdkXmlOutFactory;
 
     /**
