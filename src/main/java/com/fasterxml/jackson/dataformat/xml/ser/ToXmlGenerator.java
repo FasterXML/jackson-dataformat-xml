@@ -1142,7 +1142,7 @@ public final class ToXmlGenerator
         super.close();
 
         // First: let's see that we still have buffers...
-        if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)) {
+        if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_CONTENT)) {
             try {
                 while (true) {
 		    /* 28-May-2016, tatu: To work around incompatibility introduced by
