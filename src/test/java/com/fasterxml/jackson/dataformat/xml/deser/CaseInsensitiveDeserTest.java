@@ -33,10 +33,8 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
 
     private final ObjectMapper MAPPER = newObjectMapper();
 
-    private final ObjectMapper INSENSITIVE_MAPPER = newObjectMapper();
-    {
-        INSENSITIVE_MAPPER.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
-    }
+    private final ObjectMapper INSENSITIVE_MAPPER = newObjectMapper()
+            .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
 
     public void testCaseInsensitiveBasic() throws Exception
     {
