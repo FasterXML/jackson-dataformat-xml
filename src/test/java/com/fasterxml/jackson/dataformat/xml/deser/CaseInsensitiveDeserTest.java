@@ -7,15 +7,14 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
+// note: Copied from `jackson-databind`; related to [dataformat-xml#273]
 public class CaseInsensitiveDeserTest extends XmlTestBase
 {
-    // [databind#1036]
     static class BaseResponse {
         public int errorCode;
         public String debugMessage;
     }
 
-    // [databind#1438]
     static class InsensitiveCreator
     {
         int v;
@@ -37,11 +36,9 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
     private final ObjectMapper INSENSITIVE_MAPPER = newObjectMapper();
     {
         INSENSITIVE_MAPPER.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
-        
     }
 
-    // [databind#1036]
-    public void testCaseInsensitive1036() throws Exception
+    public void testCaseInsensitiveBasic() throws Exception
     {
         final String DOC =
 "<BaseResponse><ErrorCode>2</ErrorCode><DebugMessage>Signature not valid!</DebugMessage></BaseResponse>";
@@ -60,7 +57,6 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
         }
     }
 
-    // [databind#1438]
     public void testCreatorWithInsensitive() throws Exception
     {
         final String DOC = aposToQuotes("<root><VALUE>3</VALUE></root>");
