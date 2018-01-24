@@ -1,6 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,14 +18,23 @@ public class CaseInsensitiveDeser273Test extends XmlTestBase
         public String taskId;
 
         @JacksonXmlElementWrapper(useWrapping = false)
-        public ArrayList<Depot273> element;
+        public List<Depot273> element;
+
+        public void setElement(List<Depot273> l) {
+            element = l;
+//            System.err.println("setElement: "+l+" / "+l.size());
+        }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class Depot273
     {
+        public Depot273() {
+//            System.err.println("<Depot273>");
+        }
         @JacksonXmlProperty(isAttribute = true)
         public String number;
+
         @JacksonXmlProperty(isAttribute = true)
         public String name;
     }
@@ -46,14 +55,16 @@ public class CaseInsensitiveDeser273Test extends XmlTestBase
 "<AcResponse Command='show depots' TaskId='1260'>\n"+
 "  <Element Number='1' Name='accurev' Slice='1'\n"+
 "exclusiveLocking='false' case='insensitive' locWidth='128'"+
-"></Element>\n"+
+" />\n"+
 "  <Element Number='2' Name='second accurev' Slice='2'\n"+
 "exclusiveLocking='false' case='insensitive' locWidth='128'\n"+
-"></Element>\n"+
+" />\n"+
 "</AcResponse>"
         ;
 
         Depots273 result = INSENSITIVE_MAPPER.readValue(DOC, Depots273.class);
         assertNotNull(result);
+        assertNotNull(result.element);
+        assertEquals(2, result.element.size());
     }
 }
