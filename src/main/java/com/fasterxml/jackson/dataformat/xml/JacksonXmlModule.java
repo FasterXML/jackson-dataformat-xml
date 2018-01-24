@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
+import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 /**
@@ -48,8 +49,11 @@ public class JacksonXmlModule
     public JacksonXmlModule()
     {
         super("JacksonXmlModule", PackageVersion.VERSION);
+        XmlStringDeserializer deser = new XmlStringDeserializer();
+        addDeserializer(String.class, deser);
+        addDeserializer(CharSequence.class, deser);
     }
-    
+
     @Override
     public void setupModule(SetupContext context)
     {
@@ -66,9 +70,8 @@ public class JacksonXmlModule
             m.setXMLTextElementName(_cfgNameForTextElement);
         }
 
-        /* Usually this would be the first call; but here anything added will
-         * be stuff user may has added, so do it afterwards instead.
-         */
+        // Usually this would be the first call; but here anything added will
+        // be stuff user may has added, so do it afterwards instead.
         super.setupModule(context);
     }    
 
