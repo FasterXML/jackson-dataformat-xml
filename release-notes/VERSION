@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.9.4 (24-Jan-2018)
+
+- Changed the handling of String deserialization (with addition of `XmlStringDeserializer`)
+  to work around a change in `jackson-databind`
+
 2.9.3 (09-Dec-2017)
 2.9.2 (14-Oct-2017)
 2.9.1 (07-Sep-2017)
