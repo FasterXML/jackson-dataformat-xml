@@ -62,33 +62,20 @@ public class PolymorphicIssue4Test extends XmlTestBase
 
     /*
     /**********************************************************
-    /* Set up
+    /* Test methods
     /**********************************************************
      */
 
-    protected XmlMapper _xmlMapper;
+    protected final XmlMapper MAPPER = newMapper();
 
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _xmlMapper = new XmlMapper();
-    }
-    
-    /*
-    /**********************************************************
-    /* Unit tests
-    /**********************************************************
-     */
-    
     /* 19-Dec-2010, tatu: Let's hold off these tests, due to issues with inclusions.
      */
     // Does not work since array wrapping is not explicitly forced (unlike with collection
     // property of a bean
     public void testAsClassArray() throws Exception
     {
-        String xml = _xmlMapper.writeValueAsString(new SubTypeWithClassArray("Foobar"));
-        Object result = _xmlMapper.readValue(xml, BaseTypeWithClassArray.class);
+        String xml = MAPPER.writeValueAsString(new SubTypeWithClassArray("Foobar"));
+        Object result = MAPPER.readValue(xml, BaseTypeWithClassArray.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result).name);
@@ -98,11 +85,10 @@ public class PolymorphicIssue4Test extends XmlTestBase
     // array context when writing...
     public void testAsWrappedClassArray() throws Exception
     {
-        String xml = _xmlMapper.writeValueAsString(new ClassArrayWrapper("Foobar"));
-        ClassArrayWrapper result = _xmlMapper.readValue(xml, ClassArrayWrapper.class);
+        String xml = MAPPER.writeValueAsString(new ClassArrayWrapper("Foobar"));
+        ClassArrayWrapper result = MAPPER.readValue(xml, ClassArrayWrapper.class);
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.wrapped.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result.wrapped).name);
     }
 }
-   
