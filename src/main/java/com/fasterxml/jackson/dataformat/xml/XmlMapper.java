@@ -109,7 +109,7 @@ public class XmlMapper extends ObjectMapper
 
     @Deprecated
     protected void setXMLTextElementName(String name) {
-        ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
+        ((XmlFactory) _streamFactory).setXMLTextElementName(name);
     }
 
     public XmlMapper setDefaultUseWrapper(boolean state) {
@@ -131,7 +131,7 @@ public class XmlMapper extends ObjectMapper
 
     @Override
     public XmlFactory tokenStreamFactory() {
-        return (XmlFactory) _jsonFactory;
+        return (XmlFactory) _streamFactory;
     }
 
     /*

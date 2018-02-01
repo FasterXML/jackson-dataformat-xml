@@ -32,8 +32,8 @@ public class VersionInfoTest extends XmlTestBase
         assertNotSame(mapper1, mapper2);
         XmlFactory xf1 = mapper1.tokenStreamFactory();
         XmlFactory xf2 = mapper2.tokenStreamFactory();
-        assertNotSame(xf1, xf2);
-        assertEquals(XmlFactory.class, xf2.getClass());
+        // 31-Jan-2018, tatu: stream factories immutable with 3.0 so:
+        assertSame(xf1, xf2);
 
         // and [dataformat-xml#48] as well, incomplete copy...
         assertEquals(xf1.getXMLTextElementName(), xf2.getXMLTextElementName());
