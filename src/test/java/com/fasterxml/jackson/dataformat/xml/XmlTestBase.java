@@ -189,9 +189,9 @@ public abstract class XmlTestBase
 
     protected XmlMapper xmlMapper(boolean useListWrapping)
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(useListWrapping);
-        return new XmlMapper(module);
+        return XmlMapper.builder()
+                .defaultUseWrapper(useListWrapping)
+                .build();
     }
 
     /*

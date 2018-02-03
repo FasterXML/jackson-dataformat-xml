@@ -40,9 +40,111 @@ public class XmlMapper extends ObjectMapper
     // need to hold on to module instance just in case copy() is used
     protected final JacksonXmlModule _xmlModule;
 
+    /**
+     * Builder implementation for constructing {@link XmlMapper} instances.
+     *
+     * @since 3.0
+     */
+    public static class Builder extends MapperBuilder<ObjectMapper, Builder>
+    {
+        protected JacksonXmlModule _xmlModule;
+
+        protected boolean _defaultUseWrapper;
+
+        /*
+        /******************************************************************
+        /* Life-cycle
+        /******************************************************************
+         */
+
+        public Builder(XmlFactory streamFactory) {
+            super(streamFactory);
+            // 21-Jun-2017, tatu: Seems like there are many cases in XML where ability to coerce empty
+            //    String into `null` (where it otherwise is an error) is very useful.
+            enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+            _xmlModule = DEFAULT_XML_MODULE;
+            _defaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
+        }
+
+        @Override
+        public XmlMapper build() {
+            return new XmlMapper(this, _xmlModule);
+        }
+
+        /*
+        /******************************************************************
+        /* Default value overrides
+        /******************************************************************
+         */
+        
+        @Override
+        protected DefaultSerializerProvider _defaultSerializerProvider() {
+            return new XmlSerializerProvider((XmlFactory) _streamFactory, new XmlRootNameLookup());
+        }
+
+        /**
+         * Overridden to (try to) ensure we use XML-compatible default indenter
+         */
+        @Override
+        protected PrettyPrinter _defaultPrettyPrinter() {
+            return DEFAULT_XML_PRETTY_PRINTER;
+        }
+
+        /*
+        /******************************************************************
+        /* XML specific additional config
+        /******************************************************************
+         */
+
+        public boolean defaultUseWrappers() {
+            return _defaultUseWrapper;
+        }
+
+        public Builder defaultUseWrapper(boolean b) {
+            _defaultUseWrapper = b;
+            return this;
+        }
+
+        public Builder xmlModule(JacksonXmlModule module) {
+            _xmlModule = module;
+            return this;
+        }
+    }
+
+    /*
+    /**********************************************************************
+    /* Life-cycle: construction 3.0 style
+    /**********************************************************************
+     */
+
+    public XmlMapper(Builder b, JacksonXmlModule module) {
+        super(b);
+        _xmlModule = module;
+        if (module != null) {
+            registerModule(module);
+        }
+        boolean w = b.defaultUseWrappers();
+        if (w != JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER) {
+            setDefaultUseWrapper(w);
+        }
+    }
+
+    public static XmlMapper.Builder xmlBuilder() {
+        return new XmlMapper.Builder(new XmlFactory());
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static XmlMapper.Builder builder() {
+        return new XmlMapper.Builder(new XmlFactory());
+    }
+
+    public static XmlMapper.Builder builder(XmlFactory streamFactory) {
+        return new XmlMapper.Builder(streamFactory);
+    }
+
     /*
     /**********************************************************
-    /* Life-cycle: construction, configuration
+    /* Life-cycle: construction, legacy
     /**********************************************************
      */
 
@@ -68,9 +170,11 @@ public class XmlMapper extends ObjectMapper
 
     public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
     {
-        /* Need to override serializer provider (due to root name handling);
-         * deserializer provider fine as is
-         */
+        this(new Builder(xmlFactory), module);
+        
+        /*
+        // Need to override serializer provider (due to root name handling);
+        // deserializer provider fine as is
         super(xmlFactory, new XmlSerializerProvider(xmlFactory, new XmlRootNameLookup()), null);
         _xmlModule = module;
         // but all the rest is done via Module interface!
@@ -82,6 +186,7 @@ public class XmlMapper extends ObjectMapper
         // 21-Jun-2017, tatu: Seems like there are many cases in XML where ability to coerce empty
         //    String into `null` (where it otherwise is an error) is very useful.
         enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        */
     }
 
     protected XmlMapper(XmlMapper src) {
@@ -112,6 +217,7 @@ public class XmlMapper extends ObjectMapper
         ((XmlFactory) _streamFactory).setXMLTextElementName(name);
     }
 
+    @Deprecated
     public XmlMapper setDefaultUseWrapper(boolean state) {
         // ser and deser configs should usually have the same introspector, so:
         AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();

@@ -4,9 +4,11 @@ import java.io.*;
 import java.util.*;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
@@ -170,9 +172,10 @@ public class TestSerialization extends XmlTestBase
     // for [dataformat-xml#41]
     public void testCustomSerializer() throws Exception
     {
-        JacksonXmlModule module = new JacksonXmlModule();
+        SimpleModule module = new SimpleModule("test");
         module.addSerializer(String.class, new CustomSerializer());
-        XmlMapper xml = new XmlMapper(module);
+        XmlMapper xml = new XmlMapper();
+        xml.registerModule(module);
         assertEquals("<String>custom:foo</String>", xml.writeValueAsString("foo"));
     }
     

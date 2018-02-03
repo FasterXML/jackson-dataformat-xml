@@ -78,22 +78,6 @@ public class JacksonXmlModule
      */
 
     /**
-     * Method that can be used to define whether {@link AnnotationIntrospector}
-     * we register will use wrapper for indexed (List, array) properties or not,
-     * if there are no explicit annotations.
-     * See {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
-     * for details.
-     *<p>
-     * Note that method MUST be called before registering the module; otherwise change
-     * will not have any effect.
-     * 
-     * @param state Whether to enable or disable "use wrapper for non-annotated List properties"
-     */
-    public void setDefaultUseWrapper(boolean state) {
-        _cfgDefaultUseWrapper = state;
-    }
-
-    /**
      * Method that can be used to define alternate "virtual name" to use
      * for XML CDATA segments; that is, text values. Default name is empty String
      * (""); but some frameworks use other names: JAXB, for example, uses

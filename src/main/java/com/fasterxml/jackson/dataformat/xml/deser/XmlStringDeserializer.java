@@ -36,7 +36,7 @@ public class XmlStringDeserializer
         if (p.hasToken(JsonToken.VALUE_STRING)) {
             return p.getText();
         }
-        JsonToken t = p.getCurrentToken();
+        JsonToken t = p.currentToken();
         if (t == JsonToken.START_ARRAY) {
             return _deserializeFromArray(p, ctxt);
         }

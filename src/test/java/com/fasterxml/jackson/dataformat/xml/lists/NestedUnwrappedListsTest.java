@@ -39,12 +39,13 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
     public void setUp() throws Exception
     {
         super.setUp();
-        _xmlMapper = new XmlMapper()
-            .setDefaultUseWrapper(false);
-        _xmlMapper.setPropertyNamingStrategy(new PropertyNamingStrategy.UpperCamelCaseStrategy());
-        _xmlMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        _xmlMapper = XmlMapper.builder()
+                .propertyNamingStrategy(new PropertyNamingStrategy.UpperCamelCaseStrategy())
+                .defaultUseWrapper(false)
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .build();
     }
-    
+
     /*
     /**********************************************************************
     /* Unit tests

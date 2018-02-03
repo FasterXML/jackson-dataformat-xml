@@ -4,9 +4,9 @@ jdk:
   - openjdk8
 # 28-Sep-2017, tatu: Alas, to work on JDK9 would need to include deps for JAXB and
 #    we do and can not rely on JDK9 for long time to come. So, leave out
-#  - oraclejdk9
+  - openjdk9
 
 branches:
   only:
     - master
-    - "2.9"
+    - "3.0"

@@ -82,8 +82,9 @@ public class ListWithAttributes extends XmlTestBase
                 + "     <value id=\"1\"/>"
                 + "     <fail/>"
                 + "</Root>";
-        ObjectMapper mapper = new XmlMapper()
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        ObjectMapper mapper = XmlMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
         Root root = mapper.readValue(source, Root.class);
         assertNotNull(root.values);
         assertEquals(1, root.values.size());

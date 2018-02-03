@@ -5,7 +5,6 @@ import java.io.IOException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
@@ -141,9 +140,9 @@ public class TextValueTest extends XmlTestBase
         } catch (JsonProcessingException e) {
             verifyException(e, "Unrecognized");
         }
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setXMLTextElementName("value");
-        XmlMapper mapper = new XmlMapper(module);
+        XmlMapper mapper = XmlMapper.builder()
+                .nameForTextElement("value")
+                .build();
         JAXBStyle pojo = mapper.readValue(XML, JAXBStyle.class);
         assertEquals("foo", pojo.value);
     }
@@ -151,9 +150,9 @@ public class TextValueTest extends XmlTestBase
     // [dataformat-xml#66], implicit property from "XmlText"
     public void testIssue66() throws Exception
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        XmlMapper mapper = new XmlMapper(module);
+        XmlMapper mapper = XmlMapper.builder()
+                .defaultUseWrapper(false)
+                .build();
         final String XML = "<Issue66Bean id=\"id\">text</Issue66Bean>";
 
         // let's start with deserialization

@@ -5,7 +5,7 @@ import java.util.List;
 import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
@@ -115,9 +115,9 @@ public class UnwrappedListsTest extends XmlTestBase
         assertEquals(2, output.value.length);
 
         // but can be changed not to use wrapping by default
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        mapper = new XmlMapper(module);
+        mapper = XmlMapper.builder()
+                .defaultUseWrapper(false)
+                .build();
         json = mapper.writeValueAsString(input);
         assertEquals("<DefaultList><value><v>a</v></value><value><v>b</v></value></DefaultList>", json);
         output = mapper.readValue(json, DefaultList.class);
@@ -135,9 +135,9 @@ public class UnwrappedListsTest extends XmlTestBase
         assertEquals(1, output.value.length);
 
         // but without, should work as well
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(false);
-        mapper = new XmlMapper(module);
+        mapper = XmlMapper.builder()
+                .defaultUseWrapper(false)
+                .build();
         json = "<DefaultList><value></value></DefaultList>";
         output = mapper.readValue(json, DefaultList.class);
         assertNotNull(output.value);

@@ -42,9 +42,6 @@ public interface XmlAnnotationIntrospector
      */
     public Boolean isOutputAsCData(Annotated ann);
 
-    /**
-     * @since 2.7
-     */
     public void setDefaultUseWrapper(boolean b);
     
     /*

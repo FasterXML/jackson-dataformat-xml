@@ -3,10 +3,10 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -85,9 +85,9 @@ public class RootListHandlingTest extends XmlTestBase
         
     private void _testListSerialization(boolean useWrapping) throws Exception
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(useWrapping);
-        XmlMapper xmlMapper = new XmlMapper(module);
+        XmlMapper xmlMapper = XmlMapper.builder()
+            .defaultUseWrapper(useWrapping)
+            .build();
         AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
         xmlMapper.setAnnotationIntrospector(introspector);
 
@@ -145,9 +145,9 @@ public class RootListHandlingTest extends XmlTestBase
     
     private void _testArraySerialization(boolean useWrapping) throws Exception
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(useWrapping);
-        XmlMapper xmlMapper = new XmlMapper(module);
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .defaultUseWrapper(useWrapping)
+                .build();
         AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
         xmlMapper.setAnnotationIntrospector(introspector);
 
