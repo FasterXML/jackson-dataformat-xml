@@ -29,7 +29,7 @@ public class TestSerializationManual extends XmlTestBase
     public void testIssue54() throws Exception
     {
         XmlMapper xmlMapper = new XmlMapper(XmlFactory.builder()
-                .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
                 .build());
         StringWriter sw = new StringWriter();
         ToXmlGenerator generator = (ToXmlGenerator) xmlMapper.createGenerator(sw);

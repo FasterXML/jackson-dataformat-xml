@@ -23,7 +23,7 @@ public class VersionInfoTest extends XmlTestBase
     public void testMapperCopy()
     {
         XmlMapper mapper1 = new XmlMapper(XmlFactory.builder()
-                .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
                 .nameForTextElement("foo")
                 .build());
         mapper1.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);

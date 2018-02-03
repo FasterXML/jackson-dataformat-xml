@@ -112,12 +112,12 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     
     // // // Parser features
 
-    public XmlFactoryBuilder with(FromXmlParser.Feature f) {
+    public XmlFactoryBuilder enable(FromXmlParser.Feature f) {
         _formatParserFeatures |= f.getMask();
         return _this();
     }
 
-    public XmlFactoryBuilder with(FromXmlParser.Feature first, FromXmlParser.Feature... other) {
+    public XmlFactoryBuilder enable(FromXmlParser.Feature first, FromXmlParser.Feature... other) {
         _formatParserFeatures |= first.getMask();
         for (FromXmlParser.Feature f : other) {
             _formatParserFeatures |= f.getMask();
@@ -125,12 +125,12 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
-    public XmlFactoryBuilder without(FromXmlParser.Feature f) {
+    public XmlFactoryBuilder disable(FromXmlParser.Feature f) {
         _formatParserFeatures &= ~f.getMask();
         return _this();
     }
 
-    public XmlFactoryBuilder without(FromXmlParser.Feature first, FromXmlParser.Feature... other) {
+    public XmlFactoryBuilder disable(FromXmlParser.Feature first, FromXmlParser.Feature... other) {
         _formatParserFeatures &= ~first.getMask();
         for (FromXmlParser.Feature f : other) {
             _formatParserFeatures &= ~f.getMask();
@@ -138,18 +138,18 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
-    public XmlFactoryBuilder set(FromXmlParser.Feature f, boolean state) {
-        return state ? with(f) : without(f);
+    public XmlFactoryBuilder configure(FromXmlParser.Feature f, boolean state) {
+        return state ? enable(f) : disable(f);
     }
 
     // // // Generator features
 
-    public XmlFactoryBuilder with(ToXmlGenerator.Feature f) {
+    public XmlFactoryBuilder enable(ToXmlGenerator.Feature f) {
         _formatGeneratorFeatures |= f.getMask();
         return _this();
     }
 
-    public XmlFactoryBuilder with(ToXmlGenerator.Feature first, ToXmlGenerator.Feature... other) {
+    public XmlFactoryBuilder enable(ToXmlGenerator.Feature first, ToXmlGenerator.Feature... other) {
         _formatGeneratorFeatures |= first.getMask();
         for (ToXmlGenerator.Feature f : other) {
             _formatGeneratorFeatures |= f.getMask();
@@ -157,12 +157,12 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
-    public XmlFactoryBuilder without(ToXmlGenerator.Feature f) {
+    public XmlFactoryBuilder disable(ToXmlGenerator.Feature f) {
         _formatGeneratorFeatures &= ~f.getMask();
         return _this();
     }
     
-    public XmlFactoryBuilder without(ToXmlGenerator.Feature first, ToXmlGenerator.Feature... other) {
+    public XmlFactoryBuilder disable(ToXmlGenerator.Feature first, ToXmlGenerator.Feature... other) {
         _formatGeneratorFeatures &= ~first.getMask();
         for (ToXmlGenerator.Feature f : other) {
             _formatGeneratorFeatures &= ~f.getMask();
@@ -170,8 +170,8 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
-    public XmlFactoryBuilder set(ToXmlGenerator.Feature f, boolean state) {
-        return state ? with(f) : without(f);
+    public XmlFactoryBuilder configure(ToXmlGenerator.Feature f, boolean state) {
+        return state ? enable(f) : disable(f);
     }
 
     // // // Other config
