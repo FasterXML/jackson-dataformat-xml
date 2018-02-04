@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
-import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 /**
@@ -17,37 +16,21 @@ public class JacksonXmlModule
 {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Determination of whether indexed properties (arrays, Lists) that are not explicitly
-     * annotated (with {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
-     * or equivalent) should default to using implicit wrapper (with same name as property) or not.
-     * If enabled, wrapping is used by default; if false, it is not.
-     *<p>
-     * Note that JAXB annotation introspector always assumes "do not wrap by default".
-     * Jackson annotations have different default due to backwards compatibility.
-     */
-    protected boolean _cfgDefaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
+    protected final boolean _cfgDefaultUseWrapper;
 
-    /**
-     * Name used for pseudo-property used for returning XML Text value (which does
-     * not have actual element name to use). Defaults to empty String, but
-     * may be changed for interoperability reasons: JAXB, for example, uses
-     * "value" as name.
-     */
-    protected String _cfgNameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
-    
+    protected String _cfgNameForTextElement;
+
     /*
     /**********************************************************************
     /* Life-cycle: construction
     /**********************************************************************
      */
     
-    public JacksonXmlModule()
+    public JacksonXmlModule(String name, boolean w)
     {
         super("JacksonXmlModule", PackageVersion.VERSION);
-        XmlStringDeserializer deser = new XmlStringDeserializer();
-        addDeserializer(String.class, deser);
-        addDeserializer(CharSequence.class, deser);
+        _cfgNameForTextElement = name;
+        _cfgDefaultUseWrapper = w;
     }
 
     @Override
@@ -71,27 +54,6 @@ public class JacksonXmlModule
         super.setupModule(context);
     }    
 
-    /*
-    /**********************************************************************
-    /* Life-cycle: configuration
-    /**********************************************************************
-     */
-
-    /**
-     * Method that can be used to define alternate "virtual name" to use
-     * for XML CDATA segments; that is, text values. Default name is empty String
-     * (""); but some frameworks use other names: JAXB, for example, uses
-     * "value".
-     *<p>
-     * Note that method MUST be called before registering the module; otherwise change
-     * will not have any effect.
-     * 
-     * @param name Virtual name to use when exposing XML character data sections
-     */
-    public void setXMLTextElementName(String name) {
-        _cfgNameForTextElement = name;
-    }
-    
     /*
     /**********************************************************************
     /* Internal methods

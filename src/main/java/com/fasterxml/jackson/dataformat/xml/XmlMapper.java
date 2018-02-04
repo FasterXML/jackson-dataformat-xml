@@ -11,8 +11,11 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -33,23 +36,18 @@ public class XmlMapper extends ObjectMapper
 {
     private static final long serialVersionUID = 1L;
 
-    protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
-
     protected final static DefaultXmlPrettyPrinter DEFAULT_XML_PRETTY_PRINTER = new DefaultXmlPrettyPrinter();
-
-    // need to hold on to module instance just in case copy() is used
-    protected final JacksonXmlModule _xmlModule;
 
     /**
      * Builder implementation for constructing {@link XmlMapper} instances.
      *
      * @since 3.0
      */
-    public static class Builder extends MapperBuilder<ObjectMapper, Builder>
+    public static class Builder extends MapperBuilder<XmlMapper, Builder>
     {
-        protected JacksonXmlModule _xmlModule;
-
         protected boolean _defaultUseWrapper;
+
+        protected String _nameForTextElement;
 
         /*
         /******************************************************************
@@ -62,13 +60,13 @@ public class XmlMapper extends ObjectMapper
             // 21-Jun-2017, tatu: Seems like there are many cases in XML where ability to coerce empty
             //    String into `null` (where it otherwise is an error) is very useful.
             enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-            _xmlModule = DEFAULT_XML_MODULE;
             _defaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
+            _nameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
         }
 
         @Override
         public XmlMapper build() {
-            return new XmlMapper(this, _xmlModule);
+            return new XmlMapper(this);
         }
 
         /*
@@ -100,13 +98,36 @@ public class XmlMapper extends ObjectMapper
             return _defaultUseWrapper;
         }
 
+        /**
+         * Determination of whether indexed properties (arrays, Lists) that are not explicitly
+         * annotated (with {@link com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper}
+         * or equivalent) should default to using implicit wrapper (with same name as property) or not.
+         * If enabled, wrapping is used by default; if false, it is not.
+         *<p>
+         * Note that JAXB annotation introspector always assumes "do not wrap by default".
+         * Jackson annotations have different default due to backwards compatibility.
+         */
         public Builder defaultUseWrapper(boolean b) {
             _defaultUseWrapper = b;
             return this;
         }
 
-        public Builder xmlModule(JacksonXmlModule module) {
-            _xmlModule = module;
+        public String nameForTextElement() {
+            return _nameForTextElement;
+        }
+
+        /**
+         * Name used for pseudo-property used for returning XML Text value (cdata within
+         * element, which does not have actual element name to use) as a named value (since
+         * JSON data model just has named values, except for arrays).
+         * Defaults to empty String, but may be changed for interoperability reasons:
+         * JAXB, for example, uses "value" as name.
+         */
+        public Builder nameForTextElement(String elem) {
+            if (elem == null) {
+                elem = "";
+            }
+            _nameForTextElement = elem;
             return this;
         }
     }
@@ -117,22 +138,32 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************************
      */
 
-    public XmlMapper(Builder b, JacksonXmlModule module) {
+    public XmlMapper(Builder b) {
         super(b);
-        _xmlModule = module;
-        if (module != null) {
-            registerModule(module);
+
+        // First: special handling for String, to allow "String in OBject"
+        {
+            XmlStringDeserializer deser = new XmlStringDeserializer();
+            SimpleDeserializers desers = new SimpleDeserializers()
+                    .addDeserializer(String.class, deser)
+                    .addDeserializer(CharSequence.class, deser);
+            DeserializerFactory df = _deserializationContext.getFactory().withAdditionalDeserializers(desers);
+            _deserializationContext = _deserializationContext.with(df);
         }
         boolean w = b.defaultUseWrappers();
         if (w != JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER) {
             setDefaultUseWrapper(w);
         }
+
+        JacksonXmlModule module = new JacksonXmlModule(b.nameForTextElement(),
+                b.defaultUseWrappers());
+        registerModule(module);
     }
 
     public static XmlMapper.Builder xmlBuilder() {
         return new XmlMapper.Builder(new XmlFactory());
     }
-    
+
     @SuppressWarnings("unchecked")
     public static XmlMapper.Builder builder() {
         return new XmlMapper.Builder(new XmlFactory());
@@ -160,17 +191,9 @@ public class XmlMapper extends ObjectMapper
         this(new XmlFactory(inputF));
     }
 
-    public XmlMapper(XmlFactory xmlFactory) {
-        this(xmlFactory, DEFAULT_XML_MODULE);
-    }
-
-    public XmlMapper(JacksonXmlModule module) {
-        this(new XmlFactory(), module);
-    }
-
-    public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
+    public XmlMapper(XmlFactory xmlFactory)
     {
-        this(new Builder(xmlFactory), module);
+        this(new Builder(xmlFactory));
         
         /*
         // Need to override serializer provider (due to root name handling);
@@ -191,7 +214,6 @@ public class XmlMapper extends ObjectMapper
 
     protected XmlMapper(XmlMapper src) {
         super(src);
-        _xmlModule = src._xmlModule;
     }
 
     @Override
