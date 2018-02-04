@@ -3,8 +3,6 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.io.Closeable;
 import java.io.IOException;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -234,16 +232,16 @@ public class XmlMapper extends ObjectMapper
         */
     }
 
-    @Override
-    public Version version() {
-        return PackageVersion.VERSION;
-    }
-
     /*
     /**********************************************************
     /* Access to configuration settings
     /**********************************************************
      */
+
+    @Override
+    public Version version() {
+        return PackageVersion.VERSION;
+    }
 
     @Override
     public XmlFactory tokenStreamFactory() {
