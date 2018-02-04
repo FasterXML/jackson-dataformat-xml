@@ -15,8 +15,10 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -24,13 +26,12 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
  * using XML-backed {@link com.fasterxml.jackson.core.TokenStreamFactory}
- * implementation ({@link XmlFactory}).
+ * implementation ({@link XmlFactory}), operation on STAX
+ * {@link javax.xml.stream.XMLStreamReader}s and
+ * {@link javax.xml.stream.XMLStreamWriter}s.
  *<p>
  * Mapper itself overrides some aspects of functionality to try to handle
  * data binding aspects as similar to JAXB as possible.
- *<p>
- * Note that most of configuration should be done by pre-constructing
- * {@link JacksonXmlModule} explicitly, instead of relying on default settings.
  */
 public class XmlMapper extends ObjectMapper
 {
@@ -94,7 +95,7 @@ public class XmlMapper extends ObjectMapper
         /******************************************************************
          */
 
-        public boolean defaultUseWrappers() {
+        public boolean defaultUseWrapper() {
             return _defaultUseWrapper;
         }
 
@@ -138,10 +139,11 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************************
      */
 
-    public XmlMapper(Builder b) {
+    public XmlMapper(Builder b)
+    {
         super(b);
 
-        // First: special handling for String, to allow "String in OBject"
+        // First: special handling for String, to allow "String in Object"
         {
             XmlStringDeserializer deser = new XmlStringDeserializer();
             SimpleDeserializers desers = new SimpleDeserializers()
@@ -150,15 +152,43 @@ public class XmlMapper extends ObjectMapper
             DeserializerFactory df = _deserializationContext.getFactory().withAdditionalDeserializers(desers);
             _deserializationContext = _deserializationContext.with(df);
         }
-        boolean w = b.defaultUseWrappers();
-        if (w != JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER) {
-            setDefaultUseWrapper(w);
+        final boolean w = b.defaultUseWrapper();
+        // as well as AnnotationIntrospector
+        {
+            JacksonXmlAnnotationIntrospector intr = new JacksonXmlAnnotationIntrospector(w);
+            _deserializationConfig = _deserializationConfig.withInsertedAnnotationIntrospector(intr);
+            _serializationConfig = _serializationConfig.withInsertedAnnotationIntrospector(intr);
         }
 
-        JacksonXmlModule module = new JacksonXmlModule(b.nameForTextElement(),
-                b.defaultUseWrappers());
-        registerModule(module);
+        // Need to modify BeanDeserializer, BeanSerializer that are used
+        _serializerFactory = _serializerFactory.withSerializerModifier(new XmlBeanSerializerModifier());
+        final String textElemName = b.nameForTextElement();
+        {
+            XmlBeanDeserializerModifier mod =  new XmlBeanDeserializerModifier(textElemName);
+            DeserializerFactory df = _deserializationContext.getFactory().withDeserializerModifier(mod);
+            _deserializationContext = _deserializationContext.with(df);
+        }
+        
+        // !!! TODO: 03-Feb-2018, tatu: remove last piece of mutability... 
+        if (!FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY.equals(textElemName)) {
+            ((XmlFactory) _streamFactory).setXMLTextElementName(textElemName);
+        }
     }
+
+    // 03-Feb-2018, tatu: Was needed in 2.x but should NOT be necessary as we construct
+    //   introspector with proper settings.
+/*
+    private XmlMapper setDefaultUseWrapper(boolean state) {
+        // ser and deser configs should usually have the same introspector, so:
+        AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
+        for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
+            if (ai instanceof XmlAnnotationIntrospector) {
+                ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);
+            }
+        }
+        return this;
+    }
+*/
 
     public static XmlMapper.Builder xmlBuilder() {
         return new XmlMapper.Builder(new XmlFactory());
@@ -226,29 +256,6 @@ public class XmlMapper extends ObjectMapper
     @Override
     public Version version() {
         return PackageVersion.VERSION;
-    }
-
-    /*
-    /**********************************************************
-    /* Additional XML-specific configurations
-    /**********************************************************
-     */
-
-    @Deprecated
-    protected void setXMLTextElementName(String name) {
-        ((XmlFactory) _streamFactory).setXMLTextElementName(name);
-    }
-
-    @Deprecated
-    public XmlMapper setDefaultUseWrapper(boolean state) {
-        // ser and deser configs should usually have the same introspector, so:
-        AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
-        for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-            if (ai instanceof XmlAnnotationIntrospector) {
-                ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);
-            }
-        }
-        return this;
     }
 
     /*
