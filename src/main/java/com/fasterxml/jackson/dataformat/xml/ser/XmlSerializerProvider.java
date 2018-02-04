@@ -52,10 +52,12 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         _rootNameLookup  = src._rootNameLookup;
     }
 
+    /*
     protected XmlSerializerProvider(XmlSerializerProvider src) {
         super(src);
         _rootNameLookup = src._rootNameLookup;
     }
+    */
 
     /*
     /**********************************************************************
@@ -63,10 +65,12 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     /**********************************************************************
      */
 
+    /*
     @Override
     public DefaultSerializerProvider copy() {
         return new XmlSerializerProvider(this);
     }
+    */
 
     @Override
     public DefaultSerializerProvider createInstance(SerializationConfig config,

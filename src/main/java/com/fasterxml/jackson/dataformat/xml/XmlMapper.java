@@ -213,14 +213,6 @@ public class XmlMapper extends ObjectMapper
         this(new XmlFactory());
     }
 
-    public XmlMapper(XMLInputFactory inputF, XMLOutputFactory outF) {
-        this(new XmlFactory(inputF, outF));
-    }
-
-    public XmlMapper(XMLInputFactory inputF) {
-        this(new XmlFactory(inputF));
-    }
-
     public XmlMapper(XmlFactory xmlFactory)
     {
         this(new Builder(xmlFactory));
@@ -240,17 +232,6 @@ public class XmlMapper extends ObjectMapper
         //    String into `null` (where it otherwise is an error) is very useful.
         enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         */
-    }
-
-    protected XmlMapper(XmlMapper src) {
-        super(src);
-    }
-
-    @Override
-    public XmlMapper copy()
-    {
-        _checkInvalidCopy(XmlMapper.class);
-        return new XmlMapper(this);
     }
 
     @Override
