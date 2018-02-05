@@ -85,6 +85,17 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <version>5.0.3</version>
     </dependency>
 
+    <!-- 04-Feb-2018, tatu: Finally, Java 9 does not bundle JAXB, not even API;
+            at least include it for tests. May need to include actual dep to
+            API for runtime too, but first for tests
+      -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
