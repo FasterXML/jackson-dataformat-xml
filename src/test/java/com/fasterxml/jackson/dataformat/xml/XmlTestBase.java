@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public abstract class XmlTestBase
@@ -183,7 +182,7 @@ public abstract class XmlTestBase
         super();
     }
 
-    protected static ObjectMapper newObjectMapper() {
+    protected static XmlMapper newMapper() {
         return new XmlMapper();
     }
 
