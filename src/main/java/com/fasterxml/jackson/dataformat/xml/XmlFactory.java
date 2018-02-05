@@ -254,6 +254,29 @@ public class XmlFactory
     @Override
     public boolean canUseCharArrays() { return false; }
 
+    /*
+    /**********************************************************************
+    /* Format support
+    /**********************************************************************
+     */
+
+    /**
+     * Method that returns short textual id identifying format
+     * this factory supports.
+     *<p>
+     * Note: sub-classes should override this method; default
+     * implementation will return null for all sub-classes
+     */
+    @Override
+    public String getFormatName() {
+        return FORMAT_NAME_XML;
+    }
+
+    @Override
+    public boolean canUseSchema(FormatSchema schema) {
+        return false; // no FormatSchema for xml
+    }
+
     @Override
     public Class<FromXmlParser.Feature> getFormatReadFeatureType() {
         return FromXmlParser.Feature.class;
@@ -263,6 +286,12 @@ public class XmlFactory
     public Class<ToXmlGenerator.Feature> getFormatWriteFeatureType() {
         return ToXmlGenerator.Feature.class;
     }
+
+    @Override
+    public int getFormatParserFeatures() { return _formatParserFeatures; }
+
+    @Override
+    public int getFormatGeneratorFeatures() { return _formatGeneratorFeatures; }
     
     /*
     /**********************************************************
@@ -285,29 +314,6 @@ public class XmlFactory
 
     public XMLOutputFactory getXMLOutputFactory() {
         return _xmlOutputFactory;
-    }
-
-    /*
-    /**********************************************************
-    /* Format/Schema
-    /**********************************************************
-     */
-
-    /**
-     * Method that returns short textual id identifying format
-     * this factory supports.
-     *<p>
-     * Note: sub-classes should override this method; default
-     * implementation will return null for all sub-classes
-     */
-    @Override
-    public String getFormatName() {
-        return FORMAT_NAME_XML;
-    }
-
-    @Override
-    public boolean canUseSchema(FormatSchema schema) {
-        return false; // no FormatSchema for json
     }
 
     /*
