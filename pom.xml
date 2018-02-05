@@ -52,6 +52,17 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
     </dependency>
+    <!-- 04-Feb-2017, tatu: Java 9 does not bundle JAXB API either,
+       so we need dependency. Should come via above module, but just
+       in case it didn't, let's add here as a test dep to make Java 9 build work
+      -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- JDK 1.6+ provides stax-api (javax.xml.stream), but Stax2 API must be included -->
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
