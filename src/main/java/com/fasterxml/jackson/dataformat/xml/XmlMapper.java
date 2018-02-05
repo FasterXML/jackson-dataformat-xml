@@ -54,8 +54,11 @@ public class XmlMapper extends ObjectMapper
         /******************************************************************
          */
 
-        public Builder(XmlFactory streamFactory) {
-            super(streamFactory);
+        public Builder(XmlFactory f) {
+            super(f);
+            _formatParserFeatures = f._formatParserFeatures;
+            _formatGeneratorFeatures = f._formatGeneratorFeatures;
+
             // 21-Jun-2017, tatu: Seems like there are many cases in XML where ability to coerce empty
             //    String into `null` (where it otherwise is an error) is very useful.
             enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
@@ -89,10 +92,64 @@ public class XmlMapper extends ObjectMapper
 
         /*
         /******************************************************************
-        /* XML specific additional config
+        /* XML format features
         /******************************************************************
          */
 
+        public Builder enable(FromXmlParser.Feature... features) {
+            for (FromXmlParser.Feature f : features) {
+                _formatParserFeatures |= f.getMask();
+            }
+            return this;
+        }
+
+        public Builder disable(FromXmlParser.Feature... features) {
+            for (FromXmlParser.Feature f : features) {
+                _formatParserFeatures &= ~f.getMask();
+            }
+            return this;
+        }
+
+        public Builder configure(FromXmlParser.Feature feature, boolean state)
+        {
+            if (state) {
+                _formatParserFeatures |= feature.getMask();
+            } else {
+                _formatParserFeatures &= ~feature.getMask();
+            }
+            return this;
+        }
+
+        public Builder enable(ToXmlGenerator.Feature... features) {
+            for (ToXmlGenerator.Feature f : features) {
+                _formatGeneratorFeatures |= f.getMask();
+            }
+            return this;
+        }
+
+        public Builder disable(ToXmlGenerator.Feature... features) {
+            for (ToXmlGenerator.Feature f : features) {
+                _formatGeneratorFeatures &= ~f.getMask();
+            }
+            return this;
+        }
+
+        public Builder configure(ToXmlGenerator.Feature feature, boolean state)
+        {
+            if (state) {
+                _formatGeneratorFeatures |= feature.getMask();
+            } else {
+                _formatGeneratorFeatures &= ~feature.getMask();
+            }
+            return this;
+        }
+
+        /*
+        /******************************************************************
+        /* XML specific additional config
+        /******************************************************************
+         */
+        
         public boolean defaultUseWrapper() {
             return _defaultUseWrapper;
         }

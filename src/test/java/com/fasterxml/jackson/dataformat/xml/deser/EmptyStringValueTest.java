@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -51,9 +50,9 @@ public class EmptyStringValueTest extends XmlTestBase
         assertEquals("", name.last);
 
         // but can be changed
-        XmlMapper mapper2 = new XmlMapper(XmlFactory.builder()
+        XmlMapper mapper2 = XmlMapper.builder()
             .disable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
-            .build());
+            .build();
         name = mapper2.readValue(XML, Name.class);
         assertNotNull(name);
         assertEquals("", name.first);

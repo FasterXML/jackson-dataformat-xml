@@ -69,8 +69,8 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     public XmlFactoryBuilder(XmlFactory base) {
         super(base);
-        _formatParserFeatures = base._xmlParserFeatures;
-        _formatGeneratorFeatures = base._xmlGeneratorFeatures;
+        _formatParserFeatures = base._formatParserFeatures;
+        _formatGeneratorFeatures = base._formatGeneratorFeatures;
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;

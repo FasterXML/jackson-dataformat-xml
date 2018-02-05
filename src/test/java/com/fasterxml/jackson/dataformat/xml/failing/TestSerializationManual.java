@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -28,9 +27,9 @@ public class TestSerializationManual extends XmlTestBase
 
     public void testIssue54() throws Exception
     {
-        XmlMapper xmlMapper = new XmlMapper(XmlFactory.builder()
+        XmlMapper xmlMapper = XmlMapper.builder()
                 .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
-                .build());
+                .build();
         StringWriter sw = new StringWriter();
         ToXmlGenerator generator = (ToXmlGenerator) xmlMapper.createGenerator(sw);
         generator.initGenerator();

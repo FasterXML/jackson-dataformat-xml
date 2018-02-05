@@ -54,9 +54,9 @@ public class XmlFactory
     /**********************************************************
      */
 
-    protected final int _xmlParserFeatures;
+    protected final int _formatParserFeatures;
 
-    protected final int _xmlGeneratorFeatures;
+    protected final int _formatGeneratorFeatures;
 
     // !!! 09-Jan-2018, tatu: make final ASAP
     protected String _cfgNameForTextElement;
@@ -99,8 +99,8 @@ public class XmlFactory
             String nameForTextElem)
     {
         super();
-        _xmlParserFeatures = xpFeatures;
-        _xmlGeneratorFeatures = xgFeatures;
+        _formatParserFeatures = xpFeatures;
+        _formatGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
             xmlIn = XmlFactoryBuilder.defaultInputFactory();
@@ -121,8 +121,8 @@ public class XmlFactory
     protected XmlFactory(XmlFactoryBuilder b)
     {
         super(b);
-        _xmlParserFeatures = b.formatParserFeaturesMask();
-        _xmlGeneratorFeatures = b.formatGeneratorFeaturesMask();
+        _formatParserFeatures = b.formatParserFeaturesMask();
+        _formatGeneratorFeatures = b.formatGeneratorFeaturesMask();
         _cfgNameForTextElement = b.nameForTextElement();
         _xmlInputFactory = b.xmlInputFactory();
         _xmlOutputFactory = b.xmlOutputFactory();
@@ -132,8 +132,8 @@ public class XmlFactory
     protected XmlFactory(XmlFactory src)
     {
         super(src);
-        _xmlParserFeatures = src._xmlParserFeatures;
-        _xmlGeneratorFeatures = src._xmlGeneratorFeatures;
+        _formatParserFeatures = src._formatParserFeatures;
+        _formatGeneratorFeatures = src._formatGeneratorFeatures;
         _cfgNameForTextElement = src._cfgNameForTextElement;
         _xmlInputFactory = src._xmlInputFactory;
         _xmlOutputFactory = src._xmlOutputFactory;
@@ -196,7 +196,7 @@ public class XmlFactory
         try {
             XMLInputFactory inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).newInstance();
             XMLOutputFactory outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).newInstance();
-            return new XmlFactory(_xmlParserFeatures, _xmlGeneratorFeatures,
+            return new XmlFactory(_formatParserFeatures, _formatGeneratorFeatures,
                     inf, outf, _cfgNameForTextElement);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
@@ -350,7 +350,7 @@ public class XmlFactory
         
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
-                writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
+                writeCtxt.getFormatWriteFeatures(_formatGeneratorFeatures),
                 _createXmlWriter(out),
                 _xmlPrettyPrinter(writeCtxt));
     }
@@ -361,7 +361,7 @@ public class XmlFactory
     {
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
-                writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
+                writeCtxt.getFormatWriteFeatures(_formatGeneratorFeatures),
                 _createXmlWriter(out),
                 _xmlPrettyPrinter(writeCtxt));
     }
@@ -401,7 +401,7 @@ public class XmlFactory
         // false -> not managed
         FromXmlParser xp = new FromXmlParser(readCtxt, _createContext(sr, false),
                 readCtxt.getParserFeatures(_parserFeatures),
-                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                readCtxt.getFormatReadFeatures(_formatParserFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -421,7 +421,7 @@ public class XmlFactory
         IOContext ioCtxt = _createContext(sw, false);
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getGeneratorFeatures(_generatorFeatures),
-                writeCtxt.getFormatWriteFeatures(_xmlGeneratorFeatures),
+                writeCtxt.getFormatWriteFeatures(_formatGeneratorFeatures),
                 sw,
                 _xmlPrettyPrinter(writeCtxt));
     }
@@ -445,7 +445,7 @@ public class XmlFactory
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getParserFeatures(_parserFeatures),
-                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                readCtxt.getFormatReadFeatures(_formatParserFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -466,7 +466,7 @@ public class XmlFactory
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getParserFeatures(_parserFeatures),
-                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                readCtxt.getFormatReadFeatures(_formatParserFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -490,7 +490,7 @@ public class XmlFactory
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getParserFeatures(_parserFeatures),
-                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                readCtxt.getFormatReadFeatures(_formatParserFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -511,7 +511,7 @@ public class XmlFactory
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getParserFeatures(_parserFeatures),
-                readCtxt.getFormatReadFeatures(_xmlParserFeatures),
+                readCtxt.getFormatReadFeatures(_formatParserFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
