@@ -77,24 +77,9 @@ XmlMapper xmlMapper = new XmlMapper(module);
 as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
 `XmlMapper` simply constructs module with default settings.
 
-## Android quirks
+## Android
 
-While usage on Android is the same as on standard JDKs, there is one thing that may cause issues:
-since Google has chosen not to include whole JDK 1.6 API, `Stax` API (package `javax.xml.stream`) is missing.
-This means that one has to add dependency explicitly. With Maven it can be done with
-
-```xml
-<dependency>
-    <groupId>javax.xml.stream</groupId>
-    <artifactId>stax-api</artifactId>
-    <version>1.0-2</version>
-    <scope>compile</scope>
-</dependency>
-```
-
-or, if using other build tools, include similar dependency or download actual jar from
-
-    http://repo1.maven.org/maven2/javax/xml/stream/stax-api/1.0-2/
+Usage of this library on Android is currently not supported. This is due to the fact that the Stax API is unavailable on the Android platform, and attempts to declare an explicit dependency on the Stax API library will result in errors at build time (since the inclusion of the `javax.*` namespace in apps is restricted).
 
 ## Serializing POJOs as XML
 
