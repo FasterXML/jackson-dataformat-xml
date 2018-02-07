@@ -8,3 +8,13 @@ branches:
   only:
     - master
     - "3.0"
+
+# Below this line is configuration for deploying to the Sonatype OSS repo
+# https://knowm.org/configure-travis-ci-to-deploy-snapshots/
+before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
+after_success: "mvn deploy --settings target/travis/settings.xml"
+
+env:
+  global:
+    - secure: "roD5yXZPN4QswyOEyTX4vC/ylfCuf7Ej/VXFf6LcIAnerCwRfWMY5a0nw76mrqldt5BWv1XOT3CHQUO4qlVZliSXxBfuLOUqdkxQCU6LQLFFhWR9SY0mSx/luA2HqASz9R9sZJocCYqTFS+NYclDBbgSInvkBbBbPOP9pK2hm9s="
+    - secure: "qJ2Z4Rcnwns8Qa2yAemJ1ns7dMLq1lfgZmNTpT2WkmAd6GZazTJqiKk4iQdiubMwHE9LRZodSA4V/APA+/0pePfjZ7AK4H6LiTgHFQk62PRRmkOMnodqYzC/wEuDJ6tybj2WGrCZN7ioHkEVqSsO0zCzftni5vXi9yzshTqdv0Q="
