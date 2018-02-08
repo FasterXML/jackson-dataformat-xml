@@ -56,7 +56,7 @@ public class XmlTextTest extends XmlTestBase
     public void testXmlTextWithSuppressedValue() throws Exception
     {
         final XmlMapper mapper = new XmlMapper();
-        mapper.setSerializationInclusion(Include.NON_EMPTY);
+        mapper.setDefaultPropertyInclusion(Include.NON_EMPTY);
         String xml = mapper.writeValueAsString(new Data("","second"));
         String expectedXml = "<Data><second>second</second></Data>";
         assertEquals(expectedXml, xml);
