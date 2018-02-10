@@ -83,8 +83,9 @@ public class TestIndentation extends XmlTestBase
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        _xmlMapper = new XmlMapper();
-        _xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        _xmlMapper = XmlMapper.builder()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .build();
     }
 
     /*

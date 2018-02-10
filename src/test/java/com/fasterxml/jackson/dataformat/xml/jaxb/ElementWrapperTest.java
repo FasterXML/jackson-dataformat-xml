@@ -41,12 +41,13 @@ public class ElementWrapperTest extends XmlTestBase
 
     public void testElementWrapper() throws Exception
     {
-        XmlMapper _jaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
             (new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()),
                     new JacksonAnnotationIntrospector());
-        _jaxbMapper.setAnnotationIntrospector(intr);
+        XmlMapper jaxbMapper = XmlMapper.builder()
+                .annotationIntrospector(intr)
+                .build();
 
         MyPerson person = new MyPerson();
         person.name = "Jay";
@@ -56,7 +57,7 @@ public class ElementWrapperTest extends XmlTestBase
         
         person.children.add(child);
 
-        String xml = _jaxbMapper.writer().writeValueAsString(person);
+        String xml = jaxbMapper.writer().writeValueAsString(person);
         
         String expected = "<Individual><name>Jay</name>"
                 + "<offspring><kid><name>Junior</name><offspring/></kid></offspring></Individual>";
@@ -66,8 +67,9 @@ public class ElementWrapperTest extends XmlTestBase
     // And with JAXB, default should be "no wrapper"
     public void testNoElementWrapper() throws Exception
     {
-        XmlMapper jaxbMapper = new XmlMapper();
-        jaxbMapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        XmlMapper jaxbMapper = XmlMapper.builder()
+                .annotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+                .build();
 
         MyPerson2 person = new MyPerson2();
         person.name = "Jay";

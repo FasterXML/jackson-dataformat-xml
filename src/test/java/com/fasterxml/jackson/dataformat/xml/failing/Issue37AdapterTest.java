@@ -103,13 +103,14 @@ public class Issue37AdapterTest extends XmlTestBase
     public void setUp() throws Exception
     {
         super.setUp();
-        _jaxbMapper = new XmlMapper();
         _nonJaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr =
             XmlAnnotationIntrospector.Pair.instance(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()),
                 new JacksonAnnotationIntrospector());
-        _jaxbMapper.setAnnotationIntrospector(intr);
+        _jaxbMapper = XmlMapper.builder()
+                .annotationIntrospector(intr)
+                .build();
     }
 
     /*

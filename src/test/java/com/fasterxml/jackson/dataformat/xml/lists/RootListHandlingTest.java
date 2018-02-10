@@ -85,11 +85,11 @@ public class RootListHandlingTest extends XmlTestBase
         
     private void _testListSerialization(boolean useWrapping) throws Exception
     {
+        AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
         XmlMapper xmlMapper = XmlMapper.builder()
             .defaultUseWrapper(useWrapping)
+            .annotationIntrospector(introspector)
             .build();
-        AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
-        xmlMapper.setAnnotationIntrospector(introspector);
 
         SampleResource r1 = new SampleResource();
         r1.setId(123L);
@@ -145,11 +145,11 @@ public class RootListHandlingTest extends XmlTestBase
     
     private void _testArraySerialization(boolean useWrapping) throws Exception
     {
+        AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
         XmlMapper xmlMapper = XmlMapper.builder()
                 .defaultUseWrapper(useWrapping)
+                .annotationIntrospector(introspector)
                 .build();
-        AnnotationIntrospector introspector = new JacksonAnnotationIntrospector();
-        xmlMapper.setAnnotationIntrospector(introspector);
 
         SampleResource r1 = new SampleResource();
         r1.setId(123L);

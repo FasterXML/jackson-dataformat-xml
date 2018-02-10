@@ -351,8 +351,8 @@ public class XmlMapper extends ObjectMapper
         // 04-Oct-2017, tatu: Unfortunately can not simply delegate to super-class implementation
         //   because we need the context first...
         
-        SerializationConfig config = getSerializationConfig();
-        DefaultSerializerProvider prov = _serializerProvider(getSerializationConfig());
+        SerializationConfig config = serializationConfig();
+        DefaultSerializerProvider prov = _serializerProvider(config);
         ToXmlGenerator g = tokenStreamFactory().createGenerator(prov, w0);
 
         if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {

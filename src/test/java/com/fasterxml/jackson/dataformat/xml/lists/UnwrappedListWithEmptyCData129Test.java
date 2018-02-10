@@ -18,11 +18,10 @@ public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
     }
 
 
-    private final XmlMapper MAPPER = new XmlMapper();
-    {
-        // easier for eye:
-        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
-    }
+    private final XmlMapper MAPPER = XmlMapper.builder()
+            // easier for eye:
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .build();
 
     // for [dataformat-xml#129]
     public void testListWithEmptyCData() throws Exception

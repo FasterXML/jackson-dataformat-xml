@@ -41,17 +41,19 @@ public class AttributesWithJAXBTest extends XmlTestBase
 
     public void testTwoAttributes() throws IOException
     {
-        XmlMapper mapper = new XmlMapper();
+        XmlMapper mapper = XmlMapper.builder()
 //        mapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
-        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+                .annotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+                .build();
         String xml = mapper.writeValueAsString(new Jurisdiction());
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>", xml);
     }
 
     public void testAttributeAndElement() throws IOException
     {
-        XmlMapper mapper = new XmlMapper();
-        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        XmlMapper mapper = XmlMapper.builder()
+                .annotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+                .build();
         String xml = mapper.writeValueAsString(new Problem("x", "Stuff"));
         assertEquals("<problem id=\"x\"><description>Stuff</description></problem>", xml);
     }

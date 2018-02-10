@@ -75,11 +75,10 @@ public class ListDeserializationTest extends XmlTestBase
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
-    {
-        // easier for eye:
-        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
-    }
+    private final XmlMapper MAPPER = XmlMapper.builder()
+            // easier for eye:
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .build();
 
     /* Issue#17 [https://github.com/FasterXML/jackson-dataformat-xml/issues/17]
      * 
