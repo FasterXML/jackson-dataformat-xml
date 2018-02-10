@@ -62,6 +62,10 @@ public class XmlMapper extends ObjectMapper
             enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
             _defaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
             _nameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
+
+            // as well as AnnotationIntrospector: note, however, that "use wrapper" may well
+            // change later on
+            annotationIntrospector(new JacksonXmlAnnotationIntrospector(_defaultUseWrapper));
         }
 
         @Override
@@ -162,7 +166,16 @@ public class XmlMapper extends ObjectMapper
          * Jackson annotations have different default due to backwards compatibility.
          */
         public Builder defaultUseWrapper(boolean b) {
-            _defaultUseWrapper = b;
+            if (_defaultUseWrapper != b) {
+                _defaultUseWrapper = b;
+
+                AnnotationIntrospector ai0 = annotationIntrospector();
+                for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
+                    if (ai instanceof XmlAnnotationIntrospector) {
+                        ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(b);
+                    }
+                }
+            }
             return this;
         }
 
@@ -205,14 +218,6 @@ public class XmlMapper extends ObjectMapper
             DeserializerFactory df = _deserializationContext.getFactory().withAdditionalDeserializers(desers);
             _deserializationContext = _deserializationContext.with(df);
         }
-        final boolean w = b.defaultUseWrapper();
-        // as well as AnnotationIntrospector
-        {
-            JacksonXmlAnnotationIntrospector intr = new JacksonXmlAnnotationIntrospector(w);
-            _deserializationConfig = _deserializationConfig.withInsertedAnnotationIntrospector(intr);
-            _serializationConfig = _serializationConfig.withInsertedAnnotationIntrospector(intr);
-        }
-
         // Need to modify BeanDeserializer, BeanSerializer that are used
         _serializerFactory = _serializerFactory.withSerializerModifier(new XmlBeanSerializerModifier());
         final String textElemName = b.nameForTextElement();
@@ -227,21 +232,6 @@ public class XmlMapper extends ObjectMapper
             ((XmlFactory) _streamFactory).setXMLTextElementName(textElemName);
         }
     }
-
-    // 03-Feb-2018, tatu: Was needed in 2.x but should NOT be necessary as we construct
-    //   introspector with proper settings.
-/*
-    private XmlMapper setDefaultUseWrapper(boolean state) {
-        // ser and deser configs should usually have the same introspector, so:
-        AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
-        for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-            if (ai instanceof XmlAnnotationIntrospector) {
-                ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);
-            }
-        }
-        return this;
-    }
-*/
 
     public static XmlMapper.Builder xmlBuilder() {
         return new XmlMapper.Builder(new XmlFactory());
