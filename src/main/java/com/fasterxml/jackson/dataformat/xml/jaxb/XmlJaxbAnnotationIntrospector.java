@@ -21,15 +21,10 @@ public class XmlJaxbAnnotationIntrospector
 {
     private static final long serialVersionUID = 1L; // since 2.7
 
-    @Deprecated
     public XmlJaxbAnnotationIntrospector() {
         super();
     }
 
-    public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory) {
-        super(typeFactory);
-    }
-    
     /*
     /**********************************************************************
     /* XmlAnnotationIntrospector overrides
