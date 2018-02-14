@@ -6,9 +6,9 @@ import java.util.List;
 import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.*;
+
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -117,13 +117,12 @@ public class JAXBObjectId170Test extends XmlTestBase
 "</company>\n"
                 ;
 
-        XmlJaxbAnnotationIntrospector xmlIntr = new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance());
-        xmlIntr.setDefaultUseWrapper(false);
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-                (xmlIntr, new JacksonAnnotationIntrospector());
+                (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
         XmlMapper mapper = XmlMapper.builder()
                 // should be default but doesn't seem to be?
                 .annotationIntrospector(intr)
+                .defaultUseWrapper(false)
                 .build();
 
         Company result = mapper.readValue(XML, Company.class);

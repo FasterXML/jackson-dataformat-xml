@@ -88,11 +88,11 @@ public class TestViews extends XmlTestBase
 
         XmlMapper xmlMapper = XmlMapper.builder()
                 .disable(MapperFeature.DEFAULT_VIEW_INCLUSION)
+                .changeDefaultVisibility(vc -> 
+                    vc.withVisibility(PropertyAccessor.FIELD, Visibility.NONE)
+                        .withVisibility(PropertyAccessor.GETTER, Visibility.NONE)
+                        .withVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE))
                 .build();
-
-        xmlMapper.setVisibility(PropertyAccessor.FIELD, Visibility.NONE);
-        xmlMapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
-        xmlMapper.setVisibility(PropertyAccessor.IS_GETTER, Visibility.NONE);
 
         String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);
         

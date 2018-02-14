@@ -1,7 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import com.fasterxml.jackson.databind.introspect.*;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
@@ -19,7 +18,7 @@ public class XmlJaxbAnnotationIntrospector
     extends JaxbAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
-    private static final long serialVersionUID = 1L; // since 2.7
+    private static final long serialVersionUID = 3L;
 
     public XmlJaxbAnnotationIntrospector() {
         super();
@@ -30,7 +29,8 @@ public class XmlJaxbAnnotationIntrospector
     /* XmlAnnotationIntrospector overrides
     /**********************************************************************
      */
-    
+
+    /*
     @Override
     public String findNamespace(Annotated ann) {
         return super.findNamespace(ann);
@@ -45,6 +45,7 @@ public class XmlJaxbAnnotationIntrospector
     public Boolean isOutputAsText(Annotated ann) {
         return super.isOutputAsText(ann);
     }
+    */
 
     @Override
     public Boolean isOutputAsCData(Annotated ann) {

@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -97,7 +96,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
         _nonJaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-            (new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()), new JacksonAnnotationIntrospector());
+            (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
         _jaxbMapper = XmlMapper.builder()
                 .annotationIntrospector(intr)
                 .build();
