@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.xml.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
@@ -42,8 +41,7 @@ public class AttributesWithJAXBTest extends XmlTestBase
     public void testTwoAttributes() throws IOException
     {
         XmlMapper mapper = XmlMapper.builder()
-//        mapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
-                .annotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+                .annotationIntrospector(new JaxbAnnotationIntrospector())
                 .build();
         String xml = mapper.writeValueAsString(new Jurisdiction());
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>", xml);
@@ -52,7 +50,7 @@ public class AttributesWithJAXBTest extends XmlTestBase
     public void testAttributeAndElement() throws IOException
     {
         XmlMapper mapper = XmlMapper.builder()
-                .annotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+                .annotationIntrospector(new JaxbAnnotationIntrospector())
                 .build();
         String xml = mapper.writeValueAsString(new Problem("x", "Stuff"));
         assertEquals("<problem id=\"x\"><description>Stuff</description></problem>", xml);

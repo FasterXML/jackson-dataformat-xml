@@ -68,9 +68,14 @@ public class XmlMapper extends ObjectMapper
             annotationIntrospector(new JacksonXmlAnnotationIntrospector(_defaultUseWrapper));
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public XmlMapper build() {
-            return new XmlMapper(this);
+            XmlMapper m = new XmlMapper(this);
+            if (_modules != null) {
+                m.registerModules(_modules.values());
+            }
+            return m;
         }
 
         /*
