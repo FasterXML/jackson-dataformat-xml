@@ -174,8 +174,9 @@ public class TestSerialization extends XmlTestBase
     {
         SimpleModule module = new SimpleModule("test");
         module.addSerializer(String.class, new CustomSerializer());
-        XmlMapper xml = new XmlMapper();
-        xml.registerModule(module);
+        XmlMapper xml = XmlMapper.builder()
+                .addModule(module)
+                .build();
         assertEquals("<String>custom:foo</String>", xml.writeValueAsString("foo"));
     }
     

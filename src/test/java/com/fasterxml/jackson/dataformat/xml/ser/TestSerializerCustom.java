@@ -74,12 +74,12 @@ public class TestSerializerCustom extends XmlTestBase
 
     public void testIssue42() throws Exception
     {
-        XmlMapper xmlMapper = new XmlMapper();
         SimpleModule m = new SimpleModule("module", new Version(1,0,0,null,null,null));
         m.addSerializer(Item.class, new ItemSerializer());
         m.addDeserializer(Item.class, new ItemDeserializer());
-        xmlMapper.registerModule(m);
-
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .addModule(m)
+                .build();
         Item value = new Item("itemName", new Foo("fooName"));
         String xml = xmlMapper.writeValueAsString(value);
         

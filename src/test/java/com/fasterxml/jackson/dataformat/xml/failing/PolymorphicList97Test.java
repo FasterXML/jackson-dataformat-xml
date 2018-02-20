@@ -36,7 +36,8 @@ public class PolymorphicList97Test extends XmlTestBase
 
     @Test
     public void testGood() throws Exception {
-        XmlMapper mapper = new XmlMapper();
+        XmlMapper mapper = XmlMapper.builder()
+                .build();
         mapper.registerSubtypes(FooGood.class);
 
         String xml = "<Foo type=\"good\" data=\"dummy\"><bar>FOOBAR</bar></Foo>";
@@ -50,7 +51,8 @@ public class PolymorphicList97Test extends XmlTestBase
     
     @Test
     public void testBad() throws Exception {
-        XmlMapper mapper = new XmlMapper();
+        XmlMapper mapper = XmlMapper.builder()
+                .build();
         mapper.registerSubtypes(FooBad.class);
 
         String xml = "<Foo type=\"bad\" data=\"dummy\"><bar><bar>FOOBAR</bar></bar></Foo>";
