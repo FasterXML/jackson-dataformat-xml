@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
@@ -66,6 +67,16 @@ public class XmlMapper extends ObjectMapper
             // as well as AnnotationIntrospector: note, however, that "use wrapper" may well
             // change later on
             annotationIntrospector(new JacksonXmlAnnotationIntrospector(_defaultUseWrapper));
+
+            // Some changes easiest to apply via Module
+            {
+                // First: special handling for String, to allow "String in Object"
+                XmlStringDeserializer deser = new XmlStringDeserializer();
+                SimpleModule xmlMod = new SimpleModule("xml-module", PackageVersion.VERSION);
+                xmlMod.addDeserializer(String.class, deser);
+                xmlMod.addDeserializer(CharSequence.class, deser);
+                addModule(xmlMod);
+            }
         }
 
         @Override
@@ -209,15 +220,6 @@ public class XmlMapper extends ObjectMapper
     {
         super(b);
 
-        // First: special handling for String, to allow "String in Object"
-        {
-            XmlStringDeserializer deser = new XmlStringDeserializer();
-            SimpleDeserializers desers = new SimpleDeserializers()
-                    .addDeserializer(String.class, deser)
-                    .addDeserializer(CharSequence.class, deser);
-            DeserializerFactory df = _deserializationContext.getFactory().withAdditionalDeserializers(desers);
-            _deserializationContext = _deserializationContext.with(df);
-        }
         // Need to modify BeanDeserializer, BeanSerializer that are used
         _serializerFactory = _serializerFactory.withSerializerModifier(new XmlBeanSerializerModifier());
         final String textElemName = b.nameForTextElement();
