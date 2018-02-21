@@ -8,12 +8,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
-import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
@@ -75,6 +76,10 @@ public class XmlMapper extends ObjectMapper
                 SimpleModule xmlMod = new SimpleModule("xml-module", PackageVersion.VERSION);
                 xmlMod.addDeserializer(String.class, deser);
                 xmlMod.addDeserializer(CharSequence.class, deser);
+
+                // Second: Serializer modifier can be added without further configuration
+                xmlMod.setSerializerModifier(new XmlBeanSerializerModifier());
+                
                 addModule(xmlMod);
             }
         }
@@ -221,14 +226,11 @@ public class XmlMapper extends ObjectMapper
         super(b);
 
         // Need to modify BeanDeserializer, BeanSerializer that are used
-        _serializerFactory = _serializerFactory.withSerializerModifier(new XmlBeanSerializerModifier());
         final String textElemName = b.nameForTextElement();
-        {
-            XmlBeanDeserializerModifier mod =  new XmlBeanDeserializerModifier(textElemName);
-            DeserializerFactory df = _deserializationContext.getFactory().withDeserializerModifier(mod);
-            _deserializationContext = _deserializationContext.with(df);
-        }
-        
+        XmlBeanDeserializerModifier mod =  new XmlBeanDeserializerModifier(textElemName);
+        DeserializerFactory df = _deserializationContext.getFactory().withDeserializerModifier(mod);
+        _deserializationContext = _deserializationContext.with(df);
+
         // !!! TODO: 03-Feb-2018, tatu: remove last piece of mutability... 
         if (!FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY.equals(textElemName)) {
             ((XmlFactory) _streamFactory).setXMLTextElementName(textElemName);
