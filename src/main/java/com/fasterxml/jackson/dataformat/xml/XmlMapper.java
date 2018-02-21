@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
-import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
@@ -70,7 +69,7 @@ public class XmlMapper extends ObjectMapper
         }
 
         @Override
-        public XmlMapper _constructMapper(MapperBuilderState state) {
+        public XmlMapper build() {
             return new XmlMapper(this);
         }
 
