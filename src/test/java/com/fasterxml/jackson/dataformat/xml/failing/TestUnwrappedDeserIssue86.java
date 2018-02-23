@@ -70,9 +70,9 @@ public class TestUnwrappedDeserIssue86 extends XmlTestBase
                     Arrays.asList(
                         new Issue86("0.3.1", null)))));
     
-        final XmlMapper mapper = new XmlMapper();
-        mapper.setDefaultPropertyInclusion(Include.NON_NULL);
-    
+        final XmlMapper mapper = XmlMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(Include.NON_NULL))
+                .build();
         final String xml = mapper.writeValueAsString(before);
         assertEquals(source, xml);
     
