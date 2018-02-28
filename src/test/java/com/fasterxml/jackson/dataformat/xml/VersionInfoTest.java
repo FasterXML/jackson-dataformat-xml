@@ -24,7 +24,7 @@ public class VersionInfoTest extends XmlTestBase
         ObjectOutputStream objectStream = new ObjectOutputStream(bytes);
         objectStream.writeObject(mapper1);
         objectStream.close();
-        
+
         ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
         XmlMapper mapper2 = (XmlMapper) input.readObject();
         input.close();

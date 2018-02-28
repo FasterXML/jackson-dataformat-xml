@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
+import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
@@ -73,7 +74,7 @@ public class XmlMapper extends ObjectMapper
             {
                 // First: special handling for String, to allow "String in Object"
                 XmlStringDeserializer deser = new XmlStringDeserializer();
-                SimpleModule xmlMod = new SimpleModule("xml-module", PackageVersion.VERSION);
+                SimpleModule xmlMod = new SimpleModule("xml-module", PackageVersion.VERSION, "xml-module");
                 xmlMod.addDeserializer(String.class, deser);
                 xmlMod.addDeserializer(CharSequence.class, deser);
 
@@ -87,6 +88,17 @@ public class XmlMapper extends ObjectMapper
         @Override
         public XmlMapper build() {
             return new XmlMapper(this);
+        }
+
+        @Override
+        protected MapperBuilderState _saveState() {
+            return new XmlBuilderState(this);
+        }
+
+        public Builder(XmlBuilderState state) {
+            super(state);
+            _defaultUseWrapper = state._defaultUseWrapper;
+            _nameForTextElement = state._nameForTextElement;
         }
 
         /*
@@ -215,6 +227,27 @@ public class XmlMapper extends ObjectMapper
         }
     }
 
+    /**
+     * Saved configuration entity to use with builder for {@link XmlMapper} instances.
+     *
+     * @since 3.0
+     */
+    protected static class XmlBuilderState extends MapperBuilderState
+        implements java.io.Serializable // important!
+    {
+        private static final long serialVersionUID = 3L;
+
+        protected final boolean _defaultUseWrapper;
+
+        protected final String _nameForTextElement;
+        
+        public XmlBuilderState(Builder src) {
+            super(src);
+            _defaultUseWrapper = src._defaultUseWrapper;
+            _nameForTextElement = src._nameForTextElement;
+        }
+    }
+
     /*
     /**********************************************************************
     /* Life-cycle: construction 3.0 style
@@ -248,6 +281,12 @@ public class XmlMapper extends ObjectMapper
 
     public static XmlMapper.Builder builder(XmlFactory streamFactory) {
         return new XmlMapper.Builder(streamFactory);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public XmlMapper.Builder rebuild() {
+        return new XmlMapper.Builder((XmlBuilderState) _savedBuilderState);
     }
 
     /*
