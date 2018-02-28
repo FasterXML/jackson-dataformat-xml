@@ -83,12 +83,12 @@ public class XmlFactory
      * and this reuse only works within context of a single
      * factory instance.
      */
-    public XmlFactory() { this(null, null); }
+    public XmlFactory() { this(null, (XMLOutputFactory) null); }
 
     public XmlFactory(XMLInputFactory xmlIn) {
         this(xmlIn, null);
     }
-    
+
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
         this(DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
                 xmlIn, xmlOut, null);
@@ -131,10 +131,14 @@ public class XmlFactory
 
     protected XmlFactory(XmlFactory src)
     {
-        super(src);
+        this(src, src._cfgNameForTextElement);
+    }
+
+    protected XmlFactory(XmlFactory src, String nameForTextElement)
+    {
         _formatParserFeatures = src._formatParserFeatures;
         _formatGeneratorFeatures = src._formatGeneratorFeatures;
-        _cfgNameForTextElement = src._cfgNameForTextElement;
+        _cfgNameForTextElement = nameForTextElement;
         _xmlInputFactory = src._xmlInputFactory;
         _xmlOutputFactory = src._xmlOutputFactory;
     }
@@ -177,7 +181,17 @@ public class XmlFactory
     public TokenStreamFactory snapshot() {
         return this;
     }
-    
+
+    public XmlFactory withNameForTextElement(String name) {
+        if (name == null) {
+            name = "";
+        }
+        if (name.equals(_cfgNameForTextElement)) {
+            return this;
+        }
+        return new XmlFactory(this, name);
+    }
+
     /*
     /**********************************************************
     /* Serializable overrides

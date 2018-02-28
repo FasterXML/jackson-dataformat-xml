@@ -223,6 +223,7 @@ public class XmlMapper extends ObjectMapper
                 elem = "";
             }
             _nameForTextElement = elem;
+            _streamFactory = ((XmlFactory) _streamFactory).withNameForTextElement(elem);
             return this;
         }
     }
@@ -263,11 +264,6 @@ public class XmlMapper extends ObjectMapper
         XmlBeanDeserializerModifier mod =  new XmlBeanDeserializerModifier(textElemName);
         DeserializerFactory df = _deserializationContext.getFactory().withDeserializerModifier(mod);
         _deserializationContext = _deserializationContext.with(df);
-
-        // !!! TODO: 03-Feb-2018, tatu: remove last piece of mutability... 
-        if (!FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY.equals(textElemName)) {
-            ((XmlFactory) _streamFactory).setXMLTextElementName(textElemName);
-        }
     }
 
     public static XmlMapper.Builder xmlBuilder() {
