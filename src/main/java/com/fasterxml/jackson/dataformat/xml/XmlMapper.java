@@ -13,14 +13,11 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
-import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -69,20 +66,8 @@ public class XmlMapper extends ObjectMapper
             // as well as AnnotationIntrospector: note, however, that "use wrapper" may well
             // change later on
             annotationIntrospector(new JacksonXmlAnnotationIntrospector(_defaultUseWrapper));
-
             // Some changes easiest to apply via Module
-            {
-                // First: special handling for String, to allow "String in Object"
-                XmlStringDeserializer deser = new XmlStringDeserializer();
-                SimpleModule xmlMod = new SimpleModule("xml-module", PackageVersion.VERSION, "xml-module");
-                xmlMod.addDeserializer(String.class, deser);
-                xmlMod.addDeserializer(CharSequence.class, deser);
-
-                // Second: Serializer modifier can be added without further configuration
-                xmlMod.setSerializerModifier(new XmlBeanSerializerModifier());
-                
-                addModule(xmlMod);
-            }
+            addModule(new XmlModule());
         }
 
         @Override
