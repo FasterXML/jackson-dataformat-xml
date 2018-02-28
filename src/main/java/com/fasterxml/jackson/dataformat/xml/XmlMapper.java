@@ -12,11 +12,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
-import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
-import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -232,6 +230,13 @@ public class XmlMapper extends ObjectMapper
             _defaultUseWrapper = src._defaultUseWrapper;
             _nameForTextElement = src._nameForTextElement;
         }
+
+        // We also need actual instance of state as base class can not implement logic
+         // for reinstating mapper (via mapper builder) from state.
+        @Override
+        protected Object readResolve() {
+            return new Builder(this).build();
+        }
     }
 
     /*
@@ -243,12 +248,6 @@ public class XmlMapper extends ObjectMapper
     public XmlMapper(Builder b)
     {
         super(b);
-
-        // Need to modify BeanDeserializer, BeanSerializer that are used
-        final String textElemName = b.nameForTextElement();
-        XmlBeanDeserializerModifier mod =  new XmlBeanDeserializerModifier(textElemName);
-        DeserializerFactory df = _deserializationContext.getFactory().withDeserializerModifier(mod);
-        _deserializationContext = _deserializationContext.with(df);
     }
 
     public static XmlMapper.Builder xmlBuilder() {
@@ -268,6 +267,24 @@ public class XmlMapper extends ObjectMapper
     @Override
     public XmlMapper.Builder rebuild() {
         return new XmlMapper.Builder((XmlBuilderState) _savedBuilderState);
+    }
+
+    /*
+    /**********************************************************************
+    /* Life-cycle: JDK serialization support
+    /**********************************************************************
+     */
+
+    // 27-Feb-2018, tatu: Not sure why but it seems base class definitions
+    //   are not sufficient alone; sub-classes must re-define.
+    @Override
+    protected Object writeReplace() {
+        return _savedBuilderState;
+    }
+
+    @Override
+    protected Object readResolve() {
+        throw new IllegalStateException("Should never deserialize `"+getClass().getName()+"` directly");
     }
 
     /*

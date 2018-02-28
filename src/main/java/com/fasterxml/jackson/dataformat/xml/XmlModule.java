@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.Version;
 
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 
+import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
@@ -34,5 +35,11 @@ public class XmlModule
                 .addDeserializer(String.class, deser)
                 .addDeserializer(CharSequence.class, deser));
         context.addSerializerModifier(new XmlBeanSerializerModifier());
+
+        // and then bit trickier, need to add a modifier...
+        // Need to modify BeanDeserializer, BeanSerializer that are used
+        XmlMapper.Builder builder = (XmlMapper.Builder) context.getOwner();
+        final String textElemName = builder.nameForTextElement();
+        context.addDeserializerModifier(new XmlBeanDeserializerModifier(textElemName));
     }
 }
