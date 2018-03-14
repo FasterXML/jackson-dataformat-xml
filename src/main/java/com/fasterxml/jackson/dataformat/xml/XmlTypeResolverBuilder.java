@@ -22,6 +22,19 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
 {
     @Override
+    public StdTypeResolverBuilder init(JsonTypeInfo.Value settings, TypeIdResolver idRes)
+    {
+        super.init(settings, idRes);
+        if (settings != null) {
+            if (_typeProperty != null) {
+                _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
+            }
+        }
+        return this;
+    }
+
+    /*
+    @Override
     public StdTypeResolverBuilder init(JsonTypeInfo.Id idType, TypeIdResolver idRes)
     {
         super.init(idType, idRes);
@@ -41,6 +54,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         _typeProperty = StaxUtil.sanitizeXmlTypeName(typeIdPropName);
         return this;
     }
+    */
 
     @Override
     protected TypeIdResolver idResolver(MapperConfig<?> config,
