@@ -2,7 +2,6 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
-import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -172,21 +171,6 @@ public class JacksonXmlAnnotationIntrospector
             }
         }
         return name;
-    }
-
-    /*
-    /**********************************************************************
-    /* Overrides for non-public helper methods
-    /**********************************************************************
-     */
-
-    /**
-     * We will override this method so that we can return instance
-     * that cleans up type id property name to be a valid xml name.
-     */
-    @Override
-    protected StdTypeResolverBuilder _constructStdTypeResolverBuilder() {
-        return new XmlTypeResolverBuilder();
     }
 
     /*

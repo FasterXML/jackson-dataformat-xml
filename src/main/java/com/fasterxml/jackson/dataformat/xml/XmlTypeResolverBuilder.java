@@ -21,14 +21,20 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
  */
 public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
 {
+    public XmlTypeResolverBuilder(JsonTypeInfo.Value typeInfo)
+    {
+        super(typeInfo);
+        if (_typeProperty != null) {
+            _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
+        }
+    }
+
     @Override
     public StdTypeResolverBuilder init(JsonTypeInfo.Value settings, TypeIdResolver idRes)
     {
         super.init(settings, idRes);
-        if (settings != null) {
-            if (_typeProperty != null) {
-                _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
-            }
+        if (_typeProperty != null) {
+            _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
         }
         return this;
     }
@@ -74,13 +80,12 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
             return super.idResolver(config, baseType, subtypes, forSer, forDeser);
         }
     }
-    
+
     /*
     /**********************************************************************
     /* Internal helper methods
     /**********************************************************************
      */
-
 
     /**
      * Helper method for encoding regular Java class name in form that
@@ -120,7 +125,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
         return className;
     }
-    
+
     /*
     /**********************************************************************
     /* Customized class name handlers

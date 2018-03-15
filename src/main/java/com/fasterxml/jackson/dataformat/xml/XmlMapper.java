@@ -64,6 +64,8 @@ public class XmlMapper extends ObjectMapper
             // as well as AnnotationIntrospector: note, however, that "use wrapper" may well
             // change later on
             annotationIntrospector(new JacksonXmlAnnotationIntrospector(_defaultUseWrapper));
+            // Need to mangle Type Ids (to avoid invalid XML Name characters); one way is this:
+            typeResolverProvider(new XmlTypeResolverProvider());
             // Some changes easiest to apply via Module
             addModule(new XmlModule());
         }
