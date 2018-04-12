@@ -89,6 +89,18 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     </dependency>
   </dependencies>
 
+  <!-- Alas, need to include snapshot reference since otherwise can not find
+       snapshot of parent... -->
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin> <!-- default settings are fine, just need to enable here -->
@@ -123,6 +135,5 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
       </properties>
     </profile>
   </profiles>
-  <!-- NOTE: repositories from parent POM -->
 
 </project>
