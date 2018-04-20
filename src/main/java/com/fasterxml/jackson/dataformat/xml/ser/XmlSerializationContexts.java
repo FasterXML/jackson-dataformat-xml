@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.SerializerCache;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
@@ -21,22 +22,31 @@ public class XmlSerializationContexts extends SerializationContexts
 
     protected final XmlRootNameLookup _rootNameLookup;
     
-    public XmlSerializationContexts(TokenStreamFactory tsf) {
-        super(tsf);
-        _rootNameLookup = new XmlRootNameLookup();
+    public XmlSerializationContexts() {
+        _rootNameLookup = null;
     }
 
-    @Override
-    public SerializationContexts snapshot() {
-        return new XmlSerializationContexts(_streamFactory);
+    protected  XmlSerializationContexts(TokenStreamFactory tsf,
+            SerializerFactory serializerFactory, SerializerCache cache,
+            XmlRootNameLookup roots) {
+        super(tsf, serializerFactory, cache);
+        _rootNameLookup = roots;
     }
-
+    
     @Override
     public DefaultSerializerProvider createContext(SerializationConfig config,
-            GeneratorSettings genSettings, SerializerFactory serFactory) {
+            GeneratorSettings genSettings) {
         return new XmlSerializerProvider(_streamFactory,
                 _serializerCache,
-                config, genSettings, serFactory,
+                config, genSettings, _serializerFactory,
                 _rootNameLookup);
+    }
+
+    @Override
+    public SerializationContexts forMapper(ObjectMapper mapper,
+            TokenStreamFactory tsf, SerializerFactory serializerFactory,
+            SerializerCache cache) {
+        return new XmlSerializationContexts(tsf, serializerFactory, cache,
+                new XmlRootNameLookup());
     }
 }

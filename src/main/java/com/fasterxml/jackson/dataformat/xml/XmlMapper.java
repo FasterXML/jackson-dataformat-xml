@@ -94,7 +94,7 @@ public class XmlMapper extends ObjectMapper
 
         @Override
         protected SerializationContexts _defaultSerializationContexts() {
-            return new XmlSerializationContexts(_streamFactory);
+            return new XmlSerializationContexts();
         }
 
         /**
