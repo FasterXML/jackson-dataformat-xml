@@ -6,16 +6,13 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.PropertyName;
-import com.fasterxml.jackson.databind.SerializationConfig;
+
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.SerializerCache;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -37,28 +34,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     protected final XmlRootNameLookup _rootNameLookup;
 
-    /**
-     * Constructor for blueprint
-     */
-    public XmlSerializerProvider(XmlFactory xmlFactory)
-    {
-        super(xmlFactory);
-        // blueprint requires instance to share, create new one:
-        _rootNameLookup = new XmlRootNameLookup();
-    }
-
-    public XmlSerializerProvider(XmlSerializerProvider src,
+    public XmlSerializerProvider(TokenStreamFactory streamFactory,
+            SerializerCache cache,
             SerializationConfig config, GeneratorSettings genSettings,
-            SerializerFactory f)
+            SerializerFactory f,
+            XmlRootNameLookup rootLookup)
     {
-        super(src, config, genSettings, f);
-        _rootNameLookup  = src._rootNameLookup;
-    }
-
-    protected XmlSerializerProvider(XmlSerializerProvider src) {
-        super(src);
-        // Snapshot (copy) should not share root name cache, create new:
-        _rootNameLookup = new XmlRootNameLookup();
+        super(streamFactory, cache, config, genSettings, f);
+        _rootNameLookup  = rootLookup;
     }
 
     /*
@@ -66,17 +49,6 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     /* Overridden methods
     /**********************************************************************
      */
-
-    @Override
-    public DefaultSerializerProvider snapshot() {
-        return new XmlSerializerProvider(this);
-    }
-
-    @Override
-    public DefaultSerializerProvider createInstance(SerializationConfig config,
-            GeneratorSettings genSettings, SerializerFactory jsf) {
-        return new XmlSerializerProvider(this, config, genSettings, jsf);
-    }
 
     @SuppressWarnings("resource")
     @Override
