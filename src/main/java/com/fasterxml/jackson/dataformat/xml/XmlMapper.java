@@ -18,7 +18,6 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
-import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
@@ -94,7 +93,7 @@ public class XmlMapper extends ObjectMapper
         
         @Override
         protected DefaultSerializerProvider _defaultSerializerProvider() {
-            return new XmlSerializerProvider((XmlFactory) _streamFactory, new XmlRootNameLookup());
+            return new XmlSerializerProvider((XmlFactory) _streamFactory);
         }
 
         /**

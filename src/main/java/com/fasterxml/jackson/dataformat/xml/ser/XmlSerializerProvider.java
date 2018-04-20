@@ -37,11 +37,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     protected final XmlRootNameLookup _rootNameLookup;
 
-    public XmlSerializerProvider(XmlFactory xmlFactory,
-            XmlRootNameLookup rootNames)
+    /**
+     * Constructor for blueprint
+     */
+    public XmlSerializerProvider(XmlFactory xmlFactory)
     {
         super(xmlFactory);
-        _rootNameLookup = rootNames;
+        // blueprint requires instance to share, create new one:
+        _rootNameLookup = new XmlRootNameLookup();
     }
 
     public XmlSerializerProvider(XmlSerializerProvider src,
@@ -52,12 +55,11 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         _rootNameLookup  = src._rootNameLookup;
     }
 
-    /*
     protected XmlSerializerProvider(XmlSerializerProvider src) {
         super(src);
-        _rootNameLookup = src._rootNameLookup;
+        // Snapshot (copy) should not share root name cache, create new:
+        _rootNameLookup = new XmlRootNameLookup();
     }
-    */
 
     /*
     /**********************************************************************
@@ -65,12 +67,10 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     /**********************************************************************
      */
 
-    /*
     @Override
-    public DefaultSerializerProvider copy() {
+    public DefaultSerializerProvider snapshot() {
         return new XmlSerializerProvider(this);
     }
-    */
 
     @Override
     public DefaultSerializerProvider createInstance(SerializationConfig config,
@@ -104,7 +104,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
         
         // From super-class implementation
-        final JsonSerializer<Object> ser = findTypedValueSerializer(cls, true, null);
+        final JsonSerializer<Object> ser = findTypedValueSerializer(cls, true);
         try {
             ser.serialize(value, gen, this);
         } catch (Exception e) { // but wrap RuntimeExceptions, to get path information
@@ -142,7 +142,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             }
         }
         if (ser == null) {
-            ser = findTypedValueSerializer(rootType, true, null);
+            ser = findTypedValueSerializer(rootType, true);
         }
         // From super-class implementation
         try {
