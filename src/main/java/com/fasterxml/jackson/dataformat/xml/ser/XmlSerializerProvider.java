@@ -33,12 +33,11 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     protected final XmlRootNameLookup _rootNameLookup;
 
     public XmlSerializerProvider(TokenStreamFactory streamFactory,
-            SerializerCache cache,
             SerializationConfig config, GeneratorSettings genSettings,
-            SerializerFactory f,
+            SerializerFactory f, SerializerCache cache,
             XmlRootNameLookup rootLookup)
     {
-        super(streamFactory, cache, config, genSettings, f);
+        super(streamFactory, config, genSettings, f, cache);
         _rootNameLookup  = rootLookup;
     }
 

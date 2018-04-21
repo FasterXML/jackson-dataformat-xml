@@ -37,15 +37,6 @@ public class XmlSerializationContexts extends SerializationContexts
         super(tsf, serializerFactory, cache);
         _rootNameLookup = roots;
     }
-    
-    @Override
-    public DefaultSerializerProvider createContext(SerializationConfig config,
-            GeneratorSettings genSettings) {
-        return new XmlSerializerProvider(_streamFactory,
-                _serializerCache,
-                config, genSettings, _serializerFactory,
-                _rootNameLookup);
-    }
 
     @Override
     public SerializationContexts forMapper(Object mapper,
@@ -53,5 +44,13 @@ public class XmlSerializationContexts extends SerializationContexts
             SerializerCache cache) {
         return new XmlSerializationContexts(tsf, serializerFactory, cache,
                 new XmlRootNameLookup());
+    }
+
+    @Override
+    public DefaultSerializerProvider createContext(SerializationConfig config,
+            GeneratorSettings genSettings) {
+        return new XmlSerializerProvider(_streamFactory,
+                config, genSettings, _serializerFactory, _cache,
+                _rootNameLookup);
     }
 }
