@@ -20,7 +20,12 @@ public class XmlSerializationContexts extends SerializationContexts
 {
     private static final long serialVersionUID = 3L;
 
-    protected final XmlRootNameLookup _rootNameLookup;
+    // // Similar to base class, we do NOT want (or need) to JDK serialize anything,
+    // // other than ensure right class is unthawed. This because serialization of
+    // // ObjectMapper retains MapperState, which has "empty" instance of this object
+    // // but will call `forMapper(...)` when JDK deserialized, setting up fields.
+    
+    protected final transient XmlRootNameLookup _rootNameLookup;
     
     public XmlSerializationContexts() {
         _rootNameLookup = null;
@@ -43,7 +48,7 @@ public class XmlSerializationContexts extends SerializationContexts
     }
 
     @Override
-    public SerializationContexts forMapper(ObjectMapper mapper,
+    public SerializationContexts forMapper(Object mapper,
             TokenStreamFactory tsf, SerializerFactory serializerFactory,
             SerializerCache cache) {
         return new XmlSerializationContexts(tsf, serializerFactory, cache,
