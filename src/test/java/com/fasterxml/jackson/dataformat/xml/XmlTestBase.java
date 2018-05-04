@@ -213,6 +213,10 @@ public abstract class XmlTestBase
         return new XmlMapper();
     }
 
+    protected static XmlMapper.Builder newMapperBuilder() {
+        return XmlMapper.builder();
+    }
+
     protected XmlMapper xmlMapper(boolean useListWrapping)
     {
         return XmlMapper.builder()
