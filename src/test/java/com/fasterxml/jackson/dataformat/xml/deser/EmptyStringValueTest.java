@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class EmptyStringValueTest extends XmlTestBase
 {
@@ -23,6 +24,14 @@ public class EmptyStringValueTest extends XmlTestBase
 
     static class Names {
         public List<Name> names = new ArrayList<Name>();
+    }
+
+    // [dataformat-xml#25]
+    private static class EmptyStrings
+    {
+        @JacksonXmlProperty(isAttribute=true)
+        public String a = "NOT SET";
+        public String b = "NOT SET";
     }
 
     /*
@@ -71,5 +80,15 @@ public class EmptyStringValueTest extends XmlTestBase
         // empty String or null?
         // As per [dataformat-xml#162], really should be "", not null:
         assertEquals("", bean.text);
+    }
+
+    // [dataformat-xml#25]
+    public void testEmptyStringFromElemAndAttr() throws Exception
+    {
+        EmptyStrings ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
+                EmptyStrings.class);
+        assertNotNull(ob);
+        assertEquals("", ob.a);
+        assertEquals("", ob.b);
     }
 }
