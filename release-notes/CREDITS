@@ -1,0 +1,12 @@
+Here are people who have contributed to the development of Jackson JSON processor
+XML format backend (`jackson-dataformat-xml`), version 3.x
+
+(note: for older credits, see `CREDITS-2.x` instead)
+
+Tatu Saloranta, tatu.saloranta@iki.fi: author
+
+Morten Olav Hansen (mortenoh@github)
+
+* Reported #25: `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` not honored in xml module
+  for attributes
+ (3.0.0)
