@@ -6,6 +6,8 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -68,6 +70,11 @@ public class XmlMapper extends ObjectMapper
             typeResolverProvider(new XmlTypeResolverProvider());
             // Some changes easiest to apply via Module
             addModule(new XmlModule());
+
+            // 04-May-2018, tatu: Important! Let's also default `String` `null` handling to coerce
+            //   to empty string -- this lets us induce `null` from empty tags first
+            _configOverrides.findOrCreateOverride(String.class)
+                .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
         }
 
         @Override

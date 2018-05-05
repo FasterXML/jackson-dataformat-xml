@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.StringWriter;
 import java.util.ArrayList;

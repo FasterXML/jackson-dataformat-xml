@@ -54,7 +54,7 @@ public class NullConversionsSkipTest extends XmlTestBase
 "<NullSkipField><noNulls>foo</noNulls><nullsOk /></NullSkipField>",
                 NullSkipField.class);
         assertEquals("foo", result.noNulls);
-        assertNull(result.nullsOk);
+        assertEquals("", result.nullsOk);
     }
 
     public void testSkipNullField2() throws Exception
@@ -73,7 +73,7 @@ public class NullConversionsSkipTest extends XmlTestBase
 "<NullSkipMethod><noNulls>foo</noNulls><nullsOk /></NullSkipMethod>",
                 NullSkipMethod.class);
         assertEquals("foo", result._noNulls);
-        assertNull(result._nullsOk);
+        assertEquals("", result._nullsOk);
     }
 
     public void testSkipNullMethod2() throws Exception
@@ -95,7 +95,7 @@ public class NullConversionsSkipTest extends XmlTestBase
 //        String doc = "<StringValue><value></value></StringValue>";
         String doc = "<StringValue><value /></StringValue>";
         StringValue result = MAPPER.readValue(doc, StringValue.class);
-        assertNull(result.value);
+        assertEquals("", result.value);
 
         ObjectMapper mapper = newMapperBuilder()
                 .withConfigOverride(String.class,

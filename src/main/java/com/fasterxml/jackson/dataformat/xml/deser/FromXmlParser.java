@@ -36,13 +36,17 @@ public class FromXmlParser
     public enum Feature implements FormatFeature
     {
         /**
-         * Feature that indicates whether XML Empty elements (ones where there are
-         * no separate start and end tags, but just one tag that ends with "/>")
-         * are exposed as {@link JsonToken#VALUE_NULL}) or not. If they are not
+         * Feature that indicates whether empty XML elements (both empty tags
+         * like {@code <tag />} and {@code <tag></tag>} (with no intervening cdata)
+         * are exposed as {@link JsonToken#VALUE_NULL}) or not.
+         * If they are not
          * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
          * tokens with textual value of "" (empty String).
          *<p>
-         * Default setting is `true` for backwards compatibility.
+         * NOTE: in Jackson 2.x, only "true" empty tags were affected, not split ones. With 3.x
+         * both cases handled uniformly.
+         *<p>
+         * Default setting is `true`.
          */
         EMPTY_ELEMENT_AS_NULL(true)
         ;
