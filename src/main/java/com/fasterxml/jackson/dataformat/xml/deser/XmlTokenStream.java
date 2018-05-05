@@ -381,9 +381,24 @@ public class XmlTokenStream
         while (true) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
+                return (text == null) ? "" : text;
+
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
+                // 04-May-2018, tatu: We could easily make <tag></tag> ALSO report
+                //    as `null`, by below, but that breaks existing tests so not
+                //    done at least until 3.0.
+                /*
+                if (text == null) {
+                    if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
+                        return null;
+                    }
+                    return "";
+                }
+                return text;
+                */
                 return (text == null) ? "" : text;
+                
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
