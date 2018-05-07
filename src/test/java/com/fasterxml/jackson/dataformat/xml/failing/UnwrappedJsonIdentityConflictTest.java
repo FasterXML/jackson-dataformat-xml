@@ -7,6 +7,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+// for [dataformat-xml#286]: parser getting confused with unwrapped lists,
+// object id
 public class UnwrappedJsonIdentityConflictTest extends XmlTestBase
 {
     static class Town
