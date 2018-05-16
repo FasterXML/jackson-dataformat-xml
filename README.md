@@ -1,6 +1,6 @@
 # Overview
 
-This projects contains [Jackson](http://wiki.fasterxml.com/JacksonHome) extension component for
+This projects contains [Jackson](https://github.com/FasterXML/jackson) extension component for
 reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
@@ -40,7 +40,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 
 (or whatever version is most up-to-date at the moment)
 
-Also: you usually also want to make sure that XML library in use is [Woodstox](http://wiki.fasterxml.com/WoodstoxHome) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
+Also: you usually also want to make sure that XML library in use is [Woodstox](https://github.com/FasterXML/woodstox) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
 You can do this by adding this in your `pom.xml`:
 
 ```xml
