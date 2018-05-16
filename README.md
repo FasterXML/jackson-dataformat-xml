@@ -1,6 +1,6 @@
 # Overview
 
-This projects contains [Jackson](http://wiki.fasterxml.com/JacksonHome) extension component for
+This projects contains [Jackson](https://github.com/FasterXML/jackson) extension component for
 reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
