@@ -25,7 +25,8 @@ public class ListAsObjectTest extends XmlTestBase
         public void setV(final String v) { this.v = v; }
     }
 
-    @JsonFormat(shape=JsonFormat.Shape.OBJECT)
+    // 17-May-2018, tatu: In 3.0, need to use POJO
+    @JsonFormat(shape=JsonFormat.Shape.POJO)
     static final class Values extends LinkedList<Value>
     {
         @XmlAttribute(name = "type")
