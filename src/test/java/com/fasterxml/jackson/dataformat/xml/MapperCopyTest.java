@@ -3,11 +3,8 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.io.*;
 
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
-import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 public class MapperCopyTest extends XmlTestBase
 {
@@ -69,14 +66,14 @@ public class MapperCopyTest extends XmlTestBase
         assertEquals("foo", mapper2.tokenStreamFactory().getXMLTextElementName());
     }
 
-    /*
     // [dataformat-xml#282]
     public void testCopyWith() throws Exception
     {
         XmlMapper xmlMapper = newMapper();
-        final ObjectMapper xmlMapperNoAnno = xmlMapper.copy()
+        final ObjectMapper xmlMapperNoAnno = xmlMapper.rebuild()
                 .disable(MapperFeature.USE_ANNOTATIONS)
-                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
 
         String xml1 = xmlMapper.writeValueAsString(new Pojo282());
         String xml2 = xmlMapperNoAnno.writeValueAsString(new Pojo282());
@@ -89,5 +86,4 @@ public class MapperCopyTest extends XmlTestBase
             fail("Should NOT use name 'AnnotatedName' but 'Pojo282', xml = "+xml1);
         }
     }
-    */
 }
