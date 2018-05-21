@@ -70,7 +70,6 @@ public class MapperCopyTest extends XmlTestBase
         assertEquals("foo", mapper2.getFactory().getXMLTextElementName());
     }
 
-    /*
     // [dataformat-xml#282]
     public void testCopyWith() throws Exception
     {
@@ -90,5 +89,4 @@ public class MapperCopyTest extends XmlTestBase
             fail("Should NOT use name 'AnnotatedName' but 'Pojo282', xml = "+xml1);
         }
     }
-    */
 }

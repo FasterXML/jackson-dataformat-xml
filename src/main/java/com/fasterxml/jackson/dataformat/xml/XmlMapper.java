@@ -235,11 +235,10 @@ public class XmlMapper extends ObjectMapper
         @SuppressWarnings("resource")
         ToXmlGenerator g = getFactory().createGenerator(w0);
         super.writeValue(g, value);
-        /* NOTE: above call should do flush(); and we should NOT close here.
-         * Finally, 'g' has no buffers to release.
-         */
+        // NOTE: above call should do flush(); and we should NOT close here.
+        // Finally, 'g' has no buffers to release.
     }
-    
+
     /*
     /**********************************************************
     /* Overridden methods
