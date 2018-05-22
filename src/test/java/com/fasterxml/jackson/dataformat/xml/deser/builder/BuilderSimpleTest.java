@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.deser.builder;
 
-import java.util.*;
-
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.core.Version;
@@ -283,9 +281,11 @@ public class BuilderSimpleTest extends XmlTestBase
         }
 
         // but with config overrides should pass
-        ObjectMapper ignorantMapper = newMapper();
-        ignorantMapper.configOverride(SimpleBuilderXY.class)
-                .setIgnorals(JsonIgnoreProperties.Value.forIgnoreUnknown(true));
+        ObjectMapper ignorantMapper = newMapperBuilder()
+                .withConfigOverride(SimpleBuilderXY.class,
+                        over -> over.setIgnorals(JsonIgnoreProperties.Value.forIgnoreUnknown(true)
+                                ))
+                .build();
         o = ignorantMapper.readValue(doc, ValueClassXY.class);
         assertNotNull(o);
         assertSame(ValueClassXY.class, o.getClass());
@@ -339,8 +339,8 @@ public class BuilderSimpleTest extends XmlTestBase
 
     public void testBuilderMethodReturnMoreSpecific() throws Exception
     {
-        final String json = "<ValueInterface2><x>1</x></ValueInterface2>}";
-        ValueInterface2 value = MAPPER.readValue(json, ValueInterface2.class);
+        final String doc = "<ValueInterface2><x>1</x></ValueInterface2>}";
+        ValueInterface2 value = MAPPER.readValue(doc, ValueInterface2.class);
         assertEquals(2, value.getX());
     }
 
@@ -357,9 +357,10 @@ public class BuilderSimpleTest extends XmlTestBase
 
     public void testPOJOConfigResolution1557() throws Exception
     {
-        final String json = "<ValueFoo><value>1</value></ValueFoo>";
-        MAPPER.registerModule(new NopModule1557());
-        ValueFoo value = MAPPER.readValue(json, ValueFoo.class);
+        ObjectMapper mapper = newMapperBuilder()
+                .addModule(new NopModule1557())
+                .build();
+        ValueFoo value = mapper.readValue("<ValueFoo><value>1</value></ValueFoo>", ValueFoo.class);
         assertEquals(1, value.value);
     }
 }

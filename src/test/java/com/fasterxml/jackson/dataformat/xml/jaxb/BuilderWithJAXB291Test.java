@@ -117,11 +117,11 @@ public class BuilderWithJAXB291Test extends XmlTestBase
                 "    <PostalCode>94132</PostalCode>\n" + 
                 "</Address>";
 
-        XmlMapper mapper = newMapper();
-        XmlJaxbAnnotationIntrospector xmlIntr = new XmlJaxbAnnotationIntrospector(mapper.getTypeFactory());
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-                (xmlIntr, new JacksonAnnotationIntrospector());
-        mapper.setAnnotationIntrospector(intr);
+                (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
+        XmlMapper mapper = XmlMapper.builder()
+                .annotationIntrospector(intr)
+                .build();
         Address value = mapper.readValue(DOC, Address.class);
         assertNotNull(value);
         assertEquals("San Francisco", value.getCity());
