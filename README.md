@@ -45,9 +45,9 @@ You can do this by adding this in your `pom.xml`:
 
 ```xml
 <dependency>
-  <groupId>org.codehaus.woodstox</groupId>
-  <artifactId>woodstox-core-asl</artifactId>
-  <version>4.4.1</version>
+  <groupId>com.fasterxml.woodstox</groupId>
+  <artifactId>woodstox-core</artifactId>
+  <version>5.1.0</version>
 </dependency>
 ```
 
