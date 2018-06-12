@@ -4,6 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.9.6 (12-Jun-2018)
 2.9.5 (26-Mar-2018)
 
 No changes since 2.9.4
