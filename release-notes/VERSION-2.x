@@ -5,6 +5,11 @@ Project: jackson-dataformat-xml
 ------------------------------------------------------------------------
 
 2.9.6 (12-Jun-2018)
+
+#282: `@JacksonXmlRootElement` malfunction when using it with multiple `XmlMapper`s
+  and disabling annotations
+ (reported by benej60@github)
+
 2.9.5 (26-Mar-2018)
 
 No changes since 2.9.4
