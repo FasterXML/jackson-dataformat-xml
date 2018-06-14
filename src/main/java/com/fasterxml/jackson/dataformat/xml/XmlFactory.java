@@ -136,7 +136,32 @@ public class XmlFactory extends JsonFactory
         _xmlInputFactory = src._xmlInputFactory;
         _xmlOutputFactory = src._xmlOutputFactory;
     }
-    
+
+    /**
+     * Constructors used by {@link JsonFactoryBuilder} for instantiation.
+     *
+     * @since 2.9
+     */
+    protected XmlFactory(XmlFactoryBuilder b)
+    {
+        super(b, false);
+        _xmlParserFeatures = b.formatParserFeaturesMask();
+        _xmlGeneratorFeatures = b.formatGeneratorFeaturesMask();
+        _cfgNameForTextElement = b.nameForTextElement();
+        _xmlInputFactory = b.xmlInputFactory();
+        _xmlOutputFactory = b.xmlOutputFactory();
+        _initFactories(_xmlInputFactory, _xmlOutputFactory);
+    }
+
+    public static XmlFactoryBuilder builder() {
+        return new XmlFactoryBuilder();
+    }
+
+    @Override
+    public XmlFactoryBuilder rebuild() {
+        return new XmlFactoryBuilder(this);
+    }
+
     protected void _initFactories(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
     {
         // Better ensure namespaces get built properly, so:
@@ -149,8 +174,6 @@ public class XmlFactory extends JsonFactory
      * Note: compared to base implementation by {@link JsonFactory},
      * here the copy will actually share underlying XML input and
      * output factories, as there is no way to make copies of those.
-     * 
-     * @since 2.1
      */
     @Override
     public XmlFactory copy() {
