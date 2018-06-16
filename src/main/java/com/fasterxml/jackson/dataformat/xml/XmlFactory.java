@@ -312,6 +312,16 @@ public class XmlFactory extends JsonFactory
         return (_xmlParserFeatures & f.getMask()) != 0;
     }
 
+    @Override
+    public int getFormatParserFeatures() {
+        return _xmlParserFeatures;
+    }
+
+    @Override
+    public int getFormatGeneratorFeatures() {
+        return _xmlGeneratorFeatures;
+    }
+
     /*
     /******************************************************
     /* Configuration, XML, generator settings
