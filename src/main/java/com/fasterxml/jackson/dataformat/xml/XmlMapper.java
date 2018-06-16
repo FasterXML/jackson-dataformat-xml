@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
@@ -32,6 +33,76 @@ public class XmlMapper extends ObjectMapper
     // as of 2.6
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Builder implementation for constructing {@link XmlMapper} instances.
+     *
+     * @since 2.10
+     */
+    public static class Builder extends MapperBuilder<XmlMapper, Builder>
+    {
+        public Builder(XmlMapper m) {
+            super(m);
+        }
+
+        public Builder enable(FromXmlParser.Feature... features)  {
+            for (FromXmlParser.Feature f : features) {
+                ((XmlMapper) _mapper).enable(f);
+            }
+            return this;
+        }
+
+        public Builder disable(FromXmlParser.Feature... features) {
+            for (FromXmlParser.Feature f : features) {
+                ((XmlMapper) _mapper).disable(f);
+            }
+            return this;
+        }
+
+        public Builder configure(FromXmlParser.Feature feature, boolean state)
+        {
+            if (state) {
+                ((XmlMapper) _mapper).enable(feature);
+            } else {
+                ((XmlMapper) _mapper).disable(feature);
+            }
+            return this;
+        }
+
+        public Builder enable(ToXmlGenerator.Feature... features) {
+            for (ToXmlGenerator.Feature f : features) {
+                ((XmlMapper) _mapper).enable(f);
+            }
+            return this;
+        }
+
+        public Builder disable(ToXmlGenerator.Feature... features) {
+            for (ToXmlGenerator.Feature f : features) {
+                ((XmlMapper) _mapper).disable(f);
+            }
+            return this;
+        }
+
+        public Builder configure(ToXmlGenerator.Feature feature, boolean state)
+        {
+            if (state) {
+                ((XmlMapper) _mapper).enable(feature);
+            } else {
+                ((XmlMapper) _mapper).disable(feature);
+            }
+            return this;
+        }
+        
+        public Builder nameForTextElement(String name) {
+            ((XmlMapper) _mapper).setXMLTextElementName(name);
+            return this;
+        }
+
+        public Builder defaultUseWrapper(boolean state) {
+            ((XmlMapper) _mapper).setDefaultUseWrapper(state);
+            return this;
+        }
+    }
+    
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
 
     protected final static DefaultXmlPrettyPrinter DEFAULT_XML_PRETTY_PRINTER = new DefaultXmlPrettyPrinter();
@@ -104,6 +175,28 @@ public class XmlMapper extends ObjectMapper
         return new XmlMapper(this);
     }
 
+    /**
+     * @since 2.10
+     */
+    public static XmlMapper.Builder xmlBuilder() {
+        return new XmlMapper.Builder(new XmlMapper());
+    }
+
+    /**
+     * @since 2.10
+     */
+    @SuppressWarnings("unchecked")
+    public static XmlMapper.Builder builder() {
+        return new XmlMapper.Builder(new XmlMapper());
+    }
+
+    /**
+     * @since 2.10
+     */
+    public static XmlMapper.Builder builder(XmlFactory streamFactory) {
+        return new XmlMapper.Builder(new XmlMapper(streamFactory));
+    }
+
     @Override
     public Version version() {
         return PackageVersion.VERSION;
@@ -122,14 +215,20 @@ public class XmlMapper extends ObjectMapper
      * via {@link JacksonXmlModule}.
      * 
      * @since 2.1
+     *
+     * @deprecated Since 2.10 use {@link Builder#nameForTextElement(String)} instead
      */
+    @Deprecated
     protected void setXMLTextElementName(String name) {
         ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
     }
 
     /**
      * Since 2.7
+     * 
+     * @deprecated Since 2.10 use {@link Builder#defaultUseWrapper(boolean)} instead
      */
+    @Deprecated
     public XmlMapper setDefaultUseWrapper(boolean state) {
         // ser and deser configs should usually have the same introspector, so:
         AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
@@ -237,19 +336,5 @@ public class XmlMapper extends ObjectMapper
         super.writeValue(g, value);
         // NOTE: above call should do flush(); and we should NOT close here.
         // Finally, 'g' has no buffers to release.
-    }
-
-    /*
-    /**********************************************************
-    /* Overridden methods
-    /**********************************************************
-     */
-
-    // 09-May-2016, tatu: Was removed from `jackson-databind` in 2.8; remove from
-    //    here in 2.9.
-    @Deprecated // since 2.6
-//    @Override
-    protected PrettyPrinter _defaultPrettyPrinter() {
-        return new DefaultXmlPrettyPrinter();
     }
 }

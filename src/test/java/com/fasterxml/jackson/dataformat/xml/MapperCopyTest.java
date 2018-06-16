@@ -19,10 +19,11 @@ public class MapperCopyTest extends XmlTestBase
 
     public void testMapperCopy()
     {
-        XmlMapper mapper1 = new XmlMapper();
-        mapper1.setXMLTextElementName("foo");
-        mapper1.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-        mapper1.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        XmlMapper mapper1 = objectMapperBuilder()
+                .nameForTextElement("foo")
+                .configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
 
         XmlMapper mapper2 = mapper1.copy();
         assertNotSame(mapper1, mapper2);
@@ -54,8 +55,9 @@ public class MapperCopyTest extends XmlTestBase
 
     public void testMapperSerialization() throws Exception
     {
-        XmlMapper mapper1 = newMapper();
-        mapper1.setXMLTextElementName("foo");
+        XmlMapper mapper1 = objectMapperBuilder()
+                .nameForTextElement("foo")
+                .build();
         assertEquals("foo", mapper1.getFactory().getXMLTextElementName());
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -71,6 +73,7 @@ public class MapperCopyTest extends XmlTestBase
     }
 
     // [dataformat-xml#282]
+    @SuppressWarnings("deprecation")
     public void testCopyWith() throws Exception
     {
         XmlMapper xmlMapper = newMapper();

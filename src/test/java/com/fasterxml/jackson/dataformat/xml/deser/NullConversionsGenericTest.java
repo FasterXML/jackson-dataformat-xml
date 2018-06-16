@@ -63,7 +63,7 @@ public class NullConversionsGenericTest extends XmlTestBase
 
     public void testNullsToGenericPojo() throws Exception
     {
-        String xml = MAPPER.writeValueAsString(new GeneralEmpty<Point>(new Point(1, 2)));
+//        String xml = MAPPER.writeValueAsString(new GeneralEmpty<Point>(new Point(1, 2)));
         GeneralEmpty<Point> result = MAPPER.readValue(EMPTY_XML,
                 new TypeReference<GeneralEmpty<Point>>() { });
         assertNotNull(result.value);

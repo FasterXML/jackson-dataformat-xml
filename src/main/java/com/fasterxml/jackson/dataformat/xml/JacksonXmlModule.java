@@ -54,6 +54,7 @@ public class JacksonXmlModule
         addDeserializer(CharSequence.class, deser);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setupModule(SetupContext context)
     {

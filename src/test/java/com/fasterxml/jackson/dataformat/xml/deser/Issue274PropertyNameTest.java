@@ -48,7 +48,7 @@ public class Issue274PropertyNameTest extends XmlTestBase
     // [dataformat-xml#274]
     public void testIssue274() throws Exception
     {
-        final ObjectMapper xm = newMapper()
+        final ObjectMapper xm = objectMapperBuilder()
 
         // serialization features
 //        xm.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -57,7 +57,7 @@ public class Issue274PropertyNameTest extends XmlTestBase
             .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
             //this is for deserialization only and means we don't need to camelCase  xml property names
             .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
-            ;
+            .build();
 
         RootObject obj = xm.readValue(XML, RootObject.class);
         assertNotNull(obj);

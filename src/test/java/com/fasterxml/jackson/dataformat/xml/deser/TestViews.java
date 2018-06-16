@@ -86,12 +86,12 @@ public class TestViews extends XmlTestBase
 
         foo.bars = new Bar[] { bar1, bar2 };
 
-        ObjectMapper xmlMapper = new XmlMapper();
-
-        xmlMapper.configure(MapperFeature.AUTO_DETECT_FIELDS, false );
-        xmlMapper.configure(MapperFeature.AUTO_DETECT_GETTERS, false );
-        xmlMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false );
-        xmlMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false );
+        ObjectMapper xmlMapper = XmlMapper.builder()
+                .configure(MapperFeature.AUTO_DETECT_FIELDS, false)
+                .configure(MapperFeature.AUTO_DETECT_GETTERS, false)
+                .configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false)
+                .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false)
+                .build();
 
         String xml = xmlMapper.writerWithView(RestrictedView.class).writeValueAsString(foo);
         
@@ -102,7 +102,6 @@ public class TestViews extends XmlTestBase
         assertEquals(2, result.bars.length);
         assertEquals(10, result.bars[0].restrictedBarProperty);
         assertEquals(11, result.bars[1].restrictedBarProperty);
-        
     }
 
     public void testNullSuppression() throws Exception
