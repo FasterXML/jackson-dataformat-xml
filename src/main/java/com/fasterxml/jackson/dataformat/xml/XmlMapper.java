@@ -46,14 +46,14 @@ public class XmlMapper extends ObjectMapper
 
         public Builder enable(FromXmlParser.Feature... features)  {
             for (FromXmlParser.Feature f : features) {
-                ((XmlMapper) _mapper).enable(f);
+                _mapper.enable(f);
             }
             return this;
         }
 
         public Builder disable(FromXmlParser.Feature... features) {
             for (FromXmlParser.Feature f : features) {
-                ((XmlMapper) _mapper).disable(f);
+                _mapper.disable(f);
             }
             return this;
         }
@@ -61,23 +61,23 @@ public class XmlMapper extends ObjectMapper
         public Builder configure(FromXmlParser.Feature feature, boolean state)
         {
             if (state) {
-                ((XmlMapper) _mapper).enable(feature);
+                _mapper.enable(feature);
             } else {
-                ((XmlMapper) _mapper).disable(feature);
+                _mapper.disable(feature);
             }
             return this;
         }
 
         public Builder enable(ToXmlGenerator.Feature... features) {
             for (ToXmlGenerator.Feature f : features) {
-                ((XmlMapper) _mapper).enable(f);
+                _mapper.enable(f);
             }
             return this;
         }
 
         public Builder disable(ToXmlGenerator.Feature... features) {
             for (ToXmlGenerator.Feature f : features) {
-                ((XmlMapper) _mapper).disable(f);
+                _mapper.disable(f);
             }
             return this;
         }
@@ -85,24 +85,24 @@ public class XmlMapper extends ObjectMapper
         public Builder configure(ToXmlGenerator.Feature feature, boolean state)
         {
             if (state) {
-                ((XmlMapper) _mapper).enable(feature);
+                _mapper.enable(feature);
             } else {
-                ((XmlMapper) _mapper).disable(feature);
+                _mapper.disable(feature);
             }
             return this;
         }
         
         public Builder nameForTextElement(String name) {
-            ((XmlMapper) _mapper).setXMLTextElementName(name);
+            _mapper.setXMLTextElementName(name);
             return this;
         }
 
         public Builder defaultUseWrapper(boolean state) {
-            ((XmlMapper) _mapper).setDefaultUseWrapper(state);
+            _mapper.setDefaultUseWrapper(state);
             return this;
         }
     }
-    
+
     protected final static JacksonXmlModule DEFAULT_XML_MODULE = new JacksonXmlModule();
 
     protected final static DefaultXmlPrettyPrinter DEFAULT_XML_PRETTY_PRINTER = new DefaultXmlPrettyPrinter();
