@@ -34,7 +34,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.9.0</version>
+  <version>2.9.6</version>
 </dependency>
 ```
 
@@ -52,6 +52,8 @@ You can do this by adding this in your `pom.xml`:
 ```
 
 # Usage
+
+## Constructing Mapper
 
 Although module implements low-level (`JsonFactory` / `JsonParser` / `JsonGenerator`) abstractions,
 most usage is through data-binding level. This because a small number of work-arounds have been added
@@ -76,6 +78,24 @@ XmlMapper xmlMapper = new XmlMapper(module);
 
 as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
 `XmlMapper` simply constructs module with default settings.
+
+Alternatively, sometimes you may want/need to configure low-level XML processing details
+controlled by underlying Stax library (Woodstox, Aalto or JDK-default Oracle implementation).
+If so, you will need to construct `XmlMapper` with properly configured underlying factories.
+This usually looks something like:
+
+```java
+XMLInputFactory ifactory = new WstxInputFactory(); // Woodstox XMLInputFactory impl
+ifactory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32000);
+// configure
+XMLOutputFactory ofactory = new WstxOutputFactory(); // Woodstox XMLOutputfactory impl
+ofactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true);
+XmlFactory xf = new XmlFactory(ifactory, ofactory);
+XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
+```
+
+For configurable properties, you may want to check out
+[Configuring Woodstox XML parser](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
 
 ## Android quirks
 
@@ -213,7 +233,14 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
     * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
 * Tree Model is only supported in limited fashion: specifically, Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
 
-# See Also
+# Documentation
 
 * XML module [wiki page](https://github.com/FasterXML/jackson-dataformat-xml/wiki) for more information
+* Various Blog posts on Woodstox:
+    * [Standard Stax 1.x config properties](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-basic-stax-properties-39bdf88c18ec)
+    * [Stax2 extension config properties](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-stax2-properties-c80ef5a32ef1)
+    * [Woodstox-specific config properties](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
+
+# See Also
+
 * Using XML with [DropWizard](https://github.com/dropwizard/dropwizard)? Check out [this extension](https://github.com/yunspace/dropwizard-xml)!
