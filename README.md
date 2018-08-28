@@ -77,7 +77,25 @@ XmlMapper xmlMapper = new XmlMapper(module);
 as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
 `XmlMapper` simply constructs module with default settings.
 
-## Android
+Alternatively, sometimes you may want/need to configure low-level XML processing details
+controlled by underlying Stax library (Woodstox, Aalto or JDK-default Oracle implementation).
+If so, you will need to construct `XmlMapper` with properly configured underlying factories.
+This usually looks something like:
+
+```java
+XMLInputFactory ifactory = new WstxInputFactory(); // Woodstox XMLInputFactory impl
+ifactory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32000);
+// configure
+XMLOutputFactory ofactory = new WstxOutputFactory(); // Woodstox XMLOutputfactory impl
+ofactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true);
+XmlFactory xf = new XmlFactory(ifactory, ofactory);
+XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
+```
+
+For configurable properties, you may want to check out
+[Configuring Woodstox XML parser](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
+
+## Android quirks
 
 Usage of this library on Android is currently not supported. This is due to the fact that the Stax API is unavailable on the Android platform, and attempts to declare an explicit dependency on the Stax API library will result in errors at build time (since the inclusion of the `javax.*` namespace in apps is restricted).
 For more on the issues, see:
