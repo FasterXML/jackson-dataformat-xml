@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -117,11 +118,12 @@ public class BuilderWithJAXB291Test extends XmlTestBase
                 "    <PostalCode>94132</PostalCode>\n" + 
                 "</Address>";
 
-        XmlMapper mapper = newMapper();
-        XmlJaxbAnnotationIntrospector xmlIntr = new XmlJaxbAnnotationIntrospector(mapper.getTypeFactory());
+        XmlJaxbAnnotationIntrospector xmlIntr = new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance());
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
                 (xmlIntr, new JacksonAnnotationIntrospector());
-        mapper.setAnnotationIntrospector(intr);
+        XmlMapper mapper = objectMapperBuilder()
+                .annotationIntrospector(intr)
+                .build();
         Address value = mapper.readValue(DOC, Address.class);
         assertNotNull(value);
         assertEquals("San Francisco", value.getCity());
