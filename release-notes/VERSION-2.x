@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.9.7 (19-Sep-2018)
+
+No changes since 2.9.6
+
 2.9.6 (12-Jun-2018)
 
 #282: `@JacksonXmlRootElement` malfunction when using it with multiple `XmlMapper`s
