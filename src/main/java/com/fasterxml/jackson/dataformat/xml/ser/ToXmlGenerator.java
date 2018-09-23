@@ -828,6 +828,68 @@ public final class ToXmlGenerator
         }
     }
 
+    @Override
+    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException
+    {
+        if (data == null) {
+            writeNull();
+            return 0;
+        }
+        _verifyValueWrite("write Binary value");
+        if (_nextName == null) {
+            handleMissingName();
+        }
+        try {
+            if (_nextIsAttribute) {
+                // Stax2 API only has 'full buffer' write method:
+                byte[] fullBuffer = toFullBuffer(data, dataLength);
+                _xmlWriter.writeBinaryAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
+            } else if (checkNextIsUnwrapped()) {
+            	// should we consider pretty-printing or not?
+                writeStreamAsBinary(data, dataLength);
+
+            } else {
+                if (_xmlPrettyPrinter != null) {
+                    _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                            _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                            toFullBuffer(data, dataLength), 0, dataLength);
+                } else {
+                    _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    writeStreamAsBinary(data, dataLength);
+                    _xmlWriter.writeEndElement();
+                }
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsGenerationException(e, this);
+        }
+
+        return dataLength;
+    }
+
+    private void writeStreamAsBinary(InputStream data, int len) throws IOException, XMLStreamException 
+    {
+        // base64 encodes up to 3 bytes into a 4 bytes string
+        byte[] tmp = new byte[3];
+        int offset = 0;
+        int read;
+        while((read = data.read(tmp, offset, Math.min(3 - offset, len))) != -1) {
+            offset += read;
+            len -= read;
+            if(offset == 3) {
+                offset = 0;
+                _xmlWriter.writeBinary(tmp, 0, 3);
+            }
+            if(len == 0) {
+                break;
+            }
+        }
+
+        // we still have < 3 bytes in the buffer
+        if(offset > 0) {
+            _xmlWriter.writeBinary(tmp, 0, offset);
+        }
+    }
+
     private byte[] toFullBuffer(byte[] data, int offset, int len)
     {
         // might already be ok:
@@ -839,6 +901,15 @@ public final class ToXmlGenerator
             System.arraycopy(data, offset, result, 0, len);
         }
         return result;
+    }
+
+    private byte[] toFullBuffer(InputStream data, int len) throws IOException 
+    {
+        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+        for(; len > 0; --len) {
+            tmp.write(data.read());
+        }
+        return tmp.toByteArray();
     }
     
     /*
