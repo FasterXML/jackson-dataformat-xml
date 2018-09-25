@@ -51,8 +51,6 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
-<!-- TEMPORARY! -->
-<version>2.9.6</version>
     </dependency>
     <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
       -->
