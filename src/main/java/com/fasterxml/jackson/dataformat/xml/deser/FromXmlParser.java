@@ -10,6 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.codehaus.stax2.XMLStreamReader2;
+
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
@@ -193,7 +195,12 @@ public class FromXmlParser
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
     }
-    
+
+    @Override // since 3.0
+    public XMLStreamReader2 getInputSource() {
+        return _xmlTokens.getXmlReader();
+    }
+
     /**
      * XML format does require support from databinding so need to return true here.
      * 
