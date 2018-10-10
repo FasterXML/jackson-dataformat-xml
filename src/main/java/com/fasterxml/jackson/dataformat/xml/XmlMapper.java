@@ -263,7 +263,6 @@ public class XmlMapper extends ObjectMapper
         return new XmlMapper.Builder(new XmlFactory());
     }
 
-    @SuppressWarnings("unchecked")
     public static XmlMapper.Builder builder() {
         return new XmlMapper.Builder(new XmlFactory());
     }
