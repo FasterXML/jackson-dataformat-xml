@@ -120,14 +120,14 @@ public class XmlMapper extends ObjectMapper
 
         public Builder enable(FromXmlParser.Feature... features) {
             for (FromXmlParser.Feature f : features) {
-                _formatParserFeatures |= f.getMask();
+                _formatReadFeatures |= f.getMask();
             }
             return this;
         }
 
         public Builder disable(FromXmlParser.Feature... features) {
             for (FromXmlParser.Feature f : features) {
-                _formatParserFeatures &= ~f.getMask();
+                _formatReadFeatures &= ~f.getMask();
             }
             return this;
         }
@@ -135,23 +135,23 @@ public class XmlMapper extends ObjectMapper
         public Builder configure(FromXmlParser.Feature feature, boolean state)
         {
             if (state) {
-                _formatParserFeatures |= feature.getMask();
+                _formatReadFeatures |= feature.getMask();
             } else {
-                _formatParserFeatures &= ~feature.getMask();
+                _formatReadFeatures &= ~feature.getMask();
             }
             return this;
         }
 
         public Builder enable(ToXmlGenerator.Feature... features) {
             for (ToXmlGenerator.Feature f : features) {
-                _formatGeneratorFeatures |= f.getMask();
+                _formatWriteFeatures |= f.getMask();
             }
             return this;
         }
 
         public Builder disable(ToXmlGenerator.Feature... features) {
             for (ToXmlGenerator.Feature f : features) {
-                _formatGeneratorFeatures &= ~f.getMask();
+                _formatWriteFeatures &= ~f.getMask();
             }
             return this;
         }
@@ -159,9 +159,9 @@ public class XmlMapper extends ObjectMapper
         public Builder configure(ToXmlGenerator.Feature feature, boolean state)
         {
             if (state) {
-                _formatGeneratorFeatures |= feature.getMask();
+                _formatWriteFeatures |= feature.getMask();
             } else {
-                _formatGeneratorFeatures &= ~feature.getMask();
+                _formatWriteFeatures &= ~feature.getMask();
             }
             return this;
         }
