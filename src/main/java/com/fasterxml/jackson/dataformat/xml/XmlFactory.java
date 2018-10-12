@@ -54,10 +54,6 @@ public class XmlFactory
     /**********************************************************
      */
 
-    protected final int _formatParserFeatures;
-
-    protected final int _formatGeneratorFeatures;
-
     // !!! 09-Jan-2018, tatu: make final ASAP
     protected String _cfgNameForTextElement;
 
@@ -98,9 +94,7 @@ public class XmlFactory
             XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
             String nameForTextElem)
     {
-        super();
-        _formatParserFeatures = xpFeatures;
-        _formatGeneratorFeatures = xgFeatures;
+        super(xpFeatures, xgFeatures);
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
             xmlIn = XmlFactoryBuilder.defaultInputFactory();
@@ -121,8 +115,6 @@ public class XmlFactory
     protected XmlFactory(XmlFactoryBuilder b)
     {
         super(b);
-        _formatParserFeatures = b.formatParserFeaturesMask();
-        _formatGeneratorFeatures = b.formatGeneratorFeaturesMask();
         _cfgNameForTextElement = b.nameForTextElement();
         _xmlInputFactory = b.xmlInputFactory();
         _xmlOutputFactory = b.xmlOutputFactory();
@@ -136,8 +128,7 @@ public class XmlFactory
 
     protected XmlFactory(XmlFactory src, String nameForTextElement)
     {
-        _formatParserFeatures = src._formatParserFeatures;
-        _formatGeneratorFeatures = src._formatGeneratorFeatures;
+        super(src);
         _cfgNameForTextElement = nameForTextElement;
         _xmlInputFactory = src._xmlInputFactory;
         _xmlOutputFactory = src._xmlOutputFactory;

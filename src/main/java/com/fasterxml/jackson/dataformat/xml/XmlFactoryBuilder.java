@@ -63,23 +63,18 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      */
     
     protected XmlFactoryBuilder() {
-        _formatParserFeatures = XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS;
-        _formatGeneratorFeatures = XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
+        super(XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS,
+                XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS);
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
         super(base);
-        _formatParserFeatures = base._formatParserFeatures;
-        _formatGeneratorFeatures = base._formatGeneratorFeatures;
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
     }
 
     // // // Accessors
-
-    public int formatParserFeaturesMask() { return _formatParserFeatures; }
-    public int formatGeneratorFeaturesMask() { return _formatGeneratorFeatures; }
 
     public String nameForTextElement() { return _nameForTextElement; }
 

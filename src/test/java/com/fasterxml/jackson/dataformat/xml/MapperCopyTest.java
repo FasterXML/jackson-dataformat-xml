@@ -34,8 +34,8 @@ public class MapperCopyTest extends XmlTestBase
 
         // and incomplete copy as well
         assertEquals(xf1.getXMLTextElementName(), xf2.getXMLTextElementName());
-        assertEquals(xf1._formatGeneratorFeatures, xf2._formatGeneratorFeatures);
-        assertEquals(xf1._formatParserFeatures, xf2._formatParserFeatures);
+        assertEquals(xf1.getFormatGeneratorFeatures(), xf2.getFormatGeneratorFeatures());
+        assertEquals(xf1.getFormatParserFeatures(), xf2.getFormatParserFeatures());
 
         SerializationConfig sc1 = mapper1.serializationConfig();
         SerializationConfig sc2 = mapper2.serializationConfig();
