@@ -249,7 +249,7 @@ public final class ToXmlGenerator
     }
 
     @Override
-    public int getFormatFeatures() {
+    public int formatWriteFeatures() {
         return _formatFeatures;
     }
 

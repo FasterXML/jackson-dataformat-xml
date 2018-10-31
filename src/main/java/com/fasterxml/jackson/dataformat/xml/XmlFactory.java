@@ -368,7 +368,7 @@ public class XmlFactory
         // may add CharacterEscapes in future?
         
         return new ToXmlGenerator(writeCtxt, ioCtxt,
-                writeCtxt.getGeneratorFeatures(_streamWriteFeatures),
+                writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 _createXmlWriter(out),
                 _xmlPrettyPrinter(writeCtxt));
@@ -379,7 +379,7 @@ public class XmlFactory
             IOContext ioCtxt, OutputStream out) throws IOException
     {
         return new ToXmlGenerator(writeCtxt, ioCtxt,
-                writeCtxt.getGeneratorFeatures(_streamWriteFeatures),
+                writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 _createXmlWriter(out),
                 _xmlPrettyPrinter(writeCtxt));
@@ -419,7 +419,7 @@ public class XmlFactory
 
         // false -> not managed
         FromXmlParser xp = new FromXmlParser(readCtxt, _createContext(sr, false),
-                readCtxt.getParserFeatures(_streamReadFeatures),
+                readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
@@ -439,7 +439,7 @@ public class XmlFactory
         sw = _initializeXmlWriter(sw);
         IOContext ioCtxt = _createContext(sw, false);
         return new ToXmlGenerator(writeCtxt, ioCtxt,
-                writeCtxt.getGeneratorFeatures(_streamWriteFeatures),
+                writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 sw,
                 _xmlPrettyPrinter(writeCtxt));
@@ -463,7 +463,7 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                readCtxt.getParserFeatures(_streamReadFeatures),
+                readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
@@ -484,7 +484,7 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                readCtxt.getParserFeatures(_streamReadFeatures),
+                readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
@@ -508,7 +508,7 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                readCtxt.getParserFeatures(_streamReadFeatures),
+                readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
@@ -529,7 +529,7 @@ public class XmlFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
-                readCtxt.getParserFeatures(_streamReadFeatures),
+                readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
                 sr);
         if (_cfgNameForTextElement != null) {
