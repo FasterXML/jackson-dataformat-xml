@@ -356,7 +356,7 @@ public class FromXmlParser
         if (!_closed) {
             _closed = true;
             try {
-                if (_ioContext.isResourceManaged() || isEnabled(JsonParser.Feature.AUTO_CLOSE_SOURCE)) {
+                if (_ioContext.isResourceManaged() || isEnabled(StreamReadFeature.AUTO_CLOSE_SOURCE)) {
                     _xmlTokens.closeCompletely();
                 } else {
                     _xmlTokens.close();

@@ -1028,7 +1028,7 @@ public final class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
-        boolean usePlain = isEnabled(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
+        boolean usePlain = isEnabled(StreamWriteFeature.WRITE_BIGDECIMAL_AS_PLAIN);
         try {
             if (_nextIsAttribute) {
                 if (usePlain) {
@@ -1126,7 +1126,7 @@ public final class ToXmlGenerator
     @Override
     public void flush() throws IOException
     {
-        if (isEnabled(JsonGenerator.Feature.FLUSH_PASSED_TO_STREAM)) {
+        if (isEnabled(StreamWriteFeature.FLUSH_PASSED_TO_STREAM)) {
             try {
                 _xmlWriter.flush();
             } catch (XMLStreamException e) {
@@ -1142,15 +1142,10 @@ public final class ToXmlGenerator
         super.close();
 
         // First: let's see that we still have buffers...
-        if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_CONTENT)) {
+        if (isEnabled(StreamWriteFeature.AUTO_CLOSE_CONTENT)) {
             try {
                 while (true) {
-		    /* 28-May-2016, tatu: To work around incompatibility introduced by
-		     *     `jackson-core` 2.8 where return type of `getOutputContext()`
-		     *     changed, let's do direct access here.
-		     */
-//                    JsonStreamContext ctxt = getOutputContext();
-		    TokenStreamContext ctxt = _outputContext;
+                    TokenStreamContext ctxt = getOutputContext();
                     if (ctxt.inArray()) {
                         writeEndArray();
                     } else if (ctxt.inObject()) {
@@ -1160,14 +1155,13 @@ public final class ToXmlGenerator
                     }
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
-                /* 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
-                 *   hit by this as a collateral problem in some cases. Yuck.
-                 */
+                // 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
+                //   hit by this as a collateral problem in some cases. Yuck.
                 throw new JsonGenerationException(e, this);
             }
         }
         try {
-            if (_ioContext.isResourceManaged() || isEnabled(JsonGenerator.Feature.AUTO_CLOSE_TARGET)) {
+            if (_ioContext.isResourceManaged() || isEnabled(StreamWriteFeature.AUTO_CLOSE_TARGET)) {
                 _xmlWriter.closeCompletely();
             } else {
                 _xmlWriter.close();
