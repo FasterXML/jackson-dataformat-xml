@@ -377,24 +377,24 @@ public class XmlTokenStream
             return "";
         }
 
-        String text = null;
+        StringBuilder textBuilder = null;
         while (true) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
-                return (text == null) ? "" : text;
+                return textBuilder == null ? "" : textBuilder.toString();
 
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
                 // 04-May-2018, tatu: For 3.0 we can actually start exposing <tag></tag> ALSO
                 //    as `null`, as long as we default `String` null handling to coerce that to
                 //    "empty"
-                if (text == null) {
+                if (textBuilder == null) {
                     if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                         return null;
                     }
                     return "";
                 }
-                return text;
+                return textBuilder.toString();
 
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
@@ -402,11 +402,10 @@ public class XmlTokenStream
                 // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
                 {
                     String str = _getText(_xmlReader);
-                    if (text == null) {
-                        text = str;
-                    } else {
-                        text += str;
+                    if (textBuilder == null) {
+                        textBuilder = new StringBuilder();
                     }
+                    textBuilder.append(str);
                 }
                 break;
             default:
