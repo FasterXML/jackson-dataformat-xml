@@ -377,11 +377,11 @@ public class XmlTokenStream
             return "";
         }
 
-        String text = null;
+        CharSequence chars = null;
         while (true) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
-                return (text == null) ? "" : text;
+                return (chars == null) ? "" : chars.toString();
 
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
@@ -389,26 +389,29 @@ public class XmlTokenStream
                 //    as `null`, by below, but that breaks existing tests so not
                 //    done at least until 3.0.
                 /*
-                if (text == null) {
+                if (chars == null) {
                     if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                         return null;
                     }
                     return "";
                 }
-                return text;
+                return chars;
                 */
-                return (text == null) ? "" : text;
-                
+                return (chars == null) ? "" : chars.toString();
+
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
                 // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
                 {
                     String str = _getText(_xmlReader);
-                    if (text == null) {
-                        text = str;
-                    } else {
-                        text += str;
+                    if (chars == null) {
+                        chars = str;
+                    } else  {
+                        if (chars instanceof String) {
+                            chars = new StringBuilder(chars);
+                        }
+                        ((StringBuilder)chars).append(str);
                     }
                 }
                 break;

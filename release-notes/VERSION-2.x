@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #270: Add support for `writeBinary()` with `InputStream` to `ToXMLGenerator`
  (requested by csbxvs@github; contributed by marc-christian-schulze@github)
+#323: Replace slow string concatenation with faster `StringBuilder` (for
+  long text content)
 
 2.9.7 (19-Sep-2018)
 
