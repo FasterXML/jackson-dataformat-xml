@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.deser.builder;
 
-import java.util.*;
-
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.core.Version;
