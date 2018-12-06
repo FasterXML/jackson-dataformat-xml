@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.fasterxml.jackson</groupId>
     <artifactId>jackson-base</artifactId>
-    <version>2.9.7</version>
+    <version>2.9.8-SNAPSHOT</version>
   </parent>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
@@ -103,6 +103,18 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     </dependency>
   </dependencies>
 
+  <!-- Alas, need to include snapshot reference since otherwise can not find
+       snapshot of parent... -->
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
   <build>
     <plugins>
       <plugin>
@@ -133,17 +145,5 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
         </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <!--  19-Feb-2012, tatu: Since we have some failing tests, may need to force release -->
-    <profile>
-      <id>force-release</id>
-      <properties>
-        <maven.test.skip>true</maven.test.skip>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-  <!-- NOTE: repositories from parent POM -->
 
 </project>
