@@ -377,40 +377,43 @@ public class XmlTokenStream
             return "";
         }
 
-        String text = null;
+        CharSequence chars = null;
         while (true) {
             switch (_xmlReader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                return (text == null) ? "" : text;
+                case XMLStreamConstants.START_ELEMENT:
+                    return chars == null ? "" : chars.toString();
 
-            case XMLStreamConstants.END_ELEMENT:
-            case XMLStreamConstants.END_DOCUMENT:
-                // 04-May-2018, tatu: For 3.0 we can actually start exposing <tag></tag> ALSO
-                //    as `null`, as long as we default `String` null handling to coerce that to
-                //    "empty"
-                if (text == null) {
-                    if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
-                        return null;
+                case XMLStreamConstants.END_ELEMENT:
+                case XMLStreamConstants.END_DOCUMENT:
+                    // 04-May-2018, tatu: For 3.0 we can actually start exposing <tag></tag> ALSO
+                    //    as `null`, as long as we default `String` null handling to coerce that to
+                    //    "empty"
+                    if (chars == null) {
+                        if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
+                            return null;
+                        }
+                        return "";
                     }
-                    return "";
-                }
-                return text;
+                    return chars.toString();
 
-            // note: SPACE is ignorable (and seldom seen), not to be included
-            case XMLStreamConstants.CHARACTERS:
-            case XMLStreamConstants.CDATA:
-                // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
+                // note: SPACE is ignorable (and seldom seen), not to be included
+                case XMLStreamConstants.CHARACTERS:
+                case XMLStreamConstants.CDATA:
+                    // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
                 {
                     String str = _getText(_xmlReader);
-                    if (text == null) {
-                        text = str;
-                    } else {
-                        text += str;
+                    if (chars == null) {
+                        chars = str;
+                    } else  {
+                        if (chars instanceof String) {
+                            chars = new StringBuilder(chars);
+                        }
+                        ((StringBuilder)chars).append(str);
                     }
                 }
                 break;
-            default:
-                // any other type (proc instr, comment etc) is just ignored
+                default:
+                    // any other type (proc instr, comment etc) is just ignored
             }
         }
     }
