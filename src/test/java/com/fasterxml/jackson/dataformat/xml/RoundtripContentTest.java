@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class RoundtripContentTest extends XmlTestBase
 {
-    private final XmlMapper MAPPER = new XmlMapper();
+    // Let's use globally shared instance for funsies
+    private final XmlMapper MAPPER = XmlMapper.shared();
 
     public void testRoundtrip() throws Exception
     {
