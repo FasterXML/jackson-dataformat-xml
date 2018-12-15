@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.9.8 (not yet released)
+2.9.8 (15-Dec-2018)
 
 #270: Add support for `writeBinary()` with `InputStream` to `ToXMLGenerator`
  (requested by csbxvs@github; contributed by marc-christian-schulze@github)
