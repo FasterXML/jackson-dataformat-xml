@@ -10,7 +10,10 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
+import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
@@ -185,7 +188,6 @@ public class XmlMapper extends ObjectMapper
     /**
      * @since 2.10
      */
-    @SuppressWarnings("unchecked")
     public static XmlMapper.Builder builder() {
         return new XmlMapper.Builder(new XmlMapper());
     }
@@ -200,6 +202,19 @@ public class XmlMapper extends ObjectMapper
     @Override
     public Version version() {
         return PackageVersion.VERSION;
+    }
+
+    /*
+    /**********************************************************
+    /* Factory method overrides
+    /**********************************************************
+     */
+
+    @Override
+    protected TypeResolverBuilder<?> _constructDefaultTypeResolverBuilder(DefaultTyping applicability) {
+//        return new DefaultTypeResolverBuilder(applicability);
+        // just a stub for now
+        return super._constructDefaultTypeResolverBuilder(applicability);
     }
 
     /*

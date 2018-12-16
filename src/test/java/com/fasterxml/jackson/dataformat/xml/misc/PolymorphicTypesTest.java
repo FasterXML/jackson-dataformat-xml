@@ -11,12 +11,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 public class PolymorphicTypesTest extends XmlTestBase
 {
-    /*
-    /**********************************************************
-    /* Helper types
-    /**********************************************************
-     */
-
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY)
     static class BaseTypeWithClassProperty { }
 
