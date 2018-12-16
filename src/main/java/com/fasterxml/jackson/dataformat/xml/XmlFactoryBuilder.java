@@ -78,7 +78,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     public String nameForTextElement() { return _nameForTextElement; }
 
-    public XMLInputFactory xmlInputFactory() {
+    public XMLInputFactory inputFactory() {
         if (_xmlInputFactory == null) {
             return defaultInputFactory();
         }
@@ -94,7 +94,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return xmlIn;
     }
 
-    public XMLOutputFactory xmlOutputFactory() {
+    public XMLOutputFactory outputFactory() {
         if (_xmlOutputFactory == null) {
             return defaultOutputFactory();
         }

@@ -116,8 +116,8 @@ public class XmlFactory
     {
         super(b);
         _cfgNameForTextElement = b.nameForTextElement();
-        _xmlInputFactory = b.xmlInputFactory();
-        _xmlOutputFactory = b.xmlOutputFactory();
+        _xmlInputFactory = b.inputFactory();
+        _xmlOutputFactory = b.outputFactory();
         _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 

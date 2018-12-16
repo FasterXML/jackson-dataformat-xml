@@ -7,6 +7,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
+import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
@@ -110,6 +112,32 @@ public class XmlMapper extends ObjectMapper
         @Override
         protected PrettyPrinter _defaultPrettyPrinter() {
             return DEFAULT_XML_PRETTY_PRINTER;
+        }
+
+        /*
+        /******************************************************************
+        /* Overrides for polymorphic type handling
+        /******************************************************************
+         */
+        
+        @Override
+        protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(DefaultTyping applicability,
+                JsonTypeInfo.As includeAs) {
+            // !!! TODO
+            return super._defaultDefaultTypingResolver(applicability, includeAs);
+        }
+
+        @Override
+        protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(DefaultTyping applicability,
+                String propertyName) {
+            // !!! TODO
+            return super._defaultDefaultTypingResolver(applicability, propertyName);
+        }
+
+        // Since WRAPPER_ARRAY does not work well, map to WRAPPER_OBJECT
+        @Override
+        public Builder enableDefaultTyping(DefaultTyping dti) {
+            return enableDefaultTyping(dti, JsonTypeInfo.As.WRAPPER_OBJECT);
         }
 
         /*
