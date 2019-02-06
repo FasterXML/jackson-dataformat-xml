@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Annotation that is similar to JAXB <code>javax.xml.bind.annotation.XmlElementWrapper</code>,
  * to indicate wrapper element to use (if any) for Collection types (arrays,
  * <code>java.util.Collection</code>). If defined, a separate container (wrapper) element
- * is used; if not, entries are written without wrapping.
+ * is used; if not, entries are written with wrapping.
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
