@@ -31,3 +31,7 @@ Yury Vasyutinskiy (Falland@github)
 * Contributed #232: Implement `writeRawValue` in `ToXmlGenerator`
  (2.9.0)
 
+Nelson Dionisi (ndionisi@github)
+
+* Reported #333: `OutputDecorator` not called with `XmlMapper`
+ (2.10.0)
