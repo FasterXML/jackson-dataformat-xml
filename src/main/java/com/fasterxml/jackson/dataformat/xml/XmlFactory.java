@@ -516,7 +516,7 @@ public class XmlFactory
         }
         return xp;
     }
-    
+
     @Override
     protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
             byte[] data, int offset, int len) throws IOException
