@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.10.0 (not yet released)
 
+2.9.9 (not yet released)
+
 #333: `OutputDecorator` not called with `XmlMapper`
  (reported by Nelson D)
 

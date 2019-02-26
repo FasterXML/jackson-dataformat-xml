@@ -614,7 +614,7 @@ public class XmlFactory extends JsonFactory
         }
         return xp;
     }
-    
+
     @Override
     protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
     {
