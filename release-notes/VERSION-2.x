@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.10.0 (not yet released)
+
+#333: `OutputDecorator` not called with `XmlMapper`
+ (reported by Nelson D)
+
 2.9.8 (15-Dec-2018)
 
 #270: Add support for `writeBinary()` with `InputStream` to `ToXMLGenerator`
