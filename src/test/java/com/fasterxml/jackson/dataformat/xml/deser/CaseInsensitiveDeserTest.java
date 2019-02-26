@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 // note: Copied from `jackson-databind`; related to [dataformat-xml#273]
@@ -34,7 +33,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
 
     private final ObjectMapper MAPPER = newMapper();
 
-    private final ObjectMapper INSENSITIVE_MAPPER = XmlMapper.builder()
+    private final ObjectMapper INSENSITIVE_MAPPER = mapperBuilder()
             .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
             .build();
 

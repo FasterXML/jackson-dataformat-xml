@@ -5,7 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -64,7 +63,7 @@ public class CaseInsensitiveDeser273Test extends XmlTestBase
     /* Test methods
     /********************************************************
      */
-    private final ObjectMapper INSENSITIVE_MAPPER = XmlMapper.builder()
+    private final ObjectMapper INSENSITIVE_MAPPER = mapperBuilder()
             .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
             .build();
 

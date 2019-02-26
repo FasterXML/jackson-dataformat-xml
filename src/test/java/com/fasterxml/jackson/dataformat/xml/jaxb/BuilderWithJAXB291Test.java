@@ -119,7 +119,7 @@ public class BuilderWithJAXB291Test extends XmlTestBase
 
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
                 (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
-        XmlMapper mapper = XmlMapper.builder()
+        XmlMapper mapper = mapperBuilder()
                 .annotationIntrospector(intr)
                 .build();
         Address value = mapper.readValue(DOC, Address.class);

@@ -576,7 +576,7 @@ public final class ToXmlGenerator
             if (_nextIsAttribute) { // must write attribute name and value with one call
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
             } else if (checkNextIsUnwrapped()) {
-                // [Issue#56] Should figure out how to prevent indentation for end element
+                // [dataformat-xml#56] Should figure out how to prevent indentation for end element
                 //   but for now, let's just make sure structure is correct
                 //if (_xmlPrettyPrinter != null) { ... }
                 if(_nextIsCData) {

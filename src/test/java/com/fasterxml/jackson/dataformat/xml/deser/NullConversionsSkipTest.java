@@ -97,7 +97,7 @@ public class NullConversionsSkipTest extends XmlTestBase
         StringValue result = MAPPER.readValue(doc, StringValue.class);
         assertEquals("", result.value);
 
-        ObjectMapper mapper = newMapperBuilder()
+        ObjectMapper mapper = mapperBuilder()
                 .withConfigOverride(String.class,
                         o -> o.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.SKIP)))
                 .build();

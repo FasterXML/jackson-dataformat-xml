@@ -281,7 +281,7 @@ public class BuilderSimpleTest extends XmlTestBase
         }
 
         // but with config overrides should pass
-        ObjectMapper ignorantMapper = newMapperBuilder()
+        ObjectMapper ignorantMapper = mapperBuilder()
                 .withConfigOverride(SimpleBuilderXY.class,
                         over -> over.setIgnorals(JsonIgnoreProperties.Value.forIgnoreUnknown(true)
                                 ))
@@ -357,7 +357,7 @@ public class BuilderSimpleTest extends XmlTestBase
 
     public void testPOJOConfigResolution1557() throws Exception
     {
-        ObjectMapper mapper = newMapperBuilder()
+        ObjectMapper mapper = mapperBuilder()
                 .addModule(new NopModule1557())
                 .build();
         ValueFoo value = mapper.readValue("<ValueFoo><value>1</value></ValueFoo>", ValueFoo.class);

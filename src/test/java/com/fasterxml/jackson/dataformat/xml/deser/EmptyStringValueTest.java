@@ -62,7 +62,7 @@ public class EmptyStringValueTest extends XmlTestBase
         assertEquals("", name.last);
 
         // but can be changed
-        XmlMapper mapper2 = newMapperBuilder()
+        XmlMapper mapper2 = mapperBuilder()
                 .withConfigOverride(String.class,
                         o -> o.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.SET)))
             .build();
