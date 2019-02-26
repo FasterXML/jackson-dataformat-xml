@@ -19,7 +19,7 @@ public class DefaultTyping325Test extends XmlTestBase
 
     public void testCanSerialize() throws IOException
     {
-        ObjectMapper mapper = objectMapperBuilder()
+        ObjectMapper mapper = mapperBuilder()
                 .build();
         mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_OBJECT);
     
@@ -28,7 +28,6 @@ public class DefaultTyping325Test extends XmlTestBase
         s.setList(Arrays.asList("foo", "bar"));
 
         String doc = mapper.writeValueAsString(s);
-System.err.println("DOC: "+doc);        
         Simple result = mapper.readValue(doc, Simple.class);
         assertNotNull(result.list);
         assertEquals(2, result.list.size());

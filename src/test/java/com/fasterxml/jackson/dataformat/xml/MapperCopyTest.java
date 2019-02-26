@@ -19,7 +19,7 @@ public class MapperCopyTest extends XmlTestBase
 
     public void testMapperCopy()
     {
-        XmlMapper mapper1 = objectMapperBuilder()
+        XmlMapper mapper1 = mapperBuilder()
                 .nameForTextElement("foo")
                 .configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
@@ -55,7 +55,7 @@ public class MapperCopyTest extends XmlTestBase
 
     public void testMapperSerialization() throws Exception
     {
-        XmlMapper mapper1 = objectMapperBuilder()
+        XmlMapper mapper1 = mapperBuilder()
                 .nameForTextElement("foo")
                 .build();
         assertEquals("foo", mapper1.getFactory().getXMLTextElementName());

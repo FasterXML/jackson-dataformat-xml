@@ -32,7 +32,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
     /**********************************************************************
      */
 
-    protected XmlMapper _xmlMapper = objectMapperBuilder()
+    protected XmlMapper _xmlMapper = mapperBuilder()
             .propertyNamingStrategy(new PropertyNamingStrategy.UpperCamelCaseStrategy())
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .defaultUseWrapper(false)

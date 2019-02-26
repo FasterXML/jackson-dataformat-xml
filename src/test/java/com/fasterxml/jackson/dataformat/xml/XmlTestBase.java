@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -208,14 +209,22 @@ public abstract class XmlTestBase
         super();
     }
 
+    protected XmlFactoryBuilder streamFactoryBuilder() {
+        return XmlFactory.builder();
+    }
+    
     protected static XmlMapper newMapper() {
         return new XmlMapper();
     }
 
-    protected static XmlMapper.Builder objectMapperBuilder() {
+    protected static XmlMapper.Builder mapperBuilder() {
         return XmlMapper.builder();
     }
-    
+
+    protected static XmlMapper.Builder mapperBuilder(XmlFactory f) {
+        return XmlMapper.builder(f);
+    }
+
     protected XmlMapper xmlMapper(boolean useListWrapping)
     {
         JacksonXmlModule module = new JacksonXmlModule();
@@ -295,11 +304,7 @@ public abstract class XmlTestBase
     }
 
     protected byte[] utf8Bytes(String str) {
-        try {
-            return str.getBytes("UTF-8");
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return str.getBytes(StandardCharsets.UTF_8);
     }
     
     /**

@@ -48,7 +48,7 @@ public class Issue274PropertyNameTest extends XmlTestBase
     // [dataformat-xml#274]
     public void testIssue274() throws Exception
     {
-        final ObjectMapper xm = objectMapperBuilder()
+        final ObjectMapper xm = mapperBuilder()
 
         // serialization features
 //        xm.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
