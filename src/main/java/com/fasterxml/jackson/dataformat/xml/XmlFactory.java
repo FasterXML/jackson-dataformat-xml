@@ -448,19 +448,20 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
     {
         // false -> we won't manage the stream unless explicitly directed to
-        IOContext ctxt = _createContext(out, false);
+        final IOContext ctxt = _createContext(out, false);
         ctxt.setEncoding(enc);
         return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+                _objectCodec, _createXmlWriter(ctxt, out));
     }
     
     @Override
     public ToXmlGenerator createGenerator(Writer out) throws IOException
     {
-        return new ToXmlGenerator(_createContext(out, false),
+        final IOContext ctxt = _createContext(out, false);
+        return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+                _objectCodec, _createXmlWriter(ctxt, out));
     }
 
     @SuppressWarnings("resource")
@@ -469,10 +470,10 @@ public class XmlFactory extends JsonFactory
     {
         OutputStream out = new FileOutputStream(f);
         // true -> yes, we have to manage the stream since we created it
-        IOContext ctxt = _createContext(out, true);
+        final IOContext ctxt = _createContext(out, true);
         ctxt.setEncoding(enc);
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(out));
+                _objectCodec, _createXmlWriter(ctxt, out));
     }
 
     /*
@@ -580,7 +581,7 @@ public class XmlFactory extends JsonFactory
         }
         return xp;
     }
-    
+
     @Override
     protected FromXmlParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
     {
@@ -612,22 +613,22 @@ public class XmlFactory extends JsonFactory
     /**********************************************************************
      */
 
-    protected XMLStreamWriter _createXmlWriter(OutputStream out) throws IOException
+    protected XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out) throws IOException
     {
         XMLStreamWriter sw;
         try {
-            sw = _xmlOutputFactory.createXMLStreamWriter(out, "UTF-8");
+            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), "UTF-8");
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsGenerationException(e, null);
         }
         return _initializeXmlWriter(sw);
     }
 
-    protected XMLStreamWriter _createXmlWriter(Writer w) throws IOException
+    protected XMLStreamWriter _createXmlWriter(IOContext ctxt, Writer w) throws IOException
     {
         XMLStreamWriter sw;
         try {
-            sw = _xmlOutputFactory.createXMLStreamWriter(w);
+            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, w));
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsGenerationException(e, null);
         }
@@ -820,4 +821,31 @@ public class XmlFactory extends JsonFactory
         }
     }
 
+    /*
+    /**********************************************************
+    /* Decorators, output
+    /**********************************************************
+     */
+
+    protected OutputStream _decorate(IOContext ioCtxt, OutputStream out) throws IOException
+    {
+        if (_outputDecorator != null) {
+            OutputStream out2 = _outputDecorator.decorate(ioCtxt, out);
+            if (out2 != null) {
+                return out2;
+            }
+        }
+        return out;
+    }
+
+    protected Writer _decorate(IOContext ioCtxt, Writer out) throws IOException
+    {
+        if (_outputDecorator != null) {
+            Writer out2 = _outputDecorator.decorate(ioCtxt, out);
+            if (out2 != null) {
+                return out2;
+            }
+        }
+        return out;
+    }
 }
