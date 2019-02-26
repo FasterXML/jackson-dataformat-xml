@@ -14,25 +14,20 @@ public class StreamingDecoratorsTest extends XmlTestBase
     static class Value {
         public String value = "all";
     }
-    
-    @SuppressWarnings("unchecked")
+
     public void testInputDecorators() throws IOException
     {
-        final byte[] DOC = utf8Bytes("<secret: mum\n");
+        final byte[] DOC = utf8Bytes("<wrapper>\n");
         final XmlMapper mapper = mapperBuilder(
                 streamFactoryBuilder().inputDecorator(new PrefixInputDecorator(DOC))
                 .build())
                 .build();
-        Map<String,Object> value = mapper.readValue(utf8Bytes("value: foo\n"), Map.class);
-        assertEquals(2, value.size());
-        assertEquals("foo", value.get("value"));
-        assertEquals("mum", value.get("secret"));
+        Value value = mapper.readValue(utf8Bytes("<value>test</value></wrapper>"), Value.class);
+        assertEquals("test", value.value);
 
         // and then via Reader as well
-        value = mapper.readValue(new StringReader("value: xyz\n"), Map.class);
-        assertEquals(2, value.size());
-        assertEquals("xyz", value.get("value"));
-        assertEquals("mum", value.get("secret"));
+        value = mapper.readValue(new StringReader("<value>test2</value></wrapper>"), Value.class);
+        assertEquals("test2", value.value);
     }
 
     public void testOutputDecorators() throws IOException
