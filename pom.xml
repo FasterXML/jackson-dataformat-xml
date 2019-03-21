@@ -67,25 +67,28 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <!-- 01-Jan-2010, Stupid Maven Release plug-in mandates a non-range
-            version
-        -->
-<!--
-      <version>[3.0.4, 3.5.0)</version>
--->
-      <version>3.1.4</version>
+      <version>4.1</version>
+      <exclusions>
+        <exclusion>
+	  <groupId>javax.xml.stream</groupId>
+	  <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions> 
     </dependency>
     <!--  and a Stax impl is needed: SJSXP (from JDK 1.6) might work, but always   
           has odd issues. Let's default to Woodstox: caller can upgrade to Aalto
          (needs to block this dep)
       -->
-    <!-- 09-May-2016, tatu: With Jackson 2.8, let's make this compile-dep to make it
-        less likely users accidentally try to use Sjsxp from JDK, which leads to probs
-      -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
       <version>5.2.0</version>
+      <exclusions>
+        <exclusion>
+	  <groupId>javax.xml.stream</groupId>
+	  <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions> 
     </dependency>
   </dependencies>
 
@@ -122,6 +125,11 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
             </includes>
           </configuration>
         </plugin>
+      <!-- 20-Mar-2019, tatu: use Moditect for JDK9+ module info inclusion -->
+      <plugin>
+	<groupId>org.moditect</groupId>
+	<artifactId>moditect-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 

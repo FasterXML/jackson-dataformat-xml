@@ -206,18 +206,16 @@ public class XmlFactory
         if (_jdkXmlOutFactory == null) {
             throw new IllegalStateException("No XMLOutputFactory class name read during JDK deserialization");
         }
+        final XMLInputFactory inf;
+        final XMLOutputFactory outf;
         try {
-            XMLInputFactory inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).newInstance();
-            XMLOutputFactory outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).newInstance();
-            return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
-                    inf, outf, _cfgNameForTextElement);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
+            inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).getDeclaredConstructor().newInstance();
+            outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+	    throw new IllegalArgumentException(e);
+	}
+	return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
+			      inf, outf, _cfgNameForTextElement);
     }
 
     /**
