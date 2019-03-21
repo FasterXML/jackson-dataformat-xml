@@ -16,9 +16,8 @@ module com.fasterxml.jackson.dataformat.xml {
     exports com.fasterxml.jackson.dataformat.xml.ser;
     exports com.fasterxml.jackson.dataformat.xml.util;
 
-    provides com.fasterxml.jackson.core.JsonFactory with
+    provides com.fasterxml.jackson.core.TokenStreamFactory with
         com.fasterxml.jackson.dataformat.xml.XmlFactory;
-    provides com.fasterxml.jackson.core.ObjectCodec with
+    provides com.fasterxml.jackson.databind.ObjectMapper with
         com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
 }
