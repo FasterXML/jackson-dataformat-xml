@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -210,11 +211,12 @@ public class XmlMapper extends ObjectMapper
     /**********************************************************
      */
 
-    @Override
-    protected TypeResolverBuilder<?> _constructDefaultTypeResolverBuilder(DefaultTyping applicability) {
-//        return new DefaultTypeResolverBuilder(applicability);
+    @Override // since 2.10
+    protected TypeResolverBuilder<?> _constructDefaultTypeResolverBuilder(DefaultTyping applicability,
+            PolymorphicTypeValidator ptv) {
+//        return DefaultTypeResolverBuilder.cosntruct(applicability, ptv);
         // just a stub for now
-        return super._constructDefaultTypeResolverBuilder(applicability);
+        return super._constructDefaultTypeResolverBuilder(applicability, ptv);
     }
 
     /*
