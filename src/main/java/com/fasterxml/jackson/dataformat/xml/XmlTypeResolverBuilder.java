@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.ClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
@@ -70,12 +71,14 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         if (_customIdResolver != null) {
             return _customIdResolver;
         }
-        // Only override handlings of class, minimal class; name is good as is
+        // Only override handlers of class, minimal class; name is good as is
         switch (_idType) {
         case CLASS:
-            return new XmlClassNameIdResolver(baseType, config.getTypeFactory());
+            return new XmlClassNameIdResolver(baseType, config.getTypeFactory(),
+                    subTypeValidator(config));
         case MINIMAL_CLASS:
-            return new XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory());
+            return new XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory(),
+                    subTypeValidator(config));
         default:
             return super.idResolver(config, baseType, subtypes, forSer, forDeser);
         }
@@ -135,9 +138,10 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlClassNameIdResolver
         extends ClassNameIdResolver
     {
-        public XmlClassNameIdResolver(JavaType baseType, TypeFactory typeFactory)
+        public XmlClassNameIdResolver(JavaType baseType, TypeFactory typeFactory,
+                PolymorphicTypeValidator ptv)
         {
-            super(baseType, typeFactory);
+            super(baseType, typeFactory, ptv);
         }
 
         @Override
@@ -155,9 +159,10 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlMinimalClassNameIdResolver
         extends MinimalClassNameIdResolver
     {
-        public XmlMinimalClassNameIdResolver(JavaType baseType, TypeFactory typeFactory)
+        public XmlMinimalClassNameIdResolver(JavaType baseType, TypeFactory typeFactory,
+                PolymorphicTypeValidator ptv)
         {
-            super(baseType, typeFactory);
+            super(baseType, typeFactory, ptv);
         }
 
         @Override
