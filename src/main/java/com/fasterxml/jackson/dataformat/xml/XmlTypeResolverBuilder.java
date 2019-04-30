@@ -65,8 +65,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
 
     @Override
     protected TypeIdResolver idResolver(MapperConfig<?> config,
-            JavaType baseType, Collection<NamedType> subtypes,
-            boolean forSer, boolean forDeser)
+            JavaType baseType, PolymorphicTypeValidator subtypeValidator,
+            Collection<NamedType> subtypes, boolean forSer, boolean forDeser)
     {
         if (_customIdResolver != null) {
             return _customIdResolver;
@@ -80,8 +80,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
             return new XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory(),
                     subTypeValidator(config));
         default:
-            return super.idResolver(config, baseType, subtypes, forSer, forDeser);
         }
+        return super.idResolver(config, baseType, subtypeValidator, subtypes, forSer, forDeser);
     }
 
     /*
