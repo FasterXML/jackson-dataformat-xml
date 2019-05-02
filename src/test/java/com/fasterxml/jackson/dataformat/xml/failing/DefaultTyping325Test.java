@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.DefaultTyping;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.testutil.NoCheckSubTypeValidator;
 
 public class DefaultTyping325Test extends XmlTestBase
 {
@@ -22,9 +23,9 @@ public class DefaultTyping325Test extends XmlTestBase
     public void testCanSerialize() throws IOException
     {
         ObjectMapper mapper = mapperBuilder()
-                .enableDefaultTyping(DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_OBJECT)
+                .enableDefaultTyping(NoCheckSubTypeValidator.instance,
+                        DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_OBJECT)
                 .build();
-    
         // construct test object
         Simple s = new Simple();
         s.setList(Arrays.asList("foo", "bar"));

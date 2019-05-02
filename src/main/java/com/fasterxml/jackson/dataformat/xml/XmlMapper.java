@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 
@@ -121,23 +122,25 @@ public class XmlMapper extends ObjectMapper
          */
         
         @Override
-        protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(DefaultTyping applicability,
+        protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(PolymorphicTypeValidator ptv,
+                DefaultTyping applicability,
                 JsonTypeInfo.As includeAs) {
             // !!! TODO
-            return super._defaultDefaultTypingResolver(applicability, includeAs);
+            return super._defaultDefaultTypingResolver(ptv, applicability, includeAs);
         }
 
         @Override
-        protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(DefaultTyping applicability,
+        protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(PolymorphicTypeValidator ptv,
+                DefaultTyping applicability,
                 String propertyName) {
             // !!! TODO
-            return super._defaultDefaultTypingResolver(applicability, propertyName);
+            return super._defaultDefaultTypingResolver(ptv, applicability, propertyName);
         }
 
         // Since WRAPPER_ARRAY does not work well, map to WRAPPER_OBJECT
         @Override
-        public Builder enableDefaultTyping(DefaultTyping dti) {
-            return enableDefaultTyping(dti, JsonTypeInfo.As.WRAPPER_OBJECT);
+        public Builder enableDefaultTyping(PolymorphicTypeValidator ptv, DefaultTyping dti) {
+            return enableDefaultTyping(ptv, dti, JsonTypeInfo.As.WRAPPER_OBJECT);
         }
 
         /*

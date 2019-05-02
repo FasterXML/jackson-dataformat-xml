@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.ClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
@@ -64,7 +65,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     */
 
     @Override
-    protected TypeIdResolver idResolver(MapperConfig<?> config,
+    protected TypeIdResolver idResolver(DatabindContext ctxt,
             JavaType baseType, PolymorphicTypeValidator subtypeValidator,
             Collection<NamedType> subtypes, boolean forSer, boolean forDeser)
     {
@@ -74,14 +75,14 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         // Only override handlers of class, minimal class; name is good as is
         switch (_idType) {
         case CLASS:
-            return new XmlClassNameIdResolver(baseType, config.getTypeFactory(),
-                    subTypeValidator(config));
+            return new XmlClassNameIdResolver(baseType, ctxt.getTypeFactory(),
+                    subTypeValidator(ctxt));
         case MINIMAL_CLASS:
-            return new XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory(),
-                    subTypeValidator(config));
+            return new XmlMinimalClassNameIdResolver(baseType, ctxt.getTypeFactory(),
+                    subTypeValidator(ctxt));
         default:
         }
-        return super.idResolver(config, baseType, subtypeValidator, subtypes, forSer, forDeser);
+        return super.idResolver(ctxt, baseType, subtypeValidator, subtypes, forSer, forDeser);
     }
 
     /*
