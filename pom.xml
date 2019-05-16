@@ -82,7 +82,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>5.0.3</version>
+      <version>5.1.0</version>
     </dependency>
 
     <!-- 04-Feb-2018, tatu: Finally, Java 9 does not bundle JAXB, not even API;
