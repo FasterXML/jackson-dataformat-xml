@@ -100,9 +100,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
             API for runtime too, but first for tests
       -->
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.3.0</version>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.2</version>
       <scope>test</scope>
     </dependency>
 
