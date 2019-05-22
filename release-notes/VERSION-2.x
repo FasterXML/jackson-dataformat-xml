@@ -6,10 +6,18 @@ Project: jackson-dataformat-xml
 
 2.10.0 (not yet released)
 
+-
+
+2.9.10 (not yet released)
+
+- Fix a dependency discrepancy for `stax2-api`: was depending on older version
+  than what `woodstox-core` needs (3.1.4 vs 4.1)
+
 2.9.9 (16-May-2019)
 
 #333: `OutputDecorator` not called with `XmlMapper`
  (reported by Nelson D)
+- Upgrade `woodstox-core` dependency from 5.0.3 to 5.1.0
 
 2.9.8 (15-Dec-2018)
 
