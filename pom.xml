@@ -57,9 +57,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
        in case it didn't, let's add here as a test dep to make Java 9 build work
       -->
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.3.0</version>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -67,7 +67,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <version>4.1</version>
+      <version>4.2</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
