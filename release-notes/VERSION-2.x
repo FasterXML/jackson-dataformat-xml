@@ -6,7 +6,8 @@ Project: jackson-dataformat-xml
 
 2.10.0 (not yet released)
 
--
+#336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
+ (fix contributed by Kevin D)
 
 2.9.10 (not yet released)
 

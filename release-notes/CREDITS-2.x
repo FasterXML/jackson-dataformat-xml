@@ -35,3 +35,8 @@ Nelson Dionisi (ndionisi@github)
 
 * Reported #333: `OutputDecorator` not called with `XmlMapper`
  (2.10.0)
+
+kevindaub@github.com:
+
+* Reported, contributed fix for #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
+ (2.10.0)
