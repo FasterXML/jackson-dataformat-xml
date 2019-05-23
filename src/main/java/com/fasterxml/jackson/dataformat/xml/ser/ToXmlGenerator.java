@@ -1135,9 +1135,15 @@ public final class ToXmlGenerator
                 }
             } else {
                 if (_xmlPrettyPrinter != null) {
-                	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
-                			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                			dec);
+                    if (usePlain) {
+                        _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                                _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                                dec.toPlainString(), false);
+                    } else {
+                        _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                                _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                                dec);
+                    }
                 } else {
 	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
 	                if (usePlain) {
