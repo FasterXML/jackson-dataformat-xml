@@ -64,12 +64,6 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <!-- 01-Jan-2010, Stupid Maven Release plug-in mandates a non-range
-            version
-        -->
-<!--
-      <version>[3.0.4, 3.5.0)</version>
--->
       <version>4.1</version>
     </dependency>
     <!--  and a Stax impl is needed: SJSXP (from JDK 1.6) might work, but always   
@@ -82,7 +76,9 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>5.1.0</version>
+      <!-- [dataformat-xml#340]: Must avoid version 5.1.0 (was used in 2.9.9)
+        -->
+      <version>5.2.1</version>
     </dependency>
 
     <!-- 04-Feb-2018, tatu: Finally, Java 9 does not bundle JAXB, not even API;
