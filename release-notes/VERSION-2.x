@@ -11,8 +11,7 @@ Project: jackson-dataformat-xml
 
 2.9.10 (not yet released)
 
-- Fix a dependency discrepancy for `stax2-api`: was depending on older version
-  than what `woodstox-core` needs (3.1.4 vs 4.1)
+#340: Incompatible woodstox-core and stax2-api dependencies
 
 2.9.9 (16-May-2019)
 
