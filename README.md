@@ -1,6 +1,6 @@
-# Overview
+## Overview
 
-This projects contains [Jackson](https://github.com/FasterXML/jackson) extension component for
+This projects contains [Jackson](../../../jackson) extension component for
 reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
@@ -18,13 +18,28 @@ Specifically:
  * From above: there are XML constructs that module will not be able to handle; including some cases JAXB supports
  * This module may, however, also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
 
+## Branches
+
+## Branches
+
+`master` branch is for developing the next major Jackson version -- 3.0 -- but there
+are active maintenance branches in which much of development happens:
+
+* `2.10` is for developing the next (and possibly last) minor 2.x version
+* `2.8` and `2.9` are for backported fixes for 2.8/2.9 patch versions
+
+Older branches are usually not changed but are available for historic reasons.
+All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
+
+## Status
+
 [![Build Status](https://travis-ci.org/FasterXML/jackson-dataformat-xml.svg?branch=master)](https://travis-ci.org/FasterXML/jackson-dataformat-xml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/)
 [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
 
-# Status
+## License
 
-As of version 2.3, module is fully functional and considered production ready.
+All modules are licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
 
 ## Maven dependency
 
@@ -230,5 +245,5 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 
 # See Also
 
-* XML module [wiki page](https://github.com/FasterXML/jackson-dataformat-xml/wiki) for more information
+* XML module [wiki page](../../wiki) for more information
 * Using XML with [DropWizard](https://github.com/dropwizard/dropwizard)? Check out [this extension](https://github.com/yunspace/dropwizard-xml)!
