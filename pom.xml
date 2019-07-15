@@ -86,7 +86,7 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>5.2.1</version>
+      <version>5.3.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
