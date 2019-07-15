@@ -57,7 +57,7 @@ abstract class ValidationTestBase extends XmlTestBase
 
     protected XMLStreamReader2 getXMLReader(String xml) throws XMLStreamException
     {
-        return (XMLStreamReader2) XML_MAPPER.getFactory()
+        return (XMLStreamReader2) XML_MAPPER.tokenStreamFactory()
                 .getXMLInputFactory()
                 .createXMLStreamReader(new StringReader(xml));
     }
