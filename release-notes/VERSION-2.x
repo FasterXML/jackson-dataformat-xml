@@ -8,7 +8,8 @@ Project: jackson-dataformat-xml
 
 #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
  (fix contributed by Kevin D)
-#340: Incompatible woodstox-core and stax2-api dependencies
+#340: Incompatible woodstox-core and stax2-api dependencies (upgrade to
+   `woodstox-core` 5.3.0)
 
 2.9.9 (16-May-2019)
 
