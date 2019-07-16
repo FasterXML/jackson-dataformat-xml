@@ -79,10 +79,11 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
           has odd issues. Let's default to Woodstox: caller can upgrade to Aalto
          (needs to block this dep)
       -->
+    <!-- 16-Jul-2016, tatu: For 2.10, need Woodstox 6.0 to get module info -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0.pr1</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
