@@ -548,7 +548,7 @@ public class XmlFactory
         try {
             sw = _xmlOutputFactory.createXMLStreamWriter(out, "UTF-8");
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsGenerationException(e, null);
+            throw new JsonGenerationException(e.getMessage(), e, null);
         }
         return _initializeXmlWriter(sw);
     }
@@ -559,7 +559,7 @@ public class XmlFactory
         try {
             sw = _xmlOutputFactory.createXMLStreamWriter(w);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsGenerationException(e, null);
+            throw new JsonGenerationException(e.getMessage(), e, null);
         }
         return _initializeXmlWriter(sw);
     }
@@ -570,8 +570,8 @@ public class XmlFactory
         // (Woodstox doesn't care) -- otherwise it'll add unnecessary odd declaration
         try {
             sw.setDefaultNamespace("");
-        } catch (XMLStreamException e) {
-            return StaxUtil.throwAsGenerationException(e, null);
+        } catch (Exception e) {
+            throw new JsonGenerationException(e.getMessage(), e, null);
         }
         return sw;
     }
@@ -583,8 +583,9 @@ public class XmlFactory
             while (sr.next() != XMLStreamConstants.START_ELEMENT) {
                 ;
             }
-        } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e, null);
+        // [dataformat-xml#350]: Xerces-backed impl throws non-XMLStreamException so:
+        } catch (Exception e) {
+            throw new JsonParseException(null, e.getMessage(), e);
         }
         return sr;
     }
