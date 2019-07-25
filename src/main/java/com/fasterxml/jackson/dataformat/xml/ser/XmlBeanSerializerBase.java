@@ -289,7 +289,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 // For [#117]: not a clean fix, but with @JsonTypeInfo, we'll end up
                 // with accidental attributes otherwise
                 xgen.setNextIsAttribute(false);
-                _anyGetterWriter.getAndSerialize(bean, xgen, provider);
+                // 24-Jul-2019, tatu: Fixed for [dataformat-xml#351]
+                _anyGetterWriter.getAndFilter(bean, xgen, provider, filter);
             }
         } catch (Exception e) {
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
