@@ -18,8 +18,6 @@ import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 public class XmlTextDeserializer
     extends DelegatingDeserializer
 {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Property index of the "XML text property"; needed for finding actual
      * property instance after resolution and contextualization: instance

@@ -12,14 +12,10 @@ import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
  * couple of edge cases that XML parser exposes.
  *<p>
  * NOTE: mostly copy-pasted from standard {@code StringDeserializer}
- *
- * @since 2.9.4
  */
 public class XmlStringDeserializer
     extends StdScalarDeserializer<String>
 {
-    private static final long serialVersionUID = 1L;
-
     public XmlStringDeserializer() { super(String.class); }
 
     @Override

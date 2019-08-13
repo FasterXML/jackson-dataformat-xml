@@ -20,8 +20,6 @@ import com.fasterxml.jackson.databind.util.NameTransformer;
  */
 public class XmlBeanSerializer extends XmlBeanSerializerBase
 {
-    private static final long serialVersionUID = 1L;
-
     /*
     /**********************************************************
     /* Life-cycle: constructors

@@ -88,9 +88,9 @@ public final class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     final protected XMLStreamWriter2 _xmlWriter;
@@ -115,12 +115,12 @@ public final class ToXmlGenerator
     /**
      * We may need to use XML-specific indentation as well
      */
-    protected XmlPrettyPrinter _xmlPrettyPrinter;
+    final protected XmlPrettyPrinter _xmlPrettyPrinter;
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* XML Output state
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -162,9 +162,9 @@ public final class ToXmlGenerator
     protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle
-    /**********************************************************
+    /**********************************************************************
      */
 
     public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
@@ -211,25 +211,14 @@ public final class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overridden methods, configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
     protected PrettyPrinter _constructDefaultPrettyPrinter() {
         return new DefaultXmlPrettyPrinter();
-    }
-
-    @Override
-    public XmlPrettyPrinter getPrettyPrinter() {
-        return _xmlPrettyPrinter;
-    }
-
-    @Override
-    public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
-        _xmlPrettyPrinter = (XmlPrettyPrinter) pp;
-        return this;
     }
 
     @Override
@@ -254,9 +243,9 @@ public final class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended API, configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     public ToXmlGenerator enable(Feature f) {
@@ -290,9 +279,9 @@ public final class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended API, access to some internal components
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -310,9 +299,9 @@ public final class ToXmlGenerator
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended API, passing XML specific settings
-    /**********************************************************
+    /**********************************************************************
      */
 
     public void setNextIsAttribute(boolean isAttribute)
@@ -396,8 +385,6 @@ public final class ToXmlGenerator
 
     /**
      * Trivial helper method called when to add a replicated wrapper name
-     * 
-     * @since 2.2
      */
     public void writeRepeatedFieldName() throws IOException
     {
@@ -405,11 +392,11 @@ public final class ToXmlGenerator
             _reportError("Can not write a field name, expecting a value");
         }
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* JsonGenerator method overrides
-    /**********************************************************
+    /**********************************************************************
      */
     
     /* Most overrides in this section are just to make methods final,
@@ -455,9 +442,9 @@ public final class ToXmlGenerator
     */
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* JsonGenerator output method implementations, structural
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -552,11 +539,11 @@ public final class ToXmlGenerator
             StaxUtil.throwAsGenerationException(e, this);
         }
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Output method implementations, textual
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
