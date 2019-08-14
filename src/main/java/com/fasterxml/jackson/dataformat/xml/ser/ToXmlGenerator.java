@@ -15,7 +15,10 @@ import org.codehaus.stax2.ri.Stax2WriterAdapter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.json.DupDetector;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
+
+import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -116,6 +119,17 @@ public final class ToXmlGenerator
      * We may need to use XML-specific indentation as well
      */
     final protected XmlPrettyPrinter _xmlPrettyPrinter;
+
+    /*
+    /**********************************************************************
+    /* Logical output state
+    /**********************************************************************
+     */
+
+    /**
+     * Object that keeps track of the current contextual state of the generator.
+     */
+    protected JsonWriteContext _outputContext;
     
     /*
     /**********************************************************************
@@ -168,16 +182,19 @@ public final class ToXmlGenerator
      */
 
     public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
-            int stdFeatures, int xmlFeatures,
+            int streamWriteFeatures, int xmlFeatures,
             XMLStreamWriter sw, XmlPrettyPrinter pp)
     {
-        super(writeCtxt, stdFeatures);
+        super(writeCtxt, streamWriteFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ioCtxt;
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
         _xmlPrettyPrinter = pp;
+        final DupDetector dups = StreamWriteFeature.STRICT_DUPLICATE_DETECTION.enabledIn(streamWriteFeatures)
+                ? DupDetector.rootDetector(this) : null;
+        _outputContext = JsonWriteContext.createRootContext(dups);
     }
 
     /**
@@ -208,6 +225,33 @@ public final class ToXmlGenerator
         } catch (XMLStreamException e) {
             StaxUtil.throwAsGenerationException(e, this);
         }
+    }
+
+    /*
+    /**********************************************************************
+    /* Versioned
+    /**********************************************************************
+     */
+
+    @Override public Version version() { return PackageVersion.VERSION; }
+
+    /*
+    /**********************************************************************
+    /* Overridden output state handling methods
+    /**********************************************************************
+     */
+    
+    @Override
+    public final TokenStreamContext getOutputContext() { return _outputContext; }
+
+    @Override
+    public final Object getCurrentValue() {
+        return _outputContext.getCurrentValue();
+    }
+
+    @Override
+    public final void setCurrentValue(Object v) {
+        _outputContext.setCurrentValue(v);
     }
 
     /*
