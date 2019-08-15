@@ -456,6 +456,14 @@ public final class ToXmlGenerator
         String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
         setNextName(new QName(ns, name));
     }
+
+    @Override
+    public void writeFieldId(long id) throws IOException {
+        // 15-Aug-2019, tatu: could and probably should be improved to support
+        //    buffering but...
+        final String name = Long.toString(id);
+        writeFieldName(name);
+    }
     
     @Override
     public final void writeStringField(String fieldName, String value) throws IOException
@@ -503,6 +511,18 @@ public final class ToXmlGenerator
     }
     
     @Override
+    public final void writeStartArray(Object currValue) throws IOException
+    {
+        _verifyValueWrite("start an array");
+        _tokenWriteContext = _tokenWriteContext.createChildArrayContext(currValue);
+        if (_xmlPrettyPrinter != null) {
+            _xmlPrettyPrinter.writeStartArray(this);
+        } else {
+            // nothing to do here; no-operation
+        }
+    }
+
+    @Override
     public final void writeEndArray() throws IOException
     {
         if (!_tokenWriteContext.inArray()) {
@@ -521,6 +541,18 @@ public final class ToXmlGenerator
     {
         _verifyValueWrite("start an object");
         _tokenWriteContext = _tokenWriteContext.createChildObjectContext(null);
+        if (_xmlPrettyPrinter != null) {
+            _xmlPrettyPrinter.writeStartObject(this);
+        } else {
+            _handleStartObject();
+        }
+    }
+
+    @Override
+    public final void writeStartObject(Object currValue) throws IOException
+    {
+        _verifyValueWrite("start an object");
+        _tokenWriteContext = _tokenWriteContext.createChildObjectContext(currValue);
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartObject(this);
         } else {
