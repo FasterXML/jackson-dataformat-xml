@@ -1,21 +1,22 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
-import com.fasterxml.jackson.core.*;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
-import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.ser.SerializerCache;
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * We need to override some parts of
@@ -68,7 +69,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(cls);
             if (asArray) {
-                _startRootArray(xgen, rootName);
+                String indexedRootName = _rootNameLookup.findWrapperForIndexedType(getTypeOfCollection(value), _config);
+                _startRootArray(xgen, indexedRootName);
             }
         }
         
@@ -107,7 +109,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(rootType);
             if (asArray) {
-                _startRootArray(xgen, rootName);
+                String indexedRootName = _rootNameLookup.findWrapperForIndexedType(getTypeOfCollection(rootType), _config);
+                _startRootArray(xgen, indexedRootName);
             }
         }
         if (ser == null) {
@@ -125,6 +128,17 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
+    protected Class<?> getTypeOfCollection(Object value){
+        Class<?> eleClass = value.getClass();
+        if(Collection.class.isAssignableFrom(eleClass)) {
+            Collection<?> collection = (Collection<?>) value;
+            Iterator<?> iterator = collection.iterator();
+            if (iterator.hasNext())
+                eleClass = iterator.next().getClass();
+        }
+        return eleClass;
+    }
+
     protected void _serializeXmlNull(JsonGenerator jgen) throws IOException
     {
         // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly
@@ -139,11 +153,11 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         super.serializeValue(jgen, null);
     }
     
-    protected void _startRootArray(ToXmlGenerator xgen, QName rootName) throws IOException
+    protected void _startRootArray(ToXmlGenerator xgen, String rootName) throws IOException
     {
         xgen.writeStartObject();
         // Could repeat root name, but what's the point? How to customize?
-        xgen.writeFieldName("item");
+        xgen.writeFieldName(rootName);
     }    
 
     protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws IOException

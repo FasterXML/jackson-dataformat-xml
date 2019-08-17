@@ -2,7 +2,9 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
@@ -43,6 +45,8 @@ public interface XmlAnnotationIntrospector
     public Boolean isOutputAsCData(Annotated ann);
 
     public void setDefaultUseWrapper(boolean b);
+
+    public String getWrapperForIndexedType(AnnotatedClass ac);
     
     /*
     /**********************************************************************
@@ -135,6 +139,15 @@ public interface XmlAnnotationIntrospector
                 _xmlSecondary.setDefaultUseWrapper(b);
             }
         }
+
+        @Override
+        public String getWrapperForIndexedType(AnnotatedClass ac) {
+            String value = (_xmlPrimary == null) ? null : _xmlPrimary.getWrapperForIndexedType(ac);
+            if ((value == null) && (_xmlSecondary != null)) {
+                value = _xmlSecondary.getWrapperForIndexedType(ac);
+            }
+            return value;
+        }
     }
 
     /*
@@ -182,6 +195,11 @@ public interface XmlAnnotationIntrospector
         @Override
         public void setDefaultUseWrapper(boolean b) {
             // not used with JAXB
+        }
+
+        @Override
+        public String getWrapperForIndexedType(AnnotatedClass ac) {
+            return JacksonXmlRootElement.DEFAULT_WRAPPER_NAME;
         }
     }
 }
