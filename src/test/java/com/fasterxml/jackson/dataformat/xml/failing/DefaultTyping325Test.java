@@ -21,7 +21,7 @@ public class DefaultTyping325Test extends XmlTestBase
     public void testCanSerialize() throws IOException
     {
         ObjectMapper mapper = mapperBuilder()
-                .enableDefaultTyping(NoCheckSubTypeValidator.instance,
+                .activateDefaultTyping(NoCheckSubTypeValidator.instance,
                         ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_OBJECT)
                 .build();
 
