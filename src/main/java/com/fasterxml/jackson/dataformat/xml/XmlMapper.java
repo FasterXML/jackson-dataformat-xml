@@ -139,8 +139,8 @@ public class XmlMapper extends ObjectMapper
 
         // Since WRAPPER_ARRAY does not work well, map to WRAPPER_OBJECT
         @Override
-        public Builder enableDefaultTyping(PolymorphicTypeValidator ptv, DefaultTyping dti) {
-            return enableDefaultTyping(ptv, dti, JsonTypeInfo.As.WRAPPER_OBJECT);
+        public Builder activateDefaultTyping(PolymorphicTypeValidator ptv, DefaultTyping dti) {
+            return activateDefaultTyping(ptv, dti, JsonTypeInfo.As.WRAPPER_OBJECT);
         }
 
         /*
