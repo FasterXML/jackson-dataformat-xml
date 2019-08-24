@@ -109,7 +109,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(rootType);
             if (asArray) {
-                String indexedRootName = _rootNameLookup.findWrapperForIndexedType(getTypeOfCollection(rootType), _config);
+                String indexedRootName = _rootNameLookup.findWrapperForIndexedType(getTypeOfCollection(value), _config);
                 _startRootArray(xgen, indexedRootName);
             }
         }
