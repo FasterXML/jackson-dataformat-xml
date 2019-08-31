@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.10.0.pr2 (not yet released)
+2.10.0.pr2 (31-Aug-2019)
 
 #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
  (reported by Rohit N)
