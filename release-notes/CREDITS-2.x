@@ -41,6 +41,11 @@ kevindaub@github.com:
 * Reported, contributed fix for #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
  (2.10.0)
 
+Sam Smith (Oracle Security Researcher)
+
+* Reported #350: Wrap Xerces/Stax (JDK-bundled) exceptions during parser initialization
+ (2.10.0)
+
 Rohit Narayanan (rohitnarayanan@github)
 
 * Reported #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter

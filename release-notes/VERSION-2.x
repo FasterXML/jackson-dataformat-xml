@@ -14,6 +14,7 @@ Project: jackson-dataformat-xml
 #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
  (fix contributed by Kevin D)
 #350: Wrap Xerces/Stax (JDK-bundled) exceptions during parser initialization
+ (reported by Sam S)
 
 2.9.10 (not yet released)
 
