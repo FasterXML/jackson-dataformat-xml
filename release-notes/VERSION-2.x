@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.10.0.pr2 (not yet released)
+2.10.0.pr2 (31-Aug-2019)
 
 #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
  (reported by Rohit N)
@@ -14,6 +14,7 @@ Project: jackson-dataformat-xml
 #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
  (fix contributed by Kevin D)
 #350: Wrap Xerces/Stax (JDK-bundled) exceptions during parser initialization
+ (reported by Sam S)
 
 2.9.10 (not yet released)
 
