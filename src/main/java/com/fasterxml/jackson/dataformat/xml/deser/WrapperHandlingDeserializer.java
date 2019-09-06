@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.util.JsonParserDelegate;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
@@ -134,11 +135,15 @@ public class WrapperHandlingDeserializer
     /**********************************************************************
      */
 
+    @SuppressWarnings("resource")
     protected final void _configureParser(JsonParser p) throws IOException
     {
-        // 19-Aug-2013, tatu: Although we should not usually get called with
-        //   parser of other types, there are some cases where this may happen:
-        //   specifically, during structural value conversions.
+        // 05-Sep-2019, tatu: May get XML parser, except for case where content is
+        //   buffered. In that case we may still have access to real parser if we
+        //   are lucky (like in [dataformat-xml#242])
+        while (p instanceof JsonParserDelegate) {
+            p = ((JsonParserDelegate) p).delegate();
+        }
         if (p instanceof FromXmlParser) {
             ((FromXmlParser) p).addVirtualWrapping(_namesToWrap);
         }

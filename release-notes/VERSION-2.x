@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.10.0 (not yet released)
+
+#242: Deserialization of class inheritance depends on attributes order
+ (reported by Victor K)
+
 2.10.0.pr2 (31-Aug-2019)
 
 #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
