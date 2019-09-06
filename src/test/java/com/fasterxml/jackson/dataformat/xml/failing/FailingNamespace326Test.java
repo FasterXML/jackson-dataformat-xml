@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 // for [dataformat-xml#311]
-public class FailingNamespace311Test extends XmlTestBase
+public class FailingNamespace326Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "new")
     static class Bean {
