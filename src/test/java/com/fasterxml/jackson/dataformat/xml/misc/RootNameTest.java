@@ -1,6 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.xml.*;
@@ -28,6 +31,14 @@ public class RootNameTest extends XmlTestBase
     static class NsRootBean
     {
         public String value = "abc";
+    }
+
+    @SuppressWarnings("serial")
+    @JacksonXmlRootElement(localName="TheStrings")
+    static class StringList extends ArrayList<String> {
+        public StringList(String...strings) {
+            addAll(Arrays.asList(strings));
+        }
     }
 
     /*
@@ -79,5 +90,18 @@ public class RootNameTest extends XmlTestBase
         // and even with null will respect configured root name
         xml = w.writeValueAsString(null);
         assertEquals("<rudy/>", xml);
+    }
+
+    public void testDynamicRootNameForList() throws IOException
+    {
+        String xml;
+
+        xml = _xmlMapper.writer().withRootName("Listy")
+                .writeValueAsString(Arrays.asList("abc", "def"));
+        assertEquals("<Listy><item>abc</item><item>def</item></Listy>", xml);
+
+        xml = _xmlMapper.writer()
+                .writeValueAsString(new StringList("a", "b"));
+        assertEquals("<TheStrings><item>a</item><item>b</item></TheStrings>", xml);
     }
 }
