@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-// for [dataformat-xml#311]
+// for [dataformat-xml#326]
 public class FailingNamespace326Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "new")
