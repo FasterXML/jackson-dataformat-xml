@@ -31,6 +31,11 @@ Yury Vasyutinskiy (Falland@github)
 * Contributed #232: Implement `writeRawValue` in `ToXmlGenerator`
  (2.9.0)
 
+Victor Khovanskiy (khovanskiy@githib)
+
+* Reported #242: Deserialization of class inheritance depends on attributes order
+ (2.10.0)
+
 Nelson Dionisi (ndionisi@github)
 
 * Reported #333: `OutputDecorator` not called with `XmlMapper`
