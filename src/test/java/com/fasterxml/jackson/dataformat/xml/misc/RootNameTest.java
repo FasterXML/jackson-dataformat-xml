@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -79,27 +80,34 @@ public class RootNameTest extends XmlTestBase
     {
         String xml;
 
-        ObjectWriter w = _xmlMapper.writer().withRootName("rudy");
+        ObjectWriter w = _xmlMapper.writer().withRootName(PropertyName.construct("rudy", "localhost"));
 
         xml = w.writeValueAsString(new StringBean("foo"));
-        assertEquals("<rudy><text>foo</text></rudy>", xml);
+        assertEquals("<rudy xmlns=\"localhost\"><text xmlns=\"\">foo</text></rudy>", xml);
 
         xml = w.writeValueAsString(new StringBean(null));
-        assertEquals("<rudy><text/></rudy>", xml);
+        assertEquals("<rudy xmlns=\"localhost\"><text xmlns=\"\"/></rudy>", xml);
 
         // and even with null will respect configured root name
         xml = w.writeValueAsString(null);
-        assertEquals("<rudy/>", xml);
+        assertEquals("<rudy xmlns=\"localhost\"/>", xml);
     }
 
     public void testDynamicRootNameForList() throws IOException
     {
         String xml;
 
+        // First: using explicit root name override, simple String
         xml = _xmlMapper.writer().withRootName("Listy")
                 .writeValueAsString(Arrays.asList("abc", "def"));
         assertEquals("<Listy><item>abc</item><item>def</item></Listy>", xml);
 
+        // Second: using explicit root name override, with namespace
+        xml = _xmlMapper.writer().withRootName(PropertyName.construct("Spaced", "http://foo"))
+                .writeValueAsString(Arrays.asList("foo", "bar"));
+        assertEquals("<Spaced xmlns=\"http://foo\"><item>foo</item><item>bar</item></Spaced>", xml);
+
+        // Third: root name annotation
         xml = _xmlMapper.writer()
                 .writeValueAsString(new StringList("a", "b"));
         assertEquals("<TheStrings><item>a</item><item>b</item></TheStrings>", xml);
