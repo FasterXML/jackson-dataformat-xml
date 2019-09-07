@@ -99,7 +99,10 @@ public class SimpleStringValuesTest extends XmlTestBase
 "</a>\n";
         Issue167Bean result = MAPPER.readValue(XML, Issue167Bean.class);
         assertNotNull(result);
-        assertEquals("", result.d);
+        // 06-Sep-2019, tatu: As per [dataformat-xml#354] this should now (2.10)
+        //    produce real `null`:
+//        assertEquals("", result.d);
+        assertNull(result.d);
     }
 
     /*

@@ -94,9 +94,9 @@ public class FromXmlParser
     protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -107,9 +107,9 @@ public class FromXmlParser
     protected int _formatFeatures;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* I/O state
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -122,9 +122,9 @@ public class FromXmlParser
     final protected IOContext _ioContext;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Parsing state
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -148,9 +148,9 @@ public class FromXmlParser
     protected Set<String> _namesToWrap;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Parsing state, parsed values
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -168,23 +168,32 @@ public class FromXmlParser
     protected byte[] _binaryValue;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle
-    /**********************************************************
+    /**********************************************************************
      */
 
     public FromXmlParser(ObjectReadContext readCtxt, IOContext ctxt,
             int parserFeatures, int xmlFeatures,
             XMLStreamReader xmlReader)
+        throws IOException
     {
         super(readCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
-        // and thereby start a scope
-        _nextToken = JsonToken.START_OBJECT;
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference(),
                 _formatFeatures);
+        switch (_xmlTokens.getCurrentToken()) {
+        case XmlTokenStream.XML_START_ELEMENT:
+            _nextToken = JsonToken.START_OBJECT;
+            break;
+        case XmlTokenStream.XML_NULL:
+            _nextToken = JsonToken.VALUE_NULL;
+            break;
+        default:
+            _reportError("Internal problem: invalid starting state (%d)", _xmlTokens.getCurrentToken());
+        }
     }
 
     @Override
@@ -212,11 +221,11 @@ public class FromXmlParser
     public boolean canSynthesizeNulls() {
         return true;
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended API, configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     public FromXmlParser enable(Feature f) {
@@ -245,9 +254,9 @@ public class FromXmlParser
     }
 
     /*                                                                                       
-    /**********************************************************                              
+    /**********************************************************************
     /* FormatFeature support                                                                             
-    /**********************************************************                              
+    /**********************************************************************
      */
 
     @Override
@@ -256,9 +265,9 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended API, access to some internal components
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -276,9 +285,9 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Internal API
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -312,11 +321,11 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* JsonParser impl
-    /**********************************************************
+    /**********************************************************************
      */
-    
+
     /**
      * Method that can be called to get the name associated with
      * the current event.
@@ -448,11 +457,9 @@ public class FromXmlParser
         }
         return t;
     }
-
-//    public JsonToken nextToken0() throws IOException
- */
-
+    */
     
+//    public JsonToken nextToken0() throws IOException
     @Override
     public JsonToken nextToken() throws IOException
     {
@@ -543,7 +550,7 @@ public class FromXmlParser
                 _parsingContext = _parsingContext.getParent();
                 _namesToWrap = _parsingContext.getNamesToWrap();
                 return _currToken;
-                
+
             case XmlTokenStream.XML_ATTRIBUTE_NAME:
                 // If there was a chance of leaf node, no more...
                 if (_mayBeLeaf) {
@@ -601,6 +608,8 @@ public class FromXmlParser
                 _parsingContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
                 return (_currToken = JsonToken.FIELD_NAME);
+            case XmlTokenStream.XML_NULL:
+                return (_currToken = JsonToken.VALUE_NULL);
             case XmlTokenStream.XML_END:
                 return (_currToken = null);
             }
@@ -608,9 +617,9 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overrides of specialized nextXxx() methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -718,6 +727,9 @@ public class FromXmlParser
             _nextToken = JsonToken.VALUE_STRING;
             _currToken = JsonToken.FIELD_NAME;
             break;
+        case XmlTokenStream.XML_NULL:
+            _currToken = JsonToken.VALUE_STRING;
+            return (_currText = null);
         case XmlTokenStream.XML_END:
             _currToken = null;
         }
@@ -747,9 +759,9 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Public API, access to token information, text
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -859,9 +871,9 @@ public class FromXmlParser
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Public API, access to token information, binary
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -898,11 +910,11 @@ public class FromXmlParser
         _decodeBase64(str, builder, b64variant);
         return builder.toByteArray();
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Numeric accessors
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -954,9 +966,9 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Abstract method impls for stuff from JsonParser
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -978,9 +990,9 @@ public class FromXmlParser
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Internal methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
