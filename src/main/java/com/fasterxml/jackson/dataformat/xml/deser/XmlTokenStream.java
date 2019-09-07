@@ -14,7 +14,11 @@ import com.fasterxml.jackson.core.JsonLocation;
  * abstract out all irrelevant details, and to expose equivalent of flat token
  * stream with no "fluff" tokens (comments, processing instructions, mixed
  * content) all of which is just to simplify
- * actual higher-level conversion to JSON tokens
+ * actual higher-level conversion to JSON tokens.
+ *<p>
+ * Beyond initial idea there are also couple of other detours like ability
+ * to "replay" some tokens, add virtual wrappers (ironically to support "unwrapped"
+ * array values), and to unroll "Objects" into String values in some cases.
  */
 public class XmlTokenStream
 {
@@ -146,7 +150,7 @@ public class XmlTokenStream
 
     // DEBUGGING
     /*
-    public int next() throws IOException 
+    public int next() throws XMLStreamException 
     {
         int n = next0();
         switch (n) {
@@ -270,6 +274,10 @@ public class XmlTokenStream
         }
     }
 
+    /**
+     * Helper method called by XML String deserializer to concatenate textual contents
+     * contained in logical "Object": mostly just to skip attribute values.
+     */
     protected String convertToString() throws XMLStreamException
     {
         // only applicable to cases where START_OBJECT was induced by attributes

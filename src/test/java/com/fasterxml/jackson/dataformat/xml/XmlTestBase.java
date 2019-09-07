@@ -104,7 +104,7 @@ public abstract class XmlTestBase
             return true;
         }
     }
-    
+
     protected static class StringBean
     {
         public String text;
@@ -118,7 +118,7 @@ public abstract class XmlTestBase
             return "\""+text+"\"";
         }
     }
-    
+
     /**
      * Simple wrapper around String type, usually to test value
      * conversions or wrapping
@@ -131,7 +131,7 @@ public abstract class XmlTestBase
             str = value;
         }
     }
-    
+
     protected static class IntWrapper {
         public int i;
 
@@ -141,7 +141,6 @@ public abstract class XmlTestBase
         }
     }
 
-    // since 2.9.6
     public static class Point {
         public int x, y;
 
