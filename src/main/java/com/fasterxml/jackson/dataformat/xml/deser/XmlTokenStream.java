@@ -189,6 +189,9 @@ public class XmlTokenStream
         case XML_TEXT: 
             System.out.println(" XML-token: XML_TEXT '"+_textValue+"'");
             break;
+        case XML_NULL: 
+            System.out.println(" XML-token: XML_NULL");
+            break;
         case XML_END: 
             System.out.println(" XML-token: XML_END");
             break;
