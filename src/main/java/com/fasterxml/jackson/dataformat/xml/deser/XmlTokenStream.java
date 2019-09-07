@@ -1,6 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
+
+import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamLocation2;
@@ -29,14 +31,19 @@ public class XmlTokenStream
     public final static int XML_ATTRIBUTE_NAME = 3;
     public final static int XML_ATTRIBUTE_VALUE = 4;
     public final static int XML_TEXT = 5;
-    public final static int XML_END = 6;
+    public final static int XML_NULL = 6; // since 2.10
+    public final static int XML_END = 7;
 
     // // // token replay states
 
     private final static int REPLAY_START_DUP = 1;
     private final static int REPLAY_END = 2;
     private final static int REPLAY_START_DELAYED = 3;
-    
+
+    // Some helpful XML Constants
+
+    private final static String XSI_NAMESPACE = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+
     /*
     /**********************************************************************
     /* Configuration
@@ -65,6 +72,13 @@ public class XmlTokenStream
     protected int _attributeCount;
 
     /**
+     * Marker used to indicate presence of `xsi:nil="true"' in current START_ELEMENT.
+     *
+     * @since 2.10
+     */
+    protected boolean _xsiNilFound;
+
+    /**
      * If true we have a START_ELEMENT with mixed text
      *
      * @since 2.8
@@ -76,7 +90,7 @@ public class XmlTokenStream
      * to return (as field name and value pair), if any; -1
      * when no attributes to return
      */
-    protected int _nextAttributeIndex = 0;
+    protected int _nextAttributeIndex;
 
     protected String _localName;
 
@@ -124,11 +138,17 @@ public class XmlTokenStream
                     +XMLStreamConstants.START_ELEMENT+"), instead got "+xmlReader.getEventType());
         }
         _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
-        _currentState = XML_START_ELEMENT;
         _localName = _xmlReader.getLocalName();
         _namespaceURI = _xmlReader.getNamespaceURI();
-        _attributeCount = _xmlReader.getAttributeCount();
         _formatFeatures = formatFeatures;
+
+        _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
+
+        if (_xsiNilFound) {
+            _currentState = XML_NULL;
+        } else {
+            _currentState = XML_START_ELEMENT;
+        }
     }
 
     public XMLStreamReader2 getXmlReader() {
@@ -200,10 +220,13 @@ public class XmlTokenStream
     public String getText() { return _textValue; }
     public String getLocalName() { return _localName; }
     public String getNamespaceURI() { return _namespaceURI; }
+
+    /*// not used as of 2.10
     public boolean hasAttributes() {
         return (_currentState == XML_START_ELEMENT) && (_attributeCount > 0);
     }
-    
+    */
+
     public void closeCompletely() throws XMLStreamException {
         _xmlReader.closeCompletely();
     }
@@ -319,6 +342,13 @@ public class XmlTokenStream
             ++_nextAttributeIndex;
             // fall through
         case XML_START_ELEMENT: // attributes to return?
+
+            // 06-Sep-2019, tatu: `xsi:nil` to induce "real" null value?
+            if (_xsiNilFound) {
+                _xsiNilFound = false;
+                return (_currentState = XML_NULL);
+            }
+            
             if (_nextAttributeIndex < _attributeCount) {
                 _localName = _xmlReader.getAttributeLocalName(_nextAttributeIndex);
                 _namespaceURI = _xmlReader.getAttributeNamespace(_nextAttributeIndex);
@@ -358,11 +388,23 @@ public class XmlTokenStream
             }
             // text followed by END_ELEMENT
             return _handleEndElement();
+        case XML_NULL:
+            // at this point we are pointing to START_ELEMENT, need to find
+            // matching END_ELEMENT, handle it
+            // 06-Sep-2019, tatu: Should handle error cases better but for now this'll do
+            switch (_skipUntilTag()) {
+            case XMLStreamConstants.END_ELEMENT:
+                return _handleEndElement();
+            case XMLStreamConstants.END_DOCUMENT:
+                throw new IllegalStateException("Unexpected end-of-input after null token");
+            default:
+                throw new IllegalStateException("Unexpected START_ELEMENT after null token");
+            }
+
         case XML_END:
             return XML_END;
 //            throw new IllegalStateException("No more XML tokens available (end of input)");
         }
-
         // Ok: must be END_ELEMENT; see what tag we get (or end)
         switch (_skipUntilTag()) {
         case XMLStreamConstants.END_DOCUMENT:
@@ -463,13 +505,22 @@ public class XmlTokenStream
     /* Internal methods, other
     /**********************************************************************
      */
+
+    /*
+        _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
+        _currentState = XML_START_ELEMENT;
+        _localName = _xmlReader.getLocalName();
+        _namespaceURI = _xmlReader.getNamespaceURI();
+        _attributeCount = _xmlReader.getAttributeCount();
+        _formatFeatures = formatFeatures;
+     */
     
     private final int _initStartElement() throws XMLStreamException
     {
         final String ns = _xmlReader.getNamespaceURI();
         final String localName = _xmlReader.getLocalName();
-        _attributeCount = _xmlReader.getAttributeCount();
-        _nextAttributeIndex = 0;
+
+        _checkXsiAttributes();
 
         /* Support for virtual wrapping: in wrapping, may either
          * create a new wrapper scope (if in sub-tree, or matches
@@ -495,6 +546,30 @@ public class XmlTokenStream
         _localName = localName;
         _namespaceURI = ns;
         return (_currentState = XML_START_ELEMENT);
+    }
+
+    /**
+     * @since 2.10
+     */
+    private final void _checkXsiAttributes() {
+        int count = _xmlReader.getAttributeCount();
+        _attributeCount = count;
+
+        // [dataformat-xml#354]: xsi:nul handling; at first only if first attribute
+        if (count >= 1) {
+            if ("nil".equals(_xmlReader.getAttributeLocalName(0))) {
+                if (XSI_NAMESPACE.equals(_xmlReader.getAttributeNamespace(0))) {
+                    // need to skip, regardless of value
+                    _nextAttributeIndex = 1;
+                    // but only mark as nil marker if enabled
+                    _xsiNilFound = "true".equals(_xmlReader.getAttributeValue(0));
+                    return;
+                }
+            }
+        }
+
+        _nextAttributeIndex = 0;
+        _xsiNilFound = false;
     }
 
     /**

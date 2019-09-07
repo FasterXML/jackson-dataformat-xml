@@ -8,6 +8,7 @@ Project: jackson-dataformat-xml
 
 #242: Deserialization of class inheritance depends on attributes order
  (reported by Victor K)
+#354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
 2.10.0.pr2 (31-Aug-2019)
 
