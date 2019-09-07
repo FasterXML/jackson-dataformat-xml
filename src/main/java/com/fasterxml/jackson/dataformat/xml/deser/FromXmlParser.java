@@ -458,7 +458,7 @@ public class FromXmlParser
         return t;
     }
     */
-    
+
 //    public JsonToken nextToken0() throws IOException
     @Override
     public JsonToken nextToken() throws IOException
@@ -544,7 +544,10 @@ public class FromXmlParser
                         _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                         return (_currToken = JsonToken.START_OBJECT);
                     }
-                    return (_currToken = JsonToken.VALUE_NULL);
+                    // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
+                    if (_currToken != JsonToken.VALUE_NULL) {
+                        return (_currToken = JsonToken.VALUE_NULL);
+                    }
                 }
                 _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
                 _parsingContext = _parsingContext.getParent();
@@ -621,6 +624,16 @@ public class FromXmlParser
     /* Overrides of specialized nextXxx() methods
     /**********************************************************************
      */
+
+    /*
+    @Override
+    public String nextFieldName() throws IOException {
+        if (nextToken() == JsonToken.FIELD_NAME) {
+            return getCurrentName();
+        }
+        return null;
+    }
+    */
 
     /**
      * Method overridden to support more reliable deserialization of
