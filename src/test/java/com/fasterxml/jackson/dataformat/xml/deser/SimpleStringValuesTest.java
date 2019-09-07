@@ -27,7 +27,7 @@ public class SimpleStringValuesTest extends XmlTestBase
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
     
     public void testSimpleStringElement() throws Exception
     {
