@@ -77,8 +77,9 @@ public class XmlMapper extends ObjectMapper
             // 04-May-2018, tatu: Important! Let's also default `String` `null` handling to coerce
             //   to empty string -- this lets us induce `null` from empty tags first
 
-            // 08-Sep-2019, tatu: Note: this could conflict with [dataformat-xml#354] (true `null`s
-            //    with `xsi:nil`) unless we are careful to distinguish empty/null
+            // 08-Sep-2019, tatu: This causes [dataformat-xml#359] (follow-up for #354), but
+            //    can not simply be removed.
+
             _configOverrides.findOrCreateOverride(String.class)
                 .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
         }

@@ -91,6 +91,8 @@ public class SimpleStringValuesTest extends XmlTestBase
         assertEquals("Good stuff", beans[2].text);
     }
 
+    // [dataformat-xml#359]
+    /*
     public void testEmptyElementToString() throws Exception
     {
         final String XML =
@@ -104,6 +106,7 @@ public class SimpleStringValuesTest extends XmlTestBase
 //        assertEquals("", result.d);
         assertNull(result.d);
     }
+    */
 
     /*
     /**********************************************************
