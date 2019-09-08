@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+import com.fasterxml.jackson.databind.util.AccessPattern;
 
 /**
  * Custom variant used instead of "plain" {@code StringDeserializer} to handle
@@ -22,8 +23,18 @@ public class XmlStringDeserializer
     public boolean isCachable() { return true; }
 
     @Override
-    public Object getEmptyValue(DeserializationContext ctxt) throws JsonMappingException {
+    public Object getEmptyValue(DeserializationContext ctxt) {
         return "";
+    }
+
+    @Override
+    public Object getNullValue(DeserializationContext ctxt) {
+        return null;
+    }
+
+    @Override
+    public AccessPattern getEmptyAccessPattern() {
+        return AccessPattern.CONSTANT;
     }
 
     @Override
