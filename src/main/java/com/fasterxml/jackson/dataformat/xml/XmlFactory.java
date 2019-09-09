@@ -164,7 +164,7 @@ public class XmlFactory extends JsonFactory
 
     protected void _initFactories(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
     {
-        // Better ensure namespaces get built properly, so:
+        // [dataformat-xml#326]: Better ensure namespaces get built properly, so:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         // and for parser, force coalescing as well (much simpler to use)
         xmlIn.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);

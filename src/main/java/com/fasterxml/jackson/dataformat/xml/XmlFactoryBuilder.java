@@ -107,9 +107,12 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     }
 
     protected static XMLOutputFactory defaultOutputFactory() {
-        return XMLOutputFactory.newInstance();
+        XMLOutputFactory xmlOut = XMLOutputFactory.newInstance();
+        // [dataformat-xml#326]: Better ensure namespaces get built properly:
+        xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+        return xmlOut;
     }
-    
+
     // // // Parser features
 
     public XmlFactoryBuilder enable(FromXmlParser.Feature f) {
