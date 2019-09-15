@@ -58,7 +58,21 @@ public final class ToXmlGenerator
          * control characters (Ascii codes 0 through 31) as well as additional linefeeds
          * and name characters.
          */
-        WRITE_XML_1_1(false)
+        WRITE_XML_1_1(false),
+
+        /**
+         * Feature that controls whether serialization of Java {@code null} values adds
+         * XML attribute of `xsi:nil`, as defined by XML Schema (see
+         * <a href="https://www.oreilly.com/library/view/xml-in-a/0596007647/re166.html">this article</a>
+         * for details) or not.
+         * If enabled, `xsi:nil` attribute will be added to the empty element; if disabled,
+         * it will not.
+         *<p>
+         * Feature is disabled by default for backwards compatibility.
+         *
+         * @since 2.10
+         */
+        WRITE_NULLS_AS_XSI_NIL(false)
         ;
 
         final boolean _defaultState;
