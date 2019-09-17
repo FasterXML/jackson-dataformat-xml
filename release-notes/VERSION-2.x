@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.10.0 (not yet released)
+2.10.0.pr3 (17-Sep-2019)
 
 #242: Deserialization of class inheritance depends on attributes order
  (reported by Victor K)
