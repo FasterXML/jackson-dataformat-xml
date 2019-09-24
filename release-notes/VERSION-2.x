@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #242: Deserialization of class inheritance depends on attributes order
  (reported by Victor K)
+#325: Problem with '$' in polymorphic type id names when "as class",
+  "wrapper object", inner class
 #326: Force namespace-repairing on `XMLOutputFactory` instances
 #354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
@@ -18,13 +20,13 @@ Project: jackson-dataformat-xml
 
 2.10.0.pr1 (19-Jul-2019)
 
-#336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
- (fix contributed by Kevin D)
 #350: Wrap Xerces/Stax (JDK-bundled) exceptions during parser initialization
  (reported by Sam S)
 
 2.9.10 (not yet released)
 
+#336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
+ (fix contributed by Kevin D)
 #340: Incompatible woodstox-core and stax2-api dependencies (upgrade to
    `woodstox-core` 5.3.0)
 

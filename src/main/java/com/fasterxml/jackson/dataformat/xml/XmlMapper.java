@@ -124,21 +124,19 @@ public class XmlMapper extends ObjectMapper
         /* Overrides for polymorphic type handling
         /******************************************************************
          */
-        
+
         @Override
         protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(PolymorphicTypeValidator ptv,
                 DefaultTyping applicability,
                 JsonTypeInfo.As includeAs) {
-            // !!! TODO
-            return super._defaultDefaultTypingResolver(ptv, applicability, includeAs);
+            return new DefaultingXmlTypeResolverBuilder(ptv, applicability, includeAs);
         }
 
         @Override
         protected TypeResolverBuilder<?> _defaultDefaultTypingResolver(PolymorphicTypeValidator ptv,
                 DefaultTyping applicability,
                 String propertyName) {
-            // !!! TODO
-            return super._defaultDefaultTypingResolver(ptv, applicability, propertyName);
+            return new DefaultingXmlTypeResolverBuilder(ptv, applicability, propertyName);
         }
 
         // Since WRAPPER_ARRAY does not work well, map to WRAPPER_OBJECT

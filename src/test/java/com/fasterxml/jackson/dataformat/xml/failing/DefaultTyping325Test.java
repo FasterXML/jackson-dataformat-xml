@@ -1,38 +1,37 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.databind.DefaultTyping;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.testutil.NoCheckSubTypeValidator;
 
 public class DefaultTyping325Test extends XmlTestBase
 {
-    static class Simple {
-        protected List<String> list;
+    static class Simple325 {
+        protected String[] list;
 
-        public List<String> getList( ) { return list; }
-        public void setList(List<String> l) { list = l; }
+        public String[] getList( ) { return list; }
+        public void setList(String[] l) { list = l; }
     }
 
-    public void testCanSerialize() throws IOException
+    // [dataformat-xml#325]
+    public void testDefaultTypingWithInnerClass() throws IOException
     {
         ObjectMapper mapper = mapperBuilder()
                 .activateDefaultTyping(NoCheckSubTypeValidator.instance,
                         DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_OBJECT)
                 .build();
-        // construct test object
-        Simple s = new Simple();
-        s.setList(Arrays.asList("foo", "bar"));
+        Simple325 s = new Simple325();
+        s.setList(new String[] { "foo", "bar" });
 
         String doc = mapper.writeValueAsString(s);
-        Simple result = mapper.readValue(doc, Simple.class);
+        Simple325 result = mapper.readValue(doc, Simple325.class);
         assertNotNull(result.list);
-        assertEquals(2, result.list.size());
+        assertEquals(2, result.list.length);
     }
 }

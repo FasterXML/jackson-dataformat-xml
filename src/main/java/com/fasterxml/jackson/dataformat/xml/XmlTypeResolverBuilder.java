@@ -45,6 +45,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     @Override
     public StdTypeResolverBuilder init(JsonTypeInfo.Id idType, TypeIdResolver idRes)
     {
+
         super.init(idType, idRes);
         if (_typeProperty != null) {
             _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
