@@ -212,9 +212,7 @@ public class XmlMapper extends ObjectMapper
     @Override // since 2.10
     protected TypeResolverBuilder<?> _constructDefaultTypeResolverBuilder(DefaultTyping applicability,
             PolymorphicTypeValidator ptv) {
-//        return DefaultTypeResolverBuilder.cosntruct(applicability, ptv);
-        // just a stub for now
-        return super._constructDefaultTypeResolverBuilder(applicability, ptv);
+        return new DefaultingXmlTypeResolverBuilder(applicability, ptv);
     }
 
     /*

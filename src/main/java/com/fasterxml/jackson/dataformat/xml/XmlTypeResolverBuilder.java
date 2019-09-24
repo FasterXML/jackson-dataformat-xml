@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.ClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
@@ -25,6 +27,7 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     @Override
     public StdTypeResolverBuilder init(JsonTypeInfo.Id idType, TypeIdResolver idRes)
     {
+
         super.init(idType, idRes);
         if (_typeProperty != null) {
             _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);

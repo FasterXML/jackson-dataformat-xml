@@ -19,4 +19,21 @@ public final class NoCheckSubTypeValidator
     public Validity validateBaseType(MapperConfig<?> c, JavaType baseType) {
         return Validity.ALLOWED;
     }
+
+    // Important! With Default Typing, "validateBaseType()" won't necessarily
+    // be called, at least for root type, so need more than above method:
+    
+    @Override
+    public Validity validateSubClassName(MapperConfig<?> config,
+            JavaType baseType, String subClassName) {
+        return Validity.ALLOWED;
+    }
+
+    /*
+    @Override
+    public Validity validateSubType(MapperConfig<?> config, JavaType baseType,
+            JavaType subType) {
+        return Validity.ALLOWED;
+    }
+    */
 }

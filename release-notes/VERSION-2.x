@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #242: Deserialization of class inheritance depends on attributes order
  (reported by Victor K)
+#325: Problem with '$' in polymorphic type id names when "as class",
+  "wrapper object", inner class
 #326: Force namespace-repairing on `XMLOutputFactory` instances
 #354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
