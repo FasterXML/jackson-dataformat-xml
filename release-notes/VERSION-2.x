@@ -4,24 +4,18 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.10.0.pr3 (17-Sep-2019)
+2.10.0 (26-Sep-2019)
 
 #242: Deserialization of class inheritance depends on attributes order
  (reported by Victor K)
 #325: Problem with '$' in polymorphic type id names when "as class",
   "wrapper object", inner class
 #326: Force namespace-repairing on `XMLOutputFactory` instances
-#354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
-
-2.10.0.pr2 (31-Aug-2019)
-
-#351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
- (reported by Rohit N)
-
-2.10.0.pr1 (19-Jul-2019)
-
 #350: Wrap Xerces/Stax (JDK-bundled) exceptions during parser initialization
  (reported by Sam S)
+#351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
+ (reported by Rohit N)
+#354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
 2.9.10 (not yet released)
 
