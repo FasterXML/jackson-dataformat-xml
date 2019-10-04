@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.type.ClassKey;
 import com.fasterxml.jackson.databind.util.SimpleLookupCache;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * Helper class used for efficiently finding root element name used with
@@ -26,6 +27,7 @@ public class XmlRootNameLookup
      * state
      */
     protected final transient SimpleLookupCache<ClassKey,QName> _rootNames = new SimpleLookupCache<>(40, 200);
+    protected final transient SimpleLookupCache<ClassKey,String> _indexedWrapperNames = new SimpleLookupCache<>(10, 200);
 
     public XmlRootNameLookup() { }
     
@@ -56,6 +58,27 @@ public class XmlRootNameLookup
             _rootNames.put(key, name);
         }
         return name;
+    }
+
+    public String findWrapperForIndexedType(JavaType rootType, MapperConfig<?> config) {
+        return findWrapperForIndexedType(rootType.getRawClass(), config);
+    }
+
+    public String findWrapperForIndexedType(Class<?> rootType, MapperConfig<?> config)
+    {
+        ClassKey key = new ClassKey(rootType);
+        String wrapperName;
+        synchronized (_indexedWrapperNames) {
+            wrapperName = _indexedWrapperNames.get(key);
+        }
+        if (wrapperName != null) {
+            return wrapperName;
+        }
+        wrapperName = findWrapperName(rootType, config);
+        synchronized (_indexedWrapperNames) {
+            _indexedWrapperNames.put(key, wrapperName);
+        }
+        return wrapperName;
     }
     
     // NOTE: needed to be synchronized in 2.6.4, but 2.7.0 adds a proper fix
@@ -101,5 +124,21 @@ public class XmlRootNameLookup
             }
         }
         return null;
+    }
+
+    private String findWrapperName(Class<?> rootType, MapperConfig<?> config)
+    {
+        BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
+        AnnotationIntrospector annotationIntrospector = config.getAnnotationIntrospector();
+        AnnotatedClass annotatedClass = beanDesc.getClassInfo();
+        for (AnnotationIntrospector intr : annotationIntrospector.allIntrospectors()) {
+            if (intr instanceof XmlAnnotationIntrospector) {
+                String ns = ((XmlAnnotationIntrospector) intr).getWrapperForIndexedType(annotatedClass);
+                if (ns != null) {
+                    return ns;
+                }
+            }
+        }
+        return JacksonXmlRootElement.DEFAULT_WRAPPER_NAME;
     }
 }

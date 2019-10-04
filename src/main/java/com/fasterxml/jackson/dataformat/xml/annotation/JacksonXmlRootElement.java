@@ -14,6 +14,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlRootElement
 {
+    public static String DEFAULT_WRAPPER_NAME="item";
+
     String namespace() default "";
     String localName() default "";
+    String wrapperForIndexedType() default DEFAULT_WRAPPER_NAME;
 }

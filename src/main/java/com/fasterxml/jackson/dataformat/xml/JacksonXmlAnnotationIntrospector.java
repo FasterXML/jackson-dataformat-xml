@@ -1,7 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.PropertyName;
-import com.fasterxml.jackson.databind.introspect.*;
+import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -79,6 +81,15 @@ public class JacksonXmlAnnotationIntrospector
             return new PropertyName(local, ns);
         }
         return super.findRootName(ac);
+    }
+
+    @Override
+    public String getWrapperForIndexedType(AnnotatedClass ac){
+        JacksonXmlRootElement root = ac.getAnnotation(JacksonXmlRootElement.class);
+        if (root != null) {
+            return root.wrapperForIndexedType();
+        }
+        return JacksonXmlRootElement.DEFAULT_WRAPPER_NAME;
     }
     
     /*

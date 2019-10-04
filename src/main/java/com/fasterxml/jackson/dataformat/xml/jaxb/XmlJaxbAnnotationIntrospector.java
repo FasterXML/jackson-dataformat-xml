@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
@@ -56,5 +57,10 @@ public class XmlJaxbAnnotationIntrospector
     @Override
     public void setDefaultUseWrapper(boolean b) {
         // nothing to do with JAXB
+    }
+
+    @Override
+    public String getWrapperForIndexedType(AnnotatedClass ac) {
+        return JacksonXmlRootElement.DEFAULT_WRAPPER_NAME;
     }
 }
