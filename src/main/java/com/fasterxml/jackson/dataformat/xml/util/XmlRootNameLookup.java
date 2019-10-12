@@ -62,9 +62,8 @@ public class XmlRootNameLookup
     // for annotation introspection hence not needed any more
     protected QName _findRootName(Class<?> rootType, MapperConfig<?> config)
     {
-        BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
-        AnnotationIntrospector intr = config.getAnnotationIntrospector();
-        AnnotatedClass ac = beanDesc.getClassInfo();
+        final AnnotatedClass ac = config.introspectClassAnnotations(rootType);
+        final AnnotationIntrospector intr = config.getAnnotationIntrospector();
         String localName = null;
         String ns = null;
 

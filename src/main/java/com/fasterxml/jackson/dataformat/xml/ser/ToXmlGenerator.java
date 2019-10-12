@@ -478,13 +478,6 @@ public final class ToXmlGenerator
         final String name = Long.toString(id);
         writeFieldName(name);
     }
-    
-    @Override
-    public final void writeStringField(String fieldName, String value) throws IOException
-    {
-        writeFieldName(fieldName);
-        writeString(value);
-    }
 
     // 03-Aug-2017, tatu: We could use this as mentioned in comment below BUT
     //    since there is no counterpart for deserialization this will not
