@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
+import java.io.StringWriter;
+
 import javax.xml.stream.*;
 
 import com.ctc.wstx.stax.WstxInputFactory;
@@ -46,7 +48,7 @@ public class FailingNamespace326Test extends XmlTestBase
         }
     }
 
-    public void testIssue311() throws Exception {
+    public void testIssue326() throws Exception {
         XMLInputFactory xmlInputFactory = new WstxInputFactory();
         XMLOutputFactory xmlOutputFactory = new WstxOutputFactory();
         
@@ -56,12 +58,16 @@ public class FailingNamespace326Test extends XmlTestBase
         XmlMapper mapper = new XmlMapper(xmlInputFactory);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(System.out);
-
+        StringWriter sw = new StringWriter();
+        
+        XMLStreamWriter writer = xmlOutputFactory.createXMLStreamWriter(sw);
         startDocument(writer);
-        Bean bean=new Bean(1, "Dude");
+        Bean bean = new Bean(1, "Dude");
         mapper.writeValue(writer, bean);
         endDocument(writer);        
+
+        final String xml = sw.toString();
+        assertNotNull(xml); // just to remove IDE Warning of unused...
     }
 
     protected void startDocument(XMLStreamWriter writer) throws XMLStreamException {
