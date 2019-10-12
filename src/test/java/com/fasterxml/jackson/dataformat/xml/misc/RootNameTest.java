@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyName;
