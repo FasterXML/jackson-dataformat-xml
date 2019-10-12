@@ -8,6 +8,10 @@ Project: jackson-dataformat-xml
 
 -
 
+2.10.1 (not yet released)
+
+- Upgrade Woodstox dependency to 6.0.2
+
 2.10.0 (26-Sep-2019)
 
 #242: Deserialization of class inheritance depends on attributes order
