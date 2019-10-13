@@ -63,7 +63,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         } else {
             QName rootName = _rootNameFromConfig();
             if (rootName == null) {
-                rootName = _rootNameLookup.findRootName(cls, _config);
+                rootName = _rootNameLookup.findRootName(this, cls);
             }
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(cls);
@@ -102,7 +102,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         } else {
             QName rootName = _rootNameFromConfig();
             if (rootName == null) {
-                rootName = _rootNameLookup.findRootName(rootType, _config);
+                rootName = _rootNameLookup.findRootName(this, rootType);
             }
             _initWithRootName(xgen, rootName);
             asArray = TypeUtil.isIndexedType(rootType);

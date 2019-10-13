@@ -3,10 +3,10 @@ package com.fasterxml.jackson.dataformat.xml.util;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.type.ClassKey;
 import com.fasterxml.jackson.databind.util.SimpleLookupCache;
+
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
 /**
@@ -37,11 +37,11 @@ public class XmlRootNameLookup
         return this;
     }
 
-    public QName findRootName(JavaType rootType, MapperConfig<?> config) {
-        return findRootName(rootType.getRawClass(), config);
+    public QName findRootName(DatabindContext ctxt, JavaType rootType) {
+        return findRootName(ctxt, rootType.getRawClass());
     }
 
-    public QName findRootName(Class<?> rootType, MapperConfig<?> config)
+    public QName findRootName(DatabindContext ctxt, Class<?> rootType)
     {
         ClassKey key = new ClassKey(rootType);
         QName name;
@@ -51,19 +51,17 @@ public class XmlRootNameLookup
         if (name != null) {
             return name;
         }
-        name = _findRootName(rootType, config);
+        name = _findRootName(ctxt, rootType);
         synchronized (_rootNames) {
             _rootNames.put(key, name);
         }
         return name;
     }
-    
-    // NOTE: needed to be synchronized in 2.6.4, but 2.7.0 adds a proper fix
-    // for annotation introspection hence not needed any more
-    protected QName _findRootName(Class<?> rootType, MapperConfig<?> config)
+
+    protected QName _findRootName(DatabindContext ctxt, Class<?> rootType)
     {
-        final AnnotatedClass ac = config.introspectClassAnnotations(rootType);
-        final AnnotationIntrospector intr = config.getAnnotationIntrospector();
+        final AnnotatedClass ac = ctxt.introspectClassAnnotations(rootType);
+        final AnnotationIntrospector intr = ctxt.getAnnotationIntrospector();
         String localName = null;
         String ns = null;
 
