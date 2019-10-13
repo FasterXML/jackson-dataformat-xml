@@ -147,14 +147,14 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
 
         @Override
-        public String idFromValue(Object value)
+        public String idFromValue(DatabindContext ctxt, Object value)
         {
-            return encodeXmlClassName(super.idFromValue(value));
+            return encodeXmlClassName(super.idFromValue(ctxt, value));
         }
 
         @Override
-        public JavaType typeFromId(DatabindContext context, String id) throws IOException {
-            return super.typeFromId(context, decodeXmlClassName(id));
+        public JavaType typeFromId(DatabindContext ctxt, String id) throws IOException {
+            return super.typeFromId(ctxt, decodeXmlClassName(id));
         }
     }
 
@@ -168,14 +168,14 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         }
 
         @Override
-        public String idFromValue(Object value)
+        public String idFromValue(DatabindContext ctxt, Object value)
         {
-            return encodeXmlClassName(super.idFromValue(value));
+            return encodeXmlClassName(super.idFromValue(ctxt, value));
         }
 
         @Override
-        public JavaType typeFromId(DatabindContext context, String id) throws IOException {
-            return super.typeFromId(context, decodeXmlClassName(id));
+        public JavaType typeFromId(DatabindContext ctxt, String id) throws IOException {
+            return super.typeFromId(ctxt, decodeXmlClassName(id));
         }
     }
 }
