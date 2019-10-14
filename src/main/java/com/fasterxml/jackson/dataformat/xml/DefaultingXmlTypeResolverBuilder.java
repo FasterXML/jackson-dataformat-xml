@@ -67,10 +67,10 @@ public class DefaultingXmlTypeResolverBuilder
         // Only override handlers of class, minimal class; name is good as is
         switch (_idType) {
         case CLASS:
-            return new XmlTypeResolverBuilder.XmlClassNameIdResolver(baseType, ctxt.getTypeFactory(),
+            return new XmlTypeResolverBuilder.XmlClassNameIdResolver(baseType,
                     subTypeValidator(ctxt));
         case MINIMAL_CLASS:
-            return new XmlTypeResolverBuilder.XmlMinimalClassNameIdResolver(baseType, ctxt.getTypeFactory(),
+            return new XmlTypeResolverBuilder.XmlMinimalClassNameIdResolver(baseType,
                     subTypeValidator(ctxt));
         default:
         }
