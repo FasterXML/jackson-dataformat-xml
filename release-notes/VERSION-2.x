@@ -25,7 +25,7 @@ Project: jackson-dataformat-xml
  (reported by Rohit N)
 #354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
-2.9.10 (not yet released)
+2.9.10 (21-Sep-2019)
 
 #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
  (fix contributed by Kevin D)
