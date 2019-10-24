@@ -24,7 +24,6 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
  * of some xml-specific aspects, such as distinction between attributes
  * and elements.
  */
-@SuppressWarnings("serial")
 public abstract class XmlBeanSerializerBase extends BeanSerializerBase
 {
     /**

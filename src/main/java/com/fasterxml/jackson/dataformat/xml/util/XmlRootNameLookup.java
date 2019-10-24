@@ -65,7 +65,7 @@ public class XmlRootNameLookup
         String localName = null;
         String ns = null;
 
-        PropertyName root = intr.findRootName(ac);
+        PropertyName root = intr.findRootName(ctxt.getConfig(), ac);
         if (root != null) {
             localName = root.getSimpleName();
             ns = root.getNamespace();

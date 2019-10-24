@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.PropertyName;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
@@ -66,7 +67,7 @@ public class JacksonXmlAnnotationIntrospector
     }
     
     @Override
-    public PropertyName findRootName(AnnotatedClass ac)
+    public PropertyName findRootName(MapperConfig<?> config, AnnotatedClass ac)
     {
         JacksonXmlRootElement root = ac.getAnnotation(JacksonXmlRootElement.class);
         if (root != null) {
@@ -78,9 +79,9 @@ public class JacksonXmlAnnotationIntrospector
             }
             return new PropertyName(local, ns);
         }
-        return super.findRootName(ac);
+        return super.findRootName(config, ac);
     }
-    
+
     /*
     /**********************************************************************
     /* XmlAnnotationIntrospector, findXxx
@@ -159,11 +160,11 @@ public class JacksonXmlAnnotationIntrospector
     }
 
     @Override
-    public PropertyName findNameForDeserialization(Annotated a)
+    public PropertyName findNameForDeserialization(MapperConfig<?> config, Annotated a)
     {
         PropertyName name = _findXmlName(a);
         if (name == null) {
-            name = super.findNameForDeserialization(a);
+            name = super.findNameForDeserialization(config, a);
             if (name == null) {
                 if (a.hasAnnotation(JacksonXmlText.class)) {
                     return PropertyName.USE_DEFAULT;

@@ -14,7 +14,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 /**
  * Unit test(s) for [dataformat-xml#42], problems with custom (de)serializer.
  */
-@SuppressWarnings("serial")
 public class TestSerializerCustom extends XmlTestBase
 {
     @JsonPropertyOrder({ "name", "obj" })
