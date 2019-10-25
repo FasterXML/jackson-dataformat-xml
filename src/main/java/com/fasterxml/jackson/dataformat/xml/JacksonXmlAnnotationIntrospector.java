@@ -42,7 +42,7 @@ public class JacksonXmlAnnotationIntrospector
      */
 
     @Override
-    public PropertyName findWrapperName(Annotated ann)
+    public PropertyName findWrapperName(MapperConfig<?> config, Annotated ann)
     {
         JacksonXmlElementWrapper w = ann.getAnnotation(JacksonXmlElementWrapper.class);
         if (w != null) {
@@ -57,9 +57,8 @@ public class JacksonXmlAnnotationIntrospector
             }
             return PropertyName.construct(w.localName(), w.namespace());
         }
-        /* 09-Sep-2012, tatu: In absence of configurating we need to use our
-         *   default settings...
-         */
+        // 09-Sep-2012, tatu: In absence of configurating we need to use our
+        //    default settings...
         if (_cfgDefaultUseWrapper) {
             return PropertyName.USE_DEFAULT;
         }
@@ -145,11 +144,11 @@ public class JacksonXmlAnnotationIntrospector
      */
 
     @Override
-    public PropertyName findNameForSerialization(Annotated a)
+    public PropertyName findNameForSerialization(MapperConfig<?> config, Annotated a)
     {
         PropertyName name = _findXmlName(a);
         if (name == null) {
-            name = super.findNameForSerialization(a);
+            name = super.findNameForSerialization(config, a);
             if (name == null) {
                 if (a.hasAnnotation(JacksonXmlText.class)) {
                     return PropertyName.USE_DEFAULT;
