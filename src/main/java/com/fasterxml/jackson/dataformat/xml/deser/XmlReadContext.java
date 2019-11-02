@@ -28,10 +28,6 @@ public final class XmlReadContext
     protected int _columnNr;
 
     protected String _currentName;
-
-    /**
-     * @since 2.9
-     */
     protected Object _currentValue;
 
     protected Set<String> _namesToWrap;
@@ -42,23 +38,22 @@ public final class XmlReadContext
     protected String _wrappedName;
 
     /*
-    /**********************************************************
-    /* Simple instance reuse slots; speeds up things
-    /* a bit (10-15%) for docs with lots of small
-    /* arrays/objects (for which allocation was
-    /* visible in profile stack frames)
-    /**********************************************************
+    /**********************************************************************
+    /* Simple instance reuse slots; speeds up things a bit (10-15%)
+    /* for docs with lots of small arrays/objects (for which allocation
+    /* was visible in profile stack frames)
+    /**********************************************************************
      */
 
     protected XmlReadContext _child = null;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Instance construction, reuse
-    /**********************************************************
+    /**********************************************************************
      */
 
-    public XmlReadContext(XmlReadContext parent, int type, int lineNr, int colNr)
+    public XmlReadContext(int type, XmlReadContext parent, int lineNr, int colNr)
     {
         super();
         _type = type;
@@ -90,24 +85,20 @@ public final class XmlReadContext
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Factory methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     public static XmlReadContext createRootContext(int lineNr, int colNr) {
-        return new XmlReadContext(null, TYPE_ROOT, lineNr, colNr);
+        return new XmlReadContext(TYPE_ROOT, null, lineNr, colNr);
     }
 
-    public static XmlReadContext createRootContext() {
-        return new XmlReadContext(null, TYPE_ROOT, 1, 0);
-    }
-    
     public final XmlReadContext createChildArrayContext(int lineNr, int colNr)
     {
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(this, TYPE_ARRAY, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(TYPE_ARRAY, this, lineNr, colNr);
             return ctxt;
         }
         ctxt.reset(TYPE_ARRAY, lineNr, colNr);
@@ -118,7 +109,7 @@ public final class XmlReadContext
     {
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(this, TYPE_OBJECT, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(TYPE_OBJECT, this, lineNr, colNr);
             return ctxt;
         }
         ctxt.reset(TYPE_OBJECT, lineNr, colNr);
@@ -126,9 +117,9 @@ public final class XmlReadContext
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Abstract method implementation
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -140,23 +131,19 @@ public final class XmlReadContext
     public final XmlReadContext getParent() { return _parent; }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* State changes
-    /**********************************************************
+    /**********************************************************************
      */
-
-    public final boolean expectComma() {
-        throw new UnsupportedOperationException();
-    }
 
     public void setCurrentName(String name) {
         _currentName = name;
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended API
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -184,9 +171,9 @@ public final class XmlReadContext
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overridden standard methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
