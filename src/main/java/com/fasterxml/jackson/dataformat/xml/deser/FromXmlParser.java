@@ -371,10 +371,9 @@ public class FromXmlParser
     @Override
     public boolean isClosed() { return _closed; }
 
-    @Override
-    public XmlReadContext getParsingContext() {
-        return _parsingContext;
-    }
+    @Override public TokenStreamContext getParsingContext() { return _parsingContext; }
+    @Override public void setCurrentValue(Object v) { _parsingContext.setCurrentValue(v); }
+    @Override public Object getCurrentValue() { return _parsingContext.getCurrentValue(); }
 
     /**
      * Method that return the <b>starting</b> location of the current
