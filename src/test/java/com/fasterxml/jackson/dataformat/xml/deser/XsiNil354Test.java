@@ -29,7 +29,7 @@ public class XsiNil354Test extends XmlTestBase
                 DoubleWrapper.class);
         assertNotNull(bean);
         assertNull(bean.d);
-        
+
         // actually we should perhaps also verify there is no content but... for now, let's leave it.
     }
 
