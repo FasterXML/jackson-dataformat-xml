@@ -197,7 +197,7 @@ public abstract class XmlTestBase
         +"  }"
         +"}"
         ;
-    
+
     /*
     /**********************************************************
     /* Construction, factory methods
@@ -211,7 +211,7 @@ public abstract class XmlTestBase
     protected XmlFactoryBuilder streamFactoryBuilder() {
         return XmlFactory.builder();
     }
-    
+
     protected static XmlMapper newMapper() {
         return new XmlMapper();
     }
