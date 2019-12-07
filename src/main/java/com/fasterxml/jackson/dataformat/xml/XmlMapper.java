@@ -423,7 +423,7 @@ public class XmlMapper extends ObjectMapper
     @SuppressWarnings("resource")
     public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException
     {
-        DeserializationContext ctxt = createDeserializationContext();
+        DeserializationContext ctxt = _deserializationContext();
         FromXmlParser p = tokenStreamFactory().createParser(ctxt, r);
         return super.readValue(p, valueType);
     } 
