@@ -232,7 +232,7 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
     * Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
     * Mixed content (both textual content and elements as children of an element) not supported: text, if any, is lost
     * Repeated elements with same name are handled so that only the last element is included, others are ignored
-* Root value should be a POJO; and specifically following types can be serialized as properties but may not work as intended as root values
+* Root value should be a POJO (that is, a Java value expressed as a set of properties (key/value pairs)); and specifically following types can be serialized as properties but may not work as intended as root values
     * Primitive/Wrapper values (like `java.lang.Integer`)
     * `String`s (and types that serialize as Strings such as Timestamps, Date/Time values)
     * `Enum`s
