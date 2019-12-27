@@ -23,8 +23,8 @@ Specifically:
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.10` is for developing the next (and possibly last) minor 2.x version
-* `2.8` and `2.9` are for backported fixes for 2.8/2.9 patch versions
+* `2.11` is for developing the next minor 2.x version
+* `2.10` is for backported fixes to include in 2.10.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
@@ -48,7 +48,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.9.9</version>
+  <version>2.10.1</version>
 </dependency>
 ```
 
@@ -234,6 +234,7 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
     * Repeated elements with same name are handled so that only the last element is included, others are ignored
 * Root value should be a POJO; and specifically following types can be serialized as properties but may not work as intended as root values
     * Primitive/Wrapper values (like `java.lang.Integer`)
+    * `String`s (and types that serialize as Strings such as Timestamps, Date/Time values)
     * `Enum`s
     * Java arrays
     * `java.util.Collection` values (Lists, Sets)
