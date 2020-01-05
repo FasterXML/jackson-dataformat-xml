@@ -3,10 +3,10 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class XsiNil354Test extends XmlTestBase
+public class XsiNilBasicTest extends XmlTestBase
 {
     private final static String XSI_NS_DECL = "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'";
-    
+
     protected static class DoubleWrapper {
         public Double d;
 
@@ -14,6 +14,13 @@ public class XsiNil354Test extends XmlTestBase
         public DoubleWrapper(Double value) {
             d = value;
         }
+    }
+
+    protected static class DoubleWrapper2 {
+        public Double a = 100.0; // init to ensure it gets overwritten
+        public Double b = 200.0;
+
+        public DoubleWrapper2() { }
     }
 
     private final XmlMapper MAPPER = newMapper();
@@ -42,6 +49,40 @@ public class XsiNil354Test extends XmlTestBase
                 DoubleWrapper.class);
         assertNotNull(bean);
         assertEquals(Double.valueOf(0.25), bean.d);
+    }
+
+    public void testWithDoubleAsMixed() throws Exception
+    {
+        DoubleWrapper2 bean = MAPPER.readValue(
+"<DoubleWrapper "+XSI_NS_DECL+">\n"
++"<a xsi:nil='true'></a>\n"
++"<b xsi:nil='false'>0.25</b>\n"
++"</DoubleWrapper>",
+            DoubleWrapper2.class);
+        assertNotNull(bean);
+        assertNull(bean.a);
+        assertEquals(Double.valueOf(0.25), bean.b);
+
+        bean = MAPPER.readValue(
+"<DoubleWrapper "+XSI_NS_DECL+">\n"
++"<a xsi:nil='false'>0.25</a>\n"
++"<b xsi:nil='true'></b>\n"
++"</DoubleWrapper>",
+            DoubleWrapper2.class);
+        assertNotNull(bean);
+        assertEquals(Double.valueOf(0.25), bean.a);
+        assertNull(bean.b);
+
+        // and last one just for ... funsies
+        DoubleWrapper2 defaultValue = new DoubleWrapper2();
+        bean = MAPPER.readValue(
+"<DoubleWrapper "+XSI_NS_DECL+">\n"
++"</DoubleWrapper>",
+            DoubleWrapper2.class);
+        assertNotNull(bean.a);
+        assertNotNull(bean.b);
+        assertEquals(defaultValue.a, bean.a);
+        assertEquals(defaultValue.b, bean.b);
     }
 
     public void testRootPojoAsNull() throws Exception
