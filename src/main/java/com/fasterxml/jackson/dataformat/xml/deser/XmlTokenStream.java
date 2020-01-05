@@ -31,8 +31,8 @@ public class XmlTokenStream
     public final static int XML_ATTRIBUTE_NAME = 3;
     public final static int XML_ATTRIBUTE_VALUE = 4;
     public final static int XML_TEXT = 5;
-    public final static int XML_NULL = 6; // since 2.10
-    public final static int XML_END = 7;
+
+    public final static int XML_END = 6;
 
     // // // token replay states
 
@@ -143,12 +143,7 @@ public class XmlTokenStream
         _formatFeatures = formatFeatures;
 
         _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
-
-        if (_xsiNilFound) {
-            _currentState = XML_NULL;
-        } else {
-            _currentState = XML_START_ELEMENT;
-        }
+        _currentState = XML_START_ELEMENT;
     }
 
     public XMLStreamReader2 getXmlReader() {
@@ -189,9 +184,6 @@ public class XmlTokenStream
         case XML_TEXT: 
             System.out.println(" XML-token: XML_TEXT '"+_textValue+"'");
             break;
-        case XML_NULL: 
-            System.out.println(" XML-token: XML_NULL");
-            break;
         case XML_END: 
             System.out.println(" XML-token: XML_END");
             break;
@@ -223,6 +215,10 @@ public class XmlTokenStream
     public String getText() { return _textValue; }
     public String getLocalName() { return _localName; }
     public String getNamespaceURI() { return _namespaceURI; }
+
+    public boolean hasXsiNil() {
+        return _xsiNilFound;
+    }
 
     /*// not used as of 2.10
     public boolean hasAttributes() {
@@ -349,9 +345,15 @@ public class XmlTokenStream
             // 06-Sep-2019, tatu: `xsi:nil` to induce "real" null value?
             if (_xsiNilFound) {
                 _xsiNilFound = false;
-                return (_currentState = XML_NULL);
+                switch (_skipUntilTag()) {
+                case XMLStreamConstants.END_ELEMENT:
+                    return _handleEndElement();
+                case XMLStreamConstants.END_DOCUMENT:
+                    throw new IllegalStateException("Unexpected end-of-input after null token");
+                default:
+                }
+                throw new IllegalStateException("Unexpected START_ELEMENT after null token");
             }
-            
             if (_nextAttributeIndex < _attributeCount) {
                 _localName = _xmlReader.getAttributeLocalName(_nextAttributeIndex);
                 _namespaceURI = _xmlReader.getAttributeNamespace(_nextAttributeIndex);
@@ -385,24 +387,12 @@ public class XmlTokenStream
             return (_currentState = XML_ATTRIBUTE_VALUE);
         case XML_TEXT:
             // mixed text with other elements
-            if (_mixedText){
+            if (_mixedText) {
                 _mixedText = false;
                 return _initStartElement();
             }
             // text followed by END_ELEMENT
             return _handleEndElement();
-        case XML_NULL:
-            // at this point we are pointing to START_ELEMENT, need to find
-            // matching END_ELEMENT, handle it
-            // 06-Sep-2019, tatu: Should handle error cases better but for now this'll do
-            switch (_skipUntilTag()) {
-            case XMLStreamConstants.END_ELEMENT:
-                return _handleEndElement();
-            case XMLStreamConstants.END_DOCUMENT:
-                throw new IllegalStateException("Unexpected end-of-input after null token");
-            default:
-                throw new IllegalStateException("Unexpected START_ELEMENT after null token");
-            }
 
         case XML_END:
             return XML_END;
