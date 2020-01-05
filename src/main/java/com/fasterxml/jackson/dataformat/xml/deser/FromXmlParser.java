@@ -185,14 +185,14 @@ public class FromXmlParser
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference(),
                 _formatFeatures);
-        switch (_xmlTokens.getCurrentToken()) {
-        case XmlTokenStream.XML_START_ELEMENT:
-            _nextToken = JsonToken.START_OBJECT;
-            break;
-        case XmlTokenStream.XML_NULL:
+
+        // 04-Jan-2019, tatu: Root-level nulls need slightly specific handling;
+        //    changed in 2.10.2
+        if (_xmlTokens.hasXsiNil()) {
             _nextToken = JsonToken.VALUE_NULL;
-            break;
-        default:
+        } else if (_xmlTokens.getCurrentToken() == XmlTokenStream.XML_START_ELEMENT) {
+            _nextToken = JsonToken.START_OBJECT;
+        } else {
             _reportError("Internal problem: invalid starting state (%d)", _xmlTokens.getCurrentToken());
         }
     }
@@ -606,29 +606,28 @@ public class FromXmlParser
                         }
                     }
                     return (_currToken = JsonToken.VALUE_STRING);
-                } else {
-                    // [dataformat-xml#177]: empty text may also need to be skipped
-                    // but... [dataformat-xml#191]: looks like we can't short-cut, must
-                    // loop over again
-                    if (_parsingContext.inObject()) {
-                        if ((_currToken != JsonToken.FIELD_NAME) && _isEmpty(_currText)) {
-                            try {
-                                token = _xmlTokens.next();
-                            } catch (XMLStreamException e) {
-                                StaxUtil.throwAsParseException(e, this);
-                            }
-                            continue;
+                }
+                // [dataformat-xml#177]: empty text may also need to be skipped
+                // but... [dataformat-xml#191]: looks like we can't short-cut, must
+                // loop over again
+                if (_parsingContext.inObject()) {
+                    if ((_currToken != JsonToken.FIELD_NAME) && _isEmpty(_currText)) {
+                        try {
+                            token = _xmlTokens.next();
+                        } catch (XMLStreamException e) {
+                            StaxUtil.throwAsParseException(e, this);
                         }
+                        continue;
                     }
                 }
                 // If not a leaf (or otherwise ignorable), need to transform into property...
                 _parsingContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
                 return (_currToken = JsonToken.FIELD_NAME);
-            case XmlTokenStream.XML_NULL:
-                return (_currToken = JsonToken.VALUE_NULL);
             case XmlTokenStream.XML_END:
                 return (_currToken = null);
+            default:
+                return _internalErrorUnknownToken(token);
             }
         }
     }
@@ -754,11 +753,10 @@ public class FromXmlParser
             _nextToken = JsonToken.VALUE_STRING;
             _currToken = JsonToken.FIELD_NAME;
             break;
-        case XmlTokenStream.XML_NULL:
-            _currToken = JsonToken.VALUE_STRING;
-            return (_currText = null);
         case XmlTokenStream.XML_END:
             _currToken = null;
+        default:
+            return _internalErrorUnknownToken(token);
         }
         return null;
     }
@@ -782,6 +780,7 @@ public class FromXmlParser
             _parsingContext.setCurrentName(_xmlTokens.getLocalName());
             break;
         default:
+            _internalErrorUnknownToken(t);
         }
     }
 
@@ -1051,5 +1050,9 @@ public class FromXmlParser
             }
         }
         return true;
+    }
+
+    private <T> T  _internalErrorUnknownToken(Object token) {
+        throw new IllegalStateException("Internal error: unrecognized XmlTokenStream token: "+token);
     }
 }

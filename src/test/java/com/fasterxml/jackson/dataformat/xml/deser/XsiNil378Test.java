@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -33,6 +33,7 @@ public class XsiNil378Test extends XmlTestBase
         
         bean = MAPPER.readValue(
 "<StringPair "+XSI_NS_DECL+"><first xsi:nil='true' /><second>not null</second></StringPair>",
+//"<StringPair "+XSI_NS_DECL+"><first xsi:nil='true'></first><second>not null</second></StringPair>",
             StringPair.class);
         assertNotNull(bean);
         assertNull(bean.first);

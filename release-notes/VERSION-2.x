@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.10.2 (not yet released)
+
+#378: Jackson 2.10.x fails to deserialize xsi:nil with multiple child elements
+ (reported by henrik242@github)
+
 2.10.1 (09-Nov-2019)
 
 - Upgrade Woodstox dependency to 6.0.2
