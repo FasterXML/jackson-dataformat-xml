@@ -15,7 +15,7 @@ public class XsiNilNestingTest extends XmlTestBase
     }
 
     protected static class Level2 {
-        public String ignored;
+        public Integer ignored;
         public String field;
     }
 
