@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.10.2 (not yet released)
 
+#366: XML containing xsi:nil is improperly parsed
+ (reported by Luke K) 
 #378: Jackson 2.10.x fails to deserialize xsi:nil with multiple child elements
  (reported by henrik242@github)
 

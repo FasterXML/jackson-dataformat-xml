@@ -55,3 +55,8 @@ Rohit Narayanan (rohitnarayanan@github)
 
 * Reported #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
  (2.10.0)
+
+Luke Korth (lkorth@github.com)
+
+* Reported #366: XML containing xsi:nil is improperly parsed
+ (2.10.2)
