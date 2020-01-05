@@ -3,7 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class XsiNil378Test extends XmlTestBase
+public class XsiNilForStringsTest extends XmlTestBase
 {
     private final static String XSI_NS_DECL = "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'";
 
