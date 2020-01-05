@@ -59,7 +59,7 @@ public class XmlTokenStream
      * {@link FromXmlParser.Feature}s
      * are enabled.
      */
-    protected int _formatFeatures;
+    final protected int _formatFeatures;
     
     /*
     /**********************************************************************
@@ -150,13 +150,6 @@ public class XmlTokenStream
         return _xmlReader;
     }
 
-    /**
-     * @since 2.9
-     */
-    protected void setFormatFeatures(int f) {
-        _formatFeatures = f;
-    }
-    
     /*
     /**********************************************************************
     /* Public API

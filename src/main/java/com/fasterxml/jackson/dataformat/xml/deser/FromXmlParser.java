@@ -222,37 +222,6 @@ public class FromXmlParser
         return true;
     }
 
-    /*
-    /**********************************************************************
-    /* Extended API, configuration
-    /**********************************************************************
-     */
-
-    public FromXmlParser enable(Feature f) {
-        _formatFeatures |= f.getMask();
-        _xmlTokens.setFormatFeatures(_formatFeatures);
-        return this;
-    }
-
-    public FromXmlParser disable(Feature f) {
-        _formatFeatures &= ~f.getMask();
-        _xmlTokens.setFormatFeatures(_formatFeatures);
-        return this;
-    }
-
-    public final boolean isEnabled(Feature f) {
-        return (_formatFeatures & f.getMask()) != 0;
-    }
-
-    public FromXmlParser configure(Feature f, boolean state) {
-        if (state) {
-            enable(f);
-        } else {
-            disable(f);
-        }
-        return this;
-    }
-
     /*                                                                                       
     /**********************************************************************
     /* FormatFeature support                                                                             
@@ -734,7 +703,6 @@ public class FromXmlParser
         }
         return null;
     }
-
 
     private void _updateState(JsonToken t)
     {
