@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.10.3 (not yet released)
+
+- Upgrade Woodstox dependency to 6.1.1 (reduced dependencies for JDK9+)
+
 2.10.2 (05-Jan-2020)
 
 #366: XML containing xsi:nil is improperly parsed
