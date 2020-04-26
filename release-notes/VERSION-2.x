@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
-2.11.0 (not yet released)
+2.11.0 (26-Apr-2020)
 
 -
 
