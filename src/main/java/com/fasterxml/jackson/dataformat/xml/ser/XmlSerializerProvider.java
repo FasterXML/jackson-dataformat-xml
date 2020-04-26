@@ -30,7 +30,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     /**
      * If all we get to serialize is a null, there's no way to figure out
-     * expected root name; so let's just default to something like "&lt;null>"...
+     * expected root name; so let's just default to literal {@code "null"}.
      */
     protected final static QName ROOT_NAME_FOR_NULL = new QName("null");
 
