@@ -175,7 +175,7 @@ public class TestSerialization extends XmlTestBase
         XmlMapper xml = new XmlMapper(module);
         assertEquals("<String>custom:foo</String>", xml.writeValueAsString("foo"));
     }
-    
+
     // manual 'test' to see "what would JAXB do?"
     /*
     public void testJAXB() throws Exception

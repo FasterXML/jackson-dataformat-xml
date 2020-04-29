@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestDeserialization extends XmlTestBase
+public class Deserialization25Test extends XmlTestBase
 {
     private static class EmptyStrings
     {
