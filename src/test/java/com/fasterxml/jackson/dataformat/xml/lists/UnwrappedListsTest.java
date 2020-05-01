@@ -38,7 +38,7 @@ public class UnwrappedListsTest extends XmlTestBase
         public Value[] value;
     }
 
-    // [Issue#64]
+    // [dataformat-xml#64]
     static class Optionals {
         @JacksonXmlElementWrapper(useWrapping = false)
         public List<Optional> optional;

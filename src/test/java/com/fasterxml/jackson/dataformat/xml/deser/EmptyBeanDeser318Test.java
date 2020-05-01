@@ -1,6 +1,5 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -43,7 +42,8 @@ public class EmptyBeanDeser318Test extends XmlTestBase
 
         Wrapper value = MAPPER.readValue(s, Wrapper.class);
         assertEquals("id", value.id);
-        assertNull(value.nested);
+        assertNotNull(value.nested);
+        assertNull(value.nested.nested2);
     }
 
     public void testBlankString() throws Exception {
@@ -57,7 +57,8 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         // Cannot construct instance of `JacksonXMLTest$Nested` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('    ')
         Wrapper value = MAPPER.readValue(s, Wrapper.class);
         assertEquals("id", value.id);
-        assertNull(value.nested);
+        assertNotNull(value.nested);
+        assertNull(value.nested.nested2);
     }
 
     public void testBlankString2() throws Exception {
@@ -66,14 +67,11 @@ public class EmptyBeanDeser318Test extends XmlTestBase
                 + "  <nested>    </nested>"
                 + "</wrapper>";
 
-        // This fails with the following exception:
-        // com.fasterxml.jackson.databind.exc.MismatchedInputException:
-        // Cannot construct instance of `JacksonXMLTest$Nested` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('    ')
         Wrapper value = MAPPER.readerFor(Wrapper.class)
-                .with(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
                 .readValue(s);
         assertEquals("id", value.id);
-        assertNull(value.nested);
+        assertNotNull(value.nested);
+        assertNull(value.nested.nested2);
     }
 
     public void testMissing() throws Exception {
