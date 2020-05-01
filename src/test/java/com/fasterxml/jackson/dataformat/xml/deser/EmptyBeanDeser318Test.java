@@ -12,6 +12,15 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         String id;
         @JacksonXmlProperty(localName = "nested")
         Nested nested;
+
+        /* for debugging:
+        public void setNested(Nested n) {
+            if (n == null) {
+                throw new IllegalArgumentException();
+            }
+            nested = n;
+        }
+        */
     }
 
     static class Nested {
