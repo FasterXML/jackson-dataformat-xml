@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
+import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanInstantiator;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
@@ -64,6 +65,9 @@ public class JacksonXmlModule
 
         // as well as AnnotationIntrospector
         context.insertAnnotationIntrospector(_constructIntrospector());
+
+        // 2.11 adds ValueInstantiator, too
+        context.addValueInstantiators(new XmlBeanInstantiator.Provider());
 
         // and finally inform XmlFactory about overrides, if need be:
         if (_cfgNameForTextElement != FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY) {

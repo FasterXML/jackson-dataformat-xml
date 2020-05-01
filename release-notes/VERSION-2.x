@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.12.0 (not yet released)
+
+#318: XMLMapper fails to deserialize null (POJO reference) from blank tag
+ (reported by Jochen S)
+
 2.11.1 (not yet released)
 
 -

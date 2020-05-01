@@ -60,3 +60,7 @@ Luke Korth (lkorth@github.com)
 
 * Reported #366: XML containing xsi:nil is improperly parsed
  (2.10.2)
+
+Jochen Schalanda (joschi@github)
+* Repoerted #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
+ (2.12.0)

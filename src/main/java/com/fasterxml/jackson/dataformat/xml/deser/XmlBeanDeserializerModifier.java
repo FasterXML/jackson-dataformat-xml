@@ -96,9 +96,11 @@ public class XmlBeanDeserializerModifier
         ValueInstantiator inst = deser.getValueInstantiator();
         // 03-Aug-2017, tatu: [dataformat-xml#254] suggests we also should
         //    allow passing `int`/`Integer`/`long`/`Long` cases, BUT
-        //    unfortunately we can not simple use default handling. Would need
+        //    unfortunately we can not simply use default handling. Would need
         //    coercion.
-        if (!inst.canCreateFromString()) {
+        // 30-Apr-2020, tatu: Complication from [dataformat-xml#318] as we now
+        //    have a delegate too...
+        if ((inst instanceof XmlBeanInstantiator) || !inst.canCreateFromString()) {
             SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
             if (textProp != null) {
                 return new XmlTextDeserializer(deser, textProp);
