@@ -12,7 +12,7 @@ Project: jackson-dataformat-xml
 
 No changes since 2.10.x
 
-2.10.4 (not yet released)
+2.10.4 (03-May-2020)
 
 - Upgrade Woodstox dependency to 6.2.0 (minor improvement to MSV shading)
 
