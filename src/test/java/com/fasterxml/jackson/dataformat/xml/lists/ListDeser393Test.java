@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class Issue393DeserTest extends XmlTestBase
+public class ListDeser393Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "result")
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -28,7 +28,6 @@ public class Issue393DeserTest extends XmlTestBase
         }
     }
 
-//    @JsonIgnoreProperties(ignoreUnknown = true)
     @JacksonXmlRootElement(localName = "prices")
     static class Prices {
         private List<Price> price = new ArrayList<Price>();
@@ -38,14 +37,11 @@ public class Issue393DeserTest extends XmlTestBase
         }
 
         @JacksonXmlElementWrapper(useWrapping = false)
-        @JacksonXmlProperty(localName = "price")
         public List<Price> getPrice() {
             return this.price;
         }
     }
 
-//    @JacksonXmlRootElement(localName = "price")
-//    @JsonIgnoreProperties(ignoreUnknown = true)
     static class Price {
         private String price;
         private String num;
@@ -60,7 +56,6 @@ public class Issue393DeserTest extends XmlTestBase
             this.price = price;
         }
 
-        @JacksonXmlProperty(localName = "price")
         public String getPrice() {
             return this.price;
         }
@@ -69,7 +64,6 @@ public class Issue393DeserTest extends XmlTestBase
             this.num = num;
         }
 
-        @JacksonXmlProperty(localName = "num")
         public String getNum() {
             return this.num;
         }

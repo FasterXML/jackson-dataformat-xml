@@ -85,7 +85,7 @@ public class FromXmlParser
      *<p>
      * Name used for pseudo-property used for returning XML Text value (which does
      * not have actual element name to use). Defaults to empty String, but
-     * may be changed for interoperability reasons: JAXB, for example, uses
+     * may be changed for inter-operability reasons: JAXB, for example, uses
      * "value" as name.
      * 
      * @since 2.1
@@ -145,8 +145,6 @@ public class FromXmlParser
     protected JsonToken _nextToken;
 
     protected String _currText;
-
-    protected Set<String> _namesToWrap;
 
     /*
     /**********************************************************
@@ -323,14 +321,14 @@ public class FromXmlParser
      */
     public void addVirtualWrapping(Set<String> namesToWrap)
     {
-        /* 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
-         *   problems with Lists-in-Lists properties
-         */
+//System.out.println("addVirtualWrapping("+namesToWrap+")");
+        // 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
+        //   problems with Lists-in-Lists properties
         String name = _xmlTokens.getLocalName();
         if (name != null && namesToWrap.contains(name)) {
+//System.out.println("REPEAT from addVirtualWrapping()");
             _xmlTokens.repeatStartElement();
         }
-        _namesToWrap = namesToWrap;
         _parsingContext.setNamesToWrap(namesToWrap);
     }
 
@@ -435,7 +433,7 @@ public class FromXmlParser
             _currToken = JsonToken.START_ARRAY;
             // Ok: must replace current context with array as well
             _parsingContext.convertToArray();
-//System.out.println(" isExpectedArrayStart: OBJ->Array, wraps now: "+_parsingContext.getNamesToWrap());
+//System.out.println(" FromXmlParser.isExpectedArrayStart(): OBJ->Array");
             // And just in case a field name was to be returned, wipe it
             // 06-Jan-2015, tatu: Actually, could also be empty Object buffered; if so, convert...
             if (_nextToken == JsonToken.END_OBJECT) {
@@ -460,13 +458,13 @@ public class FromXmlParser
         if (t != null) {
             switch (t) {
             case FIELD_NAME:
-                System.out.println("JsonToken: FIELD_NAME '"+_parsingContext.getCurrentName()+"'");
+                System.out.println("FromXmlParser.nextToken(): JsonToken.FIELD_NAME '"+_parsingContext.getCurrentName()+"'");
                 break;
             case VALUE_STRING:
-                System.out.println("JsonToken: VALUE_STRING '"+getText()+"'");
+                System.out.println("FromXmlParser.nextToken(): JsonToken.VALUE_STRING '"+getText()+"'");
                 break;
             default:
-                System.out.println("JsonToken: "+t);
+                System.out.println("FromXmlParser.nextToken(): "+t);
             }
         }
         return t;
@@ -492,7 +490,6 @@ public class FromXmlParser
             case END_OBJECT:
             case END_ARRAY:
                 _parsingContext = _parsingContext.getParent();
-                _namesToWrap = _parsingContext.getNamesToWrap();
                 break;
             case FIELD_NAME:
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -534,7 +531,8 @@ public class FromXmlParser
 
             // Ok: virtual wrapping can be done by simply repeating current START_ELEMENT.
             // Couple of ways to do it; but start by making _xmlTokens replay the thing...
-            if (_namesToWrap != null && _namesToWrap.contains(name)) {
+            if (_parsingContext.shouldWrap(name)) {
+//System.out.println("REPEAT from nextToken()");
                 _xmlTokens.repeatStartElement();
             }
 
@@ -565,7 +563,6 @@ public class FromXmlParser
                 }
                 _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
                 _parsingContext = _parsingContext.getParent();
-                _namesToWrap = _parsingContext.getNamesToWrap();
                 return _currToken;
 
             case XmlTokenStream.XML_ATTRIBUTE_NAME:
@@ -696,7 +693,8 @@ public class FromXmlParser
             }
             String name = _xmlTokens.getLocalName();
             _parsingContext.setCurrentName(name);
-            if (_namesToWrap != null && _namesToWrap.contains(name)) {
+            if (_parsingContext.shouldWrap(name)) {
+//System.out.println("REPEAT from nextTextValue()");
                 _xmlTokens.repeatStartElement();
             }
             _mayBeLeaf = true;
@@ -715,7 +713,6 @@ public class FromXmlParser
             }
             _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
             _parsingContext = _parsingContext.getParent();
-            _namesToWrap = _parsingContext.getNamesToWrap();
             break;
         case XmlTokenStream.XML_ATTRIBUTE_NAME:
             // If there was a chance of leaf node, no more...
@@ -774,7 +771,6 @@ public class FromXmlParser
         case END_OBJECT:
         case END_ARRAY:
             _parsingContext = _parsingContext.getParent();
-            _namesToWrap = _parsingContext.getNamesToWrap();
             break;
         case FIELD_NAME:
             _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -835,7 +831,6 @@ public class FromXmlParser
                     // note: Should NOT update context, because we will still be getting
                     // matching END_OBJECT, which will undo contexts properly
                     _parsingContext = _parsingContext.getParent();
-                    _namesToWrap = _parsingContext.getNamesToWrap();
                     _currToken = JsonToken.VALUE_STRING;
                     _nextToken = null;
                     // One more thing: must explicitly skip the END_OBJECT that would follow
