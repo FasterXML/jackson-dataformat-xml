@@ -272,8 +272,6 @@ public class FromXmlParser
      * between minor versions (it is however expected not to change in
      * patch versions). So if you have to use it, be prepared for
      * possible additional work.
-     * 
-     * @since 2.12
      */
     public void addVirtualWrapping(Set<String> namesToWrap0, boolean caseInsensitive)
     {
@@ -291,11 +289,6 @@ public class FromXmlParser
             _xmlTokens.repeatStartElement();
         }
         _parsingContext.setNamesToWrap(namesToWrap);
-    }
-
-    @Deprecated // since 2.12
-    public void addVirtualWrapping(Set<String> namesToWrap) {
-        addVirtualWrapping(namesToWrap, false);
     }
 
     /*
