@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class ListDeser393Test extends XmlTestBase
@@ -16,38 +15,37 @@ public class ListDeser393Test extends XmlTestBase
     @JacksonXmlRootElement(localName = "result")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     static class Value393 {
-        private Prices prices = new Prices();
+        private Prices393 prices = new Prices393();
 
-        public void setPrices(Prices prices) {
+        public void setPrices(Prices393 prices) {
             this.prices = prices;
         }
 
-        @JacksonXmlProperty(localName = "prices")
-        public Prices getPrices() {
+        public Prices393 getPrices() {
             return this.prices;
         }
     }
 
     @JacksonXmlRootElement(localName = "prices")
-    static class Prices {
-        private List<Price> price = new ArrayList<Price>();
+    static class Prices393 {
+        private List<Price393> price = new ArrayList<Price393>();
 
-        public void setPrice(List<Price> price) {
+        public void setPrice(List<Price393> price) {
             this.price = price;
         }
 
         @JacksonXmlElementWrapper(useWrapping = false)
-        public List<Price> getPrice() {
+        public List<Price393> getPrice() {
             return this.price;
         }
     }
 
-    static class Price {
+    static class Price393 {
         private String price;
         private String num;
 
-        protected Price() { }
-        public Price(String p, String n) {
+        protected Price393() { }
+        public Price393(String p, String n) {
             price = p;
             num = n;
         }
@@ -80,37 +78,6 @@ public class ListDeser393Test extends XmlTestBase
     // [dataform#393]
     public void testDeser393() throws Exception
     {
-        // for debugging:
-/*        
-        Value393 input = new Value393();
-        Prices prices = new Prices();
-        prices.setPrice(Arrays.asList(
-                new Price("100", "7.0"),
-                new Price("100", "4.0")
-        ));
-        input.setPrices(prices);
-
-        String xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(input);
-        System.out.println("XML:\n"+xml);
-*/
-/*
-        String content = //"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "\n" +
-                "<result>\n"
-                + " <prices>\n"
-                + "   <price>\n"
-                + "     <num>100</num>\n"
-                + "     <price>7.0</price>\n"
-                + "   </price>\n"
-                + "   <price>\n"
-                + "     <num>100</num>\n"
-                + "     <price>4.0</price>\n"
-                + "   </price>"
-                + " </prices>\n"
-                + "</result>";
-        Value393 result = MAPPER.readValue(content, Value393.class);
-        assertNotNull(result);
-*/
-
         String content =
                 "<prices>\n"
                 + " <price>\n"
@@ -122,7 +89,9 @@ public class ListDeser393Test extends XmlTestBase
                 + "   <price>4.0</price>\n"
                 + " </price>"
                 + "</prices>\n";
-        Prices result = MAPPER.readValue(content, Prices.class);
+        Prices393 result = MAPPER.readValue(content, Prices393.class);
         assertNotNull(result);
+        assertNotNull(result.getPrice());
+        assertEquals(2, result.getPrice().size());
     }
 }
