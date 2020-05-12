@@ -28,7 +28,6 @@ public class Issue393DeserTest extends XmlTestBase
         }
     }
 
-//    @JsonIgnoreProperties(ignoreUnknown = true)
     @JacksonXmlRootElement(localName = "prices")
     static class Prices {
         private List<Price> price = new ArrayList<Price>();
@@ -38,14 +37,11 @@ public class Issue393DeserTest extends XmlTestBase
         }
 
         @JacksonXmlElementWrapper(useWrapping = false)
-        @JacksonXmlProperty(localName = "price")
         public List<Price> getPrice() {
             return this.price;
         }
     }
 
-//    @JacksonXmlRootElement(localName = "price")
-//    @JsonIgnoreProperties(ignoreUnknown = true)
     static class Price {
         private String price;
         private String num;
@@ -60,7 +56,6 @@ public class Issue393DeserTest extends XmlTestBase
             this.price = price;
         }
 
-        @JacksonXmlProperty(localName = "price")
         public String getPrice() {
             return this.price;
         }
@@ -69,7 +64,6 @@ public class Issue393DeserTest extends XmlTestBase
             this.num = num;
         }
 
-        @JacksonXmlProperty(localName = "num")
         public String getNum() {
             return this.num;
         }

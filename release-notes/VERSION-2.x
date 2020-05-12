@@ -6,7 +6,8 @@ Project: jackson-dataformat-xml
 
 2.11.1 (not yet released)
 
--
+#393: `MismatchedInputException` for nested repeating element name in `List`
+ (reported by kaizenHorse@github)
 
 2.11.0 (26-Apr-2020)
 

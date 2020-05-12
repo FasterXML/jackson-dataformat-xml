@@ -170,22 +170,22 @@ public class XmlTokenStream
         int n = next0();
         switch (n) {
         case XML_START_ELEMENT: 
-            System.out.println(" XML-token: XML_START_ELEMENT '"+_localName+"'");
+            System.out.println(" XmlTolenStream.next(): XML_START_ELEMENT '"+_localName+"'");
             break;
         case XML_END_ELEMENT: 
-            System.out.println(" XML-token: XML_END_ELEMENT '"+_localName+"'");
+            System.out.println(" XmlTolenStream.next(): XML_END_ELEMENT '"+_localName+"'");
             break;
         case XML_ATTRIBUTE_NAME: 
-            System.out.println(" XML-token: XML_ATTRIBUTE_NAME '"+_localName+"'");
+            System.out.println(" XmlTolenStream.next(): XML_ATTRIBUTE_NAME '"+_localName+"'");
             break;
         case XML_ATTRIBUTE_VALUE: 
-            System.out.println(" XML-token: XML_ATTRIBUTE_VALUE '"+_textValue+"'");
+            System.out.println(" XmlTolenStream.next(): XML_ATTRIBUTE_VALUE '"+_textValue+"'");
             break;
         case XML_TEXT: 
-            System.out.println(" XML-token: XML_TEXT '"+_textValue+"'");
+            System.out.println(" XmlTolenStream.next(): XML_TEXT '"+_textValue+"'");
             break;
         case XML_END: 
-            System.out.println(" XML-token: XML_END");
+            System.out.println(" XmlTolenStream.next(): XML_END");
             break;
         default:
             throw new IllegalStateException();
@@ -194,7 +194,8 @@ public class XmlTokenStream
     }
     */
 
-    public int next() throws XMLStreamException 
+//    public int next0() throws XMLStreamException
+    public int next() throws XMLStreamException
     {
         if (_repeatElement != 0) {
             return (_currentState = _handleRepeatElement());
@@ -256,7 +257,7 @@ public class XmlTokenStream
      */
     protected void repeatStartElement()
     {
-//System.out.println(" -> repeatStartElement for "+_localName);        
+//System.out.println(" -> repeatStartElement for "+_localName+", _currentWrapper was: "+_currentWrapper);
         // sanity check: can only be used when just returned START_ELEMENT:
         if (_currentState != XML_START_ELEMENT) {
             throw new IllegalStateException("Current state not XML_START_ELEMENT ("
@@ -264,10 +265,11 @@ public class XmlTokenStream
         }
         // Important: add wrapper, to keep track...
         if (_currentWrapper == null) {
-            _currentWrapper = ElementWrapper.matchingWrapper(_currentWrapper, _localName, _namespaceURI);
+            _currentWrapper = ElementWrapper.matchingWrapper(null, _localName, _namespaceURI);
         } else {
             _currentWrapper = ElementWrapper.matchingWrapper(_currentWrapper.getParent(), _localName, _namespaceURI);
         }
+//System.out.println(" repeatStartElement for "+_localName+", _currentWrapper now: "+_currentWrapper);
         _repeatElement = REPLAY_START_DUP;
     }
 
@@ -523,12 +525,13 @@ public class XmlTokenStream
         if (_currentWrapper != null) {
             if (_currentWrapper.matchesWrapper(localName, ns)) {
                 _currentWrapper = _currentWrapper.intermediateWrapper();
+//System.out.println(" _initStartElement(): START_ELEMENT ("+localName+") DOES match ["+_currentWrapper+"]: leave/add intermediate");
             } else {
                 // implicit end is more interesting:
+//System.out.println(" _initStartElement(): START_ELEMENT ("+localName+") not matching '"+_localName+"'; add extra XML-END-ELEMENT!");
                 _localName = _currentWrapper.getWrapperLocalName();
                 _namespaceURI = _currentWrapper.getWrapperNamespace();
                 _currentWrapper = _currentWrapper.getParent();
-//System.out.println(" START_ELEMENT ("+localName+") not matching '"+_localName+"'; add extra XML-END-ELEMENT!");
                 // Important! We also need to restore the START_ELEMENT, so:
                 _nextLocalName = localName;
                 _nextNamespaceURI = ns;
@@ -571,16 +574,18 @@ public class XmlTokenStream
      */
     protected int _handleRepeatElement() throws XMLStreamException 
     {
+//System.out.println(" XMLTokenStream._handleRepeatElement()");
+
         int type = _repeatElement;
         _repeatElement = 0;
         if (type == REPLAY_START_DUP) {
-//System.out.println("handleRepeat for START_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
+//System.out.println(" XMLTokenStream._handleRepeatElement() for START_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             // important: add the virtual element second time, but not with name to match
             _currentWrapper = _currentWrapper.intermediateWrapper();
             return XML_START_ELEMENT;
         }
         if (type == REPLAY_END) {
-//System.out.println("handleRepeat for END_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
+//System.out.println(" XMLTokenStream._handleRepeatElement() for END_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             _localName = _xmlReader.getLocalName();
             _namespaceURI = _xmlReader.getNamespaceURI();
             if (_currentWrapper != null) {
@@ -596,8 +601,8 @@ public class XmlTokenStream
             _namespaceURI = _nextNamespaceURI;
             _nextLocalName = null;
             _nextNamespaceURI = null;
-            
-//System.out.println("handleRepeat for START_DELAYED: "+_localName+" ("+_xmlReader.getLocalName()+")");
+
+//System.out.println(" XMLTokenStream._handleRepeatElement() for START_DELAYED: "+_localName+" ("+_xmlReader.getLocalName()+")");
 
             return XML_START_ELEMENT;
         }
@@ -606,6 +611,7 @@ public class XmlTokenStream
     
     private final int _handleEndElement()
     {
+//System.out.println(" XMLTokenStream._handleEndElement()");
         if (_currentWrapper != null) {
             ElementWrapper w = _currentWrapper;
             // important: if we close the scope, must duplicate END_ELEMENT as well
@@ -614,7 +620,7 @@ public class XmlTokenStream
                 _localName = w.getWrapperLocalName();
                 _namespaceURI = w.getWrapperNamespace();
                 _currentWrapper = _currentWrapper.getParent();
-//System.out.println(" IMPLICIT requestRepeat of END_ELEMENT '"+_localName);
+//System.out.println(" XMLTokenStream._handleEndElement(): IMPLICIT requestRepeat of END_ELEMENT '"+_localName);
             } else {
                 _currentWrapper = _currentWrapper.getParent();
             }
