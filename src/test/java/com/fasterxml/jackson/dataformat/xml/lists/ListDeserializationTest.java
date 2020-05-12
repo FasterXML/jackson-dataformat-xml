@@ -2,6 +2,8 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -67,6 +69,32 @@ public class ListDeserializationTest extends XmlTestBase
     {
         @JacksonXmlElementWrapper(useWrapping=false)
         public List<Integer> values;
+    }
+
+    // [dataformat-xml#191]
+    static class TestList191 {
+        @JacksonXmlElementWrapper(useWrapping = true, localName = "items")
+        @JacksonXmlProperty(localName = "item")
+        public ArrayList<ListItem191> items;
+    }    
+
+    static class ListItem191 {
+        @JacksonXmlProperty(isAttribute = true)
+        public String name;
+    }    
+
+    // [dataformat-xml#294]
+    @JacksonXmlRootElement(localName = "levels")
+    static class RootLevel294 {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(localName = "sublevel")
+        public List<Sublevel294> sublevels = new ArrayList<>();
+    }
+
+    @JsonPropertyOrder({ "id", "sublevel" })
+    static class Sublevel294 {
+        public Integer id;
+        public String sublevel;
     }
 
     /*
@@ -163,5 +191,47 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
         assertEquals(Integer.valueOf(1), bean.values.get(0));
         assertEquals(Integer.valueOf(2), bean.values.get(1));
         assertEquals(Integer.valueOf(3), bean.values.get(2));
+    }
+
+    // [dataformat-xml#191]
+    public void testListDeser191() throws Exception
+    {
+        final String XML =
+"<TestList>\n"+
+"    <items>\n"+
+"        <item name='Item1'/>\n"+
+"        <item name='Item2'> </item>\n"+ // important: at least one ws char between start/end
+"        <item name='Item3'/>\n"+
+"    </items>\n"+
+"</TestList>"
+                ;
+        TestList191 testList = MAPPER.readValue(XML, TestList191.class);
+        assertNotNull(testList);
+        assertNotNull(testList.items);
+        assertEquals(3, testList.items.size());
+    }
+
+    // [dataformat-xml#294]
+    public void testNestedLists294() throws Exception
+    {
+        RootLevel294 tree = new RootLevel294();
+        tree.sublevels.add(_newSublevel(1, "Name A"));
+        tree.sublevels.add(_newSublevel(2, "Name B"));
+        String xml = MAPPER
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(tree);
+//System.err.println("XML:\n"+xml);
+        RootLevel294 resTree = MAPPER.readValue(xml, RootLevel294.class);
+        assertNotNull(resTree);
+        assertNotNull(resTree.sublevels);
+        assertEquals(2, resTree.sublevels.size());
+        assertEquals("Name B", resTree.sublevels.get(1).sublevel);
+    }
+
+    private Sublevel294 _newSublevel(Integer id, String sublevel) {
+        Sublevel294 res = new Sublevel294();
+        res.id = id;
+        res.sublevel = sublevel;
+        return res;
     }
 }
