@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
+// 11-May-2020, tatu: Actually works on `master` (3.0), just not 2.x.
+//   Kept under failing since backporting would be ideal.
 public class ListDeser319Test extends XmlTestBase
 {
     static class Value319 {
