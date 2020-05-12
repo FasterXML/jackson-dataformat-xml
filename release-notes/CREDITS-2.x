@@ -66,6 +66,11 @@ Alexei Volkov (softkot@github)
 * Reported #294: XML parser error with nested same element names
  (2.11.1)
 
+Joseph Petersen (jetersen@github)
+
+* Reported #273: Input mismatch with case-insensitive properties
+ (2.12.0)
+
 Jochen Schalanda (joschi@github)
 
 * Reported #318: XMLMapper fails to deserialize null (POJO reference) from blank tag

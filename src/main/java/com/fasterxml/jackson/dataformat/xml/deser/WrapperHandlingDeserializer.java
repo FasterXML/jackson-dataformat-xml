@@ -28,6 +28,9 @@ public class WrapperHandlingDeserializer
     protected final Set<String> _namesToWrap;
 
     protected final JavaType _type;
+
+    // @since 2.12
+    protected final boolean _caseInsensitive;
     
     /*
     /**********************************************************************
@@ -44,6 +47,7 @@ public class WrapperHandlingDeserializer
         super(delegate);
         _namesToWrap = namesToWrap;
         _type = delegate.getValueType();
+        _caseInsensitive = delegate.isCaseInsensitive();
     }
 
     /*
@@ -147,7 +151,7 @@ public class WrapperHandlingDeserializer
             p = ((JsonParserDelegate) p).delegate();
         }
         if (p instanceof FromXmlParser) {
-            ((FromXmlParser) p).addVirtualWrapping(_namesToWrap);
+            ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
         }
     }
     

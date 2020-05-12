@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
@@ -317,19 +318,29 @@ public class FromXmlParser
      * patch versions). So if you have to use it, be prepared for
      * possible additional work.
      * 
-     * @since 2.1
+     * @since 2.12
      */
-    public void addVirtualWrapping(Set<String> namesToWrap)
+    public void addVirtualWrapping(Set<String> namesToWrap0, boolean caseInsensitive)
     {
-//System.out.println("addVirtualWrapping("+namesToWrap+")");
-        // 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
+System.out.printf("addVirtualWrapping(%s) [case-insensitive? %s]\n", namesToWrap0, caseInsensitive);
+
+        final Set<String> namesToWrap = caseInsensitive
+                ? CaseInsensitiveNameSet.construct(namesToWrap0)
+                : namesToWrap0;
+
+// 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
         //   problems with Lists-in-Lists properties
         String name = _xmlTokens.getLocalName();
-        if (name != null && namesToWrap.contains(name)) {
-//System.out.println("REPEAT from addVirtualWrapping()");
+        if ((name != null) && namesToWrap.contains(name)) {
+System.out.println("REPEAT from addVirtualWrapping()");
             _xmlTokens.repeatStartElement();
         }
         _parsingContext.setNamesToWrap(namesToWrap);
+    }
+
+    @Deprecated // since 2.12
+    public void addVirtualWrapping(Set<String> namesToWrap) {
+        addVirtualWrapping(namesToWrap, false);
     }
 
     /*
