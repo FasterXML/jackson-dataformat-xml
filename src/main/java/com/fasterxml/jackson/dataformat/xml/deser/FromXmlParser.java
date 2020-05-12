@@ -277,7 +277,7 @@ public class FromXmlParser
      */
     public void addVirtualWrapping(Set<String> namesToWrap0, boolean caseInsensitive)
     {
-System.out.printf("addVirtualWrapping(%s) [case-insensitive? %s]\n", namesToWrap0, caseInsensitive);
+//System.out.printf("addVirtualWrapping(%s) [case-insensitive? %s]\n", namesToWrap0, caseInsensitive);
 
         final Set<String> namesToWrap = caseInsensitive
                 ? CaseInsensitiveNameSet.construct(namesToWrap0)
@@ -287,7 +287,7 @@ System.out.printf("addVirtualWrapping(%s) [case-insensitive? %s]\n", namesToWrap
         //   problems with Lists-in-Lists properties
         String name = _xmlTokens.getLocalName();
         if ((name != null) && namesToWrap.contains(name)) {
-System.out.println("REPEAT from addVirtualWrapping()");
+//System.out.println("REPEAT from addVirtualWrapping()");
             _xmlTokens.repeatStartElement();
         }
         _parsingContext.setNamesToWrap(namesToWrap);
