@@ -1,8 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.databind.*;
+
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -35,7 +38,7 @@ public class CaseInsensitiveDeser273Test extends XmlTestBase
         }
     }
 
-//    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     static class Depot273
     {
         public Depot273() {
@@ -47,7 +50,7 @@ public class CaseInsensitiveDeser273Test extends XmlTestBase
         @JacksonXmlProperty(isAttribute = true)
         public String name;
 
-        // Should not actually be necessary but...
+        // Should not actually be necessary but unless unknown ignored is needed:
         @JacksonXmlText
         public String text;
 

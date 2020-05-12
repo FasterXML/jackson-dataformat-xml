@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.12.0 (not yet released)
 
+#273: Input mismatch with case-insensitive properties
+ (reported by Joseph P)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (reported by Jochen S)
 

@@ -162,11 +162,6 @@ public final class XmlReadContext
         _namesToWrap = namesToWrap;
     }
 
-    @Deprecated // since 2.11.1
-    public Set<String> getNamesToWrap() {
-        return _namesToWrap;
-    }
-
     // @since 2.11.1
     public boolean shouldWrap(String localName) {
         return (_namesToWrap != null) && _namesToWrap.contains(localName);
