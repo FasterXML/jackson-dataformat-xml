@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.11.1 (not yet released)
 
+#294: XML parser error with nested same element names
+ (reported by Alexei V)
 #393: `MismatchedInputException` for nested repeating element name in `List`
  (reported by kaizenHorse@github)
 

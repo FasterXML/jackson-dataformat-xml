@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class Issue393DeserTest extends XmlTestBase
+public class ListDeser393Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "result")
     @JsonInclude(JsonInclude.Include.NON_NULL)

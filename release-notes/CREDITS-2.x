@@ -60,3 +60,8 @@ Luke Korth (lkorth@github.com)
 
 * Reported #366: XML containing xsi:nil is improperly parsed
  (2.10.2)
+
+Alexei Volkov (softkot@github)
+
+* Reported #294: XML parser error with nested same element names
+ (2.11.1)
