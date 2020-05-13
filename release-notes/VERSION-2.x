@@ -10,6 +10,7 @@ Project: jackson-dataformat-xml
  (reported by Joseph P)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (reported by Jochen S)
+#397: `XmlReadContext` does not keep track of array index
 
 2.11.1 (not yet released)
 
