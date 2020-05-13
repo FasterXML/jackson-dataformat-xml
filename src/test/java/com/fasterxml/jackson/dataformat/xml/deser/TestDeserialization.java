@@ -68,7 +68,7 @@ public class TestDeserialization extends XmlTestBase
     	    assertNotNull(map);
     }
 
-    // // Tests for [Issue#64]
+    // // Tests for [dataformat-xml#64]
 
     public void testOptionalAttr() throws Exception
     {
