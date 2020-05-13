@@ -2,8 +2,6 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -12,20 +10,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class ListDeser393Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "result")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    static class Value393 {
-        private Prices393 prices = new Prices393();
-
-        public void setPrices(Prices393 prices) {
-            this.prices = prices;
-        }
-
-        public Prices393 getPrices() {
-            return this.prices;
-        }
-    }
-
     @JacksonXmlRootElement(localName = "prices")
     static class Prices393 {
         private List<Price393> price = new ArrayList<Price393>();

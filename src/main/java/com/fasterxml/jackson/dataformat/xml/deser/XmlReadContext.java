@@ -96,6 +96,7 @@ public final class XmlReadContext
 
     public final XmlReadContext createChildArrayContext(int lineNr, int colNr)
     {
+        ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new XmlReadContext(TYPE_ARRAY, this, lineNr, colNr);
@@ -107,6 +108,7 @@ public final class XmlReadContext
 
     public final XmlReadContext createChildObjectContext(int lineNr, int colNr)
     {
+        ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new XmlReadContext(TYPE_OBJECT, this, lineNr, colNr);
@@ -130,22 +132,6 @@ public final class XmlReadContext
     @Override
     public final XmlReadContext getParent() { return _parent; }
 
-    /*
-    /**********************************************************************
-    /* State changes
-    /**********************************************************************
-     */
-
-    public void setCurrentName(String name) {
-        _currentName = name;
-    }
-
-    /*
-    /**********************************************************************
-    /* Extended API
-    /**********************************************************************
-     */
-
     /**
      * @return Location pointing to the point where the context
      *   start marker was found
@@ -158,11 +144,30 @@ public final class XmlReadContext
         return new JsonLocation(srcRef, totalChars, _lineNr, _columnNr);
     }
 
+    /*
+    /**********************************************************************
+    /* Extended API
+    /**********************************************************************
+     */
+
+    /**
+     * Method called to mark start of new value, mostly to update `index`
+     * for Array and Root contexts.
+     *
+     * @since 2.12
+     */
+    public final void valueStarted() {
+        ++_index;
+    }
+
+    public void setCurrentName(String name) {
+        _currentName = name;
+    }
+
     public void setNamesToWrap(Set<String> namesToWrap) {
         _namesToWrap = namesToWrap;
     }
 
-    // @since 2.11.1
     public boolean shouldWrap(String localName) {
         return (_namesToWrap != null) && _namesToWrap.contains(localName);
     }
