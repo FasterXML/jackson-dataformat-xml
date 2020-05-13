@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -39,7 +40,17 @@ public class TestUnwrappedDeserIssue86 extends XmlTestBase
           }
 
           final Issue86 otherIssue86 = (Issue86) other;
-          return otherIssue86.id.equals(id) && otherIssue86.children.equals(children);
+          return Objects.equals(id, otherIssue86.id)
+                 && Objects.deepEquals(children, otherIssue86.children);
+      }
+
+      @Override
+      public String toString() {
+          StringBuilder sb = new StringBuilder();
+          sb.append("{id='").append(id)
+              .append("', children=").append(children)
+              .append('}');
+          return sb.toString();
       }
     }
 
