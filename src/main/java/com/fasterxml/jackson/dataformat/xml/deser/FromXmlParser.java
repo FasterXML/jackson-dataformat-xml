@@ -324,10 +324,15 @@ public class FromXmlParser
 //System.out.println("addVirtualWrapping("+namesToWrap+")");
         // 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
         //   problems with Lists-in-Lists properties
-        String name = _xmlTokens.getLocalName();
-        if (name != null && namesToWrap.contains(name)) {
+        // 12-May-2020, tatu: But as per [dataformat-xml#86] NOT for root element
+        //   (would still like to know why work-around needed ever, but...)
+        if (_parsingContext.inObject()
+                 && !_parsingContext.getParent().inRoot()) {
+            String name = _xmlTokens.getLocalName();
+            if ((name != null) && namesToWrap.contains(name)) {
 //System.out.println("REPEAT from addVirtualWrapping()");
-            _xmlTokens.repeatStartElement();
+                _xmlTokens.repeatStartElement();
+            }
         }
         _parsingContext.setNamesToWrap(namesToWrap);
     }
