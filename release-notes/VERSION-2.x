@@ -6,9 +6,6 @@ Project: jackson-dataformat-xml
 
 2.12.0 (not yet released)
 
-#86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
-  matches `@JacksonXmlRootElement` localName
- (reported by Eric S)
 #273: Input mismatch with case-insensitive properties
  (reported by Joseph P)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
@@ -16,6 +13,9 @@ Project: jackson-dataformat-xml
 
 2.11.1 (not yet released)
 
+#86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
+   matches `@JacksonXmlRootElement` localName
+ (reported by Eric S)
 #294: XML parser error with nested same element names
  (reported by Alexei V)
 #393: `MismatchedInputException` for nested repeating element name in `List`
