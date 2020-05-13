@@ -66,6 +66,12 @@ Alexei Volkov (softkot@github)
 * Reported #294: XML parser error with nested same element names
  (2.11.1)
 
+Eric Schoonover (spoon16@github)
+
+* Reported #86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
+  matches `@JacksonXmlRootElement` localName
+ (2.12.0)
+
 Joseph Petersen (jetersen@github)
 
 * Reported #273: Input mismatch with case-insensitive properties

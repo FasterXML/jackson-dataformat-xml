@@ -322,18 +322,23 @@ public class FromXmlParser
      */
     public void addVirtualWrapping(Set<String> namesToWrap0, boolean caseInsensitive)
     {
-//System.out.printf("addVirtualWrapping(%s) [case-insensitive? %s]\n", namesToWrap0, caseInsensitive);
+//System.out.printf("addVirtualWrapping(%s) at '%s' [case-insensitive? %s]\n", namesToWrap0, _parsingContext.pathAsPointer(), caseInsensitive);
 
         final Set<String> namesToWrap = caseInsensitive
                 ? CaseInsensitiveNameSet.construct(namesToWrap0)
                 : namesToWrap0;
 
-// 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
+        // 17-Sep-2012, tatu: Not 100% sure why, but this is necessary to avoid
         //   problems with Lists-in-Lists properties
-        String name = _xmlTokens.getLocalName();
-        if ((name != null) && namesToWrap.contains(name)) {
+        // 12-May-2020, tatu: But as per [dataformat-xml#86] NOT for root element
+        //   (would still like to know why work-around needed ever, but...)
+        if (_parsingContext.inObject()
+                 && !_parsingContext.getParent().inRoot()) {
+            String name = _xmlTokens.getLocalName();
+            if ((name != null) && namesToWrap.contains(name)) {
 //System.out.println("REPEAT from addVirtualWrapping()");
-            _xmlTokens.repeatStartElement();
+                _xmlTokens.repeatStartElement();
+            }
         }
         _parsingContext.setNamesToWrap(namesToWrap);
     }
