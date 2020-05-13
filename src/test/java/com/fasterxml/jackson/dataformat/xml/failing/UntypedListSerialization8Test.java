@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class TestUntypedListSerialization extends XmlTestBase
+public class UntypedListSerialization8Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName="L")
     static class UntypedListBean
