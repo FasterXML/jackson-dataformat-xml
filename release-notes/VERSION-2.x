@@ -25,8 +25,15 @@ Project: jackson-dataformat-xml
 
 No changes since 2.10.x
 
+2.10.5 (not yet released)
+
+-
+
 2.10.4 (03-May-2020)
 
+#219: Deserialization issue from XML to POJO with Jackson: no String-argument
+   constructor/factory method to deserialize from String value
+  (NOTE: likely fixed earlier, but fix verified after 2.10.4 release)
 - Upgrade Woodstox dependency to 6.2.0 (minor improvement to MSV shading)
 
 2.10.3 (03-Mar-2020)
