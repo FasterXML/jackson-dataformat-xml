@@ -48,20 +48,20 @@ public class TestUnwrappedDeserIssue86 extends XmlTestBase
     /* Test methods
     /***********************************************************************
      */
-    
+
     public void testDeserializeUnwrappedListWhenLocalNameForRootElementAndXmlPropertyMatch() throws Exception
     {
-        final String source =
-            "<test id=\"0\">" +
-                "<test id=\"0.1\">" +
-                    "<test id=\"0.1.1\"/>" +
-                "</test>" +
-                "<test id=\"0.2\"/>" +
-                "<test id=\"0.3\">" +
-                    "<test id=\"0.3.1\"/>" +
-                "</test>" +
+        final String sourceIndented =
+            "<test id=\"0\">\n" +
+                "<test id=\"0.1\">\n" +
+                    "<test id=\"0.1.1\"/>\n" +
+                "</test>\n" +
+                "<test id=\"0.2\"/>\n" +
+                "<test id=\"0.3\">\n" +
+                    "<test id=\"0.3.1\"/>\n" +
+                "</test>\n" +
             "</test>";
-    
+        final String sourceCompact = sourceIndented.replaceAll("\n", "");
         final Issue86 before = new Issue86("0",
             Arrays.asList(new Issue86("0.1",
                     Arrays.asList(new Issue86("0.1.1", null))),
@@ -74,11 +74,9 @@ public class TestUnwrappedDeserIssue86 extends XmlTestBase
         mapper.setSerializationInclusion(Include.NON_NULL);
     
         final String xml = mapper.writeValueAsString(before);
-        assertEquals(source, xml);
+        assertEquals(sourceCompact, xml);
     
-        final Issue86 after = mapper.readValue(xml, Issue86.class);
+        final Issue86 after = mapper.readValue(sourceIndented, Issue86.class);
         assertEquals(before, after);
     }
-
-
 }
