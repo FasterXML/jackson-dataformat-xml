@@ -396,24 +396,26 @@ public class DefaultXmlPrettyPrinter
         _justHadStartElement = false;
     }
 
+    // method definition changed in 2.12
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName,
-    		byte[] data, int offset, int len)
+            String nsURI, String localName,
+            org.codehaus.stax2.typed.Base64Variant base64variant,
+            byte[] data, int offset, int len)
         throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {
             _objectIndenter.writeIndentation(sw, _nesting);
         }
         sw.writeStartElement(nsURI, localName);
-        sw.writeBinary(data, offset, len);
+        sw.writeBinary(base64variant, data, offset, len);
         sw.writeEndElement();
         _justHadStartElement = false;
     }
 
     @Override
     public void writeLeafNullElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName)
+            String nsURI, String localName)
         throws XMLStreamException
     {
         if (!_objectIndenter.isInline()) {

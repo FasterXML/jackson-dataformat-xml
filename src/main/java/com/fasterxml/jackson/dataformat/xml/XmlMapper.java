@@ -160,6 +160,11 @@ public class XmlMapper extends ObjectMapper
         // 21-Jun-2017, tatu: Seems like there are many cases in XML where ability to coerce empty
         //    String into `null` (where it otherwise is an error) is very useful.
         enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+
+        // 13-May-2020, tatu: [dataformat-xml#377] Need to ensure we will keep XML-specific
+        //    Base64 default as "MIME" (not MIME-NO-LINEFEEDS), to preserve pre-2.12
+        //    behavior
+        setBase64Variant(Base64Variants.MIME);
     }
 
     /**

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
  */
 public class TestBinaryStreamToXMLSerialization extends XmlTestBase
 {
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
 
     public void testWith0Bytes() throws Exception 
     {

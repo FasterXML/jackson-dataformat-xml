@@ -830,22 +830,24 @@ public final class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
+        final org.codehaus.stax2.typed.Base64Variant stax2base64v = StaxUtil.toStax2Base64Variant(b64variant);
         try {
             if (_nextIsAttribute) {
                 // Stax2 API only has 'full buffer' write method:
                 byte[] fullBuffer = toFullBuffer(data, offset, len);
-                _xmlWriter.writeBinaryAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
+                _xmlWriter.writeBinaryAttribute(stax2base64v,
+                        "", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
             } else if (checkNextIsUnwrapped()) {
             	// should we consider pretty-printing or not?
-                _xmlWriter.writeBinary(data, offset, len);
+                _xmlWriter.writeBinary(stax2base64v, data, offset, len);
             } else {
                 if (_xmlPrettyPrinter != null) {
                     _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                             _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                            data, offset, len);
+                            stax2base64v, data, offset, len);
                 } else {
                     _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                    _xmlWriter.writeBinary(data, offset, len);
+                    _xmlWriter.writeBinary(stax2base64v, data, offset, len);
                     _xmlWriter.writeEndElement();
                 }
             }
@@ -865,23 +867,25 @@ public final class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
+        final org.codehaus.stax2.typed.Base64Variant stax2base64v = StaxUtil.toStax2Base64Variant(b64variant);
         try {
             if (_nextIsAttribute) {
                 // Stax2 API only has 'full buffer' write method:
                 byte[] fullBuffer = toFullBuffer(data, dataLength);
-                _xmlWriter.writeBinaryAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
+                _xmlWriter.writeBinaryAttribute(stax2base64v,
+                        "", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
             } else if (checkNextIsUnwrapped()) {
               // should we consider pretty-printing or not?
-                writeStreamAsBinary(data, dataLength);
+                writeStreamAsBinary(stax2base64v, data, dataLength);
 
             } else {
                 if (_xmlPrettyPrinter != null) {
                     _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                             _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                            toFullBuffer(data, dataLength), 0, dataLength);
+                            stax2base64v, toFullBuffer(data, dataLength), 0, dataLength);
                 } else {
                     _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                    writeStreamAsBinary(data, dataLength);
+                    writeStreamAsBinary(stax2base64v, data, dataLength);
                     _xmlWriter.writeEndElement();
                 }
             }
@@ -892,7 +896,8 @@ public final class ToXmlGenerator
         return dataLength;
     }
 
-    private void writeStreamAsBinary(InputStream data, int len) throws IOException, XMLStreamException 
+    private void writeStreamAsBinary(org.codehaus.stax2.typed.Base64Variant stax2base64v,
+            InputStream data, int len) throws IOException, XMLStreamException 
     {
         // base64 encodes up to 3 bytes into a 4 bytes string
         byte[] tmp = new byte[3];
@@ -903,7 +908,7 @@ public final class ToXmlGenerator
             len -= read;
             if(offset == 3) {
                 offset = 0;
-                _xmlWriter.writeBinary(tmp, 0, 3);
+                _xmlWriter.writeBinary(stax2base64v, tmp, 0, 3);
             }
             if (len == 0) {
                 break;
@@ -912,11 +917,10 @@ public final class ToXmlGenerator
 
         // we still have < 3 bytes in the buffer
         if(offset > 0) {
-            _xmlWriter.writeBinary(tmp, 0, offset);
+            _xmlWriter.writeBinary(stax2base64v, tmp, 0, offset);
         }
     }
 
-    
     private byte[] toFullBuffer(byte[] data, int offset, int len)
     {
         // might already be ok:
