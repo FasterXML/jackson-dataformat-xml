@@ -82,6 +82,11 @@ public class XmlMapper extends ObjectMapper
 
             _configOverrides.findOrCreateOverride(String.class)
                 .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+
+            // 13-May-2020, tatu: [dataformat-xml#377] Need to ensure we will keep XML-specific
+            //    Base64 default as "MIME" (not MIME-NO-LINEFEEDS), to preserve pre-2.12
+            //    behavior
+            defaultBase64Variant(Base64Variants.MIME);
         }
 
         @Override

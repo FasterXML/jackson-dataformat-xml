@@ -1,9 +1,13 @@
 package com.fasterxml.jackson.dataformat.xml.util;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.core.Base64Variant;
+import com.fasterxml.jackson.core.Base64Variants;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -108,5 +112,49 @@ public class StaxUtil
             return name;
         }
         return sb.toString();
+    }
+
+    /**
+     * Helper method used to "convert" Jackson's {@link Base64Variant} into corresponding
+     * Stax2 equivalent, to try to allow Jackson-style configuration for XML output as well.
+     *
+     * @param j64b Jackson base64 variant to find match for
+     *
+     * @return Stax2 Base64 variant that most closely resembles Jackson canonical Base64 variant
+     *     passed in as argument
+     *
+     * @since 2.12
+     */
+    public static org.codehaus.stax2.typed.Base64Variant toStax2Base64Variant(Base64Variant j64b) {
+        return Base64Mapper.instance.map(j64b);
+    }
+
+    private static class Base64Mapper {
+        public final static Base64Mapper instance = new Base64Mapper();
+
+        private final Map<String, org.codehaus.stax2.typed.Base64Variant> j2stax2
+            = new HashMap<>();
+        {
+            j2stax2.put(Base64Variants.MIME.getName(), org.codehaus.stax2.typed.Base64Variants.MIME);
+            j2stax2.put(Base64Variants.MIME_NO_LINEFEEDS.getName(),
+                    org.codehaus.stax2.typed.Base64Variants.MIME_NO_LINEFEEDS);
+            j2stax2.put(Base64Variants.MODIFIED_FOR_URL.getName(),
+                    org.codehaus.stax2.typed.Base64Variants.MODIFIED_FOR_URL);
+            j2stax2.put(Base64Variants.PEM.getName(), org.codehaus.stax2.typed.Base64Variants.PEM);
+        }
+
+        private Base64Mapper() {
+        }
+
+        public org.codehaus.stax2.typed.Base64Variant map(Base64Variant j64b) {
+            org.codehaus.stax2.typed.Base64Variant result = j2stax2.get(j64b.getName());
+            if (result == null) {
+                // 13-May-2020, tatu: in unexpected case of no match, default to what Stax2
+                //    considers default, not Jackson: this for backwards compatibility with
+                //    Jackson 2.11 and earlier
+                result = org.codehaus.stax2.typed.Base64Variants.getDefaultVariant();
+            }
+            return result;
+        }
     }
 }

@@ -77,6 +77,11 @@ Joseph Petersen (jetersen@github)
 * Reported #273: Input mismatch with case-insensitive properties
  (2.12.0)
 
+Ghenadii Batalski (ghenadiibatalski@github)
+
+* Reported #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
+ (2.12.0)
+
 Jochen Schalanda (joschi@github)
 
 * Reported #318: XMLMapper fails to deserialize null (POJO reference) from blank tag

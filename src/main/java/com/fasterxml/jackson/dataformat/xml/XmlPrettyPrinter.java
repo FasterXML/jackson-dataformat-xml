@@ -78,12 +78,13 @@ public interface XmlPrettyPrinter extends PrettyPrinter
     
     // binary element
     public void writeLeafElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName,
-    		byte[] data, int offset, int len)
+            String nsURI, String localName,
+            org.codehaus.stax2.typed.Base64Variant base64variant,
+            byte[] data, int offset, int len)
         throws XMLStreamException;
 
     // empty element to represent null
     public void writeLeafNullElement(XMLStreamWriter2 sw,
-    		String nsURI, String localName)
+            String nsURI, String localName)
         throws XMLStreamException;
 }
