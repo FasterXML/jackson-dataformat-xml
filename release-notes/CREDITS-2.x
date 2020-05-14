@@ -61,6 +61,11 @@ Luke Korth (lkorth@github.com)
 * Reported #366: XML containing xsi:nil is improperly parsed
  (2.10.2)
 
+Martin Vysny (mvysny@github)
+
+* Reported #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
+ (2.10.5)
+
 Alexei Volkov (softkot@github)
 
 * Reported #294: XML parser error with nested same element names

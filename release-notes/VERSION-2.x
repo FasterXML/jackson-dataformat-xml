@@ -30,7 +30,9 @@ No changes since 2.10.x
 
 2.10.5 (not yet released)
 
--
+#395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
+ (reported by Martin V)
+- Upgrade Woodstox dependency to 6.2.0 (minor fix to namespace binding)
 
 2.10.4 (03-May-2020)
 
