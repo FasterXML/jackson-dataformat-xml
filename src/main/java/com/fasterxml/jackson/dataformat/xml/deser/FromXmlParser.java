@@ -332,11 +332,11 @@ public class FromXmlParser
         //   problems with Lists-in-Lists properties
         // 12-May-2020, tatu: But as per [dataformat-xml#86] NOT for root element
         //   (would still like to know why work-around needed ever, but...)
-        if (_parsingContext.inObject()
+        if (!_parsingContext.inRoot()
                  && !_parsingContext.getParent().inRoot()) {
             String name = _xmlTokens.getLocalName();
             if ((name != null) && namesToWrap.contains(name)) {
-//System.out.println("REPEAT from addVirtualWrapping()");
+//System.out.println("REPEAT from addVirtualWrapping() for '"+name+"'");
                 _xmlTokens.repeatStartElement();
             }
         }
