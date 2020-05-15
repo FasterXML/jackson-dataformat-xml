@@ -163,27 +163,32 @@ public class XmlTokenStream
         int n = next0();
         switch (n) {
         case XML_START_ELEMENT: 
-            System.out.println(" XmlTolenStream.next(): XML_START_ELEMENT '"+_localName+"'");
+            System.out.printf(" XmlTokenStream.next(): XML_START_ELEMENT '%s' %s\n", _localName, _loc());
             break;
         case XML_END_ELEMENT: 
-            System.out.println(" XmlTolenStream.next(): XML_END_ELEMENT '"+_localName+"'");
+            System.out.printf(" XmlTokenStream.next(): XML_END_ELEMENT '%s' %s\n", _localName, _loc());
             break;
         case XML_ATTRIBUTE_NAME: 
-            System.out.println(" XmlTolenStream.next(): XML_ATTRIBUTE_NAME '"+_localName+"'");
+            System.out.printf(" XmlTokenStream.next(): XML_ATTRIBUTE_NAME '%s' %s\n", _localName, _loc());
             break;
         case XML_ATTRIBUTE_VALUE: 
-            System.out.println(" XmlTolenStream.next(): XML_ATTRIBUTE_VALUE '"+_textValue+"'");
+            System.out.printf(" XmlTokenStream.next(): XML_ATTRIBUTE_VALUE '%s' %s\n", _textValue, _loc());
             break;
         case XML_TEXT: 
-            System.out.println(" XmlTolenStream.next(): XML_TEXT '"+_textValue+"'");
+            System.out.printf(" XmlTokenStream.next(): XML_TEXT '%s' %s\n", _textValue, _loc());
             break;
         case XML_END: 
-            System.out.println(" XmlTolenStream.next(): XML_END");
+            System.out.printf(" XmlTokenStream.next(): XML_END %s\n", _loc());
             break;
         default:
             throw new IllegalStateException();
         }
         return n;
+    }
+
+    private String _loc() {
+        JsonLocation loc = getCurrentLocation();
+        return String.format("[line: %d, column: %d]", loc.getLineNr(), loc.getColumnNr());
     }
     */
 
@@ -245,14 +250,17 @@ public class XmlTokenStream
     /**
      * Method used to add virtual wrapping, which just duplicates START_ELEMENT
      * stream points to, and its matching closing element.
-     * 
-     * @since 2.1
      */
     protected void repeatStartElement()
     {
 //System.out.println(" -> repeatStartElement for "+_localName+", _currentWrapper was: "+_currentWrapper);
         // sanity check: can only be used when just returned START_ELEMENT:
         if (_currentState != XML_START_ELEMENT) {
+            // 14-May-2020, tatu: Looks like we DO end up here with empty Lists; if so,
+            //    should NOT actually wrap.
+            if (_currentState == XML_END_ELEMENT) {
+                return;
+            }
             throw new IllegalStateException("Current state not XML_START_ELEMENT ("
                     +XML_START_ELEMENT+") but "+_currentState);
         }
