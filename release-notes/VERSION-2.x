@@ -13,6 +13,9 @@ Project: jackson-dataformat-xml
  (reported by Alexei V)
 #393: `MismatchedInputException` for nested repeating element name in `List`
  (reported by kaizenHorse@github)
+#399: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName matches
+  the parent's localName
+ (reported by sandboxgod@github)
 
 2.11.0 (26-Apr-2020)
 
