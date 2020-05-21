@@ -16,6 +16,8 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import com.fasterxml.jackson.core.util.JacksonFeatureSet;
+
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -32,6 +34,15 @@ public class FromXmlParser
      * String ("").
      */
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
+
+    /**
+     * XML format has some peculiarities, indicated via new (2.12) capability
+     * system.
+     *
+     * @since 2.12
+     */
+    public JacksonFeatureSet<StreamReadCapability> XML_READ_CAPABILITIES =
+            DEFAULT_READ_CAPABILITIES.with(StreamReadCapability.DUPLICATE_PROPERTIES);
 
     /**
      * Enumeration that defines all togglable features for XML parsers.
@@ -209,6 +220,12 @@ public class FromXmlParser
         return _xmlTokens.getXmlReader();
     }
 
+    /*
+    /**********************************************************************
+    /* Overrides: capability introspection methods
+    /**********************************************************************
+     */
+
     /**
      * XML format does require support from databinding so need to return true here.
      * 
@@ -219,6 +236,17 @@ public class FromXmlParser
     @Override
     public boolean canSynthesizeNulls() {
         return true;
+    }
+
+    @Override
+    public boolean canReadObjectId() { return false; }
+
+    @Override
+    public boolean canReadTypeId() { return false; }
+
+    @Override
+    public JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
+        return XML_READ_CAPABILITIES;
     }
 
     /*                                                                                       
