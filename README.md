@@ -225,13 +225,12 @@ for longer description, check out [XML module annotations](https://github.com/Fa
 
 ## Known Limitations
 
-Currently, following limitations exist beyond basic Jackson (JSON) limitations:
+Currently, following limitations exist beyond general Jackson (JSON) limitations:
 
 * Streaming model is only meant to be used through databinding: direct usage is possible but not supported
-* Tree Model is only supported in limited fashion and its use is recommended against: since tree model is based on JSON information model, it does not match XML infoset
-    * Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
-    * Mixed content (both textual content and elements as children of an element) not supported: text, if any, is lost
-    * Repeated elements with same name are handled so that only the last element is included, others are ignored
+* Tree Model (`JsonNode`, `ObjectMapper.readTree()`) is based on JSON content model and it does not match exactly with XML infoset
+    * Mixed content (both textual content and elements as children of an element) not supported: text, if any, will be lost
+    * Prior to `2.12` (not yet released as of May 2020), handling of repeated XML elements was problematic (it could only retain the last element read), but [#403](https://github.com/FasterXML/jackson-dataformat-xml/issues/403) improves andling
 * Root value should be a POJO (that is, a Java value expressed as a set of properties (key/value pairs)); and specifically following types can be serialized as properties but may not work as intended as root values
     * Primitive/Wrapper values (like `java.lang.Integer`)
     * `String`s (and types that serialize as Strings such as Timestamps, Date/Time values)
@@ -242,6 +241,9 @@ Currently, following limitations exist beyond basic Jackson (JSON) limitations:
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
     * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
     * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
+* Polymorphic Type Handling works, but only some of inclusion mechanisms are supported (`WRAPPER_ARRAY`, for example is not supported due to problems wrt mapping of XML, Arrays)
+    * JAXB-style "compact" Type Id where property name is replaced with Type Id is not supported.
+* Mixed Content (elements and text in same element) is not supported in databinding: child content must be either text OR element(s) (attributes are fine)
 
 -----
 
