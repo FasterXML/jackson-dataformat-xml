@@ -13,6 +13,7 @@ Project: jackson-dataformat-xml
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
 #397: `XmlReadContext` does not keep track of array index
+#403: Make `JsonNode` implicitly create `ArrayNode`s for repeated XML Elements
 
 2.11.1 (not yet released)
 
