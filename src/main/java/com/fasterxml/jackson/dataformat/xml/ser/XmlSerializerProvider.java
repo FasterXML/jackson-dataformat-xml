@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.ser.SerializerCache;
@@ -51,6 +52,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     @Override
     public void serializeValue(JsonGenerator gen, Object value) throws IOException
     {
+        _generator = gen;
         if (value == null) {
             _serializeXmlNull(gen);
             return;
@@ -86,14 +88,25 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
+    @Override
+    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType) throws IOException
+    {
+        serializeValue(gen, value, rootType, null);
+    }
+
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator gen, Object value, JavaType rootType,
             JsonSerializer<Object> ser) throws IOException
     {
+        _generator = gen;
         if (value == null) {
             _serializeXmlNull(gen);
             return;
+        }
+        // Let's ensure types are compatible at this point
+        if ((rootType != null) && !rootType.getRawClass().isAssignableFrom(value.getClass())) {
+            _reportIncompatibleRootType(value, rootType);
         }
         final boolean asArray;
         final ToXmlGenerator xgen = _asXmlGenerator(gen);
@@ -125,6 +138,56 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
 
+    @SuppressWarnings("resource")
+    @Override
+    public void serializePolymorphic(JsonGenerator gen, Object value, JavaType rootType,
+            JsonSerializer<Object> valueSer, TypeSerializer typeSer)
+        throws IOException
+    {
+        _generator = gen;
+        if (value == null) {
+            _serializeXmlNull(gen);
+            return;
+        }
+        // Let's ensure types are compatible at this point
+        if ((rootType != null) && !rootType.getRawClass().isAssignableFrom(value.getClass())) {
+            _reportIncompatibleRootType(value, rootType);
+        }
+        final boolean asArray;
+        final ToXmlGenerator xgen = _asXmlGenerator(gen);
+        if (xgen == null) { // called by convertValue()
+            asArray = false;
+        } else {
+            QName rootName = _rootNameFromConfig();
+            if (rootName == null) {
+                rootName = _rootNameLookup.findRootName(this, rootType);
+            }
+            _initWithRootName(xgen, rootName);
+            asArray = TypeUtil.isIndexedType(rootType);
+            if (asArray) {
+                _startRootArray(xgen, rootName);
+            }
+        }
+        // 21-May-2020: See comments in `jackson-databind/DefaultSerializerProvider`
+        if (valueSer == null) {
+            if ((rootType != null) && rootType.isContainerType()) {
+                valueSer = handleRootContextualization(findValueSerializer(rootType));
+            } else {
+                valueSer = handleRootContextualization(findValueSerializer(value.getClass()));
+            }
+        }
+        // From super-class implementation
+        try {
+            valueSer.serializeWithType(value, gen, this, typeSer);
+        } catch (Exception e) { // but others do need to be, to get path etc
+            throw _wrapAsIOE(gen, e);
+        }
+        // end of super-class implementation
+        if (asArray) {
+            gen.writeEndObject();
+        }
+    }
+    
     protected void _serializeXmlNull(JsonGenerator jgen) throws IOException
     {
         // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly

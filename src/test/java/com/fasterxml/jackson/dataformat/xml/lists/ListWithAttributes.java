@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class ListWithAttributes extends XmlTestBase
 {
-    // [Issue#43]
+    // [dataformat-xml#43]
     static class Name {
         @JacksonXmlProperty(isAttribute=true)
         public String language;
@@ -42,7 +42,6 @@ public class ListWithAttributes extends XmlTestBase
     }
 
     // [dataformat-xml#108]: unwrapped lists, more than one entry, id attributes
-    
     static class Foo {
         @JacksonXmlElementWrapper(useWrapping = false)
         public List<Bar> firstBar = new ArrayList<Bar>();
@@ -79,7 +78,7 @@ public class ListWithAttributes extends XmlTestBase
         @JacksonXmlProperty(localName = "MY_PROPERTY")
         public Double value;
     }
-    
+
     /*
     /**********************************************************
     /* Test methods
@@ -88,7 +87,7 @@ public class ListWithAttributes extends XmlTestBase
 
     private final ObjectMapper MAPPER = newMapper();
 
-    // [Issue#43]
+    // [dataformat-xml#43]
     public void testIssue43() throws Exception
     {
         String xmlData = "<roomName><names>"

@@ -23,6 +23,8 @@ Project: jackson-dataformat-xml
 #294: XML parser error with nested same element names
  (reported by Alexei V)
 #301: Problem deserializing POJO with unwrapped `List`, ignorable attribute value
+#389: Exception when serializing with type via mapper.writerFor(type).write(...)
+ (reported by texhnolyzze@github)
 #393: `MismatchedInputException` for nested repeating element name in `List`
  (reported by kaizenHorse@github)
 #399: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName matches
