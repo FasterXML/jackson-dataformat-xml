@@ -6,6 +6,9 @@ Project: jackson-dataformat-xml
 
 2.12.0 (not yet released)
 
+#205: `XmlMapper`/`UntypedObjectDeserializer` swallows duplicated elements in
+  XML documents
+ (reported by joaovarandas@github)
 #262: Make `ToXmlGenerator` non-final
  (requested by Dave J)
 #273: Input mismatch with case-insensitive properties
