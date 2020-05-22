@@ -173,7 +173,7 @@ public class TestIndentation extends XmlTestBase
                 .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
                 .writeValueAsString(root);
         // unify possible apostrophes to quotes
-        xml = aposToQuotes(xml);
+        xml = a2q(xml);
         // with indentation, should get linefeeds in prolog/epilog too
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 +"<Company>\n"
