@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.lang.annotation.Annotation;
+
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
@@ -17,6 +19,13 @@ public class JacksonXmlAnnotationIntrospector
     implements XmlAnnotationIntrospector
 {
     private static final long serialVersionUID = 1L;
+
+    // @since 2.11.1
+    @SuppressWarnings("unchecked")
+    private final static Class<? extends Annotation>[] ANNOTATIONS_TO_INFER_XML_PROP =
+            (Class<? extends Annotation>[]) new Class<?>[] {
+        JacksonXmlText.class, JacksonXmlElementWrapper.class
+    };
 
     /**
      * For backwards compatibility with 2.0, the default behavior is
@@ -151,7 +160,7 @@ public class JacksonXmlAnnotationIntrospector
         if (name == null) {
             name = super.findNameForSerialization(a);
             if (name == null) {
-                if (a.hasAnnotation(JacksonXmlText.class)) {
+                if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
                     return PropertyName.USE_DEFAULT;
                 }
             }
@@ -166,7 +175,7 @@ public class JacksonXmlAnnotationIntrospector
         if (name == null) {
             name = super.findNameForDeserialization(a);
             if (name == null) {
-                if (a.hasAnnotation(JacksonXmlText.class)) {
+                if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
                     return PropertyName.USE_DEFAULT;
                 }
             }

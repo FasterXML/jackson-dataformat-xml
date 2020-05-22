@@ -32,9 +32,9 @@ public class EmptyPolymorphicTest extends XmlTestBase
     /* Test methods
     /**********************************************************
      */
-    
-    protected XmlMapper MAPPER = new XmlMapper();
-    
+
+    private final XmlMapper MAPPER = newMapper();
+
     public void testEmpty() throws Exception
     {
         String xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(new Data("Foobar"));
