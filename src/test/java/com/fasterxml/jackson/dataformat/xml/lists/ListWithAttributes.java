@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class ListWithAttributes extends XmlTestBase
 {
-    // [Issue#43]
+    // [dataformat-xml#43]
     static class Name {
         @JacksonXmlProperty(isAttribute=true)
         public String language;
@@ -29,7 +29,7 @@ public class ListWithAttributes extends XmlTestBase
         public List<Name> names;
     }
     
-    // [Issue#99]: allow skipping unknown properties
+    // [dataformat-xml#99]: allow skipping unknown properties
     static class Root {
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "value")
@@ -42,7 +42,6 @@ public class ListWithAttributes extends XmlTestBase
     }
 
     // [dataformat-xml#108]: unwrapped lists, more than one entry, id attributes
-    
     static class Foo {
         @JacksonXmlElementWrapper(useWrapping = false)
         public List<Bar> firstBar = new ArrayList<Bar>();
@@ -79,7 +78,7 @@ public class ListWithAttributes extends XmlTestBase
         @JacksonXmlProperty(localName = "MY_PROPERTY")
         public Double value;
     }
-    
+
     /*
     /**********************************************************
     /* Test methods
@@ -88,7 +87,7 @@ public class ListWithAttributes extends XmlTestBase
 
     private final ObjectMapper MAPPER = newMapper();
 
-    // [Issue#43]
+    // [dataformat-xml#43]
     public void testIssue43() throws Exception
     {
         String xmlData = "<roomName><names>"
@@ -100,7 +99,7 @@ public class ListWithAttributes extends XmlTestBase
         assertEquals("SPECIAL", roomName.names.get(0).text);
     }
     
-    // [Issue#99]: allow skipping unknown properties
+    // [dataformat-xml#99]: allow skipping unknown properties
     public void testListWithAttributes() throws Exception
     {
         String source = "<Root>"
@@ -114,7 +113,7 @@ public class ListWithAttributes extends XmlTestBase
         assertEquals(1, root.values.size());
     }
     
-    // [Issue#108]: unwrapped lists, more than one entry, id attributes
+    // [dataformat-xml#108]: unwrapped lists, more than one entry, id attributes
     public void testIdsFromAttributes() throws Exception {
         Foo foo = new Foo();
         Bar bar1 = new Bar();
