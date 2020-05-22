@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class JsonNodeMixedContentTest extends XmlTestBase
+public class JsonNodeMixedContent402Test extends XmlTestBase
 {
     final private ObjectMapper XML_MAPPER = newMapper();
 
