@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.12.0 (not yet released)
 
+#262: Make `ToXmlGenerator` non-final
+ (requested by Dave J)
 #273: Input mismatch with case-insensitive properties
  (reported by Joseph P)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
@@ -30,6 +32,7 @@ Project: jackson-dataformat-xml
 #399: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName matches
   the parent's localName
  (reported by sandboxgod@github)
+#404: Make `@JacksonXmlElementWrapper` indicate XML property
 
 2.11.0 (26-Apr-2020)
 

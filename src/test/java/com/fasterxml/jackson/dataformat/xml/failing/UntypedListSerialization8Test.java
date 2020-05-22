@@ -35,14 +35,14 @@ public class UntypedListSerialization8Test extends XmlTestBase
             list = l;
         }
     }
-    
+
     /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
 
     /*
      *  For [dataformat-xml#8] -- Will not use wrapping, if type is not statically known

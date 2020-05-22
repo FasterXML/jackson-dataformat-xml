@@ -29,7 +29,8 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
  * additional configuration calls beyond regular {@link JsonGenerator} API,
  * mostly to pass namespace information.
  */
-public final class ToXmlGenerator
+public class ToXmlGenerator
+// non-final since 2.12 but only sub-class if you really know what you are doing...
     extends GeneratorBase
 {
     /**

@@ -77,6 +77,11 @@ Eric Schoonover (spoon16@github)
   matches `@JacksonXmlRootElement` localName
  (2.12.0)
 
+Dave Jarvis (DaveJarvis@github)
+
+* Requested #262: Make `ToXmlGenerator` non-final
+ (2.12.0)
+
 Joseph Petersen (jetersen@github)
 
 * Reported #273: Input mismatch with case-insensitive properties
