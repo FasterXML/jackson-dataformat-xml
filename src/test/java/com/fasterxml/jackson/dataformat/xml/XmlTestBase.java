@@ -299,8 +299,8 @@ public abstract class XmlTestBase
     /**********************************************************
      */
 
-    protected static String aposToQuotes(String json) {
-        return json.replace("'", "\"");
+    protected static String a2q(String content) {
+        return content.replace("'", "\"");
     }
 
     protected byte[] utf8Bytes(String str) {
