@@ -58,7 +58,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
 
     public void testCreatorWithInsensitive() throws Exception
     {
-        final String DOC = aposToQuotes("<root><VALUE>3</VALUE></root>");
+        final String DOC = "<root><VALUE>3</VALUE></root>";
         InsensitiveCreator bean = INSENSITIVE_MAPPER.readValue(DOC, InsensitiveCreator.class);
         assertEquals(3, bean.v);
     }
