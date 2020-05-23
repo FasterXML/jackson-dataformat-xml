@@ -19,7 +19,7 @@ public class ListDeser399Test extends XmlTestBase
         @JacksonXmlProperty(localName = "test")
         @JacksonXmlElementWrapper(useWrapping = false)
         List<Test> list = new ArrayList<Test>();
-    }    
+    }
 
     private final XmlMapper MAPPER = newMapper();
     
