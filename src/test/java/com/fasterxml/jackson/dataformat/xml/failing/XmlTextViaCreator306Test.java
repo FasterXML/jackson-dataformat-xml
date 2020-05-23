@@ -2,14 +2,15 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.beans.ConstructorProperties;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
+// [dataformat-xml#306]: Problem is that `@XmlText` has no nominal property name
+// of empty String (""), and that is not properly bound. Worse, empty String has
+// special meaning so that annotation CANNOT specify it, either.
 public class XmlTextViaCreator306Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "ROOT")
