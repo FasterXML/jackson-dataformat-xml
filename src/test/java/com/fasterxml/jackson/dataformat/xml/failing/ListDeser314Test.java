@@ -40,7 +40,7 @@ public class ListDeser314Test extends XmlTestBase
             .propertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
             .build();
 
-    // [dataform#314]
+    // [dataformat-xml#314]
     public void testDeser314Order1() throws Exception
     {
         String content = ""
