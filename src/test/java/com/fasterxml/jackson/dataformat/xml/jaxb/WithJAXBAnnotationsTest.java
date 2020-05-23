@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import java.io.IOException;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
@@ -37,13 +37,13 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
         public String attr = "3";
     }
 
-    @javax.xml.bind.annotation.XmlRootElement(name="Simple")
+    @jakarta.xml.bind.annotation.XmlRootElement(name="Simple")
     static class WithXmlValue
     {
-        @javax.xml.bind.annotation.XmlAttribute
+        @jakarta.xml.bind.annotation.XmlAttribute
         public int a = 13;
 
-        @javax.xml.bind.annotation.XmlValue
+        @jakarta.xml.bind.annotation.XmlValue
         public String text = "something";
     }
 

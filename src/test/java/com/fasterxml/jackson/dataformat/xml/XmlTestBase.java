@@ -339,9 +339,9 @@ public abstract class XmlTestBase
     {
         StringWriter sw = new StringWriter();
         if (classes.length == 0) {
-            javax.xml.bind.JAXB.marshal(ob, sw);
+            jakarta.xml.bind.JAXB.marshal(ob, sw);
         } else {
-            javax.xml.bind.JAXBContext.newInstance(classes).createMarshaller().marshal(ob, sw);
+            jakarta.xml.bind.JAXBContext.newInstance(classes).createMarshaller().marshal(ob, sw);
         }
         sw.close();
         return sw.toString();

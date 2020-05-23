@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
