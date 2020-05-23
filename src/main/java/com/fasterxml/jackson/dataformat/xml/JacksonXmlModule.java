@@ -10,7 +10,13 @@ import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 /**
  * Module that implements most functionality needed to support producing and
- * consuming XML instead of JSON.
+ * consuming XML instead of JSON, used by {@link XmlMapper} for registering
+ * handlers for XML-specific processing.
+ *<p>
+ * NOTE: please do NOT register this directly on {@link XmlMapper}: mapper
+ * registers an instance (either one explicitly given in constructor, or, if none,
+ * one it configures) and attempts to re-register is unlikely to work as
+ * you'd expect.
  */
 public class JacksonXmlModule
     extends SimpleModule
