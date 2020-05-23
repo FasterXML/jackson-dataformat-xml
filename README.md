@@ -5,7 +5,7 @@ reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
 with "Code-first" approach (that is, no support is added for "Schema-first" approach).
-Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-module-jaxb-annotations);
+Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb);
 this module provides low-level abstractions (`JsonParser`, `JsonGenerator`, `JsonFactory`) as well as small number of higher level
 overrides needed to make data-binding work.
 
