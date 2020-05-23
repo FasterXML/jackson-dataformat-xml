@@ -26,15 +26,15 @@ public class ObjectId104Test extends XmlTestBase {
     }
 
     static class ValueNode {
-        public List<Integer> value= new ArrayList<Integer>();
+        public List<Integer> value = new ArrayList<Integer>();
         public IdWrapper next;
         
         public ValueNode() { this(0); }
         public ValueNode(int v) { value.add(v); }
     }
-    
-    private final XmlMapper MAPPER = new XmlMapper();
-    
+
+    private final XmlMapper MAPPER = newMapper();
+
     // Another test to ensure ordering is not required (i.e. can do front references)
     public void testSimpleCollectionDeserWithForwardRefs() throws Exception
     {
