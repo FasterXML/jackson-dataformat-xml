@@ -8,9 +8,15 @@ import java.lang.annotation.*;
  * It will result in value of the property be serialized without element wrapper,
  * as long as there are no element-wrapped other properties (attribute-valued
  * properties are acceptable).
- * It is also similar to core Jackson <code>JsonValue</code> annotation; but
+ * It is also somewhat similar to core Jackson <code>JsonValue</code> annotation; but
  * has to be separate as <code>JsonValue</code> does not allow any other
  * properties.
+ *<p>
+ * Note that only one such property is allowed on a POJO: if multiple properties
+ * are annotated, behavior is not defined.
+ *<p>
+ * Internally properties annotated will be considered to be properties with
+ * no name (that is, with marker {@code ""} (empty String)).
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
