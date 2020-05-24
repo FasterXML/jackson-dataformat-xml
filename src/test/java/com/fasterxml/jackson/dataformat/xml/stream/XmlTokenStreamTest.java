@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.deser;
+package com.fasterxml.jackson.dataformat.xml.stream;
 
 import java.io.*;
 
@@ -31,7 +31,10 @@ public class XmlTokenStreamTest extends XmlTestBase
         assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
         assertEquals("abc", tokens.getText());
         assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
+        // 23-May-2020, tatu: Not known for END_ELEMENT, alas, so:
+        assertEquals("", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
+        assertEquals("", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_END, tokens.next());
     }
 
@@ -124,5 +127,42 @@ public class XmlTokenStreamTest extends XmlTestBase
         assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
         assertEquals(XmlTokenStream.XML_END, tokens.next());
     }
-    
+
+    // For [dataformat-xml#402]
+/*    public void testMixedContent() throws Exception
+    {
+        String XML = "<root>first<a>123</a> and second <b>abc</b>last &amp; final</root>";
+        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
+        sr.nextTag();
+        XmlTokenStream tokens = new XmlTokenStream(sr, XML, FromXmlParser.Feature.collectDefaults());
+
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals("root", tokens.getLocalName());
+
+        assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
+        assertEquals("first", tokens.getText());
+
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
+        assertEquals("a", tokens.getLocalName());
+        assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
+        assertEquals("123", tokens.getText());
+        assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
+
+        assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
+        assertEquals(" and second ", tokens.getText());
+
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
+        assertEquals("b", tokens.getLocalName());
+        assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
+        assertEquals("abc", tokens.getText());
+        assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
+
+        assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
+        assertEquals("last & final", tokens.getText());
+
+        assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
+        assertEquals(XmlTokenStream.XML_END, tokens.next());
+        sr.close();
+    }
+    */
 }

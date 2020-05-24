@@ -173,7 +173,8 @@ public class XmlTokenStream
             System.out.printf(" XmlTokenStream.next(): XML_START_ELEMENT '%s' %s\n", _localName, _loc());
             break;
         case XML_END_ELEMENT: 
-            System.out.printf(" XmlTokenStream.next(): XML_END_ELEMENT '%s' %s\n", _localName, _loc());
+            // 24-May-2020, tatu: no name available for end element so do not print
+            System.out.printf(" XmlTokenStream.next(): XML_END_ELEMENT %s\n", _loc());
             break;
         case XML_ATTRIBUTE_NAME: 
             System.out.printf(" XmlTokenStream.next(): XML_ATTRIBUTE_NAME '%s' %s\n", _localName, _loc());
@@ -219,7 +220,15 @@ public class XmlTokenStream
     public int getCurrentToken() { return _currentState; }
 
     public String getText() { return _textValue; }
+
+    /**
+     * Accessor for local name of current named event (that is,
+     * {@code XML_START_ELEMENT} or {@code XML_ATTRIBUTE_NAME}).
+     *<p>
+     * NOTE: name NOT accessible on {@code XML_END_ELEMENT}
+     */
     public String getLocalName() { return _localName; }
+
     public String getNamespaceURI() { return _namespaceURI; }
 
     public boolean hasXsiNil() {
@@ -509,15 +518,6 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
-    /*
-        _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
-        _currentState = XML_START_ELEMENT;
-        _localName = _xmlReader.getLocalName();
-        _namespaceURI = _xmlReader.getNamespaceURI();
-        _attributeCount = _xmlReader.getAttributeCount();
-        _formatFeatures = formatFeatures;
-     */
-    
     private final int _initStartElement() throws XMLStreamException
     {
         final String ns = _xmlReader.getNamespaceURI();
@@ -525,11 +525,10 @@ public class XmlTokenStream
 
         _checkXsiAttributes();
 
-        /* Support for virtual wrapping: in wrapping, may either
-         * create a new wrapper scope (if in sub-tree, or matches
-         * wrapper element itself), or implicitly close existing
-         * scope.
-         */
+        // Support for virtual wrapping: in wrapping, may either create a new
+        // wrapper scope (if in sub-tree, or matches wrapper element itself),
+        // or implicitly close existing scope.
+
         if (_currentWrapper != null) {
             if (_currentWrapper.matchesWrapper(localName, ns)) {
                 _currentWrapper = _currentWrapper.intermediateWrapper();
@@ -631,11 +630,21 @@ public class XmlTokenStream
 //System.out.println(" XMLTokenStream._handleEndElement(): IMPLICIT requestRepeat of END_ELEMENT '"+_localName);
             } else {
                 _currentWrapper = _currentWrapper.getParent();
+                // 23-May-2020, tatu: Let's clear _localName since it's value is unlikely
+                //    to be correct and we may or may not be able to get real one (for
+                //    END_ELEMENT could) -- FromXmlParser does NOT use this info
+                _localName = "";
+                _namespaceURI = "";
+
             }
+        } else {
+            // Not (necessarily) known, as per above, so:
+            _localName = "";
+            _namespaceURI = "";
         }
         return (_currentState = XML_END_ELEMENT);
     }
-    
+
     private JsonLocation _extractLocation(XMLStreamLocation2 location)
     {
         if (location == null) { // just for impls that might pass null...
@@ -646,7 +655,6 @@ public class XmlTokenStream
                 location.getLineNumber(),
                 location.getColumnNumber());
     }
-
 
     protected boolean _allWs(String str)
     {
