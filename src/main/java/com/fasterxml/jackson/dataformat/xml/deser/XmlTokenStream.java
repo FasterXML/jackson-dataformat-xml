@@ -418,12 +418,13 @@ public class XmlTokenStream
 //            throw new IllegalStateException("No more XML tokens available (end of input)");
         }
         // Ok: must be END_ELEMENT; see what tag we get (or end)
-        switch (_skipUntilTag()) {
+        switch (_skipAndCollectTextUntilTag()) {
         case XMLStreamConstants.END_DOCUMENT:
             return (_currentState = XML_END);
         case XMLStreamConstants.END_ELEMENT:
             return _handleEndElement();
         }
+
         // START_ELEMENT...
         return _initStartElement();
     }
@@ -483,6 +484,7 @@ public class XmlTokenStream
         }
     }
 
+    // Called to simply skip tokens until start/end tag, or end-of-document found
     private final int _skipUntilTag() throws XMLStreamException
     {
         while (_xmlReader.hasNext()) {
@@ -492,6 +494,45 @@ public class XmlTokenStream
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
                 return type;
+            default:
+                // any other type (proc instr, comment etc) is just ignored
+            }
+        }
+        throw new IllegalStateException("Expected to find a tag, instead reached end of input");
+    }
+
+    // Called to skip tokens until start/end tag (or end-of-document) found, but
+    // also collecting cdata until then, if any found, for possible "mixed content"
+    // to report
+    //
+    // @since 2.12
+    private final int _skipAndCollectTextUntilTag() throws XMLStreamException
+    {
+        CharSequence chars = null;
+
+        while (_xmlReader.hasNext()) {
+            int type;
+            switch (type = _xmlReader.next()) {
+            case XMLStreamConstants.START_ELEMENT:
+            case XMLStreamConstants.END_ELEMENT:
+            case XMLStreamConstants.END_DOCUMENT:
+                _textValue = (chars == null) ? "" : chars.toString();
+                return type;
+            // note: SPACE is ignorable (and seldom seen), not to be included
+            case XMLStreamConstants.CHARACTERS:
+            case XMLStreamConstants.CDATA:
+                {
+                    String str = _getText(_xmlReader);
+                    if (chars == null) {
+                        chars = str;
+                    } else  {
+                        if (chars instanceof String) {
+                            chars = new StringBuilder(chars);
+                        }
+                        ((StringBuilder)chars).append(str);
+                    }
+                }
+                break;
             default:
                 // any other type (proc instr, comment etc) is just ignored
             }
