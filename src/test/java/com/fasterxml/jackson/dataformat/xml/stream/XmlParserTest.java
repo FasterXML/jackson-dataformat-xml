@@ -251,6 +251,15 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
     }
 
+    public void testMixedContent() throws Exception
+    {
+        String exp = a2q("{'':'first','a':'123','':'second','b':'456','':'last'}");
+        String result = _readXmlWriteJson("<root>first<a>123</a>second<b>456</b>last</root>");
+
+//System.err.println("result = \n"+result);
+        assertEquals(exp, result);
+    }
+
     /*
     /**********************************************************
     /* Helper methods

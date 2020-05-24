@@ -645,7 +645,7 @@ public class FromXmlParser
                         StaxUtil.throwAsParseException(e, this);
                     }
                     if (_parsingContext.inArray()) {
-                        if (_isEmpty(_currText)) {
+                        if (XmlTokenStream._allWs(_currText)) {
                             // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
                             //    expose as empty Object, not null (or, worse, as used to
                             //    be done, by swallowing the token)
@@ -660,7 +660,7 @@ public class FromXmlParser
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must
                 // loop over again
                 if (_parsingContext.inObject()) {
-                    if ((_currToken != JsonToken.FIELD_NAME) && _isEmpty(_currText)) {
+                    if ((_currToken != JsonToken.FIELD_NAME) && XmlTokenStream._allWs(_currText)) {
                         try {
                             token = _xmlTokens.next();
                         } catch (XMLStreamException e) {
@@ -1092,19 +1092,6 @@ public class FromXmlParser
             _byteArrayBuilder.reset();
         }
         return _byteArrayBuilder;
-    }
-
-    protected boolean _isEmpty(String str)
-    {
-        int len = (str == null) ? 0 : str.length();
-        if (len > 0) {
-            for (int i = 0; i < len; ++i) {
-                if (str.charAt(i) > ' ') {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private <T> T  _internalErrorUnknownToken(Object token) {

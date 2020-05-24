@@ -79,11 +79,11 @@ public class XmlTokenStream
     protected boolean _xsiNilFound;
 
     /**
-     * If true we have a START_ELEMENT with mixed text
+     * Flag set true if current event is {@code XML_TEXT} and there is START_ELEMENT
      *
-     * @since 2.8
+     * @since 2.12
      */
-    protected boolean _mixedText;
+    protected boolean _startElementAfterText;
 
     /**
      * Index of the next attribute of the current START_ELEMENT
@@ -384,21 +384,21 @@ public class XmlTokenStream
             final boolean startElementNext = _xmlReader.getEventType() == XMLStreamReader.START_ELEMENT;
             // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
             if (startElementNext) {
-                if (text == null || _allWs(text)) {
-                    _mixedText = false;
+                if (_allWs(text)) {
+                    _startElementAfterText = false;
                     return _initStartElement();
                 }
-                _mixedText = true;
+                _startElementAfterText = true;
                 _textValue = text;
                 return (_currentState = XML_TEXT);
             }
             // For END_ELEMENT we will return text, if any
             if (text != null) {
-                _mixedText = false;
+                _startElementAfterText = false;
                 _textValue = text;
                 return (_currentState = XML_TEXT);
             }
-            _mixedText = false;
+            _startElementAfterText = false;
             return _handleEndElement();
 
         case XML_ATTRIBUTE_NAME:
@@ -406,8 +406,8 @@ public class XmlTokenStream
             return (_currentState = XML_ATTRIBUTE_VALUE);
         case XML_TEXT:
             // mixed text with other elements
-            if (_mixedText) {
-                _mixedText = false;
+            if (_startElementAfterText) {
+                _startElementAfterText = false;
                 return _initStartElement();
             }
             // text followed by END_ELEMENT
@@ -422,7 +422,18 @@ public class XmlTokenStream
         case XMLStreamConstants.END_DOCUMENT:
             return (_currentState = XML_END);
         case XMLStreamConstants.END_ELEMENT:
+            // 24-May-2020, tatu: Need to see if we have "mixed content" to offer
+            if (!_allWs(_textValue)) {
+                // _textValue already set
+                return (_currentState = XML_TEXT);
+            }
             return _handleEndElement();
+        }
+        // 24-May-2020, tatu: Need to see if we have "mixed content" to offer
+        if (!_allWs(_textValue)) {
+            // _textValue already set
+            _startElementAfterText = true;
+            return (_currentState = XML_TEXT);
         }
 
         // START_ELEMENT...
@@ -697,7 +708,7 @@ public class XmlTokenStream
                 location.getColumnNumber());
     }
 
-    protected boolean _allWs(String str)
+    protected static boolean _allWs(String str)
     {
         final int len = (str == null) ? 0 : str.length();
         if (len > 0) {
