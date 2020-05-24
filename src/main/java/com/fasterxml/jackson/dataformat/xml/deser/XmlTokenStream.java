@@ -79,11 +79,11 @@ public class XmlTokenStream
     protected boolean _xsiNilFound;
 
     /**
-     * If true we have a START_ELEMENT with mixed text
+     * Flag set true if current event is {@code XML_TEXT} and there is START_ELEMENT
      *
-     * @since 2.8
+     * @since 2.12
      */
-    protected boolean _mixedText;
+    protected boolean _startElementAfterText;
 
     /**
      * Index of the next attribute of the current START_ELEMENT
@@ -166,7 +166,8 @@ public class XmlTokenStream
             System.out.printf(" XmlTokenStream.next(): XML_START_ELEMENT '%s' %s\n", _localName, _loc());
             break;
         case XML_END_ELEMENT: 
-            System.out.printf(" XmlTokenStream.next(): XML_END_ELEMENT '%s' %s\n", _localName, _loc());
+            // 24-May-2020, tatu: no name available for end element so do not print
+            System.out.printf(" XmlTokenStream.next(): XML_END_ELEMENT %s\n", _loc());
             break;
         case XML_ATTRIBUTE_NAME: 
             System.out.printf(" XmlTokenStream.next(): XML_ATTRIBUTE_NAME '%s' %s\n", _localName, _loc());
@@ -212,7 +213,15 @@ public class XmlTokenStream
     public int getCurrentToken() { return _currentState; }
 
     public String getText() { return _textValue; }
+
+    /**
+     * Accessor for local name of current named event (that is,
+     * {@code XML_START_ELEMENT} or {@code XML_ATTRIBUTE_NAME}).
+     *<p>
+     * NOTE: name NOT accessible on {@code XML_END_ELEMENT}
+     */
     public String getLocalName() { return _localName; }
+
     public String getNamespaceURI() { return _namespaceURI; }
 
     public boolean hasXsiNil() {
@@ -368,21 +377,21 @@ public class XmlTokenStream
             final boolean startElementNext = _xmlReader.getEventType() == XMLStreamReader.START_ELEMENT;
             // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
             if (startElementNext) {
-                if (text == null || _allWs(text)) {
-                    _mixedText = false;
+                if (_allWs(text)) {
+                    _startElementAfterText = false;
                     return _initStartElement();
                 }
-                _mixedText = true;
+                _startElementAfterText = true;
                 _textValue = text;
                 return (_currentState = XML_TEXT);
             }
             // For END_ELEMENT we will return text, if any
             if (text != null) {
-                _mixedText = false;
+                _startElementAfterText = false;
                 _textValue = text;
                 return (_currentState = XML_TEXT);
             }
-            _mixedText = false;
+            _startElementAfterText = false;
             return _handleEndElement();
 
         case XML_ATTRIBUTE_NAME:
@@ -390,8 +399,8 @@ public class XmlTokenStream
             return (_currentState = XML_ATTRIBUTE_VALUE);
         case XML_TEXT:
             // mixed text with other elements
-            if (_mixedText) {
-                _mixedText = false;
+            if (_startElementAfterText) {
+                _startElementAfterText = false;
                 return _initStartElement();
             }
             // text followed by END_ELEMENT
@@ -402,12 +411,24 @@ public class XmlTokenStream
 //            throw new IllegalStateException("No more XML tokens available (end of input)");
         }
         // Ok: must be END_ELEMENT; see what tag we get (or end)
-        switch (_skipUntilTag()) {
+        switch (_skipAndCollectTextUntilTag()) {
         case XMLStreamConstants.END_DOCUMENT:
             return (_currentState = XML_END);
         case XMLStreamConstants.END_ELEMENT:
+            // 24-May-2020, tatu: Need to see if we have "mixed content" to offer
+            if (!_allWs(_textValue)) {
+                // _textValue already set
+                return (_currentState = XML_TEXT);
+            }
             return _handleEndElement();
         }
+        // 24-May-2020, tatu: Need to see if we have "mixed content" to offer
+        if (!_allWs(_textValue)) {
+            // _textValue already set
+            _startElementAfterText = true;
+            return (_currentState = XML_TEXT);
+        }
+
         // START_ELEMENT...
         return _initStartElement();
     }
@@ -464,6 +485,7 @@ public class XmlTokenStream
         }
     }
 
+    // Called to simply skip tokens until start/end tag, or end-of-document found
     private final int _skipUntilTag() throws XMLStreamException
     {
         while (_xmlReader.hasNext()) {
@@ -473,6 +495,45 @@ public class XmlTokenStream
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
                 return type;
+            default:
+                // any other type (proc instr, comment etc) is just ignored
+            }
+        }
+        throw new IllegalStateException("Expected to find a tag, instead reached end of input");
+    }
+
+    // Called to skip tokens until start/end tag (or end-of-document) found, but
+    // also collecting cdata until then, if any found, for possible "mixed content"
+    // to report
+    //
+    // @since 2.12
+    private final int _skipAndCollectTextUntilTag() throws XMLStreamException
+    {
+        CharSequence chars = null;
+
+        while (_xmlReader.hasNext()) {
+            int type;
+            switch (type = _xmlReader.next()) {
+            case XMLStreamConstants.START_ELEMENT:
+            case XMLStreamConstants.END_ELEMENT:
+            case XMLStreamConstants.END_DOCUMENT:
+                _textValue = (chars == null) ? "" : chars.toString();
+                return type;
+            // note: SPACE is ignorable (and seldom seen), not to be included
+            case XMLStreamConstants.CHARACTERS:
+            case XMLStreamConstants.CDATA:
+                {
+                    String str = _getText(_xmlReader);
+                    if (chars == null) {
+                        chars = str;
+                    } else  {
+                        if (chars instanceof String) {
+                            chars = new StringBuilder(chars);
+                        }
+                        ((StringBuilder)chars).append(str);
+                    }
+                }
+                break;
             default:
                 // any other type (proc instr, comment etc) is just ignored
             }
@@ -499,15 +560,6 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
-    /*
-        _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
-        _currentState = XML_START_ELEMENT;
-        _localName = _xmlReader.getLocalName();
-        _namespaceURI = _xmlReader.getNamespaceURI();
-        _attributeCount = _xmlReader.getAttributeCount();
-        _formatFeatures = formatFeatures;
-     */
-    
     private final int _initStartElement() throws XMLStreamException
     {
         final String ns = _xmlReader.getNamespaceURI();
@@ -515,11 +567,10 @@ public class XmlTokenStream
 
         _checkXsiAttributes();
 
-        /* Support for virtual wrapping: in wrapping, may either
-         * create a new wrapper scope (if in sub-tree, or matches
-         * wrapper element itself), or implicitly close existing
-         * scope.
-         */
+        // Support for virtual wrapping: in wrapping, may either create a new
+        // wrapper scope (if in sub-tree, or matches wrapper element itself),
+        // or implicitly close existing scope.
+
         if (_currentWrapper != null) {
             if (_currentWrapper.matchesWrapper(localName, ns)) {
                 _currentWrapper = _currentWrapper.intermediateWrapper();
@@ -621,11 +672,21 @@ public class XmlTokenStream
 //System.out.println(" XMLTokenStream._handleEndElement(): IMPLICIT requestRepeat of END_ELEMENT '"+_localName);
             } else {
                 _currentWrapper = _currentWrapper.getParent();
+                // 23-May-2020, tatu: Let's clear _localName since it's value is unlikely
+                //    to be correct and we may or may not be able to get real one (for
+                //    END_ELEMENT could) -- FromXmlParser does NOT use this info
+                _localName = "";
+                _namespaceURI = "";
+
             }
+        } else {
+            // Not (necessarily) known, as per above, so:
+            _localName = "";
+            _namespaceURI = "";
         }
         return (_currentState = XML_END_ELEMENT);
     }
-    
+
     private JsonLocation _extractLocation(XMLStreamLocation2 location)
     {
         if (location == null) { // just for impls that might pass null...
@@ -637,8 +698,7 @@ public class XmlTokenStream
                 location.getColumnNumber());
     }
 
-
-    protected boolean _allWs(String str)
+    protected static boolean _allWs(String str)
     {
         final int len = (str == null) ? 0 : str.length();
         if (len > 0) {
