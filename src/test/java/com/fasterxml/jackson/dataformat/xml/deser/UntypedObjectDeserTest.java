@@ -8,14 +8,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-// for [dataformat-xml#205], handling "untyped" ({@code java.lang.Object}-targeted)
-// deserialization, including handling of element sequences
-public class UntypedObjectDeser205Test extends XmlTestBase
+public class UntypedObjectDeserTest extends XmlTestBase
 {
     private final ObjectMapper XML_MAPPER = newMapper();
 
-    private final ObjectMapper JSON_MAPPER = new JsonMapper();
-
+    // for [dataformat-xml#205], handling "untyped" ({@code java.lang.Object}-targeted)
+    // deserialization, including handling of element sequences
     public void testRepeatingElements() throws Exception
     {
         final String XML =
@@ -39,8 +37,8 @@ public class UntypedObjectDeser205Test extends XmlTestBase
                 "      </dog>\n" +
                 "   </dogs>\n" +
                 "</person>";
-        final JsonNode fromXml = JSON_MAPPER.valueToTree(XML_MAPPER.readValue(XML, Object.class));
-        final ObjectNode exp = JSON_MAPPER.createObjectNode();
+        final JsonNode fromXml = XML_MAPPER.valueToTree(XML_MAPPER.readValue(XML, Object.class));
+        final ObjectNode exp = XML_MAPPER.createObjectNode();
         exp.put("name", "John");
         {
             exp.putArray("parent")
@@ -60,7 +58,26 @@ public class UntypedObjectDeser205Test extends XmlTestBase
                 .put("age", "14");
         }
         if (!fromXml.equals(exp)) {
-            ObjectWriter w = JSON_MAPPER.writerWithDefaultPrettyPrinter();
+            ObjectWriter w = new JsonMapper().writerWithDefaultPrettyPrinter();
+            fail("Expected:\n"+w.writeValueAsString(exp)+"\ngot:\n"+w.writeValueAsString(fromXml));
+        }
+    }
+
+    // [dataformat-xml#405]: support mixed content
+    public void testMixedContent() throws Exception
+    {
+        final String XML = "<root>first<a>123</a>second<b>abc</b>last</root>";
+        final JsonNode fromXml = XML_MAPPER.valueToTree(XML_MAPPER.readValue(XML, Object.class));
+        final ObjectNode exp = XML_MAPPER.createObjectNode();
+        exp.putArray("")
+            .add("first")
+            .add("second")
+            .add("last");
+        exp.put("a", "123");
+        exp.put("b", "abc");
+        
+        if (!fromXml.equals(exp)) {
+            ObjectWriter w = new JsonMapper().writerWithDefaultPrettyPrinter();
             fail("Expected:\n"+w.writeValueAsString(exp)+"\ngot:\n"+w.writeValueAsString(fromXml));
         }
     }
