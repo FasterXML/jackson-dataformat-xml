@@ -19,6 +19,7 @@ Project: jackson-dataformat-xml
  (reported by Ghenadii B)
 #397: `XmlReadContext` does not keep track of array index
 #403: Make `JsonNode` implicitly create `ArrayNode`s for repeated XML Elements
+#405: Mixed content not exposed through `FromXmlParser`, lost by `JsonNode`
 
 2.11.1 (not yet released)
 
