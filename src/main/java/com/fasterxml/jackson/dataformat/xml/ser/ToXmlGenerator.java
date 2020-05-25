@@ -295,26 +295,11 @@ public class ToXmlGenerator
         return -1;
     }
 
-    @Override
-    public int formatWriteFeatures() {
-        return _formatFeatures;
-    }
-
     /*
     /**********************************************************************
     /* Extended API, configuration
     /**********************************************************************
      */
-
-    public ToXmlGenerator enable(Feature f) {
-        _formatFeatures |= f.getMask();
-        return this;
-    }
-
-    public ToXmlGenerator disable(Feature f) {
-        _formatFeatures &= ~f.getMask();
-        return this;
-    }
 
     public final boolean isEnabled(Feature f) {
         return (_formatFeatures & f.getMask()) != 0;
@@ -322,9 +307,9 @@ public class ToXmlGenerator
 
     public ToXmlGenerator configure(Feature f, boolean state) {
         if (state) {
-            enable(f);
+            _formatFeatures |= f.getMask();
         } else {
-            disable(f);
+            _formatFeatures &= ~f.getMask();
         }
         return this;
     }
@@ -1054,6 +1039,11 @@ public class ToXmlGenerator
         } catch (XMLStreamException e) {
             StaxUtil.throwAsGenerationException(e, this);
         }
+    }
+
+    @Override
+    public void writeNumber(short v) throws IOException {
+        writeNumber((int) v);
     }
 
     @Override
