@@ -249,17 +249,6 @@ public class FromXmlParser
         return XML_READ_CAPABILITIES;
     }
 
-    /*                                                                                       
-    /**********************************************************************
-    /* FormatFeature support                                                                             
-    /**********************************************************************
-     */
-
-    @Override
-    public int formatReadFeatures() {
-        return _formatFeatures;
-    }
-
     /*
     /**********************************************************************
     /* Extended API, access to some internal components
