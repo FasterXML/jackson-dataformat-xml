@@ -226,18 +226,6 @@ public class FromXmlParser
     /**********************************************************************
      */
 
-    /**
-     * XML format does require support from databinding so need to return true here.
-     * 
-     * @return True since XML format does require support from codec
-     *
-     * @since 3.0
-     */
-    @Override
-    public boolean canSynthesizeNulls() {
-        return true;
-    }
-
     @Override
     public boolean canReadObjectId() { return false; }
 
