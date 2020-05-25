@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-// test(s) for [dataformat-xml#111]
+// test(s) for [dataformat-xml#169]
 public class EmptyPolymorphicTest extends XmlTestBase
 {
     static class Data {
