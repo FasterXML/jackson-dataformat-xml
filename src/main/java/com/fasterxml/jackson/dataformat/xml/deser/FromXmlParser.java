@@ -55,11 +55,12 @@ public class FromXmlParser
          * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
          * tokens with textual value of "" (empty String).
          *<p>
-         * Default setting is `true` for backwards compatibility.
+         * Default setting was {@code true} (for backwards compatibility from 2.9 to 2.11 (inclusive)
+         * but was changed in 2.12 to be {@code false} (see [dataformat-xml#411] for details)
          *
          * @since 2.9
          */
-        EMPTY_ELEMENT_AS_NULL(true)
+        EMPTY_ELEMENT_AS_NULL(false)
         ;
 
         final boolean _defaultState;
@@ -736,11 +737,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 return null;
             }
             if (_parsingContext.inArray()) {
-                try {
-                    token = _xmlTokens.next();
-                } catch (XMLStreamException e) {
-                    StaxUtil.throwAsParseException(e, this);
-                }
+                token = _nextToken();
                 _mayBeLeaf = true;
                 continue;
             }

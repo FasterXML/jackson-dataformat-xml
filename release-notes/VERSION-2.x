@@ -24,6 +24,8 @@ Project: jackson-dataformat-xml
 #397: `XmlReadContext` does not keep track of array index
 #403: Make `JsonNode` implicitly create `ArrayNode`s for repeated XML Elements
 #405: Mixed content not exposed through `FromXmlParser`, lost by `JsonNode`
+#411: Change default setting of `FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL`
+  from `true` to `false`
 
 2.11.1 (not yet released)
 
@@ -85,7 +87,7 @@ No changes since 2.10.x
  (reported by Sam S)
 #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
  (reported by Rohit N)
-#354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
+#354: Support mapping `xsi:nil` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
 2.9.10 (not yet released)
 

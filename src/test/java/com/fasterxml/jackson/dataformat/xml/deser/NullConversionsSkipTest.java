@@ -44,12 +44,14 @@ public class NullConversionsSkipTest extends XmlTestBase
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = newMapper();
+    private final XmlMapper NULL_EXPOSING_MAPPER = mapperBuilder()
+            .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+            .build();
 
     public void testSkipNullField1() throws Exception
     {
         // first, ok if assigning non-null to not-nullable, null for nullable
-        NullSkipField result = MAPPER.readValue(
+        NullSkipField result = NULL_EXPOSING_MAPPER.readValue(
 //"<NullSkipField><noNulls>foo</noNulls><nullsOk></nullsOk></NullSkipField>",
 "<NullSkipField><noNulls>foo</noNulls><nullsOk /></NullSkipField>",
                 NullSkipField.class);
@@ -60,7 +62,7 @@ public class NullConversionsSkipTest extends XmlTestBase
     public void testSkipNullField2() throws Exception
     {
         // and then see that nulls are not ok for non-nullable
-        NullSkipField result = MAPPER.readValue("<NullSkipField><noNulls /></NullSkipField>",
+        NullSkipField result = NULL_EXPOSING_MAPPER.readValue("<NullSkipField><noNulls /></NullSkipField>",
                 NullSkipField.class);
         assertEquals("b", result.noNulls);
         assertEquals("a", result.nullsOk);
@@ -68,7 +70,7 @@ public class NullConversionsSkipTest extends XmlTestBase
 
     public void testSkipNullMethod1() throws Exception
     {
-        NullSkipMethod result = MAPPER.readValue(
+        NullSkipMethod result = NULL_EXPOSING_MAPPER.readValue(
 //"<NullSkipMethod><noNulls>foo<noNulls><nullsOk></nullsOk></NullSkipMethod>",
 "<NullSkipMethod><noNulls>foo</noNulls><nullsOk /></NullSkipMethod>",
                 NullSkipMethod.class);
@@ -78,7 +80,7 @@ public class NullConversionsSkipTest extends XmlTestBase
 
     public void testSkipNullMethod2() throws Exception
     {
-        NullSkipMethod result = MAPPER.readValue("<NullSkipMethod><noNulls /></NullSkipMethod>",
+        NullSkipMethod result = NULL_EXPOSING_MAPPER.readValue("<NullSkipMethod><noNulls /></NullSkipMethod>",
                 NullSkipMethod.class);
         assertEquals("b", result._noNulls);
         assertEquals("a", result._nullsOk);
@@ -94,10 +96,12 @@ public class NullConversionsSkipTest extends XmlTestBase
     {
 //        String doc = "<StringValue><value></value></StringValue>";
         String doc = "<StringValue><value /></StringValue>";
-        StringValue result = MAPPER.readValue(doc, StringValue.class);
+        StringValue result = NULL_EXPOSING_MAPPER.readValue(doc, StringValue.class);
         assertNull(result.value);
 
-        ObjectMapper mapper = newMapper();
+        ObjectMapper mapper = mapperBuilder()
+                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .build();
         mapper.configOverride(String.class)
             .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.SKIP));
         result = mapper.readValue(doc, StringValue.class);
