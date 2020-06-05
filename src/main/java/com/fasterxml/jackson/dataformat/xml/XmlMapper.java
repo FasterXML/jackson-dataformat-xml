@@ -10,6 +10,8 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
@@ -146,9 +148,8 @@ public class XmlMapper extends ObjectMapper
 
     public XmlMapper(XmlFactory xmlFactory, JacksonXmlModule module)
     {
-        /* Need to override serializer provider (due to root name handling);
-         * deserializer provider fine as is
-         */
+        // Need to override serializer provider (due to root name handling);
+        // deserializer provider fine as is
         super(xmlFactory, new XmlSerializerProvider(new XmlRootNameLookup()), null);
         _xmlModule = module;
         // but all the rest is done via Module interface!
@@ -165,6 +166,15 @@ public class XmlMapper extends ObjectMapper
         //    Base64 default as "MIME" (not MIME-NO-LINEFEEDS), to preserve pre-2.12
         //    behavior
         setBase64Variant(Base64Variants.MIME);
+
+        // 04-Jun-2020, tatu: Use new (2.12) "CoercionConfigs" to support coercion
+        //   from empty and blank Strings to "empty" POJOs etc
+        coercionConfigDefaults()
+            // To allow indentation without problems, need to accept blank String as empty:
+            .setAcceptBlankAsEmpty(Boolean.TRUE)
+            // and then coercion from empty String to empty value, in general
+            .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty)
+        ;
     }
 
     /**
