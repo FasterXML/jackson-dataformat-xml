@@ -9,6 +9,8 @@ Project: jackson-dataformat-xml
 #205: `XmlMapper`/`UntypedObjectDeserializer` swallows duplicated elements in
   XML documents
  (reported by joaovarandas@github)
+#226: XML to JSON - IOException when parsing XML with XMLMapper
+ (reported by dbories@github)
 #262: Make `ToXmlGenerator` non-final
  (requested by Dave J)
 #273: Input mismatch with case-insensitive properties

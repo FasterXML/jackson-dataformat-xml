@@ -543,18 +543,33 @@ public class FromXmlParser
                     // we had an empty String (or all white space), and we are
                     // deserializing an array, we better hide the empty text.
                     // Also: must skip following END_ELEMENT
-                    _skipEndElement();
-                    if (_parsingContext.inArray()) {
-                        if (XmlTokenStream._allWs(_currText)) {
-                            // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
-                            //    expose as empty Object, not null (or, worse, as used to
-                            //    be done, by swallowing the token)
-                            _nextToken = JsonToken.END_OBJECT;
-                            _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                            return (_currToken = JsonToken.START_OBJECT);
+                    // 05-Jun-2020, tatu: ... if there is one; we may actually alternatively
+                    //   get START_ELEMENT for "mixed content" case; if so, need to change to
+                    //   expose "XmlText" as separate property
+                    token = _nextToken();
+
+                    if (token == XmlTokenStream.XML_END_ELEMENT) {
+                        if (_parsingContext.inArray()) {
+                            if (XmlTokenStream._allWs(_currText)) {
+                                // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
+                                //    expose as empty Object, not null (or, worse, as used to
+                                //    be done, by swallowing the token)
+                                _nextToken = JsonToken.END_OBJECT;
+                                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                                return (_currToken = JsonToken.START_OBJECT);
+                            }
                         }
+                        return (_currToken = JsonToken.VALUE_STRING);
                     }
-                    return (_currToken = JsonToken.VALUE_STRING);
+                    if (token != XmlTokenStream.XML_START_ELEMENT) {
+                        throw new JsonParseException(this, String.format(
+"Internal error: Expected END_ELEMENT (%d) or START_ELEMENT (%d), got event of type %d",
+XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
+                    }
+                    // fall-through, except must create new context AND push back
+                    // START_ELEMENT we just saw:
+                    _xmlTokens.pushbackCurrentToken();
+                    _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 }
                 // [dataformat-xml#177]: empty text may also need to be skipped
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must

@@ -97,7 +97,16 @@ public class XmlTokenStream
     protected String _namespaceURI;
 
     protected String _textValue;
-    
+
+    /**
+     * Marker flag set if caller wants to "push back" current token so
+     * that next call to {@link #next()} should simply be given what was
+     * already read.
+     *
+     * @since 2.12
+     */
+    protected boolean _repeatCurrentToken;
+
     /*
     /**********************************************************************
     /* State for handling virtual wrapping
@@ -196,6 +205,10 @@ public class XmlTokenStream
 //    public int next0() throws XMLStreamException
     public int next() throws XMLStreamException
     {
+        if (_repeatCurrentToken) {
+            _repeatCurrentToken = false;
+            return _currentState;
+        }
         if (_repeatElement != 0) {
             return (_currentState = _handleRepeatElement());
         }
@@ -283,6 +296,17 @@ public class XmlTokenStream
         }
 //System.out.println(" repeatStartElement for "+_localName+", _currentWrapper now: "+_currentWrapper);
         _repeatElement = REPLAY_START_DUP;
+    }
+
+    /**
+     * Method that can be called to ask stream to literally just return current token
+     * with the next call to {@link #next()}, without more work.
+     *
+     * @since 2.12
+     */
+    protected void pushbackCurrentToken()
+    {
+        _repeatCurrentToken = true;
     }
 
     /**
