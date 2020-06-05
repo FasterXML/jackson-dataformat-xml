@@ -17,6 +17,8 @@ Project: jackson-dataformat-xml
  (reported by Joseph P)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (reported by Jochen S)
+#319: Empty root tag into `List` deserialization bug
+ (reported by Seatec13@github)
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
 #397: `XmlReadContext` does not keep track of array index

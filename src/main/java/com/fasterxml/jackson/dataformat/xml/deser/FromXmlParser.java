@@ -579,7 +579,14 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                         token = _nextToken();
                         continue;
                     }
+                } else if (_parsingContext.inArray()) {
+                    // [dataformat-xml#319] Aaaaand for Arrays too
+                    if (XmlTokenStream._allWs(_currText)) {
+                        token = _nextToken();
+                        continue;
+                    }
                 }
+
                 // If not a leaf (or otherwise ignorable), need to transform into property...
                 _parsingContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
