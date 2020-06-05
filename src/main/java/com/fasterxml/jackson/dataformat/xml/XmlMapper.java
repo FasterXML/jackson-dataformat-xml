@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
@@ -75,11 +77,9 @@ public class XmlMapper extends ObjectMapper
             addModule(new XmlModule());
 
             // 04-May-2018, tatu: Important! Let's also default `String` `null` handling to coerce
-            //   to empty string -- this lets us induce `null` from empty tags first
-
+            //   to empty string -- this lets us induce `null` from empty tags firs
             // 08-Sep-2019, tatu: This causes [dataformat-xml#359] (follow-up for #354), but
             //    can not simply be removed.
-
             _configOverrides.findOrCreateOverride(String.class)
                 .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
 
@@ -87,6 +87,15 @@ public class XmlMapper extends ObjectMapper
             //    Base64 default as "MIME" (not MIME-NO-LINEFEEDS), to preserve pre-2.12
             //    behavior
             defaultBase64Variant(Base64Variants.MIME);
+
+            // 04-Jun-2020, tatu: Use new (2.12) "CoercionConfigs" to support coercion
+            //   from empty and blank Strings to "empty" POJOs etc
+            _coercionConfigs.defaultCoercions()
+                // To allow indentation without problems, need to accept blank String as empty:
+                .setAcceptBlankAsEmpty(Boolean.TRUE)
+                // and then coercion from empty String to empty value, in general
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty)
+            ;
         }
 
         @Override

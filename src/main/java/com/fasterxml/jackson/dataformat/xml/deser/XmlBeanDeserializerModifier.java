@@ -100,7 +100,7 @@ public class XmlBeanDeserializerModifier
         //    coercion.
         // 30-Apr-2020, tatu: Complication from [dataformat-xml#318] as we now
         //    have a delegate too...
-        if ((inst instanceof XmlBeanInstantiator) || !inst.canCreateFromString()) {
+        if (!inst.canCreateFromString()) {
             SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
             if (textProp != null) {
                 return new XmlTextDeserializer(deser, textProp);
