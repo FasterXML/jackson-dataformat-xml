@@ -206,7 +206,9 @@ public class XmlTokenStream
     {
         int type = next();
         if (type != XML_END_ELEMENT) {
-            throw new IOException("Expected END_ELEMENT, got event of type "+type);
+            throw new IOException(String.format(
+                    "Internal error: Expected END_ELEMENT (%d), got event of type %d",
+                    XML_END_ELEMENT, type));
         }
     }
 

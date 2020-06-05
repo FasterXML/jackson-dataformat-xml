@@ -11,7 +11,10 @@ public class MixedContentTreeRead226Test extends XmlTestBase
 
     public void testMixed226() throws Exception
     {
-        final String XML = "<root>\n<a>lorem <b>ipsum</b> dolor</a>\n</root>";
+        final String XML = "<root>\n"
+                +"<a>lorem <b>ipsum</b>\n"
+                +"dolor</a>\n"
+                +"</root>";
         JsonNode root = MAPPER.readTree(XML);
         assertNotNull(root);
     }

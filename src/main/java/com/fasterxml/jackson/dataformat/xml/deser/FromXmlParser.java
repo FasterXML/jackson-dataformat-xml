@@ -552,11 +552,7 @@ public class FromXmlParser
                     // we had an empty String (or all white space), and we are
                     // deserializing an array, we better hide the empty text.
                     // Also: must skip following END_ELEMENT
-                    try {
-                        _xmlTokens.skipEndElement();
-                    } catch (XMLStreamException e) {
-                        StaxUtil.throwAsParseException(e, this);
-                    }
+                    _skipEndElement();
                     if (_parsingContext.inArray()) {
                         if (XmlTokenStream._allWs(_currText)) {
                             // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
@@ -706,11 +702,7 @@ public class FromXmlParser
             if (_mayBeLeaf) {
                 _mayBeLeaf = false;
                 // Also: must skip following END_ELEMENT
-                try {
-                    _xmlTokens.skipEndElement();
-                } catch (XMLStreamException e) {
-                    StaxUtil.throwAsParseException(e, this);
-                }
+                _skipEndElement();
                 // NOTE: this is different from nextToken() -- NO work-around
                 // for otherwise empty List/array
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
@@ -806,11 +798,7 @@ public class FromXmlParser
                     _currToken = JsonToken.VALUE_STRING;
                     _nextToken = null;
                     // One more thing: must explicitly skip the END_OBJECT that would follow
-                    try {
-                        _xmlTokens.skipEndElement();
-                    } catch (XMLStreamException e) {
-                        StaxUtil.throwAsParseException(e, this);
-                    }
+                    _skipEndElement();
                     return (_currText = str);
                 }
             } catch (XMLStreamException e) {
@@ -1006,7 +994,17 @@ public class FromXmlParser
         return _byteArrayBuilder;
     }
 
-    private <T> T  _internalErrorUnknownToken(Object token) {
+    private <T> T _internalErrorUnknownToken(Object token) {
         throw new IllegalStateException("Internal error: unrecognized XmlTokenStream token: "+token);
+    }
+
+    protected void _skipEndElement() throws IOException {
+        try {
+            _xmlTokens.skipEndElement();
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsParseException(e, this);
+        } catch (Exception e) {
+            throw new JsonParseException(this, e.getMessage(), e);
+        }
     }
 }
