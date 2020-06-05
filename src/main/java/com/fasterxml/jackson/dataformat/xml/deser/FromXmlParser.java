@@ -547,12 +547,7 @@ public class FromXmlParser
             }
             return t;
         }
-        int token;
-        try {
-            token = _xmlTokens.next();
-        } catch (XMLStreamException e) {
-            token = StaxUtil.throwAsParseException(e, this);
-        }
+        int token = _nextToken();
         // Need to have a loop just because we may have to eat/convert
         // a start-element that indicates an array element.
         while (token == XmlTokenStream.XML_START_ELEMENT) {
@@ -566,11 +561,7 @@ public class FromXmlParser
             if (_parsingContext.inArray()) {
                 // Yup: in array, so this element could be verified; but it won't be
                 // reported anyway, and we need to process following event.
-                try {
-                    token = _xmlTokens.next();
-                } catch (XMLStreamException e) {
-                    StaxUtil.throwAsParseException(e, this);
-                }
+                token = _nextToken();
                 _mayBeLeaf = true;
                 continue;
             }
@@ -657,11 +648,7 @@ public class FromXmlParser
                 // loop over again
                 if (_parsingContext.inObject()) {
                     if ((_currToken != JsonToken.FIELD_NAME) && XmlTokenStream._allWs(_currText)) {
-                        try {
-                            token = _xmlTokens.next();
-                        } catch (XMLStreamException e) {
-                            StaxUtil.throwAsParseException(e, this);
-                        }
+                        token = _nextToken();
                         continue;
                     }
                 }
@@ -716,13 +703,7 @@ public class FromXmlParser
             return null;
         }
 
-        int token;
-
-        try {
-            token = _xmlTokens.next();
-        } catch (XMLStreamException e) {
-            token = StaxUtil.throwAsParseException(e, this);
-        }
+        int token = _nextToken();
 
         // mostly copied from 'nextToken()'
         while (token == XmlTokenStream.XML_START_ELEMENT) {
@@ -1084,6 +1065,14 @@ public class FromXmlParser
 
     private <T> T _internalErrorUnknownToken(Object token) {
         throw new IllegalStateException("Internal error: unrecognized XmlTokenStream token: "+token);
+    }
+
+    protected int _nextToken() throws IOException {
+        try {
+            return _xmlTokens.next();
+        } catch (XMLStreamException e) {
+            return StaxUtil.throwAsParseException(e, this);
+        }
     }
 
     protected void _skipEndElement() throws IOException {
