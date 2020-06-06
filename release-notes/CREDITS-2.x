@@ -77,6 +77,11 @@ Eric Schoonover (spoon16@github)
   matches `@JacksonXmlRootElement` localName
  (2.12.0)
 
+Denis Chernyshov (danblack@github)
+
+* Reported #124: Deserialization if an empty list (with empty XML tag) results in `null`
+ (2.12.0)
+ 
 Dave Jarvis (DaveJarvis@github)
 
 * Requested #262: Make `ToXmlGenerator` non-final
@@ -87,12 +92,23 @@ Joseph Petersen (jetersen@github)
 * Reported #273: Input mismatch with case-insensitive properties
  (2.12.0)
 
-Ghenadii Batalski (ghenadiibatalski@github)
+Eduard Wirch (ewirch@github)
 
-* Reported #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
+* Reported #314: Jackson gets confused by parent list element
  (2.12.0)
 
 Jochen Schalanda (joschi@github)
 
 * Reported #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
+ (2.12.0)
+
+Ghenadii Batalski (ghenadiibatalski@github)
+
+* Reported #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
+ (2.12.0)
+
+David Schmidt (d-schmidt@github)
+
+* Reported #390: Unexpected attribute at string fields causes extra objects to be
+  created in parent list
  (2.12.0)

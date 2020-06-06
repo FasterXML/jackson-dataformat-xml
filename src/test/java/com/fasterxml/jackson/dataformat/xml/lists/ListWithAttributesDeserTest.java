@@ -4,11 +4,13 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.databind.*;
+
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class ListWithAttributes extends XmlTestBase
+public class ListWithAttributesDeserTest extends XmlTestBase
 {
     // [dataformat-xml#43]
     static class Name {
@@ -79,6 +81,43 @@ public class ListWithAttributes extends XmlTestBase
         public Double value;
     }
 
+    // [dataformat-xml#314]
+    static class Customer314 {
+        @JacksonXmlElementWrapper(localName = "Customer", useWrapping = false)
+        @JacksonXmlProperty(localName = "Address")
+        public List<Address314> address;
+    }
+
+    static class Address314 {
+        public String stateProv;
+        public CountryName314 countryName;
+    }
+
+    static class CountryName314 {
+        public String code;
+        @JacksonXmlText
+        public String name;
+    }
+
+    // [dataformat-xml#390]
+    @JacksonXmlRootElement(localName = "many")
+    static class Many390 {
+        @JacksonXmlProperty(localName = "one")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        List<One390> ones;
+    }
+
+    static class One390 {
+        @JacksonXmlProperty
+        String value;
+        @JacksonXmlProperty
+        String another;
+
+        public void setAnother(String s) {
+            another = s;
+        }
+    }
+
     /*
     /**********************************************************
     /* Test methods
@@ -86,6 +125,10 @@ public class ListWithAttributes extends XmlTestBase
      */
 
     private final ObjectMapper MAPPER = newMapper();
+
+    private final ObjectMapper UPPER_CASE_MAPPER = mapperBuilder()
+            .propertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
+            .build();
 
     // [dataformat-xml#43]
     public void testIssue43() throws Exception
@@ -141,5 +184,63 @@ public class ListWithAttributes extends XmlTestBase
         assertNotNull(result.childrenB);
         assertEquals(1, result.childrenB.size());
         assertEquals(Double.valueOf(12.25), result.childrenB.get(0).value);
+    }
+
+    // [dataformat-xml#314]
+    public void testDeser314Order1() throws Exception
+    {
+        String content = ""
+                + "<Customer>\n"
+                + "  <Address>\n"
+                + "    <StateProv StateCode='DE-NI'>Niedersachsen</StateProv>\n"
+                + "    <CountryName Code='DE'>Deutschland</CountryName>\n"
+                + "  </Address>\n"
+                + "</Customer>"
+                ;
+        Customer314 result = UPPER_CASE_MAPPER.readValue(content, Customer314.class);
+        assertNotNull(result);
+    }
+
+    public void testDeser314Order2() throws Exception
+    {
+        String content = ""
+                + "<Customer>\n"
+                + "  <Address>\n"
+                + "    <CountryName Code='DE'>Deutschland</CountryName>\n"
+                + "    <StateProv StateCode='DE-NI'>Niedersachsen</StateProv>\n"
+                + "  </Address>\n"
+                + "</Customer>"
+                ;
+        Customer314 result = UPPER_CASE_MAPPER.readValue(content, Customer314.class);
+        assertNotNull(result);
+    }
+
+    public void testDeser314Address() throws Exception
+    {
+        String content = ""
+                + "  <Address>\n"
+                + "    <CountryName Code=\"DE\">Deutschland</CountryName>\n"
+                + "    <StateProv StateCode=\"DE-NI\">Niedersachsen</StateProv>\n"
+                + "  </Address>\n"
+                ;
+        Address314 result = UPPER_CASE_MAPPER.readValue(content, Address314.class);
+        assertNotNull(result);
+    }
+
+    // [dataformat-xml#390]
+    public void testDeser390() throws Exception
+    {
+        String XML = "<many>\n"
+                + "    <one>\n"
+                + "        <value bar=\"baz\">foo</value>\n"
+                + "        <another>stuff</another>\n"
+                + "    </one>\n"
+                + "</many>";
+        Many390 many = MAPPER.readValue(XML, Many390.class);
+        assertNotNull(many.ones);
+//System.err.println("XML:\n"+MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(many));
+        assertEquals(1, many.ones.size());
+        assertEquals("foo", many.ones.get(0).value);
+        assertEquals("stuff", many.ones.get(0).another);
     }
 }

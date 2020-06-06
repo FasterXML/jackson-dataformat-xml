@@ -402,7 +402,7 @@ public class FromXmlParser
             _xmlTokens.skipAttributes();
             return true;
         }
-//System.out.println(" isExpectedArrayStart?: t="+t);
+//System.out.println(" FromXmlParser.isExpectedArrayStart?: t="+t);
         return (t == JsonToken.START_ARRAY);
     }
 
@@ -798,6 +798,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     _nextToken = null;
                     // One more thing: must explicitly skip the END_OBJECT that would follow
                     _skipEndElement();
+//System.out.println(" FromXmlParser.getValueAsString() on START_OBJECT, str == '"+str+"'");
                     return (_currText = str);
                 }
             } catch (XMLStreamException e) {

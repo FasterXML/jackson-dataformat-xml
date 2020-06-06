@@ -19,13 +19,13 @@ import com.fasterxml.jackson.core.JsonLocation;
  * actual higher-level conversion to JSON tokens.
  *<p>
  * Beyond initial idea there are also couple of other detours like ability
- * to "replay" some tokens, add virtual wrappers (ironically to support "unwrapped"
+ * to "replay" some tokens, add virtual wrappers (ironically to support "unwrapped"_currentStateDesc
  * array values), and to unroll "Objects" into String values in some cases.
  */
 public class XmlTokenStream
 {
     // // // main token states:
-    
+
     public final static int XML_START_ELEMENT = 1;
     public final static int XML_END_ELEMENT = 2;
     public final static int XML_ATTRIBUTE_NAME = 3;
@@ -220,8 +220,8 @@ public class XmlTokenStream
         int type = next();
         if (type != XML_END_ELEMENT) {
             throw new IOException(String.format(
-                    "Internal error: Expected END_ELEMENT (%d), got event of type %d",
-                    XML_END_ELEMENT, type));
+                    "Internal error: Expected END_ELEMENT, got event of type %s",
+                    _stateDesc(type)));
         }
     }
 
@@ -277,7 +277,7 @@ public class XmlTokenStream
      */
     protected void repeatStartElement()
     {
-//System.out.println(" -> repeatStartElement for "+_localName+", _currentWrapper was: "+_currentWrapper);
+//System.out.println(" XmlTokenStream.repeatStartElement() for <"+_localName+">, _currentWrapper was: "+_currentWrapper);
         // sanity check: can only be used when just returned START_ELEMENT:
         if (_currentState != XML_START_ELEMENT) {
             // 14-May-2020, tatu: Looks like we DO end up here with empty Lists; if so,
@@ -285,8 +285,7 @@ public class XmlTokenStream
             if (_currentState == XML_END_ELEMENT) {
                 return;
             }
-            throw new IllegalStateException("Current state not XML_START_ELEMENT ("
-                    +XML_START_ELEMENT+") but "+_currentState);
+            throw new IllegalStateException("Current state not XML_START_ELEMENT but "+_currentStateDesc());
         }
         // Important: add wrapper, to keep track...
         if (_currentWrapper == null) {
@@ -317,20 +316,20 @@ public class XmlTokenStream
      */
     protected void skipAttributes()
     {
+//System.out.println(" XmlTokenStream.skipAttributes(), state: "+_currentStateDesc());
         if (_currentState == XML_ATTRIBUTE_NAME) {
             _attributeCount = 0;
             _currentState = XML_START_ELEMENT;
         } else if (_currentState == XML_START_ELEMENT) {
-            /* 06-Jan-2012, tatu: As per [#47] it looks like we should NOT do anything
-             *   in this particular case, because it occurs when original element had
-             *   no attributes and we now point to the first child element.
-             */
+            // 06-Jan-2012, tatu: As per [#47] it looks like we should NOT do anything
+            //   in this particular case, because it occurs when original element had
+            //   no attributes and we now point to the first child element.
 //              _attributeCount = 0;
         } else if (_currentState == XML_TEXT) {
             ; // nothing to do... is it even legal?
         } else {
-            throw new IllegalStateException("Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME ("
-                    +XML_START_ELEMENT+") but "+_currentState);
+            throw new IllegalStateException(
+"Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME but "+_currentStateDesc());
         }
     }
 
@@ -340,6 +339,7 @@ public class XmlTokenStream
      */
     protected String convertToString() throws XMLStreamException
     {
+//System.out.println(" XmlTokenStream.convertToString(), state: "+_currentStateDesc());
         // only applicable to cases where START_OBJECT was induced by attributes
         if (_currentState != XML_ATTRIBUTE_NAME || _nextAttributeIndex != 0) {
             return null;
@@ -351,9 +351,11 @@ public class XmlTokenStream
             if (text == null) {
                 text = "";
             }
-            if (_currentWrapper != null) {
-                _currentWrapper = _currentWrapper.getParent();
-            }
+            // 06-Jun-2020, tatu: As per [dataformat-xml#390], doing this is wrong,
+            //    should not (at least always?) assume we need it
+//            if (_currentWrapper != null) {
+//                _currentWrapper = _currentWrapper.getParent();
+//            }
             // just for diagnostics, reset to element name (from first attribute name)
             _localName = _xmlReader.getLocalName();
             _namespaceURI = _xmlReader.getNamespaceURI();
@@ -374,6 +376,7 @@ public class XmlTokenStream
 
     private final int _next() throws XMLStreamException
     {
+//System.out.println(" XmlTokenStream._next(), state: "+_currentStateDesc());
         switch (_currentState) {
         case XML_ATTRIBUTE_VALUE:
             ++_nextAttributeIndex;
@@ -737,7 +740,30 @@ public class XmlTokenStream
         return true;
     }
 
+    protected String _currentStateDesc() {
+        return _stateDesc(_currentState);
+    }
+
+    protected String _stateDesc(int state) {
+        switch (state) {
+        case XML_START_ELEMENT:
+            return "XML_START_ELEMENT";
+        case XML_END_ELEMENT:
+            return "XML_END_ELEMENT";
+        case XML_ATTRIBUTE_NAME:
+            return "XML_ATTRIBUTE_NAME";
+        case XML_ATTRIBUTE_VALUE:
+            return "XML_ATTRIBUTE_VALUE";
+        case XML_TEXT:
+            return "XML_TEXT";
+        case XML_END:
+            return "XML_END";
+        }
+        return "N/A ("+_currentState+")";
+    }
+
     // for DEBUGGING
+    /*
     @Override
     public String toString()
     {
@@ -746,4 +772,5 @@ public class XmlTokenStream
                 _currentState, _attributeCount, _nextAttributeIndex,
                 _localName, _textValue, _repeatElement, _currentWrapper, _repeatElement, _nextLocalName);
     }
+    */
 }
