@@ -3,31 +3,24 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-// Copied from `com.fasterxml.jackson.databind.deser.filter.` in `jackson-databind`
-public class NullConversionsGenericTest extends XmlTestBase
+// Note: copied from coercion tests of `jackson-databind`
+public class CoerceFromEmptyStringTest extends XmlTestBase
 {
     static class PointWrapper {
-        @JsonSetter(nulls=Nulls.AS_EMPTY)
         public Point p;
     }
 
     static class GeneralEmpty<T> {
-        // 09-Feb-2017, tatu: Should only need annotation either for field OR setter, not both:
-//        @JsonSetter(nulls=Nulls.AS_EMPTY)
         T value;
 
         protected GeneralEmpty() { }
         public GeneralEmpty(T v) { value = v; }
 
-        @JsonSetter(nulls=Nulls.AS_EMPTY)
         public void setValue(T v) {
             value = v;
         }
@@ -36,7 +29,6 @@ public class NullConversionsGenericTest extends XmlTestBase
     }
 
     static class NoCtorWrapper {
-        @JsonSetter(nulls=Nulls.AS_EMPTY)
         public NoCtorPOJO value;
     }
 
@@ -73,19 +65,8 @@ public class NullConversionsGenericTest extends XmlTestBase
         Point p = result.value;
         assertEquals(0, p.x);
         assertEquals(0, p.y);
-
-        // and then also failing case with no suitable creator:
-        try {
-            /* NoCtorWrapper nogo =*/ MAPPER.readValue(EMPTY_XML,
-                    NoCtorWrapper.class);
-            fail("Should not pass");
-        } catch (JsonMappingException e) {
-            verifyException(e, "Cannot create empty instance");
-        }
     }
 
-    // 04-May-2018, tatu: In theory could be supportable, but wrapping (or not)
-    //   of Collections, other requirements, make it... not that easy.
     public void testNullsToEmptyCollection() throws Exception
     {
         GeneralEmpty<List<String>> result = MAPPER.readValue(EMPTY_XML,
@@ -126,7 +107,6 @@ public class NullConversionsGenericTest extends XmlTestBase
                 new TypeReference<GeneralEmpty<int[]>>() { });
         assertNotNull(result3.value);
         assertEquals(0, result3.value.length);
-
         GeneralEmpty<double[]> result4 = MAPPER.readValue(doc,
                 new TypeReference<GeneralEmpty<double[]>>() { });
         assertNotNull(result4.value);
