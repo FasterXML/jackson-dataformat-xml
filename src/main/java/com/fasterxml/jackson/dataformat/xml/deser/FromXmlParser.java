@@ -60,9 +60,9 @@ public class FromXmlParser
          * NOTE: in Jackson 2.x, only "true" empty tags were affected, not split ones. With 3.x
          * both cases handled uniformly.
          *<p>
-         * Default setting is `true`.
+         * Default setting is {@code false}.
          */
-        EMPTY_ELEMENT_AS_NULL(true)
+        EMPTY_ELEMENT_AS_NULL(false)
         ;
 
         final boolean _defaultState;
@@ -649,11 +649,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 return null;
             }
             if (_parsingContext.inArray()) {
-                try {
-                    token = _xmlTokens.next();
-                } catch (XMLStreamException e) {
-                    StaxUtil.throwAsParseException(e, this);
-                }
+                token = _nextToken();
                 _mayBeLeaf = true;
                 continue;
             }

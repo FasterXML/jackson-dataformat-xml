@@ -63,6 +63,7 @@ public class EmptyStringValueTest extends XmlTestBase
 
         // but can be changed
         XmlMapper mapper2 = mapperBuilder()
+                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
                 .withConfigOverride(String.class,
                         o -> o.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.SET)))
             .build();
