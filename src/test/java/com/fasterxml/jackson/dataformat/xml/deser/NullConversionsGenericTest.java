@@ -1,5 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -83,7 +86,6 @@ public class NullConversionsGenericTest extends XmlTestBase
 
     // 04-May-2018, tatu: In theory could be supportable, but wrapping (or not)
     //   of Collections, other requirements, make it... not that easy.
-/*
     public void testNullsToEmptyCollection() throws Exception
     {
         GeneralEmpty<List<String>> result = MAPPER.readValue(EMPTY_XML,
@@ -97,10 +99,8 @@ public class NullConversionsGenericTest extends XmlTestBase
         assertNotNull(result2.value);
         assertEquals(0, result2.value.size());
     }
-    */
 
     // 04-May-2018, tatu: Maps and XML do not mix well, alas:
-    /*
     public void testNullsToEmptyMap() throws Exception
     {
         GeneralEmpty<Map<String,String>> result = MAPPER.readValue(EMPTY_XML,
@@ -108,7 +108,6 @@ public class NullConversionsGenericTest extends XmlTestBase
         assertNotNull(result.value);
         assertEquals(0, result.value.size());
     }
-    */
 
     public void testNullsToEmptyArrays() throws Exception
     {
