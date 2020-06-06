@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
 // [dataformat-xml#128]: Should ignore "as-attribute" setting for POJO
-public class AttributeDeser128Test extends XmlTestBase
+public class PojoAsAttributeSer128Test extends XmlTestBase
 {
     static class Bean {
         public int value = 42;
