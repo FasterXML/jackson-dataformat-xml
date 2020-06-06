@@ -63,9 +63,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     {
         super(src);
 
-        /* Then make sure attributes are sorted before elements, keep track
-         * of how many there are altogether
-         */
+        // Then make sure attributes are sorted before elements, keep track
+        // of how many there are altogether
         int attrCount = 0;
         for (BeanPropertyWriter bpw : _props) {
             if (_isAttribute(bpw)) { // Yup: let's build re-ordered list then
