@@ -358,9 +358,11 @@ public class XmlTokenStream
             if (text == null) {
                 text = "";
             }
-            if (_currentWrapper != null) {
-                _currentWrapper = _currentWrapper.getParent();
-            }
+            // 06-Jun-2020, tatu: As per [dataformat-xml#390], doing this is wrong,
+            //    should not (at least always?) assume we need it
+//            if (_currentWrapper != null) {
+//                _currentWrapper = _currentWrapper.getParent();
+//            }
             // just for diagnostics, reset to element name (from first attribute name)
             _localName = _xmlReader.getLocalName();
             _namespaceURI = _xmlReader.getNamespaceURI();

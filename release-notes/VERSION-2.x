@@ -17,12 +17,17 @@ Project: jackson-dataformat-xml
  (requested by Dave J)
 #273: Input mismatch with case-insensitive properties
  (reported by Joseph P)
+#314: Jackson gets confused by parent list element
+ (reported by Eduard W)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (reported by Jochen S)
 #319: Empty root tag into `List` deserialization bug
  (reported by Seatec13@github)
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
+#390: Unexpected attribute at string fields causes extra objects to be
+  created in parent list
+ (reported by David S
 #397: `XmlReadContext` does not keep track of array index
 #403: Make `JsonNode` implicitly create `ArrayNode`s for repeated XML Elements
 #405: Mixed content not exposed through `FromXmlParser`, lost by `JsonNode`
