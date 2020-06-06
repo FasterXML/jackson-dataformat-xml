@@ -27,7 +27,7 @@ public class EmptyStringValueTest extends XmlTestBase
     }
 
     // [dataformat-xml#25]
-    private static class EmptyStrings
+    static class EmptyStrings25
     {
         @JacksonXmlProperty(isAttribute=true)
         public String a = "NOT SET";
@@ -86,8 +86,8 @@ public class EmptyStringValueTest extends XmlTestBase
     // [dataformat-xml#25]
     public void testEmptyStringFromElemAndAttr() throws Exception
     {
-        EmptyStrings ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
-                EmptyStrings.class);
+        EmptyStrings25 ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
+                EmptyStrings25.class);
         assertNotNull(ob);
         assertEquals("", ob.a);
         assertEquals("", ob.b);
