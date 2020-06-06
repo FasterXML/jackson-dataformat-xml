@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
 // [dataformat-xml#128]: Should ignore "as-attribute" setting for POJO
-public class AttributeDeser128Test extends XmlTestBase
+public class PojoAsAttributeSer128Test extends XmlTestBase
 {
     static class Bean {
         public int value = 42;
@@ -19,12 +19,12 @@ public class AttributeDeser128Test extends XmlTestBase
     static class Container {
         @JacksonXmlProperty(isAttribute = true)
         public String start = "!start";
-        
-        @JacksonXmlProperty(isAttribute = true)
-        public String end = "!end";
 
         @JacksonXmlProperty(isAttribute = true)
         protected Bean bean = new Bean();
+
+        @JacksonXmlProperty(isAttribute = true)
+        public String end = "!end";
     }
 
     /*
@@ -37,7 +37,9 @@ public class AttributeDeser128Test extends XmlTestBase
 
     public void testAttributeDeser128() throws Exception
     {
+        final String output = MAPPER.writeValueAsString(new Container()).trim();
+//System.err.println(output);
         assertEquals("<root start=\"!start\" end=\"!end\"><bean><value>42</value></bean></root>",
-                MAPPER.writeValueAsString(new Container()).trim());
+                output);
     }
 }
