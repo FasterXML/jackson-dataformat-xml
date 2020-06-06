@@ -372,6 +372,11 @@ public class XmlFactory extends JsonFactory
         return _xmlInputFactory;
     }
 
+    /**
+     * @deprecated Since 2.12 -- should be set as part of build process
+     *   (either in builder, or constructor)
+     */
+    @Deprecated
     public void setXMLInputFactory(XMLInputFactory f) {
         _xmlInputFactory = f;
     }
@@ -381,6 +386,11 @@ public class XmlFactory extends JsonFactory
         return _xmlOutputFactory;
     }
     
+    /**
+     * @deprecated Since 2.12 -- should be set as part of build process
+     *   (either in builder, or constructor)
+     */
+    @Deprecated
     public void setXMLOutputFactory(XMLOutputFactory f) {
         _xmlOutputFactory = f;
     }
