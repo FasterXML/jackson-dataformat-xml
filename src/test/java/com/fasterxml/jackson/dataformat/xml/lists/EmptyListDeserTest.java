@@ -1,13 +1,23 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class EmptyListDeserTest extends XmlTestBase
 {
+    // [dataformat-xml#124]
+    static class TestList124 {
+        @JsonProperty("list")
+        public List<Object> list;
+    }
+
     // [dataformat-xml#177]
     static class Config
     {
@@ -27,8 +37,8 @@ public class EmptyListDeserTest extends XmlTestBase
     // [dataformat-xml#319]
     static class Value319 {
         public Long orderId, orderTypeId;
-    }    
-    
+    }
+
     /*
     /**********************************************************
     /* Test methods
@@ -36,6 +46,21 @@ public class EmptyListDeserTest extends XmlTestBase
      */
 
     private final XmlMapper MAPPER = new XmlMapper();
+
+    // [dataformat-xml#124]
+    public  void testEmptyList124() throws Exception {
+        final XmlMapper xmlMapper = XmlMapper.builder()
+                .build();
+
+        TestList124 originalObject = new TestList124();
+        originalObject.list = new ArrayList<Object>();
+        String xml = xmlMapper.writeValueAsString(originalObject);
+
+        TestList124 result = xmlMapper.readValue(xml, TestList124.class);
+
+        assertNotNull(result.list);
+        assertEquals(0, result.list.size());
+    }    
 
     // [dataformat-xml#177]
     public void testEmptyList() throws Exception
