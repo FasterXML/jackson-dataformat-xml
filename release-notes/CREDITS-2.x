@@ -77,6 +77,11 @@ Eric Schoonover (spoon16@github)
   matches `@JacksonXmlRootElement` localName
  (2.12.0)
 
+Denis Chernyshov (danblack@github)
+
+* Reported #124: Deserialization if an empty list (with empty XML tag) results in `null`
+ (2.12.0)
+ 
 Dave Jarvis (DaveJarvis@github)
 
 * Requested #262: Make `ToXmlGenerator` non-final
