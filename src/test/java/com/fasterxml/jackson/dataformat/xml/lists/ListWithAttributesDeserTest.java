@@ -235,12 +235,18 @@ public class ListWithAttributesDeserTest extends XmlTestBase
                 + "        <value bar=\"baz\">foo</value>\n"
                 + "        <another>stuff</another>\n"
                 + "    </one>\n"
+                + "    <one>\n"
+                + "        <value bar='baz' arg2='123'>foo2</value>\n"
+                + "        <another>stuff2</another>\n"
+                + "    </one>\n"
                 + "</many>";
         Many390 many = MAPPER.readValue(XML, Many390.class);
         assertNotNull(many.ones);
 //System.err.println("XML:\n"+MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(many));
-        assertEquals(1, many.ones.size());
+        assertEquals(2, many.ones.size());
         assertEquals("foo", many.ones.get(0).value);
         assertEquals("stuff", many.ones.get(0).another);
+        assertEquals("foo2", many.ones.get(1).value);
+        assertEquals("stuff2", many.ones.get(1).another);
     }
 }
