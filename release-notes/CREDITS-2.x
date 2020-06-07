@@ -81,7 +81,13 @@ Denis Chernyshov (danblack@github)
 
 * Reported #124: Deserialization if an empty list (with empty XML tag) results in `null`
  (2.12.0)
- 
+
+Julien Debon (Sir4ur0n@github)
+
+* Reported #252: Empty (or self-closing) Element representing `List` is incorrectly
+  deserialized as null, not Empty List
+ (2.12.0)
+
 Dave Jarvis (DaveJarvis@github)
 
 * Requested #262: Make `ToXmlGenerator` non-final
