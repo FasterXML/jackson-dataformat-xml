@@ -13,6 +13,9 @@ Project: jackson-dataformat-xml
  (reported by joaovarandas@github)
 #226: XML to JSON - IOException when parsing XML with XMLMapper
  (reported by dbories@github)
+#252: Empty (or self-closing) Element representing `List` is incorrectly
+  deserialized as null, not Empty List
+ (reported by Julien D)
 #262: Make `ToXmlGenerator` non-final
  (requested by Dave J)
 #273: Input mismatch with case-insensitive properties
