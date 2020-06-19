@@ -141,6 +141,16 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _cdata = src._cdata;
     }
 
+    // @since 2.11.1
+    protected XmlBeanSerializerBase(XmlBeanSerializerBase src,
+            BeanPropertyWriter[] properties, BeanPropertyWriter[] filteredProperties) {
+        super(src, properties, filteredProperties);
+        _attributeCount = src._attributeCount;
+        _textPropertyIndex = src._textPropertyIndex;
+        _xmlNames = src._xmlNames;
+        _cdata = src._cdata;
+    }
+
     /*
     /**********************************************************
     /* Overridden serialization methods

@@ -62,6 +62,13 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         _nameTransformer = src._nameTransformer;
     }
 
+    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src,
+            BeanPropertyWriter[] properties, BeanPropertyWriter[] filteredProperties)
+    {
+        super(src, properties, filteredProperties);
+        _nameTransformer = src._nameTransformer;
+    }
+
     /*
     /**********************************************************
     /* Life-cycle: factory methods, fluent factories
@@ -96,6 +103,12 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     @Override // since 2.8
     protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
         return new UnwrappingXmlBeanSerializer(this, toIgnore);
+    }
+
+    @Override // since 2.11.1
+    protected BeanSerializerBase withProperties(BeanPropertyWriter[] properties,
+            BeanPropertyWriter[] filteredProperties) {
+        return new UnwrappingXmlBeanSerializer(this, properties, filteredProperties);
     }
 
     /**
