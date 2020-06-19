@@ -41,6 +41,12 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
         super(src, toIgnore);
     }
 
+    protected XmlBeanSerializer(XmlBeanSerializerBase src,
+            BeanPropertyWriter[] properties, BeanPropertyWriter[] filteredProperties)
+    {
+        super(src, properties, filteredProperties);
+    }
+
     /*
     /**********************************************************
     /* Life-cycle: factory methods, fluent factories
@@ -65,6 +71,12 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
     @Override
     protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
         return new XmlBeanSerializer(this, toIgnore);
+    }
+
+    @Override // since 2.11.1
+    protected BeanSerializerBase withProperties(BeanPropertyWriter[] properties,
+            BeanPropertyWriter[] filteredProperties) {
+        return new XmlBeanSerializer(this, properties, filteredProperties);
     }
 
     /**
