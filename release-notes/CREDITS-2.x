@@ -66,6 +66,11 @@ Martin Vysny (mvysny@github)
 * Reported #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
  (2.10.5)
 
+James Bushell (jimnz111@github)
+
+* Suggested #413: Null String field serialization through ToXmlGenerator causes NullPointerException
+ (2.10.5)
+
 Alexei Volkov (softkot@github)
 
 * Reported #294: XML parser error with nested same element names

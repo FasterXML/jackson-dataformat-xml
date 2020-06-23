@@ -29,7 +29,9 @@ No changes since 2.10.x
 
 #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
  (reported by Martin V)
-- Upgrade Woodstox dependency to 6.2.0 (minor fix to namespace binding)
+#413: Null String field serialization through ToXmlGenerator causes NullPointerException
+ (suggested by James B)
+- Upgrade Woodstox dependency to 6.2.1
 
 2.10.4 (03-May-2020)
 

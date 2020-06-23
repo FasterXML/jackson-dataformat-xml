@@ -590,10 +590,14 @@ public final class ToXmlGenerator
     {
         writeFieldName(name.getValue());
     }
-    
+
     @Override
     public void writeString(String text) throws IOException
     {
+        if (text == null) { // [dataformat-xml#413]
+            writeNull();
+            return;
+        }
         _verifyValueWrite("write String value");
         if (_nextName == null) {
             handleMissingName();
