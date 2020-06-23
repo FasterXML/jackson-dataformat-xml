@@ -29,6 +29,33 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem>value</elem></root>", xml);
     }
 
+    public void testNullValuedElement() throws Exception
+    {
+        // First explicitly written
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeFieldName("elem");
+        gen.writeNull();
+        gen.writeEndObject();
+        gen.close();
+        String xml = removeSjsxpNamespace(out.toString());
+        assertEquals("<root><elem/></root>", xml);
+
+        // and then indirectly (see [dataformat-xml#413])
+        out = new StringWriter();
+        gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeFieldName("elem");
+        gen.writeString((String) null);
+        gen.writeEndObject();
+        gen.close();
+        xml = removeSjsxpNamespace(out.toString());
+        assertEquals("<root><elem/></root>", xml);
+    }
+    
     public void testSimpleAttribute() throws Exception
     {
         StringWriter out = new StringWriter();
