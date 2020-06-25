@@ -39,7 +39,7 @@ Project: jackson-dataformat-xml
 #411: Change default setting of `FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL`
   from `true` to `false`
 
-2.11.1 (not yet released)
+2.11.1 (25-Jun-2020)
 
 #86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
    matches `@JacksonXmlRootElement` localName
