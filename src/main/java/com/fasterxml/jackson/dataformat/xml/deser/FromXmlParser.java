@@ -15,6 +15,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.io.IOContext;
+import com.fasterxml.jackson.core.io.NumberInput;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 
@@ -176,6 +177,27 @@ public class FromXmlParser
      * than once.
      */
     protected byte[] _binaryValue;
+
+    /*
+    /**********************************************************************
+    /* Parsing state, number decoding
+    /**********************************************************************
+     */
+
+    /**
+     * Bitfield that indicates which numeric representations
+     * have been calculated for the current type
+     */
+    protected int _numTypesValid = NR_UNKNOWN;
+
+    // First primitives
+
+    protected int _numberInt;
+    protected long _numberLong;
+
+    // And then object types
+
+    protected BigInteger _numberBigInt;
 
     /*
     /**********************************************************************
@@ -406,6 +428,68 @@ public class FromXmlParser
         return (t == JsonToken.START_ARRAY);
     }
 
+    /**
+     * Since xml representation can not really distinguish between different
+     * scalar types (numbers, booleans) -- they are all just Character Data,
+     * without schema -- we can try to infer type from intent here.
+     * The main benefit is avoiding checks for coercion.
+     */
+    @Override
+    public boolean isExpectedNumberIntToken()
+    {
+        JsonToken t = _currToken;
+        if (t == JsonToken.VALUE_STRING) {
+            final String text = _currText.trim();
+            final int len = _isIntNumber(text);
+            if (len > 0) {
+                if (len <= 9) {
+                    _numberInt = NumberInput.parseInt(text);
+                    _numTypesValid = NR_INT;
+                    _currToken = JsonToken.VALUE_NUMBER_INT;
+                    return true;
+                }
+                if (len <= 18) { // definitely in long range
+                    long l = NumberInput.parseLong(text);
+                    if (len == 10) {
+                        int asInt = (int) l;
+                        long l2 = (long) asInt;
+                        if (l == l2) {
+                            _numberInt = asInt;
+                            _numTypesValid = NR_INT;
+                            _currToken = JsonToken.VALUE_NUMBER_INT;
+                            return true;
+                        }
+                    }
+                    _numberLong = l;
+                    _numTypesValid = NR_LONG;
+                    _currToken = JsonToken.VALUE_NUMBER_INT;
+                    return true;
+                }
+                // Might still fit within `long`
+                if (len == 19) {
+                    final boolean stillLong;
+                    if (text.charAt(0) == '-') {
+                        stillLong = NumberInput.inLongRange(text.substring(1), true);
+                    } else {
+                        stillLong = NumberInput.inLongRange(text, false);
+                    }
+                    if (stillLong) {
+                        _numberLong = NumberInput.parseLong(text);
+                        _numTypesValid = NR_LONG;
+                        _currToken = JsonToken.VALUE_NUMBER_INT;
+                        return true;
+                    }
+                }
+                // finally, need BigInteger
+                _numberBigInt = new BigInteger(text);
+                _numTypesValid = NR_BIGINT;
+                _currToken = JsonToken.VALUE_NUMBER_INT;
+                return true;
+            }
+        }
+        return (t == JsonToken.VALUE_NUMBER_INT);
+    }
+
     // DEBUGGING
     /*
     @Override
@@ -434,6 +518,7 @@ public class FromXmlParser
     public JsonToken nextToken() throws IOException
     {
         _binaryValue = null;
+        _numTypesValid = NR_UNKNOWN;
         if (_nextToken != null) {
             JsonToken t = _nextToken;
             _currToken = t;
@@ -850,7 +935,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         writer.write(str);
         return str.length();
     }
-    
+
     /*
     /**********************************************************************
     /* Public API, access to token information, binary
@@ -894,55 +979,243 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
 
     /*
     /**********************************************************************
-    /* Numeric accessors
+    /* Numeric accessors (implemented since 2.12)
     /**********************************************************************
      */
 
     @Override
-    public BigInteger getBigIntegerValue() throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public BigDecimal getDecimalValue() throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public double getDoubleValue() throws IOException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public float getFloatValue() throws IOException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getIntValue() throws IOException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public long getLongValue() throws IOException {
-        // TODO Auto-generated method stub
-        return 0;
+    public boolean isNaN() {
+        return false; // can't have since we only coerce integers
     }
 
     @Override
     public NumberType getNumberType() throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        if (_numTypesValid == NR_UNKNOWN) {
+            _checkNumericValue(NR_UNKNOWN); // will also check event type
+        }
+        // Only integer types supported so...
+        
+        if ((_numTypesValid & NR_INT) != 0) {
+            return NumberType.INT;
+        }
+        if ((_numTypesValid & NR_LONG) != 0) {
+            return NumberType.LONG;
+        }
+        return NumberType.BIG_INTEGER;
     }
 
     @Override
     public Number getNumberValue() throws IOException {
-        // TODO Auto-generated method stub
+        if (_numTypesValid == NR_UNKNOWN) {
+            _checkNumericValue(NR_UNKNOWN); // will also check event type
+        }
+        // Only integer types supported so...
+
+        if ((_numTypesValid & NR_INT) != 0) {
+            return _numberInt;
+        }
+        if ((_numTypesValid & NR_LONG) != 0) {
+            return _numberLong;
+        }
+        if ((_numTypesValid & NR_BIGINT) != 0) {
+            return _numberBigInt;
+        }
+        _throwInternal();
+        return null;
+    }
+
+    @Override
+    public int getIntValue() throws IOException {
+        if ((_numTypesValid & NR_INT) == 0) {
+            if (_numTypesValid == NR_UNKNOWN) { // not parsed at all
+                _checkNumericValue(NR_INT); // will also check event type
+            }
+            if ((_numTypesValid & NR_INT) == 0) { // wasn't an int natively?
+                _convertNumberToInt(); // let's make it so, if possible
+            }
+        }
+        return _numberInt;
+    }
+
+    @Override
+    public long getLongValue() throws IOException {
+        if ((_numTypesValid & NR_LONG) == 0) {
+            if (_numTypesValid == NR_UNKNOWN) {
+                _checkNumericValue(NR_LONG);
+            }
+            if ((_numTypesValid & NR_LONG) == 0) {
+                _convertNumberToLong();
+            }
+        }
+        return _numberLong;
+    }
+
+    @Override
+    public BigInteger getBigIntegerValue() throws IOException {
+        if ((_numTypesValid & NR_BIGINT) == 0) {
+            if (_numTypesValid == NR_UNKNOWN) {
+                _checkNumericValue(NR_BIGINT);
+            }
+            if ((_numTypesValid & NR_BIGINT) == 0) {
+                _convertNumberToBigInteger();
+            }
+        }
+        return _numberBigInt;
+    }
+
+    @Override
+    public float getFloatValue() throws IOException {
+        if ((_numTypesValid & NR_FLOAT) == 0) {
+            if (_numTypesValid == NR_UNKNOWN) {
+                _checkNumericValue(NR_FLOAT);
+            }
+        }
+        return _convertNumberToFloat();
+    }
+
+    @Override
+    public double getDoubleValue() throws IOException {
+        if ((_numTypesValid & NR_DOUBLE) == 0) {
+            if (_numTypesValid == NR_UNKNOWN) {
+                _checkNumericValue(NR_DOUBLE);
+            }
+        }
+        return _convertNumberToDouble();
+    }
+
+    @Override
+    public BigDecimal getDecimalValue() throws IOException {
+        if ((_numTypesValid & NR_BIGDECIMAL) == 0) {
+            if (_numTypesValid == NR_UNKNOWN) {
+                _checkNumericValue(NR_BIGDECIMAL);
+            }
+        }
+        return _convertNumberToBigDecimal();
+    }
+
+    // // // Helper methods for Numeric accessors
+
+    protected final void _checkNumericValue(int expType) throws IOException {
+        if (_currToken == JsonToken.VALUE_NUMBER_INT) {
+            return;
+        }
+        _reportError("Current token ("+currentToken()+") not numeric, can not use numeric value accessors");
+    }
+
+    // NOTE: copied from `StdDeserializer`...
+    protected final int _isIntNumber(String text)
+    {
+        final int len = text.length();
+        if (len > 0) {
+            char c = text.charAt(0);
+            // skip leading negative sign, do NOT allow leading plus
+            final int start = (c == '-') ? 1 : 0;
+            for (int i = start; i < len; ++i) {
+                int ch = text.charAt(i);
+                if (ch > '9' || ch < '0') {
+                    return -1;
+                }
+            }
+            return len - start;
+        }
+        return 0;
+    }
+
+    protected void _convertNumberToInt() throws IOException
+    {
+        // First, converting from long ought to be easy
+        if ((_numTypesValid & NR_LONG) != 0) {
+            // Let's verify it's lossless conversion by simple roundtrip
+            int result = (int) _numberLong;
+            if (((long) result) != _numberLong) {
+                _reportError("Numeric value ("+getText()+") out of range of int");
+            }
+            _numberInt = result;
+        } else if ((_numTypesValid & NR_BIGINT) != 0) {
+            if (BI_MIN_INT.compareTo(_numberBigInt) > 0 
+                    || BI_MAX_INT.compareTo(_numberBigInt) < 0) {
+                reportOverflowInt();
+            }
+            _numberInt = _numberBigInt.intValue();
+        } else {
+            _throwInternal();
+        }
+        _numTypesValid |= NR_INT;
+    }
+    
+    protected void _convertNumberToLong() throws IOException
+    {
+        if ((_numTypesValid & NR_INT) != 0) {
+            _numberLong = (long) _numberInt;
+        } else if ((_numTypesValid & NR_BIGINT) != 0) {
+            if (BI_MIN_LONG.compareTo(_numberBigInt) > 0 
+                    || BI_MAX_LONG.compareTo(_numberBigInt) < 0) {
+                reportOverflowLong();
+            }
+            _numberLong = _numberBigInt.longValue();
+        } else {
+            _throwInternal();
+        }
+        _numTypesValid |= NR_LONG;
+    }
+    
+    protected void _convertNumberToBigInteger() throws IOException
+    {
+        if ((_numTypesValid & NR_LONG) != 0) {
+            _numberBigInt = BigInteger.valueOf(_numberLong);
+        } else if ((_numTypesValid & NR_INT) != 0) {
+            _numberBigInt = BigInteger.valueOf(_numberInt);
+        } else {
+            _throwInternal();
+        }
+        _numTypesValid |= NR_BIGINT;
+    }
+
+    protected float _convertNumberToFloat() throws IOException
+    {
+        // Note: this MUST start with more accurate representations, since we don't know which
+        //  value is the original one (others get generated when requested)
+        if ((_numTypesValid & NR_BIGINT) != 0) {
+            return _numberBigInt.floatValue();
+        }
+        if ((_numTypesValid & NR_LONG) != 0) {
+            return (float) _numberLong;
+        }
+        if ((_numTypesValid & NR_INT) != 0) {
+            return (float) _numberInt;
+        }
+        _throwInternal();
+        return 0.0f;
+    }
+    
+    protected double _convertNumberToDouble() throws IOException
+    {
+        // same as above, start from more to less accurate
+        if ((_numTypesValid & NR_BIGINT) != 0) {
+            return _numberBigInt.doubleValue();
+        }
+        if ((_numTypesValid & NR_LONG) != 0) {
+            return (double) _numberLong;
+        }
+        if ((_numTypesValid & NR_INT) != 0) {
+            return (double) _numberInt;
+        }
+        _throwInternal();
+        return 0.0;
+    }
+
+    protected BigDecimal _convertNumberToBigDecimal() throws IOException
+    {
+        if ((_numTypesValid & NR_BIGINT) != 0) {
+            return new BigDecimal(_numberBigInt);
+        }
+        if ((_numTypesValid & NR_LONG) != 0) {
+            return BigDecimal.valueOf(_numberLong);
+        }
+        if ((_numTypesValid & NR_INT) != 0) {
+            return BigDecimal.valueOf(_numberInt);
+        }
+        _throwInternal();
         return null;
     }
 

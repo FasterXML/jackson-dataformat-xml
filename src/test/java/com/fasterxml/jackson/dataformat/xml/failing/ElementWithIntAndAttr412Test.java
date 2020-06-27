@@ -59,11 +59,12 @@ public class ElementWithIntAndAttr412Test extends XmlTestBase
 
     public void testIntFromElemAndAttr() throws Exception
     {
+        TaggedInt412 result;
         String XML = "<tagged>\n"
                 + "        <id bar='baz'>2812</id>\n"
                 + "        <count>15</count>\n"
                 + "</tagged>";
-        TaggedInt412 result = MAPPER.readValue(XML, TaggedInt412.class);
+        result = MAPPER.readValue(XML, TaggedInt412.class);
         assertEquals(2812, result.id);
         assertEquals(15, result.count);
 
