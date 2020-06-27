@@ -3,7 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.stream;
 import java.io.*;
 
 import com.fasterxml.jackson.core.*;
-
+import com.fasterxml.jackson.core.JsonParser.NumberType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -258,6 +258,41 @@ public class XmlParserTest extends XmlTestBase
 
 //System.err.println("result = \n"+result);
         assertEquals(exp, result);
+    }
+
+    public void testInferredNumbers() throws Exception
+    {
+        final String XML = "<data value1='abc' value2='42'>123456789012</data>";
+
+        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
+
+        // First: verify handling without forcing array handling:
+        assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // @value1
+        assertEquals("value1", xp.currentName());
+        assertToken(JsonToken.VALUE_STRING, xp.nextToken());
+        assertFalse(xp.isExpectedNumberIntToken());
+        assertEquals("abc", xp.getText());
+
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // @value2
+        assertEquals("value2", xp.getCurrentName());
+        assertToken(JsonToken.VALUE_STRING, xp.nextToken());
+        assertTrue(xp.isExpectedNumberIntToken());
+        assertEquals(JsonToken.VALUE_NUMBER_INT, xp.currentToken());
+        assertEquals(NumberType.INT, xp.getNumberType());
+        assertEquals(42, xp.getIntValue());
+
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // implicit for text
+        assertEquals("", xp.getCurrentName());
+
+        assertToken(JsonToken.VALUE_STRING, xp.nextToken());
+        assertTrue(xp.isExpectedNumberIntToken());
+        assertEquals(JsonToken.VALUE_NUMBER_INT, xp.currentToken());
+        assertEquals(NumberType.LONG, xp.getNumberType());
+        assertEquals(123456789012L, xp.getLongValue());
+        
+        assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </data>
+        xp.close();
     }
 
     /*
