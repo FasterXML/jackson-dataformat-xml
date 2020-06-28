@@ -13,9 +13,11 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -150,7 +152,8 @@ public class XmlMapper extends ObjectMapper
     {
         // Need to override serializer provider (due to root name handling);
         // deserializer provider fine as is
-        super(xmlFactory, new XmlSerializerProvider(new XmlRootNameLookup()), null);
+        super(xmlFactory, new XmlSerializerProvider(new XmlRootNameLookup()),
+                new XmlDeserializationContext(BeanDeserializerFactory.instance));
         _xmlModule = module;
         // but all the rest is done via Module interface!
         if (module != null) {

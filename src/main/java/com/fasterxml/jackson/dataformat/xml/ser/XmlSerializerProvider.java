@@ -282,7 +282,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
         throws JsonMappingException
     {
-        // [Issue#71]: When converting, we actually get TokenBuffer, which is fine
+        // [dataformat-xml#71]: When converting, we actually get TokenBuffer, which is fine
         if (!(gen instanceof ToXmlGenerator)) {
             // but verify
             if (!(gen instanceof TokenBuffer)) {
