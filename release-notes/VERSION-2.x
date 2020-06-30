@@ -38,6 +38,8 @@ Project: jackson-dataformat-xml
 #405: Mixed content not exposed through `FromXmlParser`, lost by `JsonNode`
 #411: Change default setting of `FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL`
   from `true` to `false`
+#412: Coercion from element-with-attribute-and-text only works for `String`,
+  not other scalar types
 
 2.11.1 (25-Jun-2020)
 
