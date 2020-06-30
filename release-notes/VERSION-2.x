@@ -16,6 +16,9 @@ Project: jackson-dataformat-xml
 #252: Empty (or self-closing) Element representing `List` is incorrectly
   deserialized as null, not Empty List
  (reported by Julien D)
+#254: No String-argument constructor/factory method to deserialize from
+  String value when it is a Integer
+ (reported by mrdgsmith@github)
 #257: Deserialization fails of lists containing elements with `xml:space` attribute
  (reported by Quurks@github)
 #262: Make `ToXmlGenerator` non-final
