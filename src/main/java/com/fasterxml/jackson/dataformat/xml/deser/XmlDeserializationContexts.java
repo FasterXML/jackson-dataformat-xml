@@ -24,7 +24,7 @@ public class XmlDeserializationContexts
     public DeserializationContexts forMapper(Object mapper,
             TokenStreamFactory tsf, DeserializerFactory serializerFactory,
             DeserializerCache cache) {
-        return new DefaultImpl(tsf, serializerFactory, cache);
+        return new XmlDeserializationContexts(tsf, serializerFactory, cache);
     }
 
     @Override
