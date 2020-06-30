@@ -15,7 +15,9 @@ Pascal Gelinas:
  (2.3.1)
 * Reported and fixed #83: Add support for @JsonUnwrapped
  (2.4.0)
-
+* Reported #97: Weird Exception during read with Type info
+ (2.12.0)
+ 
 Dan Jasek: (oillio@github)
 
 * Contributed #126: Allow specifying properties that should be written as CData

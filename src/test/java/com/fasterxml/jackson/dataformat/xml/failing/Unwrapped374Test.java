@@ -22,8 +22,8 @@ public class Unwrapped374Test extends XmlTestBase
     public void testUnwrappedRoundTrip() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Root());
-System.err.println("XML: "+xml);
-//        assertEquals("<Root><id>hello</id></Root>", xml);
+        assertEquals("<Root><id>1</id></Root>", xml);
+//System.err.println("XML: "+xml);
         Root result = MAPPER.readValue(xml, Root.class);
         assertNotNull(result);
     }
