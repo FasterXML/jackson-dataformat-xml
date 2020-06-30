@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
-import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 /**
@@ -56,9 +55,6 @@ public class JacksonXmlModule
     public JacksonXmlModule()
     {
         super("JacksonXmlModule", PackageVersion.VERSION);
-        XmlStringDeserializer deser = new XmlStringDeserializer();
-        addDeserializer(String.class, deser);
-        addDeserializer(CharSequence.class, deser);
     }
 
     @SuppressWarnings("deprecation")

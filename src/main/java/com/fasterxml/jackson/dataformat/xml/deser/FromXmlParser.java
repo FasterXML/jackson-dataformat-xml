@@ -939,54 +939,6 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         }
     }
 
-    // @since 2.1
-    @Override
-    public final String getValueAsString() throws IOException {
-        return getValueAsString(null);
-    }
-
-    @Override
-    public String getValueAsString(String defValue) throws IOException
-    {
-        JsonToken t = _currToken;
-        if (t == null) {
-            return null;
-        }
-        switch (t) {
-        case FIELD_NAME:
-            return getCurrentName();
-        case VALUE_STRING:
-            return _currText;
-        case START_OBJECT:
-            // the interesting case; may be able to convert certain kinds of
-            // elements (specifically, ones with attributes, CDATA only content)
-            // into VALUE_STRING
-            try {
-                String str = _xmlTokens.convertToString();
-                if (str != null) {
-                    // need to convert token, as well as "undo" START_OBJECT
-                    // note: Should NOT update context, because we will still be getting
-                    // matching END_OBJECT, which will undo contexts properly
-                    _parsingContext = _parsingContext.getParent();
-                    _currToken = JsonToken.VALUE_STRING;
-                    _nextToken = null;
-                    // One more thing: must explicitly skip the END_OBJECT that would follow
-                    _skipEndElement();
-//System.out.println(" FromXmlParser.getValueAsString() on START_OBJECT, str == '"+str+"'");
-                    return (_currText = str);
-                }
-            } catch (XMLStreamException e) {
-                StaxUtil.throwAsParseException(e, this);
-            }
-            return null;
-        default:
-            if (_currToken.isScalarValue()) {
-                return _currToken.asString();
-            }
-        }
-        return defValue;
-    }
-    
     @Override
     public char[] getTextCharacters() throws IOException {
         String text = getText();
