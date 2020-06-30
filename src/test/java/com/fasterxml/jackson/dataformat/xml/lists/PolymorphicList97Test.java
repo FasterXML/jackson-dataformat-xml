@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.lists;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;

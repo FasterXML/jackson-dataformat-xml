@@ -26,7 +26,7 @@ public class UnwrappedAndList299DeserTest extends XmlTestBase
     static class Header {
         public String headerId;
     }
-    
+
     private final ObjectMapper MAPPER = newMapper();
 
     public void testXmlMarshallingAndUnmarshalling() throws Exception {

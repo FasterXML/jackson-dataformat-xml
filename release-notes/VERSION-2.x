@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.12.0 (not yet released)
 
+#97: Weird Exception during read with Type info
+ (reported by Pascal G)
 #124: Deserialization if an empty list (with empty XML tag) results in `null`
  (reported by Denis C)
 #205: `XmlMapper`/`UntypedObjectDeserializer` swallows duplicated elements in
