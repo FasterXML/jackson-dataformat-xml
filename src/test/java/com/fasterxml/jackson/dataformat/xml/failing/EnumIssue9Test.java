@@ -47,13 +47,4 @@ public class EnumIssue9Test extends XmlTestBase
 
         assertEquals(TestEnum.B, result.value);
     }
-
-    // [dataformat-xml#121]
-    public void testRootEnumIssue121() throws Exception
-    {
-        String xml = MAPPER.writeValueAsString(TestEnum.B);
-        TestEnum result = MAPPER.readValue(xml, TestEnum.class);
-        assertNotNull(result);
-        assertEquals(TestEnum.B, result);
-    }
 }
