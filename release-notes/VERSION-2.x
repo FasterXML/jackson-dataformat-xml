@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #97: Weird Exception during read with Type info
  (reported by Pascal G)
+#121: `XmlMapper` not deserializing root-level Enums
+ (reported by bhkjersten@github)
 #124: Deserialization if an empty list (with empty XML tag) results in `null`
  (reported by Denis C)
 #205: `XmlMapper`/`UntypedObjectDeserializer` swallows duplicated elements in
