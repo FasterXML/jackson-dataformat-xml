@@ -2,10 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.core.Version;
 
-import com.fasterxml.jackson.databind.module.SimpleDeserializers;
-
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
-import com.fasterxml.jackson.dataformat.xml.deser.XmlStringDeserializer;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 public class XmlModule
@@ -29,11 +26,6 @@ public class XmlModule
     @Override
     public void setupModule(SetupContext context)
     {
-        // First: special handling for String, to allow "String in Object"
-        XmlStringDeserializer deser = new XmlStringDeserializer();
-        context.addDeserializers(new SimpleDeserializers()
-                .addDeserializer(String.class, deser)
-                .addDeserializer(CharSequence.class, deser));
         context.addSerializerModifier(new XmlBeanSerializerModifier());
 
         // and then bit trickier, need to add a modifier...

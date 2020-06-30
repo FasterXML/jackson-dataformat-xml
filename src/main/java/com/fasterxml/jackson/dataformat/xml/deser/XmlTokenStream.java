@@ -333,41 +333,6 @@ public class XmlTokenStream
         }
     }
 
-    /**
-     * Helper method called by XML String deserializer to concatenate textual contents
-     * contained in logical "Object": mostly just to skip attribute values.
-     */
-    protected String convertToString() throws XMLStreamException
-    {
-//System.out.println(" XmlTokenStream.convertToString(), state: "+_currentStateDesc());
-        // only applicable to cases where START_OBJECT was induced by attributes
-        if (_currentState != XML_ATTRIBUTE_NAME || _nextAttributeIndex != 0) {
-            return null;
-        }
-        String text = _collectUntilTag();
-        // 23-Dec-2015, tatu: Used to require text not to be null, but as per
-        //   [dataformat-xml#167], empty tag does count
-        if (_xmlReader.getEventType() == XMLStreamReader.END_ELEMENT) {
-            if (text == null) {
-                text = "";
-            }
-            // 06-Jun-2020, tatu: As per [dataformat-xml#390], doing this is wrong,
-            //    should not (at least always?) assume we need it
-//            if (_currentWrapper != null) {
-//                _currentWrapper = _currentWrapper.getParent();
-//            }
-            // just for diagnostics, reset to element name (from first attribute name)
-            _localName = _xmlReader.getLocalName();
-            _namespaceURI = _xmlReader.getNamespaceURI();
-            _attributeCount = 0;
-            _currentState = XML_TEXT;
-            _textValue = text;
-            return text;
-        }
-        // Anything to do in failed case? Roll back whatever we found or.. ?
-        return null;
-    }
-
     /*
     /**********************************************************************
     /* Internal methods, parsing
