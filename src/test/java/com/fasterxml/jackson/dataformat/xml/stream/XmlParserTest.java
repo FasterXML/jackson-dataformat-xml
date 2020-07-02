@@ -27,15 +27,50 @@ public class XmlParserTest extends XmlTestBase
 
     /*
     /**********************************************************
-    /* Unit tests
+    /* Unit tests, simplest/manual
     /**********************************************************
      */
     
     public void testSimplest() throws Exception
     {
-        assertEquals("{\"leaf\":\"abc\"}",
-                _readXmlWriteJson("<root><leaf>abc</leaf></root>"));
+        final String XML = "<root><leaf>abc</leaf></root>";
+        // -> "{\"leaf\":\"abc\"}"
+
+        try (JsonParser p = _xmlMapper.createParser(XML)) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertEquals("leaf", p.currentName());
+            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+            assertEquals("abc", p.getText());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
+        }
     }
+
+    /**
+     * Test that verifies coercion of a "simple" cdata segment within root element
+     * as matching scalar token, similar to how other elements work.
+     */
+    public void testRootScalar() throws Exception
+    {
+        // 02-Jul-2020, tatu: Does not work quite yet
+        /*
+        final String XML = "<data>value</data>";
+        try (JsonParser p = _xmlMapper.createParser(XML)) {
+            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+            assertEquals("value", p.getText());
+//            assertNull(p.nextToken());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
+        }
+        */
+    }
+
+    /*
+    /**********************************************************
+    /* Unit tests, slightly bigger, automated
+    /**********************************************************
+     */
 
     public void testSimpleWithEmpty() throws Exception
     {
@@ -179,7 +214,7 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
 
         // And then with array handling:
-        xp = (FromXmlParser) _xmlMapper.createParser(new StringReader(XML));
+        xp = (FromXmlParser) _xmlMapper.createParser(XML);
         assertTrue(xp.getParsingContext().inRoot());
 
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
@@ -221,8 +256,7 @@ public class XmlParserTest extends XmlTestBase
     public void testXmlAttributes() throws Exception
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";
-
-        FromXmlParser xp = (FromXmlParser) _xmlMapper.createParser(new StringReader(XML));
+        FromXmlParser xp = (FromXmlParser) _xmlMapper.createParser(XML);
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
@@ -261,8 +295,7 @@ public class XmlParserTest extends XmlTestBase
     public void testInferredNumbers() throws Exception
     {
         final String XML = "<data value1='abc' value2='42'>123456789012</data>";
-
-        FromXmlParser xp = (FromXmlParser) _xmlMapper.createParser(new StringReader(XML));
+        FromXmlParser xp = (FromXmlParser) _xmlMapper.createParser(XML);
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>

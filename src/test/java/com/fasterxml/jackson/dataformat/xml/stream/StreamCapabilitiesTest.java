@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.stream;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.StreamReadCapability;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
