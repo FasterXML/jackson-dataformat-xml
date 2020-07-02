@@ -47,6 +47,36 @@ public class XmlParserTest extends XmlTestBase
         }
     }
 
+    public void testSimpleWithEmpty() throws Exception
+    {
+        // 21-Jun-2017, tatu: Depends on setting actually...
+
+        final String XML = "<root><leaf /></root>";
+
+        // -> "{"leaf":null}"
+        try (JsonParser p = _xmlMapper.reader().with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .createParser(XML)) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertEquals("leaf", p.currentName());
+            assertToken(JsonToken.VALUE_NULL, p.nextToken());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
+        }
+
+        // -> "{"leaf":""}"
+        try (JsonParser p = _xmlMapper.reader().without(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .createParser(XML)) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertEquals("leaf", p.currentName());
+            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+            assertEquals("", p.getText());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
+        }
+    }
+
     /**
      * Test that verifies coercion of a "simple" cdata segment within root element
      * as matching scalar token, similar to how other elements work.
@@ -59,8 +89,7 @@ public class XmlParserTest extends XmlTestBase
         try (JsonParser p = _xmlMapper.createParser(XML)) {
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("value", p.getText());
-//            assertNull(p.nextToken());
-            assertToken(JsonToken.END_OBJECT, p.nextToken());
+//          assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
         }
         */
@@ -71,19 +100,6 @@ public class XmlParserTest extends XmlTestBase
     /* Unit tests, slightly bigger, automated
     /**********************************************************
      */
-
-    public void testSimpleWithEmpty() throws Exception
-    {
-        // 21-Jun-2017, tatu: Depends on setting actually...
-        ObjectReader r = _xmlMapper.reader();
-
-        assertEquals("{\"leaf\":null}",
-                _readXmlWriteJson(r.with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL),
-                        "<root><leaf /></root>"));
-        assertEquals("{\"leaf\":\"\"}",
-                _readXmlWriteJson(r.without(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL),
-                        "<root><leaf /></root>"));
-    }
 
     public void testSimpleNested() throws Exception
     {
