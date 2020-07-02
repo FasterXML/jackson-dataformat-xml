@@ -115,6 +115,12 @@ Jochen Schalanda (joschi@github)
 * Reported #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (2.12.0)
 
+Ingo Wiarda (dewarim@github)
+
+* Reported #374: Deserialization fails with `XmlMapper` and
+  `DeserializationFeature.UNWRAP_ROOT_VALUE`
+ (2.12.0)
+
 Ghenadii Batalski (ghenadiibatalski@github)
 
 * Reported #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`

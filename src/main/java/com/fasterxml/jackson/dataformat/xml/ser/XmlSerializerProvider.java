@@ -29,12 +29,6 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     // As of 2.7
     private static final long serialVersionUID = 1L;
 
-    /**
-     * If all we get to serialize is a null, there's no way to figure out
-     * expected root name; so let's just default to literal {@code "null"}.
-     */
-    protected final static QName ROOT_NAME_FOR_NULL = new QName("null");
-
     protected final XmlRootNameLookup _rootNameLookup;
 
     public XmlSerializerProvider(XmlRootNameLookup rootNames)
@@ -218,20 +212,20 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
     
-    protected void _serializeXmlNull(JsonGenerator jgen) throws IOException
+    protected void _serializeXmlNull(JsonGenerator gen) throws IOException
     {
         // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly
         //    configured root name...
         QName rootName = _rootNameFromConfig();
         if (rootName == null) {
-            rootName = ROOT_NAME_FOR_NULL;
+            rootName = XmlRootNameLookup.ROOT_NAME_FOR_NULL;
         }
-        if (jgen instanceof ToXmlGenerator) {
-            _initWithRootName((ToXmlGenerator) jgen, rootName);
+        if (gen instanceof ToXmlGenerator) {
+            _initWithRootName((ToXmlGenerator) gen, rootName);
         }
-        super.serializeValue(jgen, null);
+        super.serializeValue(gen, null);
     }
-    
+
     protected void _startRootArray(ToXmlGenerator xgen, QName rootName) throws IOException
     {
         xgen.writeStartObject();
@@ -241,10 +235,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws IOException
     {
-        /* 28-Nov-2012, tatu: We should only initialize the root
-         *  name if no name has been set, as per [dataformat-xml#42],
-         *  to allow for custom serializers to work.
-         */
+        // 28-Nov-2012, tatu: We should only initialize the root name if no name has been
+        //   set, as per [dataformat-xml#42], to allow for custom serializers to work.
         if (!xgen.setNextNameIfMissing(rootName)) {
             // however, if we are root, we... insist
             if (xgen.inRoot()) {

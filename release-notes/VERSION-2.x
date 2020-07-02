@@ -35,6 +35,8 @@ Project: jackson-dataformat-xml
  (reported by Jochen S)
 #319: Empty root tag into `List` deserialization bug
  (reported by Seatec13@github)
+#374: Deserialization fails with `XmlMapper` and `DeserializationFeature.UNWRAP_ROOT_VALUE`
+ (reported by Ingo W)
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
 #390: Unexpected attribute at string fields causes extra objects to be

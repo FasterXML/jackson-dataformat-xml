@@ -19,6 +19,12 @@ public class XmlRootNameLookup
     private static final long serialVersionUID = 1L;
 
     /**
+     * If all we get to serialize is a null, there's no way to figure out
+     * expected root name; so let's just default to literal {@code "null"}.
+     */
+    public final static QName ROOT_NAME_FOR_NULL = new QName("null");
+
+    /**
      * For efficient operation, let's try to minimize number of times we
      * need to introspect root element name to use.
      *<p>
