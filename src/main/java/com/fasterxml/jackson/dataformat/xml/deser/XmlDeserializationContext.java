@@ -35,6 +35,24 @@ public class XmlDeserializationContext
     /**********************************************************
      */
 
+    // [dataformat-xml#374]: need to remove handling of expected root name unwrapping
+    // to match serialization
+    @Override
+    public Object readRootValue(JsonParser p, JavaType valueType,
+            JsonDeserializer<Object> deser, Object valueToUpdate)
+        throws IOException
+    {
+//        if (_config.useRootWrapping()) {
+//            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
+//        }
+        if (valueToUpdate == null) {
+            return deser.deserialize(p, this);
+        }
+        return deser.deserialize(p, this, valueToUpdate);
+    }
+
+    // To support case where XML element has attributes as well as CDATA, need
+    // to "extract" scalar value (CDATA), after the fact
     @Override
     public String extractScalarFromObject(JsonParser p, JsonDeserializer<?> deser,
             Class<?> scalarType)

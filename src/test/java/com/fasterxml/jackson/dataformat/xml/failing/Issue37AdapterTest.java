@@ -12,6 +12,9 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
 
+// 30-Jun-2020, tatu: This is deferred and possibly won't be fixed
+//   at all. But leaving failing test here just in case future brings
+//   alternate approach to do something.
 public class Issue37AdapterTest extends XmlTestBase
 {
     @XmlJavaTypeAdapter(URLEncoderMapDataAdapter.class)
