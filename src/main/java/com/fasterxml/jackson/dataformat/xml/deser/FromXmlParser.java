@@ -325,6 +325,7 @@ public class FromXmlParser
     @Override
     public JsonParser overrideFormatFeatures(int values, int mask) {
         _formatFeatures = (_formatFeatures & ~mask) | (values & mask);
+        _xmlTokens.setFormatFeatures(_formatFeatures);
         return this;
     }
 
