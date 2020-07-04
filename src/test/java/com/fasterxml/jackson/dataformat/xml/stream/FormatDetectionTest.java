@@ -34,85 +34,82 @@ public class FormatDetectionTest extends XmlTestBase
     /* Test methods, success
     /**********************************************************
      */
+
+    private final XmlFactory XML_F = new XmlFactory();
     
     public void testSimpleValidXmlDecl() throws Exception
     {
-        XmlFactory f = new XmlFactory();
-        DataFormatDetector detector = new DataFormatDetector(f);
+        DataFormatDetector detector = new DataFormatDetector(XML_F);
         String XML = "<?xml version='1.0'?><root/>";
         DataFormatMatcher matcher = detector.findFormat(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         assertTrue(matcher.hasMatch());
         assertEquals("XML", matcher.getMatchedFormatName());
-        assertSame(f, matcher.getMatch());
+        assertSame(XML_F, matcher.getMatch());
         assertEquals(MatchStrength.FULL_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
-        JsonParser jp = matcher.createParserWithMatch();
-        assertToken(JsonToken.START_OBJECT, jp.nextToken());
-        jp.close();
+        try (JsonParser p = matcher.createParserWithMatch()) {
+            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        }
     }
 
     public void testSimpleValidRoot() throws Exception
     {
-        XmlFactory f = new XmlFactory();
-        DataFormatDetector detector = new DataFormatDetector(f);
+        DataFormatDetector detector = new DataFormatDetector(XML_F);
         String XML = "<root/>";
         DataFormatMatcher matcher = detector.findFormat(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         assertTrue(matcher.hasMatch());
         assertEquals("XML", matcher.getMatchedFormatName());
-        assertSame(f, matcher.getMatch());
+        assertSame(XML_F, matcher.getMatch());
         assertEquals(MatchStrength.SOLID_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
-        JsonParser jp = matcher.createParserWithMatch();
-        assertToken(JsonToken.START_OBJECT, jp.nextToken());
-        jp.close();
+        try (JsonParser p = matcher.createParserWithMatch()) {
+            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        }
     }
 
     public void testSimpleValidDoctype() throws Exception
     {
-        XmlFactory f = new XmlFactory();
-        DataFormatDetector detector = new DataFormatDetector(f);
+        DataFormatDetector detector = new DataFormatDetector(XML_F);
         String XML = "<!DOCTYPE root [ ]>   <root />";
         DataFormatMatcher matcher = detector.findFormat(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         assertTrue(matcher.hasMatch());
         assertEquals("XML", matcher.getMatchedFormatName());
-        assertSame(f, matcher.getMatch());
+        assertSame(XML_F, matcher.getMatch());
         assertEquals(MatchStrength.SOLID_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
-        JsonParser jp = matcher.createParserWithMatch();
-        assertToken(JsonToken.START_OBJECT, jp.nextToken());
-        jp.close();
+        try (JsonParser p = matcher.createParserWithMatch()) {
+            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+        }
     }
-    
+
     public void testSimpleValidComment() throws Exception
     {
-        XmlFactory f = new XmlFactory();
-        DataFormatDetector detector = new DataFormatDetector(f);
-        String XML = "  <!-- comment -->  <root></root>";
+        DataFormatDetector detector = new DataFormatDetector(XML_F);
+        String XML = "  <!-- comment -->  <root><child /></root>";
         DataFormatMatcher matcher = detector.findFormat(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         assertTrue(matcher.hasMatch());
         assertEquals("XML", matcher.getMatchedFormatName());
-        assertSame(f, matcher.getMatch());
+        assertSame(XML_F, matcher.getMatch());
         assertEquals(MatchStrength.SOLID_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
-        JsonParser jp = matcher.createParserWithMatch();
-        assertToken(JsonToken.START_OBJECT, jp.nextToken());
-        jp.close();
+        try (JsonParser p = matcher.createParserWithMatch()) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+        }
     }
 
     public void testSimpleValidPI() throws Exception
     {
-        XmlFactory f = new XmlFactory();
-        DataFormatDetector detector = new DataFormatDetector(f);
-        String XML = "<?target foo?><root />";
+        DataFormatDetector detector = new DataFormatDetector(XML_F);
+        String XML = "<?target foo?><root attr='1' />";
         DataFormatMatcher matcher = detector.findFormat(new ByteArrayInputStream(XML.getBytes("UTF-8")));
         assertTrue(matcher.hasMatch());
         assertEquals("XML", matcher.getMatchedFormatName());
-        assertSame(f, matcher.getMatch());
+        assertSame(XML_F, matcher.getMatch());
         assertEquals(MatchStrength.SOLID_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
-        JsonParser jp = matcher.createParserWithMatch();
-        assertToken(JsonToken.START_OBJECT, jp.nextToken());
-        jp.close();
+        try (JsonParser p = matcher.createParserWithMatch()) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+        }
     }
 
     public void testSimpleViaObjectReader() throws Exception
@@ -128,7 +125,7 @@ public class FormatDetectionTest extends XmlTestBase
         assertEquals(1, pojo.x);
         assertEquals(3, pojo.y);
     }
-    
+
     public void testListViaObjectReader() throws Exception
     {
         ObjectMapper mapper = new ObjectMapper();
@@ -154,7 +151,7 @@ public class FormatDetectionTest extends XmlTestBase
     
     public void testSimpleInvalid() throws Exception
     {
-        DataFormatDetector detector = new DataFormatDetector(new XmlFactory());
+        DataFormatDetector detector = new DataFormatDetector(XML_F);
         final String NON_XML = "{\"foo\":\"bar\"}";
         DataFormatMatcher matcher = detector.findFormat(new ByteArrayInputStream(NON_XML.getBytes("UTF-8")));
         // should not have match
@@ -164,5 +161,4 @@ public class FormatDetectionTest extends XmlTestBase
         // also:
         assertNull(matcher.createParserWithMatch());
     }
-
 }

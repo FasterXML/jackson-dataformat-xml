@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.JsonLocation;
  * actual higher-level conversion to JSON tokens.
  *<p>
  * Beyond initial idea there are also couple of other detours like ability
- * to "replay" some tokens, add virtual wrappers (ironically to support "unwrapped"_currentStateDesc
+ * to "replay" some tokens, add virtual wrappers (ironically to support "unwrapped"
  * array values), and to unroll "Objects" into String values in some cases.
  */
 public class XmlTokenStream
@@ -32,7 +32,15 @@ public class XmlTokenStream
     public final static int XML_ATTRIBUTE_VALUE = 4;
     public final static int XML_TEXT = 5;
 
-    public final static int XML_END = 6;
+    // New in 2.12: needed to "re-process" previously encountered START_ELEMENT,
+    // with possible leading text
+    public final static int XML_DELAYED_START_ELEMENT = 6;
+
+    // 2.12 also exposes "root scalars" as-is, instead of wrapping as Objects; this
+    // needs some more state management too
+    public final static int XML_ROOT_TEXT = 7;
+
+    public final static int XML_END = 8;
 
     // // // token replay states
 
@@ -96,6 +104,9 @@ public class XmlTokenStream
 
     protected String _namespaceURI;
 
+    /**
+     * Current text value for TEXT_VALUE returned
+     */
     protected String _textValue;
 
     /**
@@ -141,18 +152,48 @@ public class XmlTokenStream
             int formatFeatures)
     {
         _sourceReference = sourceRef;
-        // Let's ensure we point to START_ELEMENT...
-        if (xmlReader.getEventType() != XMLStreamConstants.START_ELEMENT) {
-            throw new IllegalArgumentException("Invalid XMLStreamReader passed: should be pointing to START_ELEMENT ("
-                    +XMLStreamConstants.START_ELEMENT+"), instead got "+xmlReader.getEventType());
-        }
+        _formatFeatures = formatFeatures;
         _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
+    }
+
+    /**
+     * Second part of initialization, to be called immediately after construction
+     *
+     * @since 2.12
+     */
+    public int initialize() throws XMLStreamException
+    {
+        // Let's ensure we point to START_ELEMENT...
+        if (_xmlReader.getEventType() != XMLStreamConstants.START_ELEMENT) {
+            throw new IllegalArgumentException("Invalid XMLStreamReader passed: should be pointing to START_ELEMENT ("
+                    +XMLStreamConstants.START_ELEMENT+"), instead got "+_xmlReader.getEventType());
+        }
         _localName = _xmlReader.getLocalName();
         _namespaceURI = _xmlReader.getNamespaceURI();
-        _formatFeatures = formatFeatures;
 
         _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
-        _currentState = XML_START_ELEMENT;
+
+        // 02-Jul-2020, tatu: Two choices: if child elements OR attributes, expose
+        //    as Object value; otherwise expose as Text
+        if (_xsiNilFound || _attributeCount > 0) {
+            return (_currentState = XML_START_ELEMENT);
+        }
+
+        // copied from START_ELEMENT section of _next():
+        final String text = _collectUntilTag();
+        final boolean startElementNext = _xmlReader.getEventType() == XMLStreamReader.START_ELEMENT;
+        // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
+        if (startElementNext) {
+            if (_allWs(text)) {
+                _textValue = null;
+                return (_currentState = XML_DELAYED_START_ELEMENT);
+            }
+            _textValue = text;
+            return (_currentState = XML_DELAYED_START_ELEMENT);
+        }
+        _startElementAfterText = false;
+        _textValue = text;
+        return (_currentState = XML_ROOT_TEXT);
     }
 
     public XMLStreamReader2 getXmlReader() {
@@ -180,6 +221,9 @@ public class XmlTokenStream
         switch (n) {
         case XML_START_ELEMENT: 
             System.out.printf(" XmlTokenStream.next(): XML_START_ELEMENT '%s' %s\n", _localName, _loc());
+            break;
+        case XML_DELAYED_START_ELEMENT: 
+            System.out.printf(" XmlTokenStream.next(): XML_DELAYED_START_ELEMENT '%s' %s\n", _localName, _loc());
             break;
         case XML_END_ELEMENT: 
             // 24-May-2020, tatu: no name available for end element so do not print
@@ -324,17 +368,23 @@ public class XmlTokenStream
     protected void skipAttributes()
     {
 //System.out.println(" XmlTokenStream.skipAttributes(), state: "+_currentStateDesc());
-        if (_currentState == XML_ATTRIBUTE_NAME) {
+        switch (_currentState) {
+        case XML_ATTRIBUTE_NAME:
             _attributeCount = 0;
             _currentState = XML_START_ELEMENT;
-        } else if (_currentState == XML_START_ELEMENT) {
+            break;
+        case XML_START_ELEMENT:
             // 06-Jan-2012, tatu: As per [#47] it looks like we should NOT do anything
             //   in this particular case, because it occurs when original element had
             //   no attributes and we now point to the first child element.
 //              _attributeCount = 0;
-        } else if (_currentState == XML_TEXT) {
-            ; // nothing to do... is it even legal?
-        } else {
+            break;
+        case XML_TEXT:
+            break; // nothing to do... is it even legal?
+        case XML_DELAYED_START_ELEMENT:
+            // 03-Jul-2020, tatu: and here nothing to do either... ?
+            break;
+        default:
             throw new IllegalStateException(
 "Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME but "+_currentStateDesc());
         }
@@ -368,6 +418,7 @@ public class XmlTokenStream
                 throw new IllegalStateException("Unexpected START_ELEMENT after null token");
             }
             if (_nextAttributeIndex < _attributeCount) {
+//System.out.println(" XmlTokenStream._next(): Got attr(s)!");
                 _localName = _xmlReader.getAttributeLocalName(_nextAttributeIndex);
                 _namespaceURI = _xmlReader.getAttributeNamespace(_nextAttributeIndex);
                 _textValue = _xmlReader.getAttributeValue(_nextAttributeIndex);
@@ -375,7 +426,9 @@ public class XmlTokenStream
             }
             // otherwise need to find START/END_ELEMENT or text
             String text = _collectUntilTag();
+//System.out.println(" XmlTokenStream._next(): _collectUntilTag -> '"+text+"'");
             final boolean startElementNext = _xmlReader.getEventType() == XMLStreamReader.START_ELEMENT;
+//System.out.println(" XmlTokenStream._next(): startElementNext? "+startElementNext);
             // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
             if (startElementNext) {
                 if (_allWs(text)) {
@@ -384,6 +437,7 @@ public class XmlTokenStream
                 }
                 _startElementAfterText = true;
                 _textValue = text;
+                
                 return (_currentState = XML_TEXT);
             }
             // For END_ELEMENT we will return text, if any
@@ -394,6 +448,16 @@ public class XmlTokenStream
             }
             _startElementAfterText = false;
             return _handleEndElement();
+
+        case XML_DELAYED_START_ELEMENT: // since 2.12, to support scalar Root Value
+            // Two cases: either "simple" with not text
+           if (_textValue == null) {
+               return _initStartElement();
+           }
+           // or one where there is first text (to translate into "":<text> key/value entry)
+           // then followed by start element
+           _startElementAfterText = true;
+           return (_currentState = XML_TEXT);
 
         case XML_ATTRIBUTE_NAME:
             // if we just returned name, will need to just send value next
@@ -406,7 +470,9 @@ public class XmlTokenStream
             }
             // text followed by END_ELEMENT
             return _handleEndElement();
-
+        case XML_ROOT_TEXT:
+            close();
+            return (_currentState = XML_END);
         case XML_END:
             return XML_END;
 //            throw new IllegalStateException("No more XML tokens available (end of input)");
@@ -414,6 +480,7 @@ public class XmlTokenStream
         // Ok: must be END_ELEMENT; see what tag we get (or end)
         switch (_skipAndCollectTextUntilTag()) {
         case XMLStreamConstants.END_DOCUMENT:
+            close();
             return (_currentState = XML_END);
         case XMLStreamConstants.END_ELEMENT:
             // 24-May-2020, tatu: Need to see if we have "mixed content" to offer
@@ -453,18 +520,6 @@ public class XmlTokenStream
 
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
-                // 04-May-2018, tatu: We could easily make <tag></tag> ALSO report
-                //    as `null`, by below, but that breaks existing tests so not
-                //    done at least until 3.0.
-                /*
-                if (chars == null) {
-                    if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
-                        return null;
-                    }
-                    return "";
-                }
-                return chars;
-                */
                 return (chars == null) ? "" : chars.toString();
 
             // note: SPACE is ignorable (and seldom seen), not to be included
@@ -731,6 +786,10 @@ public class XmlTokenStream
             return "XML_ATTRIBUTE_VALUE";
         case XML_TEXT:
             return "XML_TEXT";
+        case XML_DELAYED_START_ELEMENT:
+            return "XML_START_ELEMENT_DELAYED";
+        case XML_ROOT_TEXT:
+            return "XML_ROOT_TEXT";
         case XML_END:
             return "XML_END";
         }

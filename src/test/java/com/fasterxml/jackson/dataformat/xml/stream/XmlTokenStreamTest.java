@@ -20,7 +20,8 @@ public class XmlTokenStreamTest extends XmlTestBase
         sr.nextTag();
         XmlTokenStream tokens = new XmlTokenStream(sr, XML,
                 FromXmlParser.Feature.collectDefaults());
-        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
+        tokens.initialize();
+        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
         assertEquals("leaf", tokens.getLocalName());
@@ -58,6 +59,7 @@ public class XmlTokenStreamTest extends XmlTestBase
             f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
         XmlTokenStream tokens = new XmlTokenStream(sr, XML, f);
+        tokens.initialize();
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_ATTRIBUTE_NAME, tokens.next());
@@ -91,7 +93,8 @@ public class XmlTokenStreamTest extends XmlTestBase
             f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
         XmlTokenStream tokens = new XmlTokenStream(sr, XML, f);
-        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
+        tokens.initialize();
+        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
         assertEquals("leaf", tokens.getLocalName());
@@ -111,7 +114,8 @@ public class XmlTokenStreamTest extends XmlTestBase
         sr.nextTag();
         XmlTokenStream tokens = new XmlTokenStream(sr, XML,
                 FromXmlParser.Feature.collectDefaults());
-        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
+        tokens.initialize();
+        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
         assertEquals("a", tokens.getLocalName());
@@ -135,8 +139,9 @@ public class XmlTokenStreamTest extends XmlTestBase
         XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
         sr.nextTag();
         XmlTokenStream tokens = new XmlTokenStream(sr, XML, FromXmlParser.Feature.collectDefaults());
+        tokens.initialize();
 
-        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
 
         assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
@@ -169,8 +174,9 @@ public class XmlTokenStreamTest extends XmlTestBase
         XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
         sr.nextTag();
         XmlTokenStream tokens = new XmlTokenStream(sr, XML, FromXmlParser.Feature.collectDefaults());
+        tokens.initialize();
 
-        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
 
         assertEquals(XmlTokenStream.XML_TEXT, tokens.next());

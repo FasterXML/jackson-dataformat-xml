@@ -217,16 +217,33 @@ public class FromXmlParser
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference(),
-                _formatFeatures);
+                    _formatFeatures);
+
+        final int firstToken;
+        try {
+            firstToken = _xmlTokens.initialize();
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsParseException(e, this);
+            return;
+        }
 
         // 04-Jan-2019, tatu: Root-level nulls need slightly specific handling;
         //    changed in 2.10.2
         if (_xmlTokens.hasXsiNil()) {
             _nextToken = JsonToken.VALUE_NULL;
-        } else if (_xmlTokens.getCurrentToken() == XmlTokenStream.XML_START_ELEMENT) {
-            _nextToken = JsonToken.START_OBJECT;
         } else {
-            _reportError("Internal problem: invalid starting state (%d)", _xmlTokens.getCurrentToken());
+            switch (firstToken) {
+            case XmlTokenStream.XML_START_ELEMENT:
+            case XmlTokenStream.XML_DELAYED_START_ELEMENT:
+                _nextToken = JsonToken.START_OBJECT;
+                break;
+            case XmlTokenStream.XML_ROOT_TEXT:
+                _nextToken = JsonToken.VALUE_STRING;
+                _currText = _xmlTokens.getText();
+                break;
+            default:
+                _reportError("Internal problem: invalid starting state (%s)", _xmlTokens._currentStateDesc());
+            }
         }
     }
 
@@ -497,7 +514,7 @@ public class FromXmlParser
     public boolean isExpectedStartArrayToken()
     {
         JsonToken t = _currToken;
-        if (t == JsonToken.START_OBJECT) {        	
+        if (t == JsonToken.START_OBJECT) {
             _currToken = JsonToken.START_ARRAY;
             // Ok: must replace current context with array as well
             _parsingContext.convertToArray();
@@ -586,7 +603,7 @@ public class FromXmlParser
     {
         JsonToken t = nextToken0();
         if (t != null) {
-            final String loc = _parsingContext.pathAsPointer().toString();
+            final String loc = (_parsingContext == null) ? "NULL" : String.valueOf(_parsingContext.pathAsPointer());
             switch (t) {
             case FIELD_NAME:
                 System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.FIELD_NAME '%s'\n", loc, _parsingContext.getCurrentName());
@@ -608,6 +625,7 @@ public class FromXmlParser
     {
         _binaryValue = null;
         _numTypesValid = NR_UNKNOWN;
+//System.out.println("FromXmlParser.nextToken0: _nextToken = "+_nextToken);
         if (_nextToken != null) {
             JsonToken t = _nextToken;
             _currToken = t;
@@ -634,6 +652,7 @@ public class FromXmlParser
             }
             return t;
         }
+
         int token = _nextToken();
         // Need to have a loop just because we may have to eat/convert
         // a start-element that indicates an array element.
@@ -658,7 +677,6 @@ public class FromXmlParser
             // Ok: virtual wrapping can be done by simply repeating current START_ELEMENT.
             // Couple of ways to do it; but start by making _xmlTokens replay the thing...
             if (_parsingContext.shouldWrap(name)) {
-//System.out.println("REPEAT from nextToken()");
                 _xmlTokens.repeatStartElement();
             }
 
