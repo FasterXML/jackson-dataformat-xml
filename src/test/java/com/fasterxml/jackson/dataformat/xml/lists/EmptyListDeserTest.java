@@ -86,8 +86,10 @@ public class EmptyListDeserTest extends XmlTestBase
         assertNotNull(list);
         assertEquals(0, list.size());
 
-        Value319[] array = MAPPER.readValue(DOC, Value319[].class);
-        assertNotNull(array);
+        Object result = MAPPER.readValue(DOC, Value319[].class);
+        assertNotNull(result);
+        assertEquals(Value319[].class, result.getClass());
+        Value319[] array = (Value319[]) result;
         assertEquals(0, array.length);
     }
 }

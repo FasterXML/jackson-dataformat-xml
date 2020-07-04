@@ -68,7 +68,7 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("abc", bean.text);
     }
     
-    // [Issue#14]
+    // [dataformat-xml#14]
     public void testMapWithAttr() throws Exception
     {
         final String xml = "<order><person lang='en'>John Smith</person></order>";
@@ -98,6 +98,10 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("work", ob.type);
     }
 
+    // 03-Jul-2020, tatu: Due to change on deserialization of root-level scalars,
+    //    this test that passed on 2.11 is no longer valid (it wasn't even before
+    //    wrt compatibility of serialization)
+    /*
     public void testMissingOptionalAttr() throws Exception
     {
         Optional ob = MAPPER.readValue("<Optional>123-456-7890</Optional>",
@@ -106,6 +110,7 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("123-456-7890", ob.number);
         assertEquals("NOT SET", ob.type);
     }
+    */
 
     // [dataformat-xml#219]
     public void testWithAttribute219Worker() throws Exception
