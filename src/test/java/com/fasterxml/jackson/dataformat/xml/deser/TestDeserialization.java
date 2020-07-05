@@ -46,8 +46,8 @@ public class TestDeserialization extends XmlTestBase
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
-    
+    private final XmlMapper MAPPER = newMapper();
+
     /**
      * Unit test to ensure that we can successfully also round trip
      * example Bean used in Jackson tutorial
