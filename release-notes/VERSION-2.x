@@ -49,6 +49,7 @@ Project: jackson-dataformat-xml
   from `true` to `false`
 #412: Coercion from element-with-attribute-and-text only works for `String`,
   not other scalar types
+- Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
 
 2.11.1 (25-Jun-2020)
 
