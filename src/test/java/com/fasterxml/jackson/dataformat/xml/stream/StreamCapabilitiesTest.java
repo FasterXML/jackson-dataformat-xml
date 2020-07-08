@@ -14,6 +14,8 @@ public class StreamCapabilitiesTest extends XmlTestBase
     {
         try (JsonParser p = MAPPER.createParser("<root />")) {
             assertTrue(p.getReadCapabilities().isEnabled(StreamReadCapability.DUPLICATE_PROPERTIES));
+            assertTrue(p.getReadCapabilities().isEnabled(StreamReadCapability.SCALARS_AS_OBJECTS));
+            assertTrue(p.getReadCapabilities().isEnabled(StreamReadCapability.UNTYPED_SCALARS));
         }
     }
 }

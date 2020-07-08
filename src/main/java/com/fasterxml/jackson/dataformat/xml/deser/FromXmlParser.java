@@ -42,8 +42,12 @@ public class FromXmlParser
      *
      * @since 2.12
      */
-    public JacksonFeatureSet<StreamReadCapability> XML_READ_CAPABILITIES =
-            DEFAULT_READ_CAPABILITIES.with(StreamReadCapability.DUPLICATE_PROPERTIES);
+    protected final static JacksonFeatureSet<StreamReadCapability> XML_READ_CAPABILITIES =
+            DEFAULT_READ_CAPABILITIES
+                .with(StreamReadCapability.DUPLICATE_PROPERTIES)
+                .with(StreamReadCapability.SCALARS_AS_OBJECTS)
+                .with(StreamReadCapability.UNTYPED_SCALARS)
+            ;
 
     /**
      * Enumeration that defines all togglable features for XML parsers.
