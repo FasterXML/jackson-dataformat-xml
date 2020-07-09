@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
+import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 /**
  * {@link JsonGenerator} that outputs JAXB-style XML output instead of JSON content.
  * Operation requires calling code (usually either standard Jackson serializers,
- * or in some cases (like <code>BeanSerializer</code>) customised ones) to do
+ * or in some cases (like <code>BeanSerializer</code>) customized ones) to do
  * additional configuration calls beyond regular {@link JsonGenerator} API,
  * mostly to pass namespace information.
  */
@@ -36,7 +37,7 @@ public class ToXmlGenerator
      * name to use...
      */
     protected final static String DEFAULT_UNKNOWN_ELEMENT = "unknown";
-    
+
     /**
      * Enumeration that defines all togglable extra XML-specific features
      */
@@ -310,6 +311,11 @@ public class ToXmlGenerator
 
     @Override
     public boolean canWriteFormattedNumbers() { return true; }
+
+    @Override // @since 2.12
+    public JacksonFeatureSet<StreamWriteCapability> getWriteCapabilities() {
+        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES;
+    }
 
     // @since 2.7.5
     public boolean inRoot() {
