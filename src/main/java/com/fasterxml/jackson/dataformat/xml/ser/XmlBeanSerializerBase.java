@@ -122,9 +122,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _cdata = src._cdata;
     }
 
-    protected XmlBeanSerializerBase(XmlBeanSerializerBase src, Set<String> toIgnore)
+    protected XmlBeanSerializerBase(XmlBeanSerializerBase src,
+            Set<String> toIgnore, Set<String> toInclude)
     {
-        super(src, toIgnore);
+        super(src, toIgnore, toInclude);
         _attributeCount = src._attributeCount;
         _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;

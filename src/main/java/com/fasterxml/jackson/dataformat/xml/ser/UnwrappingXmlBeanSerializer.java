@@ -54,9 +54,10 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         _nameTransformer = src._nameTransformer;
     }
 
-    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src, Set<String> toIgnore)
+    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src,
+            Set<String> toIgnore, Set<String> toInclude)
     {
-        super(src, toIgnore);
+        super(src, toIgnore, toInclude);
         _nameTransformer = src._nameTransformer;
     }
 
@@ -98,9 +99,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         return new UnwrappingXmlBeanSerializer(this, _objectIdWriter, filterId);
     }
 
-    @Override // since 2.8
-    protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
-        return new UnwrappingXmlBeanSerializer(this, toIgnore);
+    @Override // since 2.12
+    protected BeanSerializerBase withByNameInclusion(Set<String> toIgnore, Set<String> toInclude) {
+        return new UnwrappingXmlBeanSerializer(this, toIgnore, toInclude);
     }
 
     @Override // since 2.11.1

@@ -72,7 +72,7 @@ Project: jackson-dataformat-xml
 
 No changes since 2.10.x
 
-2.10.5 (not yet released)
+2.10.5 (21-Jul-2020)
 
 #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
  (reported by Martin V)

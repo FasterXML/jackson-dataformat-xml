@@ -37,8 +37,8 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
         super(src, objectIdWriter);
     }
 
-    public XmlBeanSerializer(XmlBeanSerializerBase src, Set<String> toIgnore) {
-        super(src, toIgnore);
+    public XmlBeanSerializer(XmlBeanSerializerBase src, Set<String> toIgnore, Set<String> toInclude) {
+        super(src, toIgnore, toInclude);
     }
 
     protected XmlBeanSerializer(XmlBeanSerializerBase src,
@@ -68,9 +68,9 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
         return new XmlBeanSerializer(this, _objectIdWriter, filterId);
     }
 
-    @Override
-    protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
-        return new XmlBeanSerializer(this, toIgnore);
+    @Override // since 2.12
+    protected BeanSerializerBase withByNameInclusion(Set<String> toIgnore, Set<String> toInclude) {
+        return new XmlBeanSerializer(this, toIgnore, toInclude);
     }
 
     @Override // since 2.11.1
