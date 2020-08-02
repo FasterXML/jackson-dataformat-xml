@@ -51,6 +51,10 @@ Project: jackson-dataformat-xml
   not other scalar types
 - Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
 
+2.11.2 (02-Aug-2020)
+
+No changes since 2.11.1
+
 2.11.1 (25-Jun-2020)
 
 #86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
