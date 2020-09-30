@@ -39,6 +39,8 @@ Project: jackson-dataformat-xml
  (reported by Ingo W)
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
+#380: Unable to deserialize root-level `Instant` value from XML
+ (reported by afayes@github)
 #390: Unexpected attribute at string fields causes extra objects to be
   created in parent list
  (reported by David S
