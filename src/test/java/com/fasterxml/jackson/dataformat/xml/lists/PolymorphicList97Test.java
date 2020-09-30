@@ -1,9 +1,10 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
+import java.util.*;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-
-import java.util.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.*;
 

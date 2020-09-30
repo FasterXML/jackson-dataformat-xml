@@ -7,7 +7,6 @@ import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 // Temporarily failing with Jackson 3.x until there are methods for
 // constructing "fully-configured and linked" generators

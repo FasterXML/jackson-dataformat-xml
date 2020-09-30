@@ -26,7 +26,7 @@ public class BuilderWithJAXB291Test extends XmlTestBase
         private final String country;
         private final String county;
 
-        private Address(AddressBuilder addressbuilder) {
+        Address(AddressBuilder addressbuilder) {
             this.address1 = addressbuilder.address1;
             this.city = addressbuilder.city;
             this.stateProvince = addressbuilder.stateProvince;
