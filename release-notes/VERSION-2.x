@@ -39,6 +39,8 @@ Project: jackson-dataformat-xml
  (reported by Ingo W)
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
+#380: Unable to deserialize root-level `Instant` value from XML
+ (reported by afayes@github)
 #390: Unexpected attribute at string fields causes extra objects to be
   created in parent list
  (reported by David S
@@ -50,6 +52,10 @@ Project: jackson-dataformat-xml
 #412: Coercion from element-with-attribute-and-text only works for `String`,
   not other scalar types
 - Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
+
+2.11.2 (02-Aug-2020)
+
+No changes since 2.11.1
 
 2.11.1 (25-Jun-2020)
 
