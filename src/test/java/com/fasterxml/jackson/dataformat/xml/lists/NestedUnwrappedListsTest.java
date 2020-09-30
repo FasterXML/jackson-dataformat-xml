@@ -3,7 +3,8 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -33,7 +34,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
      */
 
     protected XmlMapper _xmlMapper = mapperBuilder()
-            .propertyNamingStrategy(new PropertyNamingStrategy.UpperCamelCaseStrategy())
+            .propertyNamingStrategy(new PropertyNamingStrategies.UpperCamelCaseStrategy())
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .defaultUseWrapper(false)
             .build();
