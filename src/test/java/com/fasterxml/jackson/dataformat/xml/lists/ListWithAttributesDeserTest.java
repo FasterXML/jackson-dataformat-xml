@@ -127,7 +127,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     private final ObjectMapper UPPER_CASE_MAPPER = mapperBuilder()
-            .propertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
+            .propertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE)
             .build();
 
     // [dataformat-xml#43]
