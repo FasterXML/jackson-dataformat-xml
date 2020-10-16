@@ -52,6 +52,7 @@ Project: jackson-dataformat-xml
 #412: Coercion from element-with-attribute-and-text only works for `String`,
   not other scalar types
 - Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
+- Upgrade Woodstox dependency to 6.2.3 (<- 6.2.1)
 
 2.11.3 (02-Oct-2020)
 2.11.2 (02-Aug-2020)
