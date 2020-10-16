@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+(unreleased fixes)
+
+- Upgrade Woodstox dependency to 6.2.3
+
 2.10.5 (21-Jul-2020)
 
 #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
