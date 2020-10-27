@@ -1015,7 +1015,13 @@ public class ToXmlGenerator
                 	_xmlPrettyPrinter.writeLeafNullElement(_xmlWriter,
                 			_nextName.getNamespaceURI(), _nextName.getLocalPart());
                 } else {
-	            	_xmlWriter.writeEmptyElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    if(isEnabled(Feature.WRITE_NULLS_AS_XSI_NIL)) {
+                        _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                        _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), "xsi:nil", "true");
+                        _xmlWriter.writeEndElement();
+                    } else {
+                        _xmlWriter.writeEmptyElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    }
                 }
             }
         } catch (XMLStreamException e) {
