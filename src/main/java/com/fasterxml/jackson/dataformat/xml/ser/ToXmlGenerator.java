@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -1017,7 +1018,7 @@ public class ToXmlGenerator
                 } else {
                     if(isEnabled(Feature.WRITE_NULLS_AS_XSI_NIL)) {
                         _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                        _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), "xsi:nil", "true");
+                        _xmlWriter.writeAttribute("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
                         _xmlWriter.writeEndElement();
                     } else {
                         _xmlWriter.writeEmptyElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());

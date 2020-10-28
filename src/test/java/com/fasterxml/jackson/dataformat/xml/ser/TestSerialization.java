@@ -118,7 +118,7 @@ public class TestSerialization extends XmlTestBase
         WrapperBean<String> bean = new WrapperBean<>(null);
         // First, map in a general wrapper
         String xml = mapper.writeValueAsString(bean);
-        assertEquals("<WrapperBean><value xsi:nil=\"true\"/></WrapperBean>", xml);
+        assertEquals("<WrapperBean><value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/></WrapperBean>", xml);
     }
 
     @SuppressWarnings("boxing")
