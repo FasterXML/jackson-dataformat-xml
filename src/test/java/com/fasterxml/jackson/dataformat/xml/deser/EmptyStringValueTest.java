@@ -3,8 +3,11 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -34,6 +37,20 @@ public class EmptyStringValueTest extends XmlTestBase
         public String b = "NOT SET";
     }
 
+    // [dataformat-xml#427]
+    static class Stuff427 {
+        String str;
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public Stuff427(String s) { str = s; }
+    }
+
+    static class Product427 {
+        Stuff427 stuff;
+
+        public Product427(@JsonProperty("stuff") Stuff427 s) { stuff = s; }
+    }
+    
     /*
     /**********************************************************
     /* Test methods
@@ -91,5 +108,17 @@ public class EmptyStringValueTest extends XmlTestBase
         assertNotNull(ob);
         assertEquals("", ob.a);
         assertEquals("", ob.b);
+    }
+
+    // [dataformat-xml#427]
+    public void testEmptyIssue427() throws Exception
+    {
+        String xml = "<product><stuff></stuff></product>";
+
+        Product427 product = MAPPER.readValue(xml, Product427.class);
+
+        assertNotNull(product);
+        assertNotNull(product.stuff);
+        assertEquals("", product.stuff.str);
     }
 }
