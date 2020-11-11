@@ -115,6 +115,12 @@ Jochen Schalanda (joschi@github)
 * Reported #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (2.12.0)
 
+Migwel@github
+
+* Contributed #360: Add a feature to support writing `xsi:nil` attribute for
+  `null` values
+ (2.12.0)
+ 
 Ingo Wiarda (dewarim@github)
 
 * Reported #374: Deserialization fails with `XmlMapper` and
