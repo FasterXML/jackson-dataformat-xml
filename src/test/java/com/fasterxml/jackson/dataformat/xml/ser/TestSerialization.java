@@ -111,6 +111,16 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
+    public void testNil() throws IOException
+    {
+        XmlMapper mapper = new XmlMapper();
+        mapper.configure(ToXmlGenerator.Feature.WRITE_NULLS_AS_XSI_NIL, true);
+        WrapperBean<String> bean = new WrapperBean<>(null);
+        // First, map in a general wrapper
+        String xml = mapper.writeValueAsString(bean);
+        assertEquals("<WrapperBean><value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/></WrapperBean>", xml);
+    }
+
     @SuppressWarnings("boxing")
     public void testMap() throws IOException
     {
