@@ -56,6 +56,8 @@ Project: jackson-dataformat-xml
   from `true` to `false`
 #412: Coercion from element-with-attribute-and-text only works for `String`,
   not other scalar types
+#422: Elements containing <CDATA/> parsed incorrectly when at the end of another element
+ (reported by Akop K)
 #434: Add missing `ElementType.ANNOTATION_TYPE` for Jackson xml annotations
   to allow bundling 
 - Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
