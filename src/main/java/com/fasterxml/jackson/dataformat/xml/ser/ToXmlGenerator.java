@@ -1003,20 +1003,26 @@ public class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
-        // !!! TODO: proper use of 'xsd:isNil' ?
         try {
             if (_nextIsAttribute) {
-                /* With attributes, best just leave it out, right? (since there's no way
-                 * to use 'xsi:nil')
-                 */
+                // With attributes, best just leave it out, right? (since there's no way
+                // to use 'xsi:nil')
             } else if (checkNextIsUnwrapped()) {
             	// as with above, best left unwritten?
             } else {
+                final boolean asXsiNil = isEnabled(Feature.WRITE_NULLS_AS_XSI_NIL);
                 if (_xmlPrettyPrinter != null) {
-                	_xmlPrettyPrinter.writeLeafNullElement(_xmlWriter,
-                			_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    // 12-Nov-2020, tatu: Not clean, due to backwards-compat challenges..
+                    //    but has to do
+                    if (asXsiNil && (_xmlPrettyPrinter instanceof DefaultXmlPrettyPrinter)) {
+                        ((DefaultXmlPrettyPrinter) _xmlPrettyPrinter).writeLeafXsiNilElement(_xmlWriter,
+                                _nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    } else {
+                        _xmlPrettyPrinter.writeLeafNullElement(_xmlWriter,
+                                _nextName.getNamespaceURI(), _nextName.getLocalPart());
+                    }
                 } else {
-                    if(isEnabled(Feature.WRITE_NULLS_AS_XSI_NIL)) {
+                    if (asXsiNil) {
                         _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
                         _xmlWriter.writeAttribute("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
                         _xmlWriter.writeEndElement();
