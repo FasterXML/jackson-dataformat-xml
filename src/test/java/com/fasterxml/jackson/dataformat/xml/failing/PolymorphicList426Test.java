@@ -48,12 +48,12 @@ public class PolymorphicList426Test extends XmlTestBase
         }
 
         @Override
-        public String idFromValue(Object o) {
-            return idFromValueAndType(o, o.getClass());
+        public String idFromValue(DatabindContext context, Object o) {
+            return idFromValueAndType(context, o, o.getClass());
         }
 
         @Override
-        public String idFromValueAndType(Object o, Class<?> aClass) {
+        public String idFromValueAndType(DatabindContext context, Object o, Class<?> aClass) {
             return aClass.getSimpleName();
         }
 
