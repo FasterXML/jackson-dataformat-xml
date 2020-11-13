@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * <code>java.util.Collection</code>). If defined, a separate container (wrapper) element
  * is used; if not, entries are written without wrapping.
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlElementWrapper
 {

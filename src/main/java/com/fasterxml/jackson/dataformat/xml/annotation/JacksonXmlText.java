@@ -18,7 +18,7 @@ import java.lang.annotation.*;
  * Internally properties annotated will be considered to be properties with
  * no name (that is, with marker {@code ""} (empty String)).
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlText
 {

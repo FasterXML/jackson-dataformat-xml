@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Adding this annotation will result in value of the property to be serialized
  * within an xml {@code CDATA} section.  Only use on String properties and String collections.
  */
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlCData
 {
