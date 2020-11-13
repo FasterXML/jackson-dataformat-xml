@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * values and so on; their name is derived from getter/setter/field, not
  * from type itself.
  */
-@Target({ElementType.TYPE})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlRootElement
 {

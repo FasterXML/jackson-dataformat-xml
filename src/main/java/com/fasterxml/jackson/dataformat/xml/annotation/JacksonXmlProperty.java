@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * while compiler allows that, will have no effect) -- setter method itself
  * needs to be annotated.
  */
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JacksonXmlProperty
 {
