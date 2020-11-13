@@ -59,7 +59,7 @@ public class ListDeser393Test extends XmlTestBase
 
     private final ObjectMapper MAPPER = newMapper();
 
-    // [dataform#393]
+    // [dataformat-xml#393]
     public void testDeser393() throws Exception
     {
         String content =
