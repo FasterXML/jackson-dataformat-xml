@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 public class ListDeser307Test extends XmlTestBase
 {
     @JacksonXmlRootElement(localName = "customer")
-    public class CustomerWithoutWrapper {
+    static class CustomerWithoutWrapper {
         public Long customerId;
         public String customerName;
 
@@ -18,12 +18,12 @@ public class ListDeser307Test extends XmlTestBase
         public List<Account> account;
     }
 
-    public class Account {
+    static class Account {
         public Long accountId;
         public String accountName;
         public String postcode;
-    }    
-    
+    }
+
     /*
     /********************************************************
     /* Test methods
