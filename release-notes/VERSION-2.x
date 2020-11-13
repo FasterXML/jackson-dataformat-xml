@@ -29,6 +29,9 @@ Project: jackson-dataformat-xml
  (requested by Dave J)
 #273: Input mismatch with case-insensitive properties
  (reported by Joseph P)
+#307: Missing collection item when they are not wrapped during unmarshal
+  with multiple namespaces
+ (reported by wanchongtai@github)
 #314: Jackson gets confused by parent list element
  (reported by Eduard W)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
