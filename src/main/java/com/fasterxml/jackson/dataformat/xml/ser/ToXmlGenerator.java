@@ -1043,8 +1043,8 @@ public class ToXmlGenerator
                 if (_xmlPrettyPrinter != null) {
                     // 12-Nov-2020, tatu: Not clean, due to backwards-compat challenges..
                     //    but has to do
-                    if (asXsiNil && (_xmlPrettyPrinter instanceof DefaultXmlPrettyPrinter)) {
-                        ((DefaultXmlPrettyPrinter) _xmlPrettyPrinter).writeLeafXsiNilElement(_xmlWriter,
+                    if (asXsiNil) {
+                        _xmlPrettyPrinter.writeLeafXsiNilElement(_xmlWriter,
                                 _nextName.getNamespaceURI(), _nextName.getLocalPart());
                     } else {
                         _xmlPrettyPrinter.writeLeafNullElement(_xmlWriter,
