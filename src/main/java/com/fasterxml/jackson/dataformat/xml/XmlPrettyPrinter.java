@@ -87,4 +87,9 @@ public interface XmlPrettyPrinter extends PrettyPrinter
     public void writeLeafNullElement(XMLStreamWriter2 sw,
             String nsURI, String localName)
         throws XMLStreamException;
+
+    // TODO: demote from "DefaultXmlPrettyPrinter" in 2.13 or later:
+//    public void writeLeafXsiNilElement(XMLStreamWriter2 sw,
+//            String nsURI, String localName)
+//        throws XMLStreamException;
 }

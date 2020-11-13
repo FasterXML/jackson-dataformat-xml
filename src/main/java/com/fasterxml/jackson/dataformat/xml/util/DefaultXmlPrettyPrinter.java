@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamWriter2;
@@ -423,6 +424,19 @@ public class DefaultXmlPrettyPrinter
         }
         sw.writeEmptyElement(nsURI, localName);
         _justHadStartElement = false;
+    }
+
+    // @since 2.12
+    public void writeLeafXsiNilElement(XMLStreamWriter2 sw,
+            String nsURI, String localName)
+        throws XMLStreamException
+    {
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
+        }
+        sw.writeEmptyElement(nsURI, localName);
+        sw.writeAttribute("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
+        _justHadStartElement = false;    
     }
 
     @Override // since 2.7
