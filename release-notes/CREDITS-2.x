@@ -137,3 +137,8 @@ David Schmidt (d-schmidt@github)
 * Reported #390: Unexpected attribute at string fields causes extra objects to be
   created in parent list
  (2.12.0)
+
+Akop Karapetyan (0xe1f@github)
+
+* Reported #422: Elements containing <CDATA/> parsed incorrectly when at the end of another element
+ (2.12.0)
