@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,6 +11,16 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
+// Problem with handling of `@XmlValue` via JAXBAnnotationIntrospector
+// is that by default it gives implicit name of `value` for virtual
+// property. Although accessor itself will be specially processed, this
+// may prevent normal combining of getter/setter/field combo.
+// To prevent issues it is necessary to use one of work-arounds:
+//
+// 1. Annotate all relevant accessors, not just one (since implicit name
+//   binding can not be relied on)
+// 2. Override default implicit name to be `null`, which should allow
+//   combination of accessors
 public class JaxbXmlValue418Test extends XmlTestBase
 {
     // [dataformat-xml#418]
@@ -24,6 +34,7 @@ public class JaxbXmlValue418Test extends XmlTestBase
         @XmlAttribute
         String attr = "attr_value";
 
+        // NOTE! One work-around for issue would be to move this to `getEl()`
         @XmlValue
         String el = "text";
 
@@ -87,10 +98,17 @@ public class JaxbXmlValue418Test extends XmlTestBase
     // [dataformat-xml#418]
     public void testWithJaxbAnnotations() throws Exception {
         final RootWithJaxbAnnotations value = new RootWithJaxbAnnotations();
+
+        // 13-Nov-2020, tatu: 2 main ways to resolve the problem, either (a) move
+        //    annotation to getter or (b) remove "implicit name" for `@XmlValue`.
+        //    We'll do latter here:
         final XmlMapper mapper = XmlMapper.builder()
-                .addModule(new com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule())
+                .addModule(new com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule()
+                        .setNameUsedForXmlValue(null)
+                )
                 .build();
-        assertEquals(EXPECTED_418, mapper.writeValueAsString(value));
+        final String xml = mapper.writeValueAsString(value);
+        assertEquals(EXPECTED_418, xml);
     }
 
     public void testWithJacksonAnnotations() throws Exception {
