@@ -163,15 +163,4 @@ Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMappe
     </plugins>
   </build>
 
-  <profiles>
-    <!--  19-Feb-2012, tatu: Since we have some failing tests, may need to force release -->
-    <profile>
-      <id>force-release</id>
-      <properties>
-        <maven.test.skip>true</maven.test.skip>
-        <skipTests>true</skipTests>
-      </properties>
-    </profile>
-  </profiles>
-
 </project>

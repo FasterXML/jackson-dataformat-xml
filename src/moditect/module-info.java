@@ -12,7 +12,6 @@ module com.fasterxml.jackson.dataformat.xml {
     exports com.fasterxml.jackson.dataformat.xml;
     exports com.fasterxml.jackson.dataformat.xml.annotation;
     exports com.fasterxml.jackson.dataformat.xml.deser;
-    exports com.fasterxml.jackson.dataformat.xml.jaxb;
     exports com.fasterxml.jackson.dataformat.xml.ser;
     exports com.fasterxml.jackson.dataformat.xml.util;
 
