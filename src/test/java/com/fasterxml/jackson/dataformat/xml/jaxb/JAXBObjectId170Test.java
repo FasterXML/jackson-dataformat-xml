@@ -9,9 +9,11 @@ import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class JAXBObjectId170Test extends XmlTestBase
 {
@@ -117,7 +119,7 @@ public class JAXBObjectId170Test extends XmlTestBase
                 ;
 
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-                (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
+                (new JaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
         XmlMapper mapper = XmlMapper.builder()
                 // should be default but doesn't seem to be?
                 .annotationIntrospector(intr)
