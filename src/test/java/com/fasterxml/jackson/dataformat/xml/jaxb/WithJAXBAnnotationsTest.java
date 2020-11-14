@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
  * Although XML-backed data binding does not rely (or directly build) on JAXB
@@ -97,10 +98,10 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
         _nonJaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-            (new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()), new JacksonAnnotationIntrospector());
+            (new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()), new JacksonAnnotationIntrospector());
         _jaxbMapper.setAnnotationIntrospector(intr);
     }
-    
+
     /*
     /**********************************************************************
     /* Unit tests

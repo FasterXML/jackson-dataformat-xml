@@ -42,7 +42,6 @@ public class AttributesWithJAXBTest extends XmlTestBase
     public void testTwoAttributes() throws IOException
     {
         XmlMapper mapper = new XmlMapper();
-//        mapper.setAnnotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
         mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
         String xml = mapper.writeValueAsString(new Jurisdiction());
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>", xml);

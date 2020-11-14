@@ -40,7 +40,7 @@ public class ListDeser433Test extends XmlTestBase
 
     private final XmlMapper MAPPER = mapperBuilder()
             .defaultUseWrapper(false)
-//            .annotationIntrospector(new XmlJaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+//            .annotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
             .build();
 
     // [dataformat-xml#433]

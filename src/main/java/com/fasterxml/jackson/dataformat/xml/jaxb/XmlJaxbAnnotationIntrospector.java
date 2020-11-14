@@ -14,7 +14,10 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
  * instead, plain {@link JaxbAnnotationIntrospector} should fully work.
  * With previous versions some aspects were not fully working and this
  * class was necessary.
+ *
+ * @deprecated Since 2.12 (as per above notes)
  */
+@Deprecated
 public class XmlJaxbAnnotationIntrospector
     extends JaxbAnnotationIntrospector
     implements XmlAnnotationIntrospector
@@ -29,13 +32,13 @@ public class XmlJaxbAnnotationIntrospector
     public XmlJaxbAnnotationIntrospector(TypeFactory typeFactory) {
         super(typeFactory);
     }
-    
+
     /*
     /**********************************************************************
     /* XmlAnnotationIntrospector overrides
     /**********************************************************************
      */
-    
+
     @Override
     public String findNamespace(Annotated ann) {
         return super.findNamespace(ann);
@@ -45,7 +48,7 @@ public class XmlJaxbAnnotationIntrospector
     public Boolean isOutputAsAttribute(Annotated ann) {
         return super.isOutputAsAttribute(ann);
     }
-    
+
     @Override
     public Boolean isOutputAsText(Annotated ann) {
         return super.isOutputAsText(ann);
