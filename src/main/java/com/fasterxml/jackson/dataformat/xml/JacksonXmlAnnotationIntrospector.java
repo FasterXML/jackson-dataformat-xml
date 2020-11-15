@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import java.lang.annotation.Annotation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
@@ -53,7 +54,7 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public PropertyName findWrapperName(Annotated ann)
     {
-        JacksonXmlElementWrapper w = ann.getAnnotation(JacksonXmlElementWrapper.class);
+        JacksonXmlElementWrapper w = _findAnnotation(ann, JacksonXmlElementWrapper.class);
         if (w != null) {
             // Special case: wrapping explicitly blocked?
             if (!w.useWrapping()) {
@@ -77,7 +78,7 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public PropertyName findRootName(AnnotatedClass ac)
     {
-        JacksonXmlRootElement root = ac.getAnnotation(JacksonXmlRootElement.class);
+        JacksonXmlRootElement root = _findAnnotation(ac, JacksonXmlRootElement.class);
         if (root != null) {
             String local = root.localName();
             String ns = root.namespace();
@@ -99,9 +100,14 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findNamespace(Annotated ann)
     {
-        JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
+        JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
         if (prop != null) {
             return prop.namespace();
+        }
+        // 14-Nov-2020, tatu: 2.12 adds namespace for this too
+        JsonProperty jprop = _findAnnotation(ann, JsonProperty.class);
+        if (jprop != null) {
+            return jprop.namespace();
         }
         return null;
     }
@@ -111,11 +117,11 @@ public class JacksonXmlAnnotationIntrospector
     /* XmlAnnotationIntrospector, isXxx methods
     /**********************************************************************
      */
-    
+
     @Override
     public Boolean isOutputAsAttribute(Annotated ann)
     {
-        JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
+        JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
         if (prop != null) {
             return prop.isAttribute() ? Boolean.TRUE : Boolean.FALSE;
         }
@@ -125,7 +131,7 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public Boolean isOutputAsText(Annotated ann)
     {
-        JacksonXmlText prop = ann.getAnnotation(JacksonXmlText.class);
+        JacksonXmlText prop = _findAnnotation(ann, JacksonXmlText.class);
         if (prop != null) {
             return prop.value() ? Boolean.TRUE : Boolean.FALSE;
         }
@@ -205,7 +211,7 @@ public class JacksonXmlAnnotationIntrospector
 
     protected PropertyName _findXmlName(Annotated a)
     {
-        JacksonXmlProperty pann = a.getAnnotation(JacksonXmlProperty.class);
+        JacksonXmlProperty pann = _findAnnotation(a, JacksonXmlProperty.class);
         if (pann != null) {
             return PropertyName.construct(pann.localName(), pann.namespace());
         }

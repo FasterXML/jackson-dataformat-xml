@@ -24,6 +24,10 @@ import java.lang.annotation.Target;
  * but it can NOT be used on argument/parameter of setter methods (or rather
  * while compiler allows that, will have no effect) -- setter method itself
  * needs to be annotated.
+ *<p>
+ * Note that since 2.12 there is no need to use this property over
+ * {@link com.fasterxml.jackson.annotation.JsonProperty} just to define XML namespace,
+ * as {@code @JsonProperty} has {@code namespace} property.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
