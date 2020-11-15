@@ -3,10 +3,10 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 import java.beans.ConstructorProperties;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 // [dataformat-xml#306]: Problem is that `@XmlText` has no nominal property name
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 public class XmlTextViaCreator306Test extends XmlTestBase
 {
     // [dataformat-xml#306]
-    @JacksonXmlRootElement(localName = "ROOT")
+    @JsonRootName("ROOT")
     static class Root {
         @JacksonXmlProperty(localName = "CHILD")
         final Child child;
@@ -43,7 +43,7 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName = "ROOT")
+    @JsonRootName("ROOT")
     static class RootWithoutConstructor {
         @JacksonXmlProperty(localName = "CHILD")
         final ChildWithoutConstructor child;

@@ -1,10 +1,10 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 // [dataformat-xml#274]: Actually passes... can not reproduce failure
 public class Issue274PropertyNameTest extends XmlTestBase
@@ -30,7 +30,7 @@ public class Issue274PropertyNameTest extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName = "dataroot")
+    @JsonRootName("dataroot")
     static class RootObject {
         @JacksonXmlProperty(localName = "Event")
         Event event;

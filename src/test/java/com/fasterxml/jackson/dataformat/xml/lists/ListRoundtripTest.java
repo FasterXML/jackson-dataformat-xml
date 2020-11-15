@@ -3,14 +3,14 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 public class ListRoundtripTest extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName="parents")
+    @JsonRootName("parents")
     public static class Parents {
         @JacksonXmlElementWrapper(useWrapping=false)
         public List<Parent> parent = new ArrayList<Parent>();
@@ -46,8 +46,7 @@ public class ListRoundtripTest extends XmlTestBase
         }
     }
 
-    // For [Issue#58]
-    @JacksonXmlRootElement(localName = "point")
+    @JsonRootName("point")
     static class Point {
         @JacksonXmlProperty(localName = "x", isAttribute = true)
         int x;
@@ -58,7 +57,7 @@ public class ListRoundtripTest extends XmlTestBase
         public Point(int x, int y) { this.x = x; this.y = y; }
     }
 
-    @JacksonXmlRootElement(localName = "Points")
+    @JsonRootName("Points")
     static class PointContainer {
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "point")

@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
 public class Issue101UnwrappedListAttributesTest extends XmlTestBase
 {
     // For [dataformat-xml#101]
-    @JacksonXmlRootElement(localName = "root")    
+    @JsonRootName("root")    
     @JsonPropertyOrder({ "unwrapped", "name" })
     static class Root {
         @JacksonXmlProperty(localName = "unwrapped")

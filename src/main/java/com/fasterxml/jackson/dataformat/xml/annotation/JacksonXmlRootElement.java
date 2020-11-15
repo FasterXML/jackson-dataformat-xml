@@ -13,6 +13,11 @@ import java.lang.annotation.Target;
  * Note that annotation has no effect on non-root elements: regular property
  * values and so on; their name is derived from getter/setter/field, not
  * from type itself.
+ *<p>
+ * NOTE! Since 2.4 this annotation is usually not necessary and you should
+ * use {@link com.fasterxml.jackson.annotation.JsonRootName} instead.
+ * About the only expected usage may be to have different root name for XML
+ * content than other formats.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

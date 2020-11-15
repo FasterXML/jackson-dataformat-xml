@@ -23,12 +23,12 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
      */
 
     /**
-     * Set of {@link FromXmlParser.Feature}s enabled, as bitmask.
+     * Set of {@code FromXmlParser.Feature}s enabled, as bitmask.
      */
     protected int _formatParserFeatures;
 
     /**
-     * Set of {@link ToXmlGenerator.Feature}s enabled, as bitmask.
+     * Set of {@@code ToXmlGenerator.Feature}s enabled, as bitmask.
      */
     protected int _formatGeneratorFeatures;
 

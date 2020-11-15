@@ -4,22 +4,22 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class ElementWithScalarAndAttr412Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "container")
+    @JsonRootName("container")
     static class Bean412 {
         @JacksonXmlProperty(localName = "values")
         @JacksonXmlElementWrapper(useWrapping = false)
         List<TaggedInt412> v;
     }
 
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedInt412 {
         @JacksonXmlProperty
         public int id;
@@ -28,7 +28,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
 
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedBoolean412 {
         @JacksonXmlProperty
         public Boolean truthy;
@@ -37,7 +37,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
 
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedBooleanPrim412 {
         @JacksonXmlProperty
         public boolean truthy;
@@ -46,7 +46,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
     
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedDouble412 {
         @JacksonXmlProperty
         public Double value;
@@ -55,7 +55,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
 
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedDoublePrim412 {
         @JacksonXmlProperty
         public double value;
@@ -64,7 +64,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
 
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedString412 {
         @JacksonXmlProperty
         public String name;
@@ -73,7 +73,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
 
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedURI412 {
         @JacksonXmlProperty
         public URI location;
@@ -82,7 +82,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         public int count;
     }
     
-    @JacksonXmlRootElement(localName = "tagged")
+    @JsonRootName("tagged")
     static class TaggedDate412 {
         @JacksonXmlProperty
         public Date time;

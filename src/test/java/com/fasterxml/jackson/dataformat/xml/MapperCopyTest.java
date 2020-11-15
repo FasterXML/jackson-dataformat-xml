@@ -2,16 +2,16 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 public class MapperCopyTest extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "AnnotatedName")
+    @JsonRootName("AnnotatedName")
     static class Pojo282
     {
         public int a = 3;

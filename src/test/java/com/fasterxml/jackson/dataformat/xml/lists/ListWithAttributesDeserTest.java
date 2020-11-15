@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.*;
 
 import com.fasterxml.jackson.dataformat.xml.*;
@@ -100,7 +100,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#390]
-    @JacksonXmlRootElement(localName = "many")
+    @JsonRootName("many")
     static class Many390 {
         @JacksonXmlProperty(localName = "one")
         @JacksonXmlElementWrapper(useWrapping = false)

@@ -66,9 +66,8 @@ public class JacksonXmlAnnotationIntrospector
             }
             return PropertyName.construct(w.localName(), w.namespace());
         }
-        /* 09-Sep-2012, tatu: In absence of configurating we need to use our
-         *   default settings...
-         */
+        // 09-Sep-2012, tatu: In absence of configuration we need to use our
+        //   default settings...
         if (_cfgDefaultUseWrapper) {
             return PropertyName.USE_DEFAULT;
         }
