@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.io.*;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
@@ -52,6 +53,12 @@ public class TestSerialization extends XmlTestBase
         public String text = "blah";
     }
 
+    static class NsElemBean2
+    {
+        @JsonProperty(namespace="http://foo")
+        public String text = "blah";
+    }
+    
     static class CDataStringBean
     {
         @JacksonXmlCData
@@ -87,6 +94,14 @@ public class TestSerialization extends XmlTestBase
         xml = removeSjsxpNamespace(xml);
         // here we assume woodstox automatic prefixes, not very robust but:
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
+    }
+
+    public void testSimpleNsElemWithJsonProp() throws IOException
+    {
+        String xml = _xmlMapper.writeValueAsString(new NsElemBean2());
+        xml = removeSjsxpNamespace(xml);
+        // here we assume woodstox automatic prefixes, not very robust but:
+        assertEquals("<NsElemBean2><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean2>", xml);
     }
     
     public void testSimpleAttrAndElem() throws IOException
