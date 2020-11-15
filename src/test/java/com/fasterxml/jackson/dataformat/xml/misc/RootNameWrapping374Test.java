@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.*;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class RootNameWrapping374Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "Root")
     @JsonRootName("Root")
     static class Root {
         public int id = 1;

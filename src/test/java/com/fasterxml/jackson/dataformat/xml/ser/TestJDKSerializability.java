@@ -2,9 +2,10 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.*;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * Unit test related to core (https://github.com/FasterXML/jackson-core/issues/31)
@@ -12,7 +13,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  */
 public class TestJDKSerializability extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName="MyPojo")
+    @JsonRootName("MyPojo")
     static class MyPojo {
         public int x;
         int y;

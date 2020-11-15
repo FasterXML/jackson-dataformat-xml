@@ -1,12 +1,12 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class PolymorphicSerialization389Test extends XmlTestBase
 {
@@ -23,7 +23,7 @@ public class PolymorphicSerialization389Test extends XmlTestBase
          public String name;
     }
 
-    @JacksonXmlRootElement(localName = "Concrete")
+    @JsonRootName("Concrete")
     public class ConcreteModel extends AbstractModel {
          @JacksonXmlProperty(isAttribute = true)
          public String someAdditionalField;

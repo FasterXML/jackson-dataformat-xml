@@ -2,14 +2,16 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class ListDeser307Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "customer")
+    @JsonRootName("customer")
     static class CustomerWithoutWrapper {
         public Long customerId;
         public String customerName;

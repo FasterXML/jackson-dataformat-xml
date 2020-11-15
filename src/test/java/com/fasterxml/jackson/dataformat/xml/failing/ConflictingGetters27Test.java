@@ -1,14 +1,14 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class ConflictingGetters27Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "output")
+    @JsonRootName("output")
     static class Bean {
         public BeanInfo[] beanInfo;
         public BeanInfo[] beanOther;

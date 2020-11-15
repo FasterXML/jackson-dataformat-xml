@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 // [dataformat-xml#433]
 public class ListDeser433Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "Product")
+    @JsonRootName("Product")
     static class Product433 {
         @JsonProperty("Prices")
         public Prices prices;

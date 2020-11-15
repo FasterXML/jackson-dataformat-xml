@@ -4,11 +4,13 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 // Problem with handling of `@XmlValue` via JAXBAnnotationIntrospector
@@ -55,7 +57,7 @@ public class JaxbXmlValue418Test extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName = "ROOT")
+    @JsonRootName("ROOT")
     public static class RootWithJacksonAnnotations {
         @JacksonXmlProperty(localName = "CHILD")
         JacksonChild child = new JacksonChild();

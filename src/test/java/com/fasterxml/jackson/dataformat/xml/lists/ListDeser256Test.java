@@ -3,12 +3,11 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 // [dataformat-xml#256]
 public class ListDeser256Test extends XmlTestBase
@@ -33,7 +32,7 @@ public class ListDeser256Test extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName = "Object")
+    @JsonRootName("Object")
     static abstract class ExampleObjectMixin {
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "LevelOne")

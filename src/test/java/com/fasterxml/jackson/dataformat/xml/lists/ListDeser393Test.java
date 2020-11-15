@@ -2,15 +2,16 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class ListDeser393Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "prices")
+    @JsonRootName("prices")
     static class Prices393 {
         private List<Price393> price = new ArrayList<Price393>();
 

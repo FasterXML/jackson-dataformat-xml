@@ -6,9 +6,13 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyName;
+
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+// NOTE: even tho `@JacksonXmlRootElement` will be deprecated in near
+// future (possibly in 2.13) -- to be replaced by `@JsonRootName` -- this
+// test will use it to ensure we handle both annotations as expected
 public class RootNameTest extends XmlTestBase
 {
     static class RootBeanBase

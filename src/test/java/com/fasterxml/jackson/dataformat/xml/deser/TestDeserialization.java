@@ -2,10 +2,10 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 public class TestDeserialization extends XmlTestBase
@@ -34,7 +34,7 @@ public class TestDeserialization extends XmlTestBase
     }
 
     // [dataformat-xml#219]
-    @JacksonXmlRootElement(localName="line")
+    @JsonRootName("line")
     static class Line219 {
         public String code; //This should ideally be complex type
         public String amount;
