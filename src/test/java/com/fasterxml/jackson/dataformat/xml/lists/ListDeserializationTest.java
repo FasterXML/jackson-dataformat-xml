@@ -396,8 +396,8 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
 " <Prices>\n" +
 "  <Price>\n" +
 "   <Start>50</Start>\n" +
-"   <Price>2.53</Price>\n" +
 "   <End>99</End>\n" +
+"   <Price>2.53</Price>\n" +
 "  </Price>\n" +
 " </Prices>\n" +
 "</Product>";
