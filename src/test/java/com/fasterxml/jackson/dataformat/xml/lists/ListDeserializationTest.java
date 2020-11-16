@@ -6,7 +6,7 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -402,7 +402,10 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
 " </Prices>\n" +
 "</Product>";
 
-        Product433 main = MAPPER.readValue(XML, Product433.class);
+//        Product433 main = MAPPER.readValue(XML, Product433.class);
+        Product433 main = MAPPER.readerFor(Product433.class)
+                .with(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                .readValue(XML);
         assertNotNull(main);
         assertNotNull(main.prices);
         Prices433 p = main.prices;
