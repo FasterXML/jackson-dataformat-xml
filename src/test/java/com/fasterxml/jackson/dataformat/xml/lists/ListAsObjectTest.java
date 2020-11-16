@@ -46,10 +46,10 @@ public class ListAsObjectTest extends XmlTestBase
 
     public void testCollection() throws Exception {
         final Values values = new XmlMapper().readValue("<values type=\"array\">" +
-                                                        "  <value><v>c</v></value>" +
-                                                        "  <value><v>d</v></value>" +
-                                                        "</values>",
-                                                        Values.class);
+                "  <value><v>c</v></value>" +
+                "  <value><v>d</v></value>" +
+                "</values>",
+                Values.class);
         assertEquals(2, values.getValues().size(), 2);
         assertEquals("c", values.getValues().get(0).getV());
         assertEquals("d", values.getValues().get(1).getV());
