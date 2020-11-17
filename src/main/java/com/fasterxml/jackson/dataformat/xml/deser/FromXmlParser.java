@@ -65,7 +65,22 @@ public class FromXmlParser
          *
          * @since 2.9
          */
-        EMPTY_ELEMENT_AS_NULL(false)
+        EMPTY_ELEMENT_AS_NULL(false),
+
+        // 16-Nov-2020, tatu: would have been nice to add in 2.12 but is not
+        //    trivial to implement... so leaving out for now
+
+        /*
+         * Feature that indicates whether reading operation should check that
+         * the root element's name matches what is expected by read operation:
+         * if enabled and name does not match, an exception will be thrown;
+         * if disabled, no checking is done (any element name will do).
+         *<p>
+         * Default setting is {@code true} for backwards compatibility.
+         *
+         * @since 2.12
+        ENFORCE_VALID_ROOT_NAME(false)
+         */
         ;
 
         final boolean _defaultState;
