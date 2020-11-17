@@ -87,13 +87,13 @@ public class PolymorphicList426Test extends XmlTestBase
     public void testPolymorphicList426() throws Exception
     {
         String xml = "" +
-                "<Auto>\n" +
-                "    <Object uid=\"1\" type=\"Engine\">\n" +
-                "        <Object uid=\"2\" type=\"Chassis\"></Object>\n" +
-                "        <Object uid=\"3\" type=\"Motor\"></Object>\n" +
-                "    </Object>\n" +
-                "    <Object uid=\"4\" type=\"Body\"></Object>\n" +
-                "</Auto>";
+"<Auto>\n" +
+"  <Object uid='1' type='Engine'>\n" +
+"    <Object uid='2' type='Chassis'></Object>\n" +
+"    <Object uid='3' type='Motor'></Object>\n" +
+"  </Object>\n" +
+"  <Object uid='4' type='Body'></Object>\n" +
+"</Auto>";
         Auto result = MAPPER.readValue(xml, Auto.class);
         assertNotNull(result);
         assertNotNull(result.carParts);
@@ -101,7 +101,7 @@ public class PolymorphicList426Test extends XmlTestBase
         CarParts cp = result.carParts.get(0);
 
         // for debugging:
-//System.err.println("XML:\n"+MAPPER.writeValueAsString(result));        
+//System.err.println("XML:\n"+MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(result));
 
         assertNotNull(cp);
         assertNotNull(cp.carParts);

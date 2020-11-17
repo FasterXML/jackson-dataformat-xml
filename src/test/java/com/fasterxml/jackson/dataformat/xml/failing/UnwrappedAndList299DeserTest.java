@@ -45,7 +45,7 @@ public class UnwrappedAndList299DeserTest extends XmlTestBase
         String xmlString = MAPPER.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(request);
 
-System.out.println("XML:\n"+xmlString);
+//System.err.println("XML:\n"+xmlString);
         
         final Request anotherRequest = MAPPER.readValue(xmlString, Request.class);
         
