@@ -230,7 +230,7 @@ Currently, following limitations exist beyond general Jackson (JSON) limitations
 * Streaming model is only meant to be used through databinding: direct usage is possible but not supported
 * Tree Model (`JsonNode`, `ObjectMapper.readTree()`) is based on JSON content model and it does not match exactly with XML infoset
     * Mixed content (both textual content and elements as children of an element) not supported: text, if any, will be lost
-    * Prior to `2.12` (not yet released as of May 2020), handling of repeated XML elements was problematic (it could only retain the last element read), but [#403](https://github.com/FasterXML/jackson-dataformat-xml/issues/403) improves andling
+    * Prior to `2.12`, handling of repeated XML elements was problematic (it could only retain the last element read), but [#403](https://github.com/FasterXML/jackson-dataformat-xml/issues/403) improves handling
 * Root value should be a POJO (that is, a Java value expressed as a set of properties (key/value pairs)); and specifically following types can be serialized as properties but may not work as intended as root values
     * Primitive/Wrapper values (like `java.lang.Integer`)
     * `String`s (and types that serialize as Strings such as Timestamps, Date/Time values)
