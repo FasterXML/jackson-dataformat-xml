@@ -16,10 +16,8 @@
   <version>2.12.1-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>bundle</packaging>
-  <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
+  <description>Data format extension for Jackson to offer
 alternative support for serializing POJOs as XML and deserializing XML as pojos.
-Support implemented on top of Stax API (javax.xml.stream), by implementing core Jackson Streaming API types like JsonGenerator, JsonParser and JsonFactory.
-Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMapper).
   </description>
   <url>https://github.com/FasterXML/jackson-dataformat-xml</url>
   <scm>

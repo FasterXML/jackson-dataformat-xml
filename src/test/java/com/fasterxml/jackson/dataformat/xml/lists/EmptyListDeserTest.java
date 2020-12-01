@@ -2,13 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
+import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 public class EmptyListDeserTest extends XmlTestBase
 {
@@ -88,5 +92,17 @@ public class EmptyListDeserTest extends XmlTestBase
         assertEquals(Value319[].class, result.getClass());
         Value319[] array = (Value319[]) result;
         assertEquals(0, array.length);
+    }
+
+    // [dataformat-xml#435]
+    public void testEmptyListAsNull435() throws Exception
+    {
+        XmlMapper mapper = mapperBuilder()
+                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .build();
+        List<Config> result = mapper.readValue("<ArrayList/>",
+                new TypeReference<List<Config>>() {
+        });
+        assertNull(result);
     }
 }
