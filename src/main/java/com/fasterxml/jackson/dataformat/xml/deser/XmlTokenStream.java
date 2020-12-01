@@ -181,6 +181,15 @@ public class XmlTokenStream
 
         // copied from START_ELEMENT section of _next():
         final String text = _collectUntilTag();
+        if (text == null) {
+            // 30-Nov-2020, tatu: [dataformat-xml#435], this is tricky
+            //   situation since we got coerced `null`... but at least for
+            //   now will have to report as "root String" (... with null contents)
+            _textValue = null;
+            _startElementAfterText = false;
+            return (_currentState = XML_ROOT_TEXT);
+        }
+
         final boolean startElementNext = _xmlReader.getEventType() == XMLStreamReader.START_ELEMENT;
         // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
         if (startElementNext) {
@@ -494,6 +503,10 @@ public class XmlTokenStream
         return _initStartElement();
     }
 
+    /**
+     * @return Collected text, if any, EXCEPT that if {@code FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL}
+     *    AND empty element, returns {@code null}
+     */
     private final String _collectUntilTag() throws XMLStreamException
     {
         // 21-Jun-2017, tatu: Whether exposed as `null` or "" is now configurable...

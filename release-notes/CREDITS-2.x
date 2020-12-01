@@ -142,3 +142,8 @@ Akop Karapetyan (0xe1f@github)
 
 * Reported #422: Elements containing <CDATA/> parsed incorrectly when at the end of another element
  (2.12.0)
+
+Francesco Chicchiriccò (ilgrosso@github)
+
+* Reported #435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
+ (2.12.1)

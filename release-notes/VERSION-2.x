@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 = Releases
 ------------------------------------------------------------------------
 
+2.12.1 (not yet released)
+
+#435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
+ (reported by Francesco C)
+
 2.12.0 (29-Nov-2020)
 
 #97: Weird Exception during read with Type info

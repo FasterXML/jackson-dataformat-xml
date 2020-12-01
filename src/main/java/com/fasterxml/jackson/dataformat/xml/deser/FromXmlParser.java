@@ -255,8 +255,14 @@ public class FromXmlParser
                 _nextToken = JsonToken.START_OBJECT;
                 break;
             case XmlTokenStream.XML_ROOT_TEXT:
-                _nextToken = JsonToken.VALUE_STRING;
                 _currText = _xmlTokens.getText();
+                // [dataformat-xml#435]: may get `null` from empty element...
+                // It's complicated.
+                if (_currText == null) {
+                    _nextToken = JsonToken.VALUE_NULL;
+                } else {
+                    _nextToken = JsonToken.VALUE_STRING;
+                }
                 break;
             default:
                 _reportError("Internal problem: invalid starting state (%s)", _xmlTokens._currentStateDesc());
