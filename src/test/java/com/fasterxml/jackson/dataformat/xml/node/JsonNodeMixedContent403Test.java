@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.deser;
+package com.fasterxml.jackson.dataformat.xml.node;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
