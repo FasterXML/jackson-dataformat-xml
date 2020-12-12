@@ -1,7 +1,7 @@
 Project: jackson-dataformat-xml
 
 ------------------------------------------------------------------------
-= Releases
+=== Releases ===
 ------------------------------------------------------------------------
 
 2.12.1 (not yet released)
@@ -66,6 +66,9 @@ Project: jackson-dataformat-xml
 #434: Add missing `ElementType.ANNOTATION_TYPE` for Jackson xml annotations
   to allow bundling 
 - Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
+
+2.11.4 (12-Dec-2020)
+
 - Upgrade Woodstox dependency to 6.2.3 (<- 6.2.1)
 - Deprecate `XmlJaxbAnnotationIntrospector` (has been unnecessary since 2.4, forgot)
 
