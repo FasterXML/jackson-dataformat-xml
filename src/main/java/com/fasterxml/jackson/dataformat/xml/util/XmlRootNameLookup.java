@@ -34,7 +34,7 @@ public class XmlRootNameLookup
     protected final transient SimpleLookupCache<ClassKey,QName> _rootNames = new SimpleLookupCache<>(40, 200);
 
     public XmlRootNameLookup() { }
-    
+
     protected Object readResolve() {
         // just need to make 100% sure it gets set to non-null, that's all
         if (_rootNames == null) {
@@ -81,19 +81,23 @@ public class XmlRootNameLookup
             // Should we strip out enclosing class tho? For now, nope:
             // one caveat: array simple names end with "[]"; also, "$" needs replacing
             localName = StaxUtil.sanitizeXmlTypeName(rootType.getSimpleName());
-            return new QName("", localName);
+            return _qname(ns, localName);
         }
         // Otherwise let's see if there's namespace, too (if we are missing it)
-        if (ns == null || ns.length() == 0) {
-            ns = findNamespace(intr, ac);
+        if (ns == null || ns.isEmpty()) {
+            ns = _findNamespace(intr, ac);
         }
+        return _qname(ns, localName);
+    }
+
+    private QName _qname(String ns, String localName) {
         if (ns == null) { // some QName impls barf on nulls...
             ns = "";
         }
         return new QName(ns, localName);
     }
 
-    private String findNamespace(AnnotationIntrospector ai, AnnotatedClass ann)
+    private String _findNamespace(AnnotationIntrospector ai, AnnotatedClass ann)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
             if (intr instanceof XmlAnnotationIntrospector) {
