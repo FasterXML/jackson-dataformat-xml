@@ -80,7 +80,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
             this.lastName = lastName;
         }
     }
-    
+
     /*
     /**********************************************************************
     /* Set up

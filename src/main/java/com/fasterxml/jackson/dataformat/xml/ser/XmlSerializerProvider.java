@@ -274,14 +274,15 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
         throws JsonMappingException
     {
-        // [dataformat-xml#71]: When converting, we actually get TokenBuffer, which is fine
         if (!(gen instanceof ToXmlGenerator)) {
-            // but verify
-            if (!(gen instanceof TokenBuffer)) {
-                throw JsonMappingException.from(gen,
-                        "XmlMapper does not with generators of type other than ToXmlGenerator; got: "+gen.getClass().getName());
+            // [dataformat-xml#71]: We sometimes get TokenBuffer, which is fine
+            if (gen instanceof TokenBuffer) {
+                return null;
             }
-            return null;
+            // but verify
+            throw JsonMappingException.from(gen,
+                    "XmlMapper does not work with generators of type other than `ToXmlGenerator`; got: `"
+                            +gen.getClass().getName()+"`");
         }
         return (ToXmlGenerator) gen;
     }    

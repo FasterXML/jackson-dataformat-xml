@@ -8,6 +8,7 @@ Project: jackson-dataformat-xml
 
 #435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
  (reported by Francesco C)
+- Minor improvement wrt #18 (use namespace annotation from supertype)
 
 2.12.0 (29-Nov-2020)
 
