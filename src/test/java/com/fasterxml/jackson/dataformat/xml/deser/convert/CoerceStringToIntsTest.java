@@ -22,29 +22,25 @@ public class CoerceStringToIntsTest
             .disable(MapperFeature.ALLOW_COERCION_OF_SCALARS)
             .build();
 
-    private final ObjectMapper MAPPER_TO_EMPTY; {
-        MAPPER_TO_EMPTY = newMapper();
-        MAPPER_TO_EMPTY.coercionConfigFor(LogicalType.Integer)
-            .setCoercion(CoercionInputShape.String, CoercionAction.AsEmpty);
-    }
+    private final ObjectMapper MAPPER_TO_EMPTY = mapperBuilder()
+            .withCoercionConfig(LogicalType.Integer, cfg ->
+            cfg.setCoercion(CoercionInputShape.String, CoercionAction.AsEmpty))
+        .build();
 
-    private final ObjectMapper MAPPER_TRY_CONVERT; {
-        MAPPER_TRY_CONVERT = newMapper();
-        MAPPER_TRY_CONVERT.coercionConfigFor(LogicalType.Integer)
-            .setCoercion(CoercionInputShape.String, CoercionAction.TryConvert);
-    }
+    private final ObjectMapper MAPPER_TRY_CONVERT = mapperBuilder()
+            .withCoercionConfig(LogicalType.Integer, cfg ->
+            cfg.setCoercion(CoercionInputShape.String, CoercionAction.TryConvert))
+        .build();
 
-    private final ObjectMapper MAPPER_TO_NULL; {
-        MAPPER_TO_NULL = newMapper();
-        MAPPER_TO_NULL.coercionConfigFor(LogicalType.Integer)
-            .setCoercion(CoercionInputShape.String, CoercionAction.AsNull);
-    }
+    private final ObjectMapper MAPPER_TO_NULL = mapperBuilder()
+            .withCoercionConfig(LogicalType.Integer, cfg ->
+            cfg.setCoercion(CoercionInputShape.String, CoercionAction.AsNull))
+        .build();
 
-    private final ObjectMapper MAPPER_TO_FAIL; {
-        MAPPER_TO_FAIL = newMapper();
-        MAPPER_TO_FAIL.coercionConfigFor(LogicalType.Integer)
-            .setCoercion(CoercionInputShape.String, CoercionAction.Fail);
-    }
+    private final ObjectMapper MAPPER_TO_FAIL = mapperBuilder()
+            .withCoercionConfig(LogicalType.Integer, cfg ->
+                cfg.setCoercion(CoercionInputShape.String, CoercionAction.Fail))
+            .build();
 
     protected static class BooleanWrapper {
         public Boolean b;
