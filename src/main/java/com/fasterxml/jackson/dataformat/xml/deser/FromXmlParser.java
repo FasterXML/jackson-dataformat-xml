@@ -55,7 +55,7 @@ public class FromXmlParser
     {
         /**
          * Feature that indicates whether XML Empty elements (ones where there are
-         * no separate start and end tages, but just one tag that ends with "/&gt;")
+         * no separate start and end tags, but just one tag that ends with "/&gt;")
          * are exposed as {@link JsonToken#VALUE_NULL}) or not. If they are not
          * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
          * tokens with textual value of "" (empty String).
