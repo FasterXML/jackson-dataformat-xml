@@ -55,8 +55,9 @@ public class FromXmlParser
     public enum Feature implements FormatFeature
     {
         /**
-         * Feature that indicates whether empty XML elements (both empty tags
-         * like {@code <tag />} and {@code <tag></tag>} (with no intervening cdata)
+         * Feature that indicates whether empty XML elements
+         * (both empty tags like {@code <tag />} and {@code <tag></tag>}
+         * (with no intervening cdata)
          * are exposed as {@link JsonToken#VALUE_NULL}) or not.
          * If they are not
          * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}

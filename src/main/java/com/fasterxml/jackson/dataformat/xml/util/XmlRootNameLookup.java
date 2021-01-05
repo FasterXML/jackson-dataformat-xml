@@ -31,12 +31,17 @@ public class XmlRootNameLookup
      * Note: changed to <code>transient</code> for 2.3; no point in serializing such
      * state
      */
-    protected final transient SimpleLookupCache<ClassKey,QName> _rootNames = new SimpleLookupCache<>(40, 200);
+    protected final transient SimpleLookupCache<ClassKey,QName> _rootNames;
 
-    public XmlRootNameLookup() { }
+    public XmlRootNameLookup() {
+        _rootNames = new SimpleLookupCache<>(40, 200);
+    }
 
     protected Object readResolve() {
         // just need to make 100% sure it gets set to non-null, that's all
+        // 05-Jan-2020, tatu: How is that possibly, you ask? JDK serialization, that's how
+        //   (it by-passes calls to constructors, as well as initializers)
+        //   ... and if you don't believe, try commenting it out and see test failure you get
         if (_rootNames == null) {
             return new XmlRootNameLookup();
         }
