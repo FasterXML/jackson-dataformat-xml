@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.13.0 (not yet released)
+
+No change since 2.12
+
 2.12.1 (08-Jan-2021)
 
 #435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
