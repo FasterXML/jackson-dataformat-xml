@@ -228,7 +228,6 @@ public class FromXmlParser
     public FromXmlParser(ObjectReadContext readCtxt, IOContext ctxt,
             int parserFeatures, int xmlFeatures,
             XMLStreamReader xmlReader)
-        throws IOException
     {
         super(readCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
@@ -241,7 +240,7 @@ public class FromXmlParser
         try {
             firstToken = _xmlTokens.initialize();
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsParseException(e, this);
+            StaxUtil.throwAsReadException(e, this);
             return;
         }
 
@@ -377,7 +376,7 @@ public class FromXmlParser
      * the current event.
      */
     @Override
-    public String currentName() throws IOException
+    public String currentName()
     {
         // start markers require information from parent
         String name;
@@ -395,7 +394,7 @@ public class FromXmlParser
     }
 
     @Override
-    public void close() throws IOException
+    public void close()
     {
         if (!_closed) {
             _closed = true;
@@ -406,7 +405,7 @@ public class FromXmlParser
                     _xmlTokens.close();
                 }
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsParseException(e, this);
+                StaxUtil.throwAsReadException(e, this);
             } finally {
                 // Also, internal buffer(s) can now be released as well
                 _releaseBuffers();
@@ -536,7 +535,7 @@ public class FromXmlParser
     // DEBUGGING
     /*
     @Override
-    public JsonToken nextToken() throws IOException
+    public JsonToken nextToken() throws JacksonException
     {
         JsonToken t = nextToken0();
         if (t != null) {
@@ -556,9 +555,9 @@ public class FromXmlParser
     }
     */
 
-//    public JsonToken nextToken0() throws IOException
+//    public JsonToken nextToken0() throws JacksonException
     @Override
-    public JsonToken nextToken() throws IOException
+    public JsonToken nextToken() throws JacksonException
     {
         _binaryValue = null;
         _numTypesValid = NR_UNKNOWN;
@@ -736,7 +735,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
 
     /*
     @Override
-    public String nextFieldName() throws IOException {
+    public String nextFieldName() throws JacksonException {
         if (nextToken() == JsonToken.FIELD_NAME) {
             return getCurrentName();
         }
@@ -749,7 +748,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
      * String collections.
      */
     @Override
-    public String nextTextValue() throws IOException
+    public String nextTextValue() throws JacksonException
     {
         _binaryValue = null;
         if (_nextToken != null) {
@@ -879,7 +878,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
      */
 
     @Override
-    public String getText() throws IOException
+    public String getText() throws JacksonException
     {
         if (_currToken == null) {
             return null;
@@ -895,19 +894,19 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public char[] getTextCharacters() throws IOException {
+    public char[] getTextCharacters() throws JacksonException {
         String text = getText();
         return (text == null)  ? null : text.toCharArray();
     }
 
     @Override
-    public int getTextLength() throws IOException {
+    public int getTextLength() throws JacksonException {
         String text = getText();
         return (text == null)  ? 0 : text.length();
     }
 
     @Override
-    public int getTextOffset() throws IOException {
+    public int getTextOffset() throws JacksonException {
         return 0;
     }
 
@@ -921,13 +920,17 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public int getText(Writer writer) throws IOException
+    public int getText(Writer writer) throws JacksonException
     {
         String str = getText();
         if (str == null) {
             return 0;
         }
-        writer.write(str);
+        try {
+            writer.write(str);
+        } catch (IOException e) {
+            throw _wrapIOFailure(e);
+        }
         return str.length();
     }
 
@@ -938,13 +941,13 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
      */
 
     @Override
-    public Object getEmbeddedObject() throws IOException {
+    public Object getEmbeddedObject() throws JacksonException {
         // no way to embed POJOs for now...
         return null;
     }
 
     @Override
-    public byte[] getBinaryValue(Base64Variant b64variant) throws IOException
+    public byte[] getBinaryValue(Base64Variant b64variant) throws JacksonException
     {
         if (_currToken != JsonToken.VALUE_STRING &&
                 (_currToken != JsonToken.VALUE_EMBEDDED_OBJECT || _binaryValue == null)) {
@@ -957,14 +960,14 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             try {
                 _binaryValue = _decodeBase64(b64variant);
             } catch (IllegalArgumentException iae) {
-                throw _constructError("Failed to decode VALUE_STRING as base64 ("+b64variant+"): "+iae.getMessage());
+                throw _constructReadException("Failed to decode VALUE_STRING as base64 ("+b64variant+"): "+iae.getMessage());
             }
         }        
         return _binaryValue;
     }
 
     @SuppressWarnings("resource")
-    protected byte[] _decodeBase64(Base64Variant b64variant) throws IOException
+    protected byte[] _decodeBase64(Base64Variant b64variant) throws JacksonException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();
         final String str = getText();
@@ -984,7 +987,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public NumberType getNumberType() throws IOException {
+    public NumberType getNumberType() {
         if (_numTypesValid == NR_UNKNOWN) {
             _checkNumericValue(NR_UNKNOWN); // will also check event type
         }
@@ -1000,7 +1003,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public Number getNumberValue() throws IOException {
+    public Number getNumberValue() throws JacksonException {
         if (_numTypesValid == NR_UNKNOWN) {
             _checkNumericValue(NR_UNKNOWN); // will also check event type
         }
@@ -1020,7 +1023,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public int getIntValue() throws IOException {
+    public int getIntValue() throws JacksonException {
         if ((_numTypesValid & NR_INT) == 0) {
             if (_numTypesValid == NR_UNKNOWN) { // not parsed at all
                 _checkNumericValue(NR_INT); // will also check event type
@@ -1033,7 +1036,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public long getLongValue() throws IOException {
+    public long getLongValue() throws JacksonException {
         if ((_numTypesValid & NR_LONG) == 0) {
             if (_numTypesValid == NR_UNKNOWN) {
                 _checkNumericValue(NR_LONG);
@@ -1046,7 +1049,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public BigInteger getBigIntegerValue() throws IOException {
+    public BigInteger getBigIntegerValue() throws JacksonException {
         if ((_numTypesValid & NR_BIGINT) == 0) {
             if (_numTypesValid == NR_UNKNOWN) {
                 _checkNumericValue(NR_BIGINT);
@@ -1059,7 +1062,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public float getFloatValue() throws IOException {
+    public float getFloatValue() throws JacksonException {
         if ((_numTypesValid & NR_FLOAT) == 0) {
             if (_numTypesValid == NR_UNKNOWN) {
                 _checkNumericValue(NR_FLOAT);
@@ -1069,7 +1072,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public double getDoubleValue() throws IOException {
+    public double getDoubleValue() throws JacksonException {
         if ((_numTypesValid & NR_DOUBLE) == 0) {
             if (_numTypesValid == NR_UNKNOWN) {
                 _checkNumericValue(NR_DOUBLE);
@@ -1079,7 +1082,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
     @Override
-    public BigDecimal getDecimalValue() throws IOException {
+    public BigDecimal getDecimalValue() throws JacksonException {
         if ((_numTypesValid & NR_BIGDECIMAL) == 0) {
             if (_numTypesValid == NR_UNKNOWN) {
                 _checkNumericValue(NR_BIGDECIMAL);
@@ -1090,11 +1093,12 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
 
     // // // Helper methods for Numeric accessors
 
-    protected final void _checkNumericValue(int expType) throws IOException {
+    protected final void _checkNumericValue(int expType) throws JacksonException {
         if (_currToken == JsonToken.VALUE_NUMBER_INT) {
             return;
         }
-        _reportError("Current token ("+currentToken()+") not numeric, can not use numeric value accessors");
+        throw _constructReadException("Current token (%s) not numeric, can not use numeric value accessors",
+                currentToken());
     }
 
     // NOTE: copied from `StdDeserializer`...
@@ -1116,7 +1120,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         return 0;
     }
 
-    protected void _convertNumberToInt() throws IOException
+    protected void _convertNumberToInt() throws JacksonException
     {
         // First, converting from long ought to be easy
         if ((_numTypesValid & NR_LONG) != 0) {
@@ -1129,7 +1133,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         } else if ((_numTypesValid & NR_BIGINT) != 0) {
             if (BI_MIN_INT.compareTo(_numberBigInt) > 0 
                     || BI_MAX_INT.compareTo(_numberBigInt) < 0) {
-                reportOverflowInt();
+                _reportOverflowInt();
             }
             _numberInt = _numberBigInt.intValue();
         } else {
@@ -1138,14 +1142,14 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         _numTypesValid |= NR_INT;
     }
     
-    protected void _convertNumberToLong() throws IOException
+    protected void _convertNumberToLong() throws JacksonException
     {
         if ((_numTypesValid & NR_INT) != 0) {
             _numberLong = (long) _numberInt;
         } else if ((_numTypesValid & NR_BIGINT) != 0) {
             if (BI_MIN_LONG.compareTo(_numberBigInt) > 0 
                     || BI_MAX_LONG.compareTo(_numberBigInt) < 0) {
-                reportOverflowLong();
+                _reportOverflowLong();
             }
             _numberLong = _numberBigInt.longValue();
         } else {
@@ -1154,7 +1158,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         _numTypesValid |= NR_LONG;
     }
     
-    protected void _convertNumberToBigInteger() throws IOException
+    protected void _convertNumberToBigInteger() throws JacksonException
     {
         if ((_numTypesValid & NR_LONG) != 0) {
             _numberBigInt = BigInteger.valueOf(_numberLong);
@@ -1166,7 +1170,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         _numTypesValid |= NR_BIGINT;
     }
 
-    protected float _convertNumberToFloat() throws IOException
+    protected float _convertNumberToFloat() throws JacksonException
     {
         // Note: this MUST start with more accurate representations, since we don't know which
         //  value is the original one (others get generated when requested)
@@ -1183,7 +1187,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         return 0.0f;
     }
     
-    protected double _convertNumberToDouble() throws IOException
+    protected double _convertNumberToDouble() throws JacksonException
     {
         // same as above, start from more to less accurate
         if ((_numTypesValid & NR_BIGINT) != 0) {
@@ -1199,7 +1203,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         return 0.0;
     }
 
-    protected BigDecimal _convertNumberToBigDecimal() throws IOException
+    protected BigDecimal _convertNumberToBigDecimal() throws JacksonException
     {
         if ((_numTypesValid & NR_BIGINT) != 0) {
             return new BigDecimal(_numberBigInt);
@@ -1248,7 +1252,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
      * Method called to release internal buffers owned by the base
      * parser.
      */
-    protected void _releaseBuffers() throws IOException {
+    protected void _releaseBuffers() {
         // anything we can/must release? Underlying parser should do all of it, for now?
     }
 
@@ -1266,19 +1270,19 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         throw new IllegalStateException("Internal error: unrecognized XmlTokenStream token: "+token);
     }
 
-    protected int _nextToken() throws IOException {
+    protected int _nextToken() throws JacksonException {
         try {
             return _xmlTokens.next();
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e, this);
+            return StaxUtil.throwAsReadException(e, this);
         }
     }
 
-    protected void _skipEndElement() throws IOException {
+    protected void _skipEndElement() throws JacksonException {
         try {
             _xmlTokens.skipEndElement();
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsParseException(e, this);
+            StaxUtil.throwAsReadException(e, this);
         } catch (Exception e) {
             throw new JsonParseException(this, e.getMessage(), e);
         }

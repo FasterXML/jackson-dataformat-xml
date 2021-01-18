@@ -6,7 +6,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import com.fasterxml.jackson.core.*;
-
+import com.fasterxml.jackson.core.exc.WrappedIOException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
@@ -44,7 +44,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
 
     @SuppressWarnings("resource")
     @Override
-    public void serializeValue(JsonGenerator gen, Object value) throws IOException
+    public void serializeValue(JsonGenerator gen, Object value) throws JacksonException
     {
         _generator = gen;
         if (value == null) {
@@ -73,7 +73,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         try {
             ser.serialize(value, gen, this);
         } catch (Exception e) { // but wrap RuntimeExceptions, to get path information
-            throw _wrapAsIOE(gen, e);
+            throw _wrapAsJacksonE(gen, e);
         }
         // end of super-class implementation
 
@@ -83,7 +83,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     }
 
     @Override
-    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType) throws IOException
+    public void serializeValue(JsonGenerator gen, Object value, JavaType rootType) throws JacksonException
     {
         serializeValue(gen, value, rootType, null);
     }
@@ -91,7 +91,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator gen, Object value, JavaType rootType,
-            JsonSerializer<Object> ser) throws IOException
+            JsonSerializer<Object> ser) throws JacksonException
     {
         _generator = gen;
         if (value == null) {
@@ -124,7 +124,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         try {
             ser.serialize(value, gen, this);
         } catch (Exception e) { // but others do need to be, to get path etc
-            throw _wrapAsIOE(gen, e);
+            throw _wrapAsJacksonE(gen, e);
         }
         // end of super-class implementation
         if (asArray) {
@@ -136,7 +136,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     @Override
     public void serializePolymorphic(JsonGenerator gen, Object value, JavaType rootType,
             JsonSerializer<Object> valueSer, TypeSerializer typeSer)
-        throws IOException
+        throws JacksonException
     {
         _generator = gen;
         if (value == null) {
@@ -174,7 +174,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         try {
             valueSer.serializeWithType(value, gen, this, typeSer);
         } catch (Exception e) { // but others do need to be, to get path etc
-            throw _wrapAsIOE(gen, e);
+            throw _wrapAsJacksonE(gen, e);
         }
         // end of super-class implementation
         if (asArray) {
@@ -182,7 +182,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         }
     }
     
-    protected void _serializeXmlNull(JsonGenerator gen) throws IOException
+    protected void _serializeXmlNull(JsonGenerator gen) throws JacksonException
     {
         // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly
         //    configured root name...
@@ -196,14 +196,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         super.serializeValue(gen, null);
     }
 
-    protected void _startRootArray(ToXmlGenerator xgen, QName rootName) throws IOException
+    protected void _startRootArray(ToXmlGenerator xgen, QName rootName) throws JacksonException
     {
         xgen.writeStartObject();
         // Could repeat root name, but what's the point? How to customize?
         xgen.writeFieldName("item");
     }    
 
-    protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws IOException
+    protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws JacksonException
     {
         // 28-Nov-2012, tatu: We should only initialize the root name if no name has been
         //   set, as per [dataformat-xml#42], to allow for custom serializers to work.
@@ -223,7 +223,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             try {
                 xgen.getStaxWriter().setDefaultNamespace(ns);
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsGenerationException(e, xgen);
+                StaxUtil.throwAsWriteException(e, xgen);
             }
         }
     }
@@ -257,9 +257,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         return (ToXmlGenerator) gen;
     }    
 
-    protected IOException _wrapAsIOE(JsonGenerator g, Exception e) {
+    protected JacksonException _wrapAsJacksonE(JsonGenerator g, Exception e) {
         if (e instanceof IOException) {
-            return (IOException) e;
+            return WrappedIOException.construct((IOException) e);
+        }
+        // 17-Jan-2021, tatu: Should we do something else here? Presumably
+        //    this exception has map set up
+        if (e instanceof JsonMappingException) {
+            throw (JsonMappingException) e;
         }
         String msg = e.getMessage();
         if (msg == null) {

@@ -34,7 +34,7 @@ public class PrefixInputDecorator extends InputDecorator
     }
 
     @Override
-    public Reader decorate(IOContext ctxt, Reader r) throws IOException {
+    public Reader decorate(IOContext ctxt, Reader r) {
         if (r instanceof SequenceReader) {
             throw new IllegalStateException("Trying to decorate SequenceReader (double-decoration!)");
         }

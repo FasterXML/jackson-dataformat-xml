@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
@@ -40,7 +38,7 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public Item deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        public Item deserialize(JsonParser p, DeserializationContext ctxt) {
           JsonNode json = ctxt.readTree(p);
           JsonNode foo = json.get("obj");
           if (foo == null) {
@@ -57,7 +55,7 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public void serialize(Item value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        public void serialize(Item value, JsonGenerator jgen, SerializerProvider provider) {
           jgen.writeStartObject();
           jgen.writeObjectField("obj", value.obj);
           jgen.writeStringField("name", value.name);

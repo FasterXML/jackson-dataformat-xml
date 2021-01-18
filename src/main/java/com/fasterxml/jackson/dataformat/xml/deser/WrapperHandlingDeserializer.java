@@ -1,8 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import java.io.IOException;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.util.JsonParserDelegate;
 import com.fasterxml.jackson.databind.*;
@@ -110,7 +110,7 @@ public class WrapperHandlingDeserializer
      */
 
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException
     {
         _configureParser(p);
         return _delegatee.deserialize(p,  ctxt);
@@ -118,16 +118,16 @@ public class WrapperHandlingDeserializer
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt,
-            Object intoValue) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt, Object intoValue)
+        throws JacksonException
     {
         _configureParser(p);
         return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
     }
 
     @Override
-    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt,
-            TypeDeserializer typeDeserializer) throws IOException
+    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
+        throws JacksonException
     {
         _configureParser(p);
         return _delegatee.deserializeWithType(p, ctxt, typeDeserializer);
@@ -140,7 +140,7 @@ public class WrapperHandlingDeserializer
      */
 
     @SuppressWarnings("resource")
-    protected final void _configureParser(JsonParser p) throws IOException
+    protected final void _configureParser(JsonParser p) throws JacksonException
     {
         // 05-Sep-2019, tatu: May get XML parser, except for case where content is
         //   buffered. In that case we may still have access to real parser if we

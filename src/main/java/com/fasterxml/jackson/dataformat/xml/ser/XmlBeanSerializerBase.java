@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
 import java.util.BitSet;
 import java.util.Set;
 
@@ -141,7 +140,6 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _cdata = src._cdata;
     }
 
-    // @since 2.11.1
     protected XmlBeanSerializerBase(XmlBeanSerializerBase src,
             BeanPropertyWriter[] properties, BeanPropertyWriter[] filteredProperties) {
         super(src, properties, filteredProperties);
@@ -152,9 +150,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overridden serialization methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -164,7 +162,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      */
     @Override
     protected void _serializeFields(Object bean, JsonGenerator gen0, SerializerProvider provider)
-        throws IOException
+        throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
@@ -238,7 +236,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     @Override
     protected void _serializeFieldsFiltered(Object bean, JsonGenerator gen0,
             SerializerProvider provider, Object filterId)
-        throws IOException
+        throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
@@ -315,7 +313,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     @Override
     public void serializeWithType(Object bean, JsonGenerator gen, SerializerProvider provider,
             TypeSerializer typeSer)
-        throws IOException
+        throws JacksonException
     {
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, gen, provider, typeSer);
@@ -337,7 +335,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     
     @Override
     protected void _serializeObjectId(Object bean, JsonGenerator gen, SerializerProvider provider,
-            TypeSerializer typeSer, WritableObjectId objectId) throws IOException
+            TypeSerializer typeSer, WritableObjectId objectId)
+        throws JacksonException
     {
         // Ok: let's serialize type id as attribute, but if (and only if!) we are using AS_PROPERTY
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
@@ -353,9 +352,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Helper methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     protected static boolean _isAttribute(BeanPropertyWriter bpw)

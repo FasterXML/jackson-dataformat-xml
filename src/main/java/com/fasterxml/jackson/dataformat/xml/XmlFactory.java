@@ -49,9 +49,9 @@ public class XmlFactory
     final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = ToXmlGenerator.Feature.collectDefaults();
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     // !!! 09-Jan-2018, tatu: make final ASAP
@@ -64,9 +64,9 @@ public class XmlFactory
     protected transient final XMLOutputFactory _xmlOutputFactory;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Factory construction, configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -184,9 +184,9 @@ public class XmlFactory
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Serializable overrides
-    /**********************************************************
+    /**********************************************************************
      */
 
     // Hiding place for JDK-serialization unthawed factories...
@@ -241,9 +241,9 @@ public class XmlFactory
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Introspection: version, capabilities
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -305,9 +305,9 @@ public class XmlFactory
     public int getFormatWriteFeatures() { return _formatWriteFeatures; }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Configuration, XML-specific
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Deprecated
@@ -328,9 +328,9 @@ public class XmlFactory
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overrides of public methods: parsing
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -339,7 +339,7 @@ public class XmlFactory
      * that temporary buffer gets recycled; so let's just use StringReader.
      */
     @Override
-    public JsonParser createParser(ObjectReadContext readCtxt, String content) throws IOException {
+    public JsonParser createParser(ObjectReadContext readCtxt, String content) {
         Reader r = new StringReader(content);
         IOContext ioCtxt = _createContext(r, true);
         return _createParser(readCtxt, ioCtxt, _decorate(ioCtxt, r));
@@ -347,20 +347,19 @@ public class XmlFactory
 
     @Override
     protected JsonParser _createParser(ObjectReadContext readCtxt, IOContext ctxt, DataInput input)
-            throws IOException {
+    {
         return _unsupported();
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overrides of public methods: generation
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
     protected JsonGenerator _createGenerator(ObjectWriteContext writeCtxt,
             IOContext ioCtxt, Writer out)
-            throws IOException
     {
         // Only care about features and pretty-printer, for now;
         // may add CharacterEscapes in future?
@@ -374,7 +373,7 @@ public class XmlFactory
 
     @Override
     protected JsonGenerator _createUTF8Generator(ObjectWriteContext writeCtxt,
-            IOContext ioCtxt, OutputStream out) throws IOException
+            IOContext ioCtxt, OutputStream out)
     {
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
@@ -398,9 +397,9 @@ public class XmlFactory
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Extended public API, mostly for XmlMapper
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -444,20 +443,20 @@ public class XmlFactory
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Internal factory method overrides
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
     protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
-            InputStream in) throws IOException
+            InputStream in)
     {
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e, null);
+            return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
@@ -472,13 +471,13 @@ public class XmlFactory
 
     @Override
     protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
-            Reader r) throws IOException
+            Reader r)
     {
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(r);
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e, null);
+            return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
@@ -494,7 +493,7 @@ public class XmlFactory
     @Override
     protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
             char[] data, int offset, int len,
-            boolean recycleBuffer) throws IOException
+            boolean recycleBuffer)
     {
         // !!! TODO: add proper handling of 'recycleBuffer'; currently its handling
         //    is always same as if 'false' was passed
@@ -502,7 +501,7 @@ public class XmlFactory
         try {
             sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e, null);
+            return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
@@ -517,13 +516,13 @@ public class XmlFactory
 
     @Override
     protected FromXmlParser _createParser(ObjectReadContext readCtxt, IOContext ioCtxt,
-            byte[] data, int offset, int len) throws IOException
+            byte[] data, int offset, int len)
     {
         XMLStreamReader sr;
         try {
             sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
         } catch (XMLStreamException e) {
-            return StaxUtil.throwAsParseException(e, null);
+            return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
@@ -542,7 +541,7 @@ public class XmlFactory
     /**********************************************************************
      */
 
-    protected XMLStreamWriter _createXmlWriter(OutputStream out) throws IOException
+    protected XMLStreamWriter _createXmlWriter(OutputStream out)
     {
         XMLStreamWriter sw;
         try {
@@ -553,7 +552,7 @@ public class XmlFactory
         return _initializeXmlWriter(sw);
     }
 
-    protected XMLStreamWriter _createXmlWriter(Writer w) throws IOException
+    protected XMLStreamWriter _createXmlWriter(Writer w)
     {
         XMLStreamWriter sw;
         try {
@@ -564,7 +563,7 @@ public class XmlFactory
         return _initializeXmlWriter(sw);
     }
 
-    protected final XMLStreamWriter _initializeXmlWriter(XMLStreamWriter sw) throws IOException
+    protected final XMLStreamWriter _initializeXmlWriter(XMLStreamWriter sw)
     {
         // And just for Sun Stax parser (JDK default), seems that we better define default namespace
         // (Woodstox doesn't care) -- otherwise it'll add unnecessary odd declaration
@@ -576,7 +575,7 @@ public class XmlFactory
         return sw;
     }
 
-    protected final XMLStreamReader _initializeXmlReader(XMLStreamReader sr) throws IOException
+    protected final XMLStreamReader _initializeXmlReader(XMLStreamReader sr)
     {
         try {
             // for now, nothing to do... except let's find the root element

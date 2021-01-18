@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.*;
@@ -58,7 +57,7 @@ public class PolymorphicList426Test extends XmlTestBase
         }
 
         @Override
-        public JavaType typeFromId(DatabindContext context, String id) throws IOException {
+        public JavaType typeFromId(DatabindContext context, String id) {
             Class<?> subType = null;
             switch (id) {
                 case "Engine": subType = Engine.class; break;

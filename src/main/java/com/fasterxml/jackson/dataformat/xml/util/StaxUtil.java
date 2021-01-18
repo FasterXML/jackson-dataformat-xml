@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.util;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +7,7 @@ import javax.xml.stream.*;
 
 import com.fasterxml.jackson.core.Base64Variant;
 import com.fasterxml.jackson.core.Base64Variants;
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -15,37 +15,17 @@ import com.fasterxml.jackson.core.JsonParser;
 
 public class StaxUtil
 {
-    /**
-     * Adapter method used when only IOExceptions are declared to be thrown, but
-     * a {@link XMLStreamException} was caught.
-     *<p>
-     * Note: dummy type variable is used for convenience, to allow caller to claim
-     * that this method returns result of any necessary type.
-     *
-     * @deprecated Since 2.9
-     */
-    @Deprecated
-    public static <T> T throwXmlAsIOException(XMLStreamException e) throws IOException
-    {
-        Throwable t = _unwrap(e);
-        throw new IOException(t);
-    }
-
-    /**
-     * @since 2.9
-     */
-    public static <T> T throwAsParseException(XMLStreamException e,
-            JsonParser p) throws IOException
+    public static <T> T throwAsReadException(XMLStreamException e,
+            JsonParser p)
+        throws JacksonException
     {
         Throwable t = _unwrap(e);
         throw new JsonParseException(p, _message(t, e), t);
     }
 
-    /**
-     * @since 2.9
-     */
-    public static <T> T throwAsGenerationException(XMLStreamException e,
-            JsonGenerator g) throws IOException
+    public static <T> T throwAsWriteException(XMLStreamException e,
+            JsonGenerator g)
+        throws JacksonException
     {
         Throwable t = _unwrap(e);
         throw new JsonGenerationException(_message(t, e), t, g);

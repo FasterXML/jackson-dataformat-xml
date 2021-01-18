@@ -1,9 +1,10 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
+
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -21,10 +22,11 @@ import com.fasterxml.jackson.databind.util.NameTransformer;
 public class XmlBeanSerializer extends XmlBeanSerializerBase
 {
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: constructors
-    /**********************************************************
+    /**********************************************************************
      */
+
     public XmlBeanSerializer(BeanSerializerBase src) {
         super(src);
     }
@@ -48,9 +50,9 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: factory methods, fluent factories
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -68,12 +70,12 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
         return new XmlBeanSerializer(this, _objectIdWriter, filterId);
     }
 
-    @Override // since 2.12
+    @Override
     protected BeanSerializerBase withByNameInclusion(Set<String> toIgnore, Set<String> toInclude) {
         return new XmlBeanSerializer(this, toIgnore, toInclude);
     }
 
-    @Override // since 2.11.1
+    @Override
     protected BeanSerializerBase withProperties(BeanPropertyWriter[] properties,
             BeanPropertyWriter[] filteredProperties) {
         return new XmlBeanSerializer(this, properties, filteredProperties);
@@ -104,9 +106,9 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* JsonSerializer implementation that differs between impls
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -114,7 +116,8 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
      * {@link BeanPropertyWriter} instances.
      */
     @Override
-    public void serialize(Object bean, JsonGenerator g, SerializerProvider provider) throws IOException
+    public void serialize(Object bean, JsonGenerator g, SerializerProvider provider)
+        throws JacksonException
     {
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, g, provider, true);
@@ -130,9 +133,9 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
-    /* Standard methods
-    /**********************************************************
+    /**********************************************************************
+    /* Standard method overrides
+    /**********************************************************************
      */
 
     @Override
