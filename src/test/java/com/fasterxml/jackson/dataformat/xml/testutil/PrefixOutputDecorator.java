@@ -19,7 +19,6 @@ public class PrefixOutputDecorator extends OutputDecorator
 
     @Override
     public OutputStream decorate(IOContext ctxt, OutputStream out)
-            throws IOException
     {
         if (out instanceof BufferedOut) {
             throw new IllegalStateException("Trying to decorate `Buffered` (double-decoration!)");
@@ -28,9 +27,14 @@ public class PrefixOutputDecorator extends OutputDecorator
     }
 
     @Override
-    public Writer decorate(IOContext ctxt, Writer w) throws IOException {
-        for (byte b : _prefix) {
-            w.write((char) (b & 0xFF));
+    public Writer decorate(IOContext ctxt, Writer w)
+    {
+        try {
+            for (byte b : _prefix) {
+                w.write((char) (b & 0xFF));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return w;
     }

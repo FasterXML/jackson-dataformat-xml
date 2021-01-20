@@ -33,7 +33,6 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
  * mostly to pass namespace information.
  */
 public class ToXmlGenerator
-// non-final since 2.12 but only sub-class if you really know what you are doing...
     extends GeneratorBase
 {
     /**
@@ -218,7 +217,7 @@ public class ToXmlGenerator
      * Method called before writing any other output, to optionally
      * output XML declaration.
      */
-    public void initGenerator()  throws IOException
+    public void initGenerator() throws JacksonException
     {
         if (_initialized) {
             return;
@@ -240,7 +239,7 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
@@ -398,7 +397,7 @@ public class ToXmlGenerator
      * @param wrappedName Element used around individual content items (can not
      *   be null)
      */
-    public void startWrappedValue(QName wrapperName, QName wrappedName) throws IOException
+    public void startWrappedValue(QName wrapperName, QName wrappedName) throws JacksonException
     {
         if (wrapperName != null) {
             try {
@@ -409,7 +408,7 @@ public class ToXmlGenerator
                     _xmlWriter.writeStartElement(wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
                 }
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsGenerationException(e, this);
+                StaxUtil.throwAsWriteException(e, this);
             }
         }
         this.setNextName(wrappedName);
@@ -418,7 +417,7 @@ public class ToXmlGenerator
     /**
      * Method called after a structured collection output has completed
      */
-    public void finishWrappedValue(QName wrapperName, QName wrappedName) throws IOException
+    public void finishWrappedValue(QName wrapperName, QName wrappedName) throws JacksonException
     {
         // First: wrapper to close?
         if (wrapperName != null) {
@@ -429,7 +428,7 @@ public class ToXmlGenerator
                     _xmlWriter.writeEndElement();
                 }
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsGenerationException(e, this);
+                StaxUtil.throwAsWriteException(e, this);
             }
         }
     }
@@ -437,7 +436,7 @@ public class ToXmlGenerator
     /**
      * Trivial helper method called when to add a replicated wrapper name
      */
-    public void writeRepeatedFieldName() throws IOException
+    public void writeRepeatedFieldName() throws JacksonException
     {
         if (!_tokenWriteContext.writeFieldName(_nextName.getLocalPart())) {
             _reportError("Can not write a field name, expecting a value");
@@ -455,7 +454,7 @@ public class ToXmlGenerator
      */
 
     @Override
-    public final void writeFieldName(String name) throws IOException
+    public final void writeFieldName(String name) throws JacksonException
     {
         if (!_tokenWriteContext.writeFieldName(name)) {
             _reportError("Can not write a field name, expecting a value");
@@ -466,7 +465,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public void writeFieldId(long id) throws IOException {
+    public void writeFieldId(long id) throws JacksonException {
         // 15-Aug-2019, tatu: could and probably should be improved to support
         //    buffering but...
         final String name = Long.toString(id);
@@ -482,7 +481,7 @@ public class ToXmlGenerator
     
     /*
     // @since 2.9
-    public WritableTypeId writeTypePrefix(WritableTypeId typeIdDef) throws IOException
+    public WritableTypeId writeTypePrefix(WritableTypeId typeIdDef) throws JacksonException
     {
         // 03-Aug-2017, tatu: Due to XML oddities, we do need to massage things
         //     a bit: specifically, change WRAPPER_ARRAY into WRAPPER_OBJECT, always
@@ -500,7 +499,7 @@ public class ToXmlGenerator
      */
 
     @Override
-    public final void writeStartArray() throws IOException
+    public final void writeStartArray() throws JacksonException
     {
         _verifyValueWrite("start an array");
         _tokenWriteContext = _tokenWriteContext.createChildArrayContext(null);
@@ -512,7 +511,7 @@ public class ToXmlGenerator
     }
     
     @Override
-    public final void writeStartArray(Object currValue) throws IOException
+    public final void writeStartArray(Object currValue) throws JacksonException
     {
         _verifyValueWrite("start an array");
         _tokenWriteContext = _tokenWriteContext.createChildArrayContext(currValue);
@@ -524,7 +523,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public final void writeEndArray() throws IOException
+    public final void writeEndArray() throws JacksonException
     {
         if (!_tokenWriteContext.inArray()) {
             _reportError("Current context not Array but "+_tokenWriteContext.typeDesc());
@@ -538,7 +537,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public final void writeStartObject() throws IOException
+    public final void writeStartObject() throws JacksonException
     {
         _verifyValueWrite("start an object");
         _tokenWriteContext = _tokenWriteContext.createChildObjectContext(null);
@@ -550,7 +549,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public final void writeStartObject(Object currValue) throws IOException
+    public final void writeStartObject(Object currValue) throws JacksonException
     {
         _verifyValueWrite("start an object");
         _tokenWriteContext = _tokenWriteContext.createChildObjectContext(currValue);
@@ -562,7 +561,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public final void writeEndObject() throws IOException
+    public final void writeEndObject() throws JacksonException
     {
         if (!_tokenWriteContext.inObject()) {
             _reportError("Current context not Object but "+_tokenWriteContext.typeDesc());
@@ -578,7 +577,7 @@ public class ToXmlGenerator
     }
 
     // note: public just because pretty printer needs to make a callback
-    public final void _handleStartObject() throws IOException
+    public final void _handleStartObject() throws JacksonException
     {
         if (_nextName == null) {
             handleMissingName();
@@ -588,12 +587,12 @@ public class ToXmlGenerator
         try {
             _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
     
     // note: public just because pretty printer needs to make a callback
-    public final void _handleEndObject() throws IOException
+    public final void _handleEndObject() throws JacksonException
     {
         // We may want to repeat same element, so:
         if (_elementNameStack.isEmpty()) {
@@ -612,7 +611,7 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
@@ -623,13 +622,13 @@ public class ToXmlGenerator
      */
 
     @Override
-    public void writeFieldName(SerializableString name) throws IOException
+    public void writeFieldName(SerializableString name) throws JacksonException
     {
         writeFieldName(name.getValue());
     }
 
     @Override
-    public void writeString(String text) throws IOException
+    public void writeString(String text) throws JacksonException
     {
         if (text == null) { // [dataformat-xml#413]
             writeNull();
@@ -665,12 +664,12 @@ public class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             } 
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }    
     
     @Override
-    public void writeString(char[] text, int offset, int len) throws IOException
+    public void writeString(char[] text, int offset, int len) throws JacksonException
     {
         _verifyValueWrite("write String value");
         if (_nextName == null) {
@@ -700,37 +699,37 @@ public class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeString(SerializableString text) throws IOException {
+    public void writeString(SerializableString text) throws JacksonException {
         writeString(text.getValue());
     }
     
     @Override
-    public void writeRawUTF8String(byte[] text, int offset, int length) throws IOException
+    public void writeRawUTF8String(byte[] text, int offset, int length) throws JacksonException
     {
         // could add support for this case if we really want it (and can make Stax2 support it)
         _reportUnsupportedOperation();
     }
 
     @Override
-    public void writeUTF8String(byte[] text, int offset, int length) throws IOException
+    public void writeUTF8String(byte[] text, int offset, int length) throws JacksonException
     {
         // could add support for this case if we really want it (and can make Stax2 support it)
         _reportUnsupportedOperation();
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Output method implementations, unprocessed ("raw")
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
-    public void writeRawValue(String text) throws IOException {
+    public void writeRawValue(String text) throws JacksonException {
         // [dataformat-xml#39]
         if (_stax2Emulation) {
             _reportUnimplementedStax2("writeRawValue");
@@ -749,12 +748,12 @@ public class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeRawValue(String text, int offset, int len) throws IOException {
+    public void writeRawValue(String text, int offset, int len) throws JacksonException {
         // [dataformat-xml#39]
         if (_stax2Emulation) {
             _reportUnimplementedStax2("writeRawValue");
@@ -773,12 +772,12 @@ public class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeRawValue(char[] text, int offset, int len) throws IOException {
+    public void writeRawValue(char[] text, int offset, int len) throws JacksonException {
         // [dataformat-xml#39]
         if (_stax2Emulation) {
             _reportUnimplementedStax2("writeRawValue");
@@ -796,17 +795,17 @@ public class ToXmlGenerator
                 _xmlWriter.writeEndElement();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeRawValue(SerializableString text) throws IOException {
+    public void writeRawValue(SerializableString text) throws JacksonException {
         _reportUnsupportedOperation();
     }
 
     @Override
-    public void writeRaw(String text) throws IOException
+    public void writeRaw(String text) throws JacksonException
     {
         // [dataformat-xml#39]
         if (_stax2Emulation) {
@@ -815,12 +814,12 @@ public class ToXmlGenerator
         try {
             _xmlWriter.writeRaw(text);
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeRaw(String text, int offset, int len) throws IOException
+    public void writeRaw(String text, int offset, int len) throws JacksonException
     {
         // [dataformat-xml#39]
         if (_stax2Emulation) {
@@ -829,12 +828,12 @@ public class ToXmlGenerator
         try {
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeRaw(char[] text, int offset, int len) throws IOException
+    public void writeRaw(char[] text, int offset, int len) throws JacksonException
     {
         // [dataformat-xml#39]
         if (_stax2Emulation) {
@@ -843,25 +842,25 @@ public class ToXmlGenerator
         try {
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeRaw(char c) throws IOException
+    public void writeRaw(char c) throws JacksonException
     {
         writeRaw(String.valueOf(c));
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Output method implementations, base64-encoded binary
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
     public void writeBinary(Base64Variant b64variant,
-    		byte[] data, int offset, int len) throws IOException
+    		byte[] data, int offset, int len) throws JacksonException
     {
         if (data == null) {
             writeNull();
@@ -893,12 +892,13 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException
+    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength)
+        throws JacksonException
     {
         if (data == null) {
             writeNull();
@@ -931,20 +931,23 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
+        } catch (IOException e) {
+            throw _wrapIOFailure(e);
         }
 
         return dataLength;
     }
 
     private void writeStreamAsBinary(org.codehaus.stax2.typed.Base64Variant stax2base64v,
-            InputStream data, int len) throws IOException, XMLStreamException 
+            InputStream data, int len)
+        throws IOException, XMLStreamException 
     {
         // base64 encodes up to 3 bytes into a 4 bytes string
         byte[] tmp = new byte[3];
         int offset = 0;
         int read;
-        while((read = data.read(tmp, offset, Math.min(3 - offset, len))) != -1) {
+        while ((read = data.read(tmp, offset, Math.min(3 - offset, len))) != -1) {
             offset += read;
             len -= read;
             if(offset == 3) {
@@ -957,7 +960,7 @@ public class ToXmlGenerator
         }
 
         // we still have < 3 bytes in the buffer
-        if(offset > 0) {
+        if (offset > 0) {
             _xmlWriter.writeBinary(stax2base64v, tmp, 0, offset);
         }
     }
@@ -975,15 +978,20 @@ public class ToXmlGenerator
         return result;
     }
 
-    private byte[] toFullBuffer(InputStream data, final int len) throws IOException 
+    private byte[] toFullBuffer(InputStream data, final int len) throws JacksonException 
     {
         byte[] result = new byte[len];
         int offset = 0;
 
         for (; offset < len; ) {
-            int count = data.read(result, offset, len - offset);
+            int count;
+            try {
+                count = data.read(result, offset, len - offset);
+            } catch (IOException e) {
+                throw _wrapIOFailure(e);
+            }
             if (count < 0) {
-                _reportError("Too few bytes available: missing "+(len - offset)+" bytes (out of "+len+")");
+                throw _constructWriteException("Too few bytes available: missing "+(len - offset)+" bytes (out of "+len+")");
             }
             offset += count;
         }
@@ -991,13 +999,13 @@ public class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Output method implementations, primitive
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
-    public void writeBoolean(boolean value) throws IOException
+    public void writeBoolean(boolean value) throws JacksonException
     {
         _verifyValueWrite("write boolean value");
         if (_nextName == null) {
@@ -1021,12 +1029,12 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNull() throws IOException
+    public void writeNull() throws JacksonException
     {
         _verifyValueWrite("write null value");
         if (_nextName == null) {
@@ -1061,17 +1069,17 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(short v) throws IOException {
+    public void writeNumber(short v) throws JacksonException {
         writeNumber((int) v);
     }
 
     @Override
-    public void writeNumber(int i) throws IOException
+    public void writeNumber(int i) throws JacksonException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -1095,12 +1103,12 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(long l) throws IOException
+    public void writeNumber(long l) throws JacksonException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -1123,12 +1131,12 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(double d) throws IOException
+    public void writeNumber(double d) throws JacksonException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -1151,12 +1159,12 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(float f) throws IOException
+    public void writeNumber(float f) throws JacksonException
     {
         _verifyValueWrite("write number");
         if (_nextName == null) {
@@ -1179,12 +1187,12 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(BigDecimal dec) throws IOException
+    public void writeNumber(BigDecimal dec) throws JacksonException
     {
         if (dec == null) {
             writeNull();
@@ -1231,12 +1239,12 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(BigInteger value) throws IOException
+    public void writeNumber(BigInteger value) throws JacksonException
     {
         if (value == null) {
             writeNull();
@@ -1264,24 +1272,24 @@ public class ToXmlGenerator
                 }
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
     @Override
-    public void writeNumber(String encodedValue) throws IOException, UnsupportedOperationException
+    public void writeNumber(String encodedValue) throws JacksonException, UnsupportedOperationException
     {
         writeString(encodedValue);
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Implementations, overrides for other methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
-    protected final void _verifyValueWrite(String typeMsg) throws IOException
+    protected final void _verifyValueWrite(String typeMsg) throws JacksonException
     {
         if (!_tokenWriteContext.writeValue()) {
             _reportError("Can not "+typeMsg+", expecting field name");
@@ -1289,25 +1297,25 @@ public class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Low-level output handling
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
-    public void flush() throws IOException
+    public void flush() throws JacksonException
     {
         if (isEnabled(StreamWriteFeature.FLUSH_PASSED_TO_STREAM)) {
             try {
                 _xmlWriter.flush();
             } catch (XMLStreamException e) {
-                StaxUtil.throwAsGenerationException(e, this);
+                StaxUtil.throwAsWriteException(e, this);
             }
         }
     }
 
     @Override
-    public void close() throws IOException
+    public void close() throws JacksonException
     {
 //        boolean wasClosed = _closed;
         super.close();
@@ -1338,7 +1346,7 @@ public class ToXmlGenerator
                 _xmlWriter.close();
             }
         } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            StaxUtil.throwAsWriteException(e, this);
         }
     }
 
@@ -1348,9 +1356,9 @@ public class ToXmlGenerator
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Internal methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -1374,13 +1382,12 @@ public class ToXmlGenerator
     /**
      * Method called in case access to native Stax2 API implementation is required.
      */
-    protected void  _reportUnimplementedStax2(String missingMethod) throws IOException
+    protected void  _reportUnimplementedStax2(String missingMethod) throws JacksonException
     {
-        throw new JsonGenerationException("Underlying Stax XMLStreamWriter (of type "
+        throw _constructWriteException("Underlying Stax XMLStreamWriter (of type "
                 +_originalXmlWriter.getClass().getName()
                 +") does not implement Stax2 API natively and is missing method '"
                 +missingMethod+"': this breaks functionality such as indentation that relies on it. "
-                +"You need to upgrade to using compliant Stax implementation like Woodstox or Aalto",
-                this);
+                +"You need to upgrade to using compliant Stax implementation like Woodstox or Aalto");
     }
 }

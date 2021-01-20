@@ -1,8 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.FormatSchema;
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.TokenStreamFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -40,7 +39,7 @@ public class XmlDeserializationContext
     @Override
     public Object readRootValue(JsonParser p, JavaType valueType,
             JsonDeserializer<Object> deser, Object valueToUpdate)
-        throws IOException
+        throws JacksonException
     {
 //        if (_config.useRootWrapping()) {
 //            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
@@ -56,7 +55,7 @@ public class XmlDeserializationContext
     @Override
     public String extractScalarFromObject(JsonParser p, JsonDeserializer<?> deser,
             Class<?> scalarType)
-        throws IOException
+        throws JacksonException
     {
         // Only called on START_OBJECT, should not need to check, but JsonParser we
         // get may or may not be `FromXmlParser` so traverse using regular means

@@ -1,9 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.*;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.*;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
@@ -27,9 +27,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     protected final NameTransformer _nameTransformer;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: constructors
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -69,9 +69,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: factory methods, fluent factories
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -120,9 +120,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* JsonSerializer implementation that differs between impls
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -131,7 +131,7 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
      */
     @Override
     public final void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
-        throws IOException, JsonGenerationException
+        throws JacksonException
     {
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, jgen, provider, false);
@@ -145,9 +145,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Standard methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override

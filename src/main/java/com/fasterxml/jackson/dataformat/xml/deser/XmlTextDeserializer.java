@@ -1,7 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
@@ -88,7 +86,7 @@ public class XmlTextDeserializer
 
     @Override
     public Object deserialize(JsonParser p, DeserializationContext ctxt)
-        throws IOException
+        throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
             Object bean = _valueInstantiator.createUsingDefault(ctxt);
@@ -100,8 +98,8 @@ public class XmlTextDeserializer
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt,
-            Object bean) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt, Object bean)
+        throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
             _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
@@ -113,7 +111,7 @@ public class XmlTextDeserializer
     @Override
     public Object deserializeWithType(JsonParser p, DeserializationContext ctxt,
             TypeDeserializer typeDeserializer)
-        throws IOException
+        throws JacksonException
     {
         return _delegatee.deserializeWithType(p, ctxt, typeDeserializer);
     }
