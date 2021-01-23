@@ -9,6 +9,8 @@ import org.codehaus.stax2.io.Stax2CharArraySource;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.TextualTSFactory;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonFactoryBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
@@ -212,10 +214,10 @@ public class XmlFactory
             inf = (XMLInputFactory) Class.forName(_jdkXmlInFactory).getDeclaredConstructor().newInstance();
             outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-	    throw new IllegalArgumentException(e);
-	}
-	return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
-			      inf, outf, _cfgNameForTextElement);
+            throw new IllegalArgumentException(e);
+        }
+        return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
+                inf, outf, _cfgNameForTextElement);
     }
 
     /**
@@ -547,7 +549,7 @@ public class XmlFactory
         try {
             sw = _xmlOutputFactory.createXMLStreamWriter(out, "UTF-8");
         } catch (XMLStreamException e) {
-            throw new JsonGenerationException(e.getMessage(), e, null);
+            return StaxUtil.throwAsWriteException(e, null);
         }
         return _initializeXmlWriter(sw);
     }
@@ -558,7 +560,7 @@ public class XmlFactory
         try {
             sw = _xmlOutputFactory.createXMLStreamWriter(w);
         } catch (XMLStreamException e) {
-            throw new JsonGenerationException(e.getMessage(), e, null);
+            return StaxUtil.throwAsWriteException(e, null);
         }
         return _initializeXmlWriter(sw);
     }
@@ -570,7 +572,7 @@ public class XmlFactory
         try {
             sw.setDefaultNamespace("");
         } catch (Exception e) {
-            throw new JsonGenerationException(e.getMessage(), e, null);
+            throw new StreamWriteException(e.getMessage(), e, null);
         }
         return sw;
     }
@@ -584,7 +586,7 @@ public class XmlFactory
             }
         // [dataformat-xml#350]: Xerces-backed impl throws non-XMLStreamException so:
         } catch (Exception e) {
-            throw new JsonParseException(null, e.getMessage(), e);
+            throw new StreamReadException(null, e.getMessage(), e);
         }
         return sr;
     }

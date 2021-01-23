@@ -14,6 +14,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
+import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.io.NumberInput;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
@@ -690,7 +691,7 @@ public class FromXmlParser
                         return (_currToken = JsonToken.VALUE_STRING);
                     }
                     if (token != XmlTokenStream.XML_START_ELEMENT) {
-                        throw new JsonParseException(this, String.format(
+                        throw _constructReadException(String.format(
 "Internal error: Expected END_ELEMENT (%d) or START_ELEMENT (%d), got event of type %d",
 XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     }
@@ -1230,7 +1231,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
      * is no open non-root context.
      */
     @Override
-    protected void _handleEOF() throws JsonParseException
+    protected void _handleEOF() throws StreamReadException
     {
         if (!_parsingContext.inRoot()) {
             String marker = _parsingContext.inArray() ? "Array" : "Object";
@@ -1284,7 +1285,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         } catch (XMLStreamException e) {
             StaxUtil.throwAsReadException(e, this);
         } catch (Exception e) {
-            throw new JsonParseException(this, e.getMessage(), e);
+            throw new StreamReadException(this, e.getMessage(), e);
         }
     }
 }

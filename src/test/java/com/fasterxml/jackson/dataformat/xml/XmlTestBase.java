@@ -256,7 +256,6 @@ public abstract class XmlTestBase
      * returning them
      */
     protected String getAndVerifyText(JsonParser jp)
-        throws IOException, JsonParseException
     {
         // Ok, let's verify other accessors
         int actLen = jp.getTextLength();
@@ -273,7 +272,6 @@ public abstract class XmlTestBase
     }
 
     protected void verifyFieldName(JsonParser p, String expName)
-        throws IOException
     {
         assertEquals(expName, p.getText());
         assertEquals(expName, p.currentName());

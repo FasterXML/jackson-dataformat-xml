@@ -242,7 +242,6 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     }
 
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
-        throws JsonMappingException
     {
         if (!(gen instanceof ToXmlGenerator)) {
             // [dataformat-xml#71]: We sometimes get TokenBuffer, which is fine
@@ -257,14 +256,15 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         return (ToXmlGenerator) gen;
     }    
 
-    protected JacksonException _wrapAsJacksonE(JsonGenerator g, Exception e) {
+    protected JacksonException _wrapAsJacksonE(JsonGenerator g, Exception e)
+    {
         if (e instanceof IOException) {
             return WrappedIOException.construct((IOException) e);
         }
         // 17-Jan-2021, tatu: Should we do something else here? Presumably
         //    this exception has map set up
-        if (e instanceof JsonMappingException) {
-            throw (JsonMappingException) e;
+        if (e instanceof DatabindException) {
+            throw (DatabindException) e;
         }
         String msg = e.getMessage();
         if (msg == null) {

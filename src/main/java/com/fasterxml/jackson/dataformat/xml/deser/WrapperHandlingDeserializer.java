@@ -64,7 +64,6 @@ public class WrapperHandlingDeserializer
     @Override
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property)
-        throws JsonMappingException
     {
         JavaType vt = _type;
         if (vt == null) {

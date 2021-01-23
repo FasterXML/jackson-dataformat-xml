@@ -1,7 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 public class VerifyRootLocalName247Test extends XmlTestBase
@@ -33,7 +34,7 @@ public class VerifyRootLocalName247Test extends XmlTestBase
         try {
             MAPPER.readValue("<Boot><value>42</value></Boot>", Root.class);
             fail("Should not allow wrong local name!");
-        } catch (JsonProcessingException e) {
+        } catch (DatabindException e) {
             verifyException(e, "Foobar");
         }
     }

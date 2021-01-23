@@ -5,13 +5,9 @@ import java.util.Map;
 
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.core.Base64Variant;
-import com.fasterxml.jackson.core.Base64Variants;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 
 public class StaxUtil
 {
@@ -20,7 +16,7 @@ public class StaxUtil
         throws JacksonException
     {
         Throwable t = _unwrap(e);
-        throw new JsonParseException(p, _message(t, e), t);
+        throw new StreamReadException(p, _message(t, e), t);
     }
 
     public static <T> T throwAsWriteException(XMLStreamException e,
@@ -28,7 +24,7 @@ public class StaxUtil
         throws JacksonException
     {
         Throwable t = _unwrap(e);
-        throw new JsonGenerationException(_message(t, e), t, g);
+        throw new StreamWriteException(_message(t, e), t, g);
     }
 
     private static Throwable _unwrap(Throwable t) {

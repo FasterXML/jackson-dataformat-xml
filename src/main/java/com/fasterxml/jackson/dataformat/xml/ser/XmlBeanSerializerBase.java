@@ -6,7 +6,10 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import com.fasterxml.jackson.core.*;
+
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
@@ -16,6 +19,7 @@ import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.impl.WritableObjectId;
 import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
+
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
 /**
@@ -225,10 +229,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) { // Bit tricky, can't do more calls as stack is full; so:
-            JsonMappingException mapE = JsonMappingException.from(gen0,
+            DatabindException mapE = JsonMappingException.from(gen0,
                     "Infinite recursion (StackOverflowError)");
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            mapE.prependPath(new JsonMappingException.Reference(bean, name));
+            mapE.prependPath(bean, name);
             throw mapE;
         }
     }
@@ -303,9 +307,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) {
-            JsonMappingException mapE = JsonMappingException.from(gen0, "Infinite recursion (StackOverflowError)", e);
+            DatabindException mapE = JsonMappingException.from(gen0, "Infinite recursion (StackOverflowError)", e);
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            mapE.prependPath(new JsonMappingException.Reference(bean, name));
+            mapE.prependPath(bean, name);
             throw mapE;
         }
     }

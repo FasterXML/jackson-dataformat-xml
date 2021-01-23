@@ -69,7 +69,6 @@ public class XmlTextDeserializer
     @Override
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property)
-        throws JsonMappingException
     {
         // 15-Nov-2017, tatu: Important -- MUST contextualize thing we delegate to
         JavaType vt = ctxt.constructType(_delegatee.handledType());

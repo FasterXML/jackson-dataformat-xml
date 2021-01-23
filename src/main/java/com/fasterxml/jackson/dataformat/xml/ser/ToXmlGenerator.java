@@ -15,6 +15,7 @@ import org.codehaus.stax2.ri.Stax2WriterAdapter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.DupDetector;
 import com.fasterxml.jackson.core.util.SimpleTokenWriteContext;
@@ -596,7 +597,7 @@ public class ToXmlGenerator
     {
         // We may want to repeat same element, so:
         if (_elementNameStack.isEmpty()) {
-            throw new JsonGenerationException("Can not write END_ELEMENT without open START_ELEMENT", this);
+            throw _constructWriteException("Can not write END_ELEMENT without open START_ELEMENT", this);
         }
         _nextName = _elementNameStack.removeLast();
         try {
@@ -1336,7 +1337,7 @@ public class ToXmlGenerator
             } catch (ArrayIndexOutOfBoundsException e) {
                 // 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
                 //   hit by this as a collateral problem in some cases. Yuck.
-                throw new JsonGenerationException(e, this);
+                throw new StreamWriteException(e, this);
             }
         }
         try {
