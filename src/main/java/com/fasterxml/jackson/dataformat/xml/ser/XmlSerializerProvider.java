@@ -249,7 +249,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
                 return null;
             }
             // but verify
-            throw JsonMappingException.from(gen,
+            throw DatabindException.from(gen,
                     "XmlMapper does not work with generators of type other than `ToXmlGenerator`; got: `"
                             +gen.getClass().getName()+"`");
         }
@@ -270,6 +270,6 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
         if (msg == null) {
             msg = "[no message for "+e.getClass().getName()+"]";
         }
-        return new JsonMappingException(g, msg, e);
+        return DatabindException.from(g, msg, e);
     }
 }

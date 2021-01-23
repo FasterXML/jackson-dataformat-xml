@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.*;
 
 import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -229,11 +228,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) { // Bit tricky, can't do more calls as stack is full; so:
-            DatabindException mapE = JsonMappingException.from(gen0,
-                    "Infinite recursion (StackOverflowError)");
-            String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            mapE.prependPath(bean, name);
-            throw mapE;
+            final String name = (i == props.length) ? "[anySetter]" : props[i].getName();
+            throw DatabindException.from(gen0, "Infinite recursion (StackOverflowError)")
+                .prependPath(bean, name);
         }
     }
 
@@ -307,13 +304,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) {
-            DatabindException mapE = JsonMappingException.from(gen0, "Infinite recursion (StackOverflowError)", e);
-            String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            mapE.prependPath(bean, name);
-            throw mapE;
+            final String name = (i == props.length) ? "[anySetter]" : props[i].getName();
+            throw DatabindException.from(gen0, "Infinite recursion (StackOverflowError)", e)
+                .prependPath(bean, name);
         }
     }
-    
+
     @Override
     public void serializeWithType(Object bean, JsonGenerator gen, SerializerProvider provider,
             TypeSerializer typeSer)
