@@ -572,7 +572,7 @@ public class XmlFactory
         try {
             sw.setDefaultNamespace("");
         } catch (Exception e) {
-            throw new StreamWriteException(e.getMessage(), e, null);
+            throw new StreamWriteException(null, e.getMessage(), e);
         }
         return sw;
     }

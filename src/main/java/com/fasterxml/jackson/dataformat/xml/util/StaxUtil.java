@@ -24,7 +24,7 @@ public class StaxUtil
         throws JacksonException
     {
         Throwable t = _unwrap(e);
-        throw new StreamWriteException(_message(t, e), t, g);
+        throw new StreamWriteException(g, _message(t, e), t);
     }
 
     private static Throwable _unwrap(Throwable t) {

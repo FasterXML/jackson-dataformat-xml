@@ -262,13 +262,13 @@ public class ToXmlGenerator
     public final TokenStreamContext getOutputContext() { return _tokenWriteContext; }
 
     @Override
-    public final Object getCurrentValue() {
-        return _tokenWriteContext.getCurrentValue();
+    public final Object currentValue() {
+        return _tokenWriteContext.currentValue();
     }
 
     @Override
-    public final void setCurrentValue(Object v) {
-        _tokenWriteContext.setCurrentValue(v);
+    public final void assignCurrentValue(Object v) {
+        _tokenWriteContext.assignCurrentValue(v);
     }
 
     /*
@@ -1337,7 +1337,7 @@ public class ToXmlGenerator
             } catch (ArrayIndexOutOfBoundsException e) {
                 // 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
                 //   hit by this as a collateral problem in some cases. Yuck.
-                throw new StreamWriteException(e, this);
+                throw new StreamWriteException(this, e);
             }
         }
         try {
