@@ -456,7 +456,7 @@ public class FromXmlParser
             // Ok: must replace current context with array as well
             _parsingContext.convertToArray();
 //System.out.println(" FromXmlParser.isExpectedArrayStart(): OBJ->Array");
-            // And just in case a field name was to be returned, wipe it
+            // And just in case a property name was to be returned, wipe it
             // 06-Jan-2015, tatu: Actually, could also be empty Object buffered; if so, convert...
             if (_nextToken == JsonToken.END_OBJECT) {
                 _nextToken = JsonToken.END_ARRAY;
@@ -618,7 +618,7 @@ public class FromXmlParser
             }
 
             _mayBeLeaf = true;
-            // Ok: in array context we need to skip reporting field names.
+            // Ok: in array context we need to skip reporting property names.
             // But what's the best way to find next token?
             return (_currToken = JsonToken.PROPERTY_NAME);
         }

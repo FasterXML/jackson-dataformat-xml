@@ -1293,7 +1293,7 @@ public class ToXmlGenerator
     protected final void _verifyValueWrite(String typeMsg) throws JacksonException
     {
         if (!_tokenWriteContext.writeValue()) {
-            _reportError("Can not "+typeMsg+", expecting field name");
+            _reportError("Cannot "+typeMsg+", expecting a property name");
         }
     }
 

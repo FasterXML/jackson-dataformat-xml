@@ -95,7 +95,7 @@ public class XmlTokenStream
 
     /**
      * Index of the next attribute of the current START_ELEMENT
-     * to return (as field name and value pair), if any; -1
+     * to return (as property name and value pair), if any; -1
      * when no attributes to return
      */
     protected int _nextAttributeIndex;
