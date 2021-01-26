@@ -39,9 +39,9 @@ public class TestSerializationManual extends XmlTestBase
         values.add(new Value(13));
         values.add(new Value(456));
         for (Value value : values) {
-            generator.writeFieldName("foo");
+            generator.writeName("foo");
             generator.setNextName(new QName("item"));
-            generator.writeObject(value);
+            generator.writePOJO(value);
         }
         generator.writeEndObject();
         generator.close();

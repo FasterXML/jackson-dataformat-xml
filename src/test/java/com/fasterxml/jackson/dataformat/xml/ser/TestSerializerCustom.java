@@ -55,21 +55,21 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public void serialize(Item value, JsonGenerator jgen, SerializerProvider provider) {
-          jgen.writeStartObject();
-          jgen.writeObjectField("obj", value.obj);
-          jgen.writeStringField("name", value.name);
-          jgen.writeEndObject();
+        public void serialize(Item value, JsonGenerator g, SerializerProvider provider) {
+          g.writeStartObject();
+          g.writePOJOProperty("obj", value.obj);
+          g.writeStringProperty("name", value.name);
+          g.writeEndObject();
         }
     }
 
     /*
     /**********************************************************
-    /* Unit tests
+    /* Test methods
     /**********************************************************
      */
 
-    public void testIssue42() throws Exception
+    public void testIssue42()
     {
         SimpleModule m = new SimpleModule("module", new Version(1,0,0,null,null,null));
         m.addSerializer(Item.class, new ItemSerializer());

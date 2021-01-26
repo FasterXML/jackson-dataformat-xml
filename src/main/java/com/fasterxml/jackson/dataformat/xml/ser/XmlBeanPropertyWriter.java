@@ -17,9 +17,9 @@ public class XmlBeanPropertyWriter
     private static final long serialVersionUID = 1L;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Config settings
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -33,9 +33,9 @@ public class XmlBeanPropertyWriter
     protected final QName _wrappedQName;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: construction, configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
@@ -66,9 +66,9 @@ public class XmlBeanPropertyWriter
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overridden methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -76,7 +76,7 @@ public class XmlBeanPropertyWriter
      * and as necessary.
      */
     @Override
-    public void serializeAsField(Object bean, JsonGenerator jgen, SerializerProvider prov)
+    public void serializeAsField(Object bean, JsonGenerator g, SerializerProvider prov)
         throws Exception
     {
         Object value = get(bean);
@@ -129,22 +129,22 @@ public class XmlBeanPropertyWriter
         // For non-nulls: simple check for direct cycles
         if (value == bean) {
             // NOTE: method signature here change 2.3->2.4
-            if (_handleSelfReference(bean, jgen, prov, ser)) {
+            if (_handleSelfReference(bean, g, prov, ser)) {
                 return;
             }
         }
 
-        final ToXmlGenerator xmlGen = (jgen instanceof ToXmlGenerator) ? (ToXmlGenerator) jgen : null;
+        final ToXmlGenerator xmlGen = (g instanceof ToXmlGenerator) ? (ToXmlGenerator) g : null;
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
         // 19-Aug-2013, tatu: ... except for those nasty 'convertValue()' calls...
         if (xmlGen != null) {
             xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
         }
-        jgen.writeFieldName(_name);
+        g.writeName(_name);
         if (_typeSerializer == null) {
-            ser.serialize(value, jgen, prov);
+            ser.serialize(value, g, prov);
         } else {
-            ser.serializeWithType(value, jgen, prov, _typeSerializer);
+            ser.serializeWithType(value, g, prov, _typeSerializer);
         }
         if (xmlGen != null) {
             xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);

@@ -19,7 +19,7 @@ public class XmlGeneratorTest extends XmlTestBase
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeString("value");
         gen.writeEndObject();
         gen.close();
@@ -36,7 +36,7 @@ public class XmlGeneratorTest extends XmlTestBase
         ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeNull();
         gen.writeEndObject();
         gen.close();
@@ -48,7 +48,7 @@ public class XmlGeneratorTest extends XmlTestBase
         gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeString((String) null);
         gen.writeEndObject();
         gen.close();
@@ -65,7 +65,7 @@ public class XmlGeneratorTest extends XmlTestBase
         gen.writeStartObject();
         // and also need to force attribute
         gen.setNextIsAttribute(true);
-        gen.writeFieldName("attr");
+        gen.writeName("attr");
         gen.writeString("value");
         gen.writeEndObject();
         gen.close();
@@ -81,11 +81,11 @@ public class XmlGeneratorTest extends XmlTestBase
         ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeStartObject();
         // and also need to force attribute
         gen.setNextIsAttribute(true);
-        gen.writeFieldName("attr");
+        gen.writeName("attr");
         gen.writeString("value");
         gen.writeEndObject();
         gen.writeEndObject();
@@ -103,13 +103,13 @@ public class XmlGeneratorTest extends XmlTestBase
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
         // and also need to force attribute
-        gen.writeFieldName("attr");
+        gen.writeName("attr");
         gen.setNextIsAttribute(true);
         gen.writeNumber(-3);
 
         // Also let's add child element as well
         gen.setNextIsAttribute(false);
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeNumber(13);
         gen.writeEndObject();
         gen.close();
@@ -136,7 +136,7 @@ public class XmlGeneratorTest extends XmlTestBase
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeRawValue("value");
         gen.writeEndObject();
         gen.close();
@@ -153,7 +153,7 @@ public class XmlGeneratorTest extends XmlTestBase
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeRawValue("NotAValue_value_NotAValue", 10, 5);
         gen.writeEndObject();
         gen.close();
@@ -170,7 +170,7 @@ public class XmlGeneratorTest extends XmlTestBase
         // root name is special, need to be fed first:
         gen.setNextName(new QName("root"));
         gen.writeStartObject();
-        gen.writeFieldName("elem");
+        gen.writeName("elem");
         gen.writeRawValue(new char[] {'!', 'v', 'a', 'l', 'u', 'e', '!'}, 1, 5);
         gen.writeEndObject();
         gen.close();
@@ -189,7 +189,7 @@ public class XmlGeneratorTest extends XmlTestBase
         gen.writeStartObject();
         // and also need to force attribute
         gen.setNextIsAttribute(true);
-        gen.writeFieldName("attr");
+        gen.writeName("attr");
         gen.writeRawValue("value");
         gen.writeEndObject();
         gen.close();
@@ -208,7 +208,7 @@ public class XmlGeneratorTest extends XmlTestBase
         gen.writeStartObject();
         // and also need to force attribute
         gen.setNextIsAttribute(true);
-        gen.writeFieldName("attr");
+        gen.writeName("attr");
         gen.writeRawValue("NotAValue_value_NotAValue", 10, 5);
         gen.writeEndObject();
         gen.close();
@@ -227,7 +227,7 @@ public class XmlGeneratorTest extends XmlTestBase
         gen.writeStartObject();
         // and also need to force attribute
         gen.setNextIsAttribute(true);
-        gen.writeFieldName("attr");
+        gen.writeName("attr");
         gen.writeRawValue(new char[]{'!', 'v', 'a', 'l', 'u', 'e', '!'}, 1, 5);
         gen.writeEndObject();
         gen.close();

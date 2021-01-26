@@ -22,12 +22,12 @@ public class XmlParserNextXxxTest extends XmlTestBase
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <max>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <max>
         assertEquals("max", xp.currentName());
 
         assertEquals("7", xp.nextTextValue());
 
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <offset>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <offset>
         assertEquals("offset", xp.currentName());
 
         assertEquals("offset", xp.getText());

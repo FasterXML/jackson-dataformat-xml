@@ -61,7 +61,7 @@ public class XmlDeserializationContext
         // get may or may not be `FromXmlParser` so traverse using regular means
         String text = "";
 
-        while (p.nextToken() == JsonToken.FIELD_NAME) {
+        while (p.nextToken() == JsonToken.PROPERTY_NAME) {
             // Couple of ways to find "real" textual content. One is to look for
             // "XmlText"... but for that would need to know configuration. Alternatively
             // could hold on to last text seen -- but this might be last attribute, for

@@ -200,8 +200,8 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     {
         xgen.writeStartObject();
         // Could repeat root name, but what's the point? How to customize?
-        xgen.writeFieldName("item");
-    }    
+        xgen.writeName("item");
+    }
 
     protected void _initWithRootName(ToXmlGenerator xgen, QName rootName) throws JacksonException
     {

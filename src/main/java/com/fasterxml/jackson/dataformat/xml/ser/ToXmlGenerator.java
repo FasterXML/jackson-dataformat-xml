@@ -439,8 +439,8 @@ public class ToXmlGenerator
      */
     public void writeRepeatedFieldName() throws JacksonException
     {
-        if (!_tokenWriteContext.writeFieldName(_nextName.getLocalPart())) {
-            _reportError("Can not write a field name, expecting a value");
+        if (!_tokenWriteContext.writeName(_nextName.getLocalPart())) {
+            _reportError("Can not write a property name, expecting a value");
         }
     }
 
@@ -455,10 +455,10 @@ public class ToXmlGenerator
      */
 
     @Override
-    public final void writeFieldName(String name) throws JacksonException
+    public final void writeName(String name) throws JacksonException
     {
-        if (!_tokenWriteContext.writeFieldName(name)) {
-            _reportError("Can not write a field name, expecting a value");
+        if (!_tokenWriteContext.writeName(name)) {
+            _reportError("Can not write a property name, expecting a value");
         }
         // Should this ever get called?
         String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
@@ -466,11 +466,11 @@ public class ToXmlGenerator
     }
 
     @Override
-    public void writeFieldId(long id) throws JacksonException {
+    public void writePropertyId(long id) throws JacksonException {
         // 15-Aug-2019, tatu: could and probably should be improved to support
         //    buffering but...
         final String name = Long.toString(id);
-        writeFieldName(name);
+        writeName(name);
     }
 
     // 03-Aug-2017, tatu: We could use this as mentioned in comment below BUT
@@ -623,9 +623,9 @@ public class ToXmlGenerator
      */
 
     @Override
-    public void writeFieldName(SerializableString name) throws JacksonException
+    public void writeName(SerializableString name) throws JacksonException
     {
-        writeFieldName(name.getValue());
+        writeName(name.getValue());
     }
 
     @Override

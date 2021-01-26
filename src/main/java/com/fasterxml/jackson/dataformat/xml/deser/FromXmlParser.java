@@ -542,8 +542,8 @@ public class FromXmlParser
         if (t != null) {
             final String loc = (_parsingContext == null) ? "NULL" : String.valueOf(_parsingContext.pathAsPointer());
             switch (t) {
-            case FIELD_NAME:
-                System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.FIELD_NAME '%s'\n", loc, _parsingContext.currentName());
+            case PROPERTY_NAME:
+                System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.PROPERTY_NAME '%s'\n", loc, _parsingContext.currentName());
                 break;
             case VALUE_STRING:
                 System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.VALUE_STRING '%s'\n", loc, getText());
@@ -579,7 +579,7 @@ public class FromXmlParser
             case END_ARRAY:
                 _parsingContext = _parsingContext.getParent();
                 break;
-            case FIELD_NAME:
+            case PROPERTY_NAME:
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
                 break;
             default: // VALUE_STRING, VALUE_NULL
@@ -597,7 +597,7 @@ public class FromXmlParser
             // If we thought we might get leaf, no such luck
             if (_mayBeLeaf) {
                 // leave _mayBeLeaf set, as we start a new context
-                _nextToken = JsonToken.FIELD_NAME;
+                _nextToken = JsonToken.PROPERTY_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 return (_currToken = JsonToken.START_OBJECT);
             }
@@ -620,7 +620,7 @@ public class FromXmlParser
             _mayBeLeaf = true;
             // Ok: in array context we need to skip reporting field names.
             // But what's the best way to find next token?
-            return (_currToken = JsonToken.FIELD_NAME);
+            return (_currToken = JsonToken.PROPERTY_NAME);
         }
 
         // Ok; beyond start element, what do we get?
@@ -652,13 +652,13 @@ public class FromXmlParser
                 // If there was a chance of leaf node, no more...
                 if (_mayBeLeaf) {
                     _mayBeLeaf = false;
-                    _nextToken = JsonToken.FIELD_NAME;
+                    _nextToken = JsonToken.PROPERTY_NAME;
                     _currText = _xmlTokens.getText();
                     _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                     return (_currToken = JsonToken.START_OBJECT);
                 }
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
-                return (_currToken = JsonToken.FIELD_NAME);
+                return (_currToken = JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_ATTRIBUTE_VALUE:
                 _currText = _xmlTokens.getText();
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
@@ -704,7 +704,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must
                 // loop over again
                 if (_parsingContext.inObject()) {
-                    if ((_currToken != JsonToken.FIELD_NAME) && XmlTokenStream._allWs(_currText)) {
+                    if ((_currToken != JsonToken.PROPERTY_NAME) && XmlTokenStream._allWs(_currText)) {
                         token = _nextToken();
                         continue;
                     }
@@ -719,7 +719,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 // If not a leaf (or otherwise ignorable), need to transform into property...
                 _parsingContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
-                return (_currToken = JsonToken.FIELD_NAME);
+                return (_currToken = JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_END:
                 return (_currToken = null);
             default:
@@ -737,7 +737,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     /*
     @Override
     public String nextFieldName() throws JacksonException {
-        if (nextToken() == JsonToken.FIELD_NAME) {
+        if (nextToken() == JsonToken.PROPERTY_NAME) {
             return getCurrentName();
         }
         return null;
@@ -772,7 +772,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         // mostly copied from 'nextToken()'
         while (token == XmlTokenStream.XML_START_ELEMENT) {
             if (_mayBeLeaf) {
-                _nextToken = JsonToken.FIELD_NAME;
+                _nextToken = JsonToken.PROPERTY_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 _currToken = JsonToken.START_OBJECT;
                 return null;
@@ -789,7 +789,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _xmlTokens.repeatStartElement();
             }
             _mayBeLeaf = true;
-            _currToken = JsonToken.FIELD_NAME;
+            _currToken = JsonToken.PROPERTY_NAME;
             return null;
         }
 
@@ -811,13 +811,13 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             // If there was a chance of leaf node, no more...
             if (_mayBeLeaf) {
                 _mayBeLeaf = false;
-                _nextToken = JsonToken.FIELD_NAME;
+                _nextToken = JsonToken.PROPERTY_NAME;
                 _currText = _xmlTokens.getText();
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
                 _currToken = JsonToken.START_OBJECT;
             } else {
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
-                _currToken = JsonToken.FIELD_NAME;
+                _currToken = JsonToken.PROPERTY_NAME;
             }
             break;
         case XmlTokenStream.XML_ATTRIBUTE_VALUE:
@@ -841,7 +841,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             // If not a leaf, need to transform into property...
             _parsingContext.setCurrentName(_cfgNameForTextElement);
             _nextToken = JsonToken.VALUE_STRING;
-            _currToken = JsonToken.FIELD_NAME;
+            _currToken = JsonToken.PROPERTY_NAME;
             break;
         case XmlTokenStream.XML_END:
             _currToken = null;
@@ -864,7 +864,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         case END_ARRAY:
             _parsingContext = _parsingContext.getParent();
             break;
-        case FIELD_NAME:
+        case PROPERTY_NAME:
             _parsingContext.setCurrentName(_xmlTokens.getLocalName());
             break;
         default:
@@ -885,7 +885,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             return null;
         }
         switch (_currToken) {
-        case FIELD_NAME:
+        case PROPERTY_NAME:
             return currentName();
         case VALUE_STRING:
             return _currText;

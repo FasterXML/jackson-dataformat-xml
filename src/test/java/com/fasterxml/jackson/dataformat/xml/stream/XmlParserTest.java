@@ -38,7 +38,7 @@ public class XmlParserTest extends XmlTestBase
 
         try (JsonParser p = _xmlMapper.createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
-            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("leaf", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("abc", p.getText());
@@ -57,7 +57,7 @@ public class XmlParserTest extends XmlTestBase
         try (JsonParser p = _xmlMapper.reader().with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
                 .createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
-            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("leaf", p.currentName());
             assertToken(JsonToken.VALUE_NULL, p.nextToken());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
@@ -68,7 +68,7 @@ public class XmlParserTest extends XmlTestBase
         try (JsonParser p = _xmlMapper.reader().without(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
                 .createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
-            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("leaf", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("", p.getText());
@@ -101,12 +101,12 @@ public class XmlParserTest extends XmlTestBase
         try (JsonParser p = _xmlMapper.createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
 
-            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("value", p.getText());
 
-            assertToken(JsonToken.FIELD_NAME, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("child", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("abc", p.getText());
@@ -150,33 +150,33 @@ public class XmlParserTest extends XmlTestBase
         
         assertToken(JsonToken.START_OBJECT, p.nextToken()); // main object
 
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Image'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Image'
         verifyFieldName(p, "Image");
         assertToken(JsonToken.START_OBJECT, p.nextToken()); // 'image' object
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Width'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Width'
         verifyFieldName(p, "Width");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_WIDTH), p.getText());
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Height'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Height'
         verifyFieldName(p, "Height");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_HEIGHT), p.getText());
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Title'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Title'
         verifyFieldName(p, "Title");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(SAMPLE_SPEC_VALUE_TITLE, getAndVerifyText(p));
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Thumbnail'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Thumbnail'
         verifyFieldName(p, "Thumbnail");
         assertToken(JsonToken.START_OBJECT, p.nextToken()); // 'thumbnail' object
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Url'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Url'
         verifyFieldName(p, "Url");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(SAMPLE_SPEC_VALUE_TN_URL, getAndVerifyText(p));
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Height'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Height'
         verifyFieldName(p, "Height");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_HEIGHT), p.getText());
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'Width'
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'Width'
         verifyFieldName(p, "Width");
         // Width value is actually a String in the example
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
@@ -185,23 +185,23 @@ public class XmlParserTest extends XmlTestBase
         assertToken(JsonToken.END_OBJECT, p.nextToken()); // 'thumbnail' object
 
         // Note: arrays are "eaten"; wrapping is done using BeanPropertyWriter, so:
-        //assertToken(JsonToken.FIELD_NAME, p.nextToken()); // 'IDs'
+        //assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); // 'IDs'
         //verifyFieldName(p, "IDs");
         //assertToken(JsonToken.START_OBJECT, p.nextToken()); // 'ids' array
 
-        assertToken(JsonToken.FIELD_NAME, p.nextToken());
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
         verifyFieldName(p, "IDs");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID1), getAndVerifyText(p));
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); 
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); 
         verifyFieldName(p, "IDs");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID2), getAndVerifyText(p));
-        assertToken(JsonToken.FIELD_NAME, p.nextToken());
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
         verifyFieldName(p, "IDs");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID3), getAndVerifyText(p));
-        assertToken(JsonToken.FIELD_NAME, p.nextToken()); 
+        assertToken(JsonToken.PROPERTY_NAME, p.nextToken()); 
         verifyFieldName(p, "IDs");
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
         assertEquals(String.valueOf(SAMPLE_SPEC_VALUE_TN_ID4), getAndVerifyText(p));
@@ -228,21 +228,21 @@ public class XmlParserTest extends XmlTestBase
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <elem>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <elem>
         assertEquals("elem", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("value", xp.getText());
 
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <elem>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <elem>
         assertEquals("elem", xp.currentName());
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <property>
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken());
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken());
         assertEquals("property", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("123", xp.getText());
         assertToken(JsonToken.END_OBJECT, xp.nextToken()); // <object>
 
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <elem>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <elem>
         assertEquals("elem", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("1", xp.getText());
@@ -268,7 +268,7 @@ public class XmlParserTest extends XmlTestBase
 
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <property>
         assertTrue(xp.getParsingContext().inObject());
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken());
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken());
         assertEquals("property", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("123", xp.getText());
@@ -297,12 +297,12 @@ public class XmlParserTest extends XmlTestBase
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <max>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <max>
         assertEquals("max", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertEquals("7", xp.getText());
 
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // <offset>
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <offset>
         assertEquals("offset", xp.currentName());
 
         StringWriter w = new StringWriter();
@@ -336,13 +336,13 @@ public class XmlParserTest extends XmlTestBase
 
         // First: verify handling without forcing array handling:
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // @value1
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // @value1
         assertEquals("value1", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertFalse(xp.isExpectedNumberIntToken());
         assertEquals("abc", xp.getText());
 
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // @value2
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // @value2
         assertEquals("value2", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertTrue(xp.isExpectedNumberIntToken());
@@ -350,7 +350,7 @@ public class XmlParserTest extends XmlTestBase
         assertEquals(NumberType.INT, xp.getNumberType());
         assertEquals(42, xp.getIntValue());
 
-        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // implicit for text
+        assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // implicit for text
         assertEquals("", xp.currentName());
 
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
