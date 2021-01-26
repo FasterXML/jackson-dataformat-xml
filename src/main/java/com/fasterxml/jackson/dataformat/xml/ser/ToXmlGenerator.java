@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.DupDetector;
-import com.fasterxml.jackson.core.util.SimpleTokenWriteContext;
+import com.fasterxml.jackson.core.util.SimpleStreamWriteContext;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
@@ -146,7 +146,7 @@ public class ToXmlGenerator
     /**
      * Object that keeps track of the current contextual state of the generator.
      */
-    protected SimpleTokenWriteContext _tokenWriteContext;
+    protected SimpleStreamWriteContext _streamWriteContext;
 
     /*
     /**********************************************************************
@@ -211,7 +211,7 @@ public class ToXmlGenerator
         _xmlPrettyPrinter = pp;
         final DupDetector dups = StreamWriteFeature.STRICT_DUPLICATE_DETECTION.enabledIn(streamWriteFeatures)
                 ? DupDetector.rootDetector(this) : null;
-        _tokenWriteContext = SimpleTokenWriteContext.createRootContext(dups);
+        _streamWriteContext = SimpleStreamWriteContext.createRootContext(dups);
     }
 
     /**
@@ -259,16 +259,16 @@ public class ToXmlGenerator
      */
     
     @Override
-    public final TokenStreamContext streamWriteContext() { return _tokenWriteContext; }
+    public final TokenStreamContext streamWriteContext() { return _streamWriteContext; }
 
     @Override
     public final Object currentValue() {
-        return _tokenWriteContext.currentValue();
+        return _streamWriteContext.currentValue();
     }
 
     @Override
     public final void assignCurrentValue(Object v) {
-        _tokenWriteContext.assignCurrentValue(v);
+        _streamWriteContext.assignCurrentValue(v);
     }
 
     /*
@@ -326,7 +326,7 @@ public class ToXmlGenerator
     }
 
     public boolean inRoot() {
-        return _tokenWriteContext.inRoot();
+        return _streamWriteContext.inRoot();
     }
 
     /*
@@ -424,7 +424,7 @@ public class ToXmlGenerator
         if (wrapperName != null) {
             try {
                 if (_xmlPrettyPrinter != null) {
-                    _xmlPrettyPrinter.writeEndElement(_xmlWriter, _tokenWriteContext.getEntryCount());
+                    _xmlPrettyPrinter.writeEndElement(_xmlWriter, _streamWriteContext.getEntryCount());
                 } else {
                     _xmlWriter.writeEndElement();
                 }
@@ -437,9 +437,9 @@ public class ToXmlGenerator
     /**
      * Trivial helper method called when to add a replicated wrapper name
      */
-    public void writeRepeatedFieldName() throws JacksonException
+    public void writeRepeatedPropertyName() throws JacksonException
     {
-        if (!_tokenWriteContext.writeName(_nextName.getLocalPart())) {
+        if (!_streamWriteContext.writeName(_nextName.getLocalPart())) {
             _reportError("Can not write a property name, expecting a value");
         }
     }
@@ -457,7 +457,7 @@ public class ToXmlGenerator
     @Override
     public final void writeName(String name) throws JacksonException
     {
-        if (!_tokenWriteContext.writeName(name)) {
+        if (!_streamWriteContext.writeName(name)) {
             _reportError("Can not write a property name, expecting a value");
         }
         // Should this ever get called?
@@ -503,7 +503,7 @@ public class ToXmlGenerator
     public final void writeStartArray() throws JacksonException
     {
         _verifyValueWrite("start an array");
-        _tokenWriteContext = _tokenWriteContext.createChildArrayContext(null);
+        _streamWriteContext = _streamWriteContext.createChildArrayContext(null);
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartArray(this);
         } else {
@@ -515,7 +515,7 @@ public class ToXmlGenerator
     public final void writeStartArray(Object currValue) throws JacksonException
     {
         _verifyValueWrite("start an array");
-        _tokenWriteContext = _tokenWriteContext.createChildArrayContext(currValue);
+        _streamWriteContext = _streamWriteContext.createChildArrayContext(currValue);
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartArray(this);
         } else {
@@ -526,22 +526,22 @@ public class ToXmlGenerator
     @Override
     public final void writeEndArray() throws JacksonException
     {
-        if (!_tokenWriteContext.inArray()) {
-            _reportError("Current context not Array but "+_tokenWriteContext.typeDesc());
+        if (!_streamWriteContext.inArray()) {
+            _reportError("Current context not Array but "+_streamWriteContext.typeDesc());
         }
         if (_xmlPrettyPrinter != null) {
-            _xmlPrettyPrinter.writeEndArray(this, _tokenWriteContext.getEntryCount());
+            _xmlPrettyPrinter.writeEndArray(this, _streamWriteContext.getEntryCount());
         } else {
             // nothing to do here; no-operation
         }
-        _tokenWriteContext = _tokenWriteContext.getParent();
+        _streamWriteContext = _streamWriteContext.getParent();
     }
 
     @Override
     public final void writeStartObject() throws JacksonException
     {
         _verifyValueWrite("start an object");
-        _tokenWriteContext = _tokenWriteContext.createChildObjectContext(null);
+        _streamWriteContext = _streamWriteContext.createChildObjectContext(null);
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartObject(this);
         } else {
@@ -553,7 +553,7 @@ public class ToXmlGenerator
     public final void writeStartObject(Object currValue) throws JacksonException
     {
         _verifyValueWrite("start an object");
-        _tokenWriteContext = _tokenWriteContext.createChildObjectContext(currValue);
+        _streamWriteContext = _streamWriteContext.createChildObjectContext(currValue);
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartObject(this);
         } else {
@@ -564,13 +564,13 @@ public class ToXmlGenerator
     @Override
     public final void writeEndObject() throws JacksonException
     {
-        if (!_tokenWriteContext.inObject()) {
-            _reportError("Current context not Object but "+_tokenWriteContext.typeDesc());
+        if (!_streamWriteContext.inObject()) {
+            _reportError("Current context not Object but "+_streamWriteContext.typeDesc());
         }
-        _tokenWriteContext = _tokenWriteContext.getParent();
+        _streamWriteContext = _streamWriteContext.getParent();
         if (_xmlPrettyPrinter != null) {
             // as per [Issue#45], need to suppress indentation if only attributes written:
-            int count = _nextIsAttribute ? 0 : _tokenWriteContext.getEntryCount();
+            int count = _nextIsAttribute ? 0 : _streamWriteContext.getEntryCount();
             _xmlPrettyPrinter.writeEndObject(this, count);
         } else {
             _handleEndObject();
@@ -1292,7 +1292,7 @@ public class ToXmlGenerator
     @Override
     protected final void _verifyValueWrite(String typeMsg) throws JacksonException
     {
-        if (!_tokenWriteContext.writeValue()) {
+        if (!_streamWriteContext.writeValue()) {
             _reportError("Cannot "+typeMsg+", expecting a property name");
         }
     }

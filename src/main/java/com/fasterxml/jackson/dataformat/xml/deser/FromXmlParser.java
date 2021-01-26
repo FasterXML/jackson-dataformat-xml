@@ -165,7 +165,7 @@ public class FromXmlParser
      * Information about parser context, context in which
      * the next token is to be parsed (root, array, object).
      */
-    protected XmlReadContext _parsingContext;
+    protected XmlReadContext _streamReadContext;
 
     protected final XmlTokenStream _xmlTokens;
     /**
@@ -233,7 +233,7 @@ public class FromXmlParser
         super(readCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
-        _parsingContext = XmlReadContext.createRootContext(-1, -1);
+        _streamReadContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference(),
                     _formatFeatures);
 
@@ -355,15 +355,15 @@ public class FromXmlParser
         //   problems with Lists-in-Lists properties
         // 12-May-2020, tatu: But as per [dataformat-xml#86] NOT for root element
         //   (would still like to know why work-around needed ever, but...)
-        if (!_parsingContext.inRoot()
-                 && !_parsingContext.getParent().inRoot()) {
+        if (!_streamReadContext.inRoot()
+                 && !_streamReadContext.getParent().inRoot()) {
             String name = _xmlTokens.getLocalName();
             if ((name != null) && namesToWrap.contains(name)) {
 //System.out.println("REPEAT from addVirtualWrapping() for '"+name+"'");
                 _xmlTokens.repeatStartElement();
             }
         }
-        _parsingContext.setNamesToWrap(namesToWrap);
+        _streamReadContext.setNamesToWrap(namesToWrap);
     }
 
     /*
@@ -382,10 +382,10 @@ public class FromXmlParser
         // start markers require information from parent
         String name;
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
-            XmlReadContext parent = _parsingContext.getParent();
+            XmlReadContext parent = _streamReadContext.getParent();
             name = parent.currentName();
         } else {
-            name = _parsingContext.currentName();
+            name = _streamReadContext.currentName();
         }
         // sanity check
         if (name == null) {
@@ -417,9 +417,9 @@ public class FromXmlParser
     @Override
     public boolean isClosed() { return _closed; }
 
-    @Override public TokenStreamContext streamReadContext() { return _parsingContext; }
-    @Override public void assignCurrentValue(Object v) { _parsingContext.assignCurrentValue(v); }
-    @Override public Object currentValue() { return _parsingContext.currentValue(); }
+    @Override public TokenStreamContext streamReadContext() { return _streamReadContext; }
+    @Override public void assignCurrentValue(Object v) { _streamReadContext.assignCurrentValue(v); }
+    @Override public Object currentValue() { return _streamReadContext.currentValue(); }
 
     /**
      * Method that return the <b>starting</b> location of the current
@@ -454,7 +454,7 @@ public class FromXmlParser
         if (t == JsonToken.START_OBJECT) {
             _currToken = JsonToken.START_ARRAY;
             // Ok: must replace current context with array as well
-            _parsingContext.convertToArray();
+            _streamReadContext.convertToArray();
 //System.out.println(" FromXmlParser.isExpectedArrayStart(): OBJ->Array");
             // And just in case a property name was to be returned, wipe it
             // 06-Jan-2015, tatu: Actually, could also be empty Object buffered; if so, convert...
@@ -570,22 +570,22 @@ public class FromXmlParser
 
             switch (t) {
             case START_OBJECT:
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                 break;
             case START_ARRAY:
-                _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+                _streamReadContext = _streamReadContext.createChildArrayContext(-1, -1);
                 break;
             case END_OBJECT:
             case END_ARRAY:
-                _parsingContext = _parsingContext.getParent();
+                _streamReadContext = _streamReadContext.getParent();
                 break;
             case PROPERTY_NAME:
-                _parsingContext.setCurrentName(_xmlTokens.getLocalName());
+                _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
                 break;
             default: // VALUE_STRING, VALUE_NULL
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index` anyway; not
                 //    used for Object contexts, updated automatically by "createChildXxxContext"
-                _parsingContext.valueStarted();
+                _streamReadContext.valueStarted();
             }
             return t;
         }
@@ -598,10 +598,10 @@ public class FromXmlParser
             if (_mayBeLeaf) {
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.PROPERTY_NAME;
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                 return (_currToken = JsonToken.START_OBJECT);
             }
-            if (_parsingContext.inArray()) {
+            if (_streamReadContext.inArray()) {
                 // Yup: in array, so this element could be verified; but it won't be
                 // reported anyway, and we need to process following event.
                 token = _nextToken();
@@ -609,11 +609,11 @@ public class FromXmlParser
                 continue;
             }
             String name = _xmlTokens.getLocalName();
-            _parsingContext.setCurrentName(name);
+            _streamReadContext.setCurrentName(name);
 
             // Ok: virtual wrapping can be done by simply repeating current START_ELEMENT.
             // Couple of ways to do it; but start by making _xmlTokens replay the thing...
-            if (_parsingContext.shouldWrap(name)) {
+            if (_streamReadContext.shouldWrap(name)) {
                 _xmlTokens.repeatStartElement();
             }
 
@@ -630,22 +630,22 @@ public class FromXmlParser
                 // Simple, except that if this is a leaf, need to suppress end:
                 if (_mayBeLeaf) {
                     _mayBeLeaf = false;
-                    if (_parsingContext.inArray()) {
+                    if (_streamReadContext.inArray()) {
                         // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
                         //    expose as empty Object, not null
                         _nextToken = JsonToken.END_OBJECT;
-                        _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                        _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                         return (_currToken = JsonToken.START_OBJECT);
                     }
                     // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
                     if (_currToken != JsonToken.VALUE_NULL) {
                         // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
-                        _parsingContext.valueStarted();
+                        _streamReadContext.valueStarted();
                         return (_currToken = JsonToken.VALUE_NULL);
                     }
                 }
-                _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
-                _parsingContext = _parsingContext.getParent();
+                _currToken = _streamReadContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
+                _streamReadContext = _streamReadContext.getParent();
                 return _currToken;
 
             case XmlTokenStream.XML_ATTRIBUTE_NAME:
@@ -654,15 +654,15 @@ public class FromXmlParser
                     _mayBeLeaf = false;
                     _nextToken = JsonToken.PROPERTY_NAME;
                     _currText = _xmlTokens.getText();
-                    _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                    _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                     return (_currToken = JsonToken.START_OBJECT);
                 }
-                _parsingContext.setCurrentName(_xmlTokens.getLocalName());
+                _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
                 return (_currToken = JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_ATTRIBUTE_VALUE:
                 _currText = _xmlTokens.getText();
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
-                _parsingContext.valueStarted();
+                _streamReadContext.valueStarted();
                 return (_currToken = JsonToken.VALUE_STRING);
             case XmlTokenStream.XML_TEXT:
                 _currText = _xmlTokens.getText();
@@ -678,13 +678,13 @@ public class FromXmlParser
                     token = _nextToken();
 
                     if (token == XmlTokenStream.XML_END_ELEMENT) {
-                        if (_parsingContext.inArray()) {
+                        if (_streamReadContext.inArray()) {
                             if (XmlTokenStream._allWs(_currText)) {
                                 // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
                                 //    expose as empty Object, not null (or, worse, as used to
                                 //    be done, by swallowing the token)
                                 _nextToken = JsonToken.END_OBJECT;
-                                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                                _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                                 return (_currToken = JsonToken.START_OBJECT);
                             }
                         }
@@ -698,17 +698,17 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     // fall-through, except must create new context AND push back
                     // START_ELEMENT we just saw:
                     _xmlTokens.pushbackCurrentToken();
-                    _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                    _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                 }
                 // [dataformat-xml#177]: empty text may also need to be skipped
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must
                 // loop over again
-                if (_parsingContext.inObject()) {
+                if (_streamReadContext.inObject()) {
                     if ((_currToken != JsonToken.PROPERTY_NAME) && XmlTokenStream._allWs(_currText)) {
                         token = _nextToken();
                         continue;
                     }
-                } else if (_parsingContext.inArray()) {
+                } else if (_streamReadContext.inArray()) {
                     // [dataformat-xml#319] Aaaaand for Arrays too
                     if (XmlTokenStream._allWs(_currText)) {
                         token = _nextToken();
@@ -717,7 +717,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 }
 
                 // If not a leaf (or otherwise ignorable), need to transform into property...
-                _parsingContext.setCurrentName(_cfgNameForTextElement);
+                _streamReadContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
                 return (_currToken = JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_END:
@@ -736,7 +736,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
 
     /*
     @Override
-    public String nextFieldName() throws JacksonException {
+    public String nextName() throws JacksonException {
         if (nextToken() == JsonToken.PROPERTY_NAME) {
             return getCurrentName();
         }
@@ -760,7 +760,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             // expected case; yes, got a String
             if (t == JsonToken.VALUE_STRING) {
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
-                _parsingContext.valueStarted();
+                _streamReadContext.valueStarted();
                 return _currText;
             }
             _updateState(t);
@@ -773,18 +773,18 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         while (token == XmlTokenStream.XML_START_ELEMENT) {
             if (_mayBeLeaf) {
                 _nextToken = JsonToken.PROPERTY_NAME;
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                 _currToken = JsonToken.START_OBJECT;
                 return null;
             }
-            if (_parsingContext.inArray()) {
+            if (_streamReadContext.inArray()) {
                 token = _nextToken();
                 _mayBeLeaf = true;
                 continue;
             }
             String name = _xmlTokens.getLocalName();
-            _parsingContext.setCurrentName(name);
-            if (_parsingContext.shouldWrap(name)) {
+            _streamReadContext.setCurrentName(name);
+            if (_streamReadContext.shouldWrap(name)) {
 //System.out.println("REPEAT from nextTextValue()");
                 _xmlTokens.repeatStartElement();
             }
@@ -801,11 +801,11 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _mayBeLeaf = false;
                 _currToken = JsonToken.VALUE_STRING;
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
-                _parsingContext.valueStarted();
+                _streamReadContext.valueStarted();
                 return (_currText = "");
             }
-            _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
-            _parsingContext = _parsingContext.getParent();
+            _currToken = _streamReadContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
+            _streamReadContext = _streamReadContext.getParent();
             break;
         case XmlTokenStream.XML_ATTRIBUTE_NAME:
             // If there was a chance of leaf node, no more...
@@ -813,17 +813,17 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _mayBeLeaf = false;
                 _nextToken = JsonToken.PROPERTY_NAME;
                 _currText = _xmlTokens.getText();
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                 _currToken = JsonToken.START_OBJECT;
             } else {
-                _parsingContext.setCurrentName(_xmlTokens.getLocalName());
+                _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
                 _currToken = JsonToken.PROPERTY_NAME;
             }
             break;
         case XmlTokenStream.XML_ATTRIBUTE_VALUE:
             _currToken = JsonToken.VALUE_STRING;
             // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
-            _parsingContext.valueStarted();
+            _streamReadContext.valueStarted();
             return (_currText = _xmlTokens.getText());
         case XmlTokenStream.XML_TEXT:
             _currText = _xmlTokens.getText();
@@ -834,12 +834,12 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 // NOTE: this is different from nextToken() -- NO work-around
                 // for otherwise empty List/array
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
-                _parsingContext.valueStarted();
+                _streamReadContext.valueStarted();
                 _currToken = JsonToken.VALUE_STRING;
                 return _currText;
             }
             // If not a leaf, need to transform into property...
-            _parsingContext.setCurrentName(_cfgNameForTextElement);
+            _streamReadContext.setCurrentName(_cfgNameForTextElement);
             _nextToken = JsonToken.VALUE_STRING;
             _currToken = JsonToken.PROPERTY_NAME;
             break;
@@ -855,17 +855,17 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     {
         switch (t) {
         case START_OBJECT:
-            _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+            _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
             break;
         case START_ARRAY:
-            _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+            _streamReadContext = _streamReadContext.createChildArrayContext(-1, -1);
             break;
         case END_OBJECT:
         case END_ARRAY:
-            _parsingContext = _parsingContext.getParent();
+            _streamReadContext = _streamReadContext.getParent();
             break;
         case PROPERTY_NAME:
-            _parsingContext.setCurrentName(_xmlTokens.getLocalName());
+            _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
             break;
         default:
             _internalErrorUnknownToken(t);
@@ -1233,12 +1233,12 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     @Override
     protected void _handleEOF() throws StreamReadException
     {
-        if (!_parsingContext.inRoot()) {
-            String marker = _parsingContext.inArray() ? "Array" : "Object";
+        if (!_streamReadContext.inRoot()) {
+            String marker = _streamReadContext.inArray() ? "Array" : "Object";
             _reportInvalidEOF(String.format(
                     ": expected close marker for %s (start marker at %s)",
                     marker,
-                    _parsingContext.getStartLocation(_ioContext.getSourceReference())),
+                    _streamReadContext.getStartLocation(_ioContext.getSourceReference())),
                     null);
         }
     }
