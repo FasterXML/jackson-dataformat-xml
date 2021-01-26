@@ -164,12 +164,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      * elements.
      */
     @Override
-    protected void _serializeFields(Object bean, JsonGenerator gen0, SerializerProvider provider)
+    protected void _serializeProperties(Object bean, JsonGenerator gen0, SerializerProvider provider)
         throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super._serializeFields(bean, gen0, provider);
+            super._serializeProperties(bean, gen0, provider);
             return;
         }
         final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
@@ -206,10 +206,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        prop.serializeAsField(bean, xgen, provider);
+                        prop.serializeAsProperty(bean, xgen, provider);
                         xgen.setNextIsCData(false);
                     } else {
-                        prop.serializeAsField(bean, xgen, provider);
+                        prop.serializeAsProperty(bean, xgen, provider);
                     }
                 }
                 // Reset to avoid next value being written as unwrapped, 
@@ -235,13 +235,13 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     @Override
-    protected void _serializeFieldsFiltered(Object bean, JsonGenerator gen0,
+    protected void _serializePropertiesFiltered(Object bean, JsonGenerator gen0,
             SerializerProvider provider, Object filterId)
         throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super._serializeFieldsFiltered(bean, gen0, provider, filterId);
+            super._serializePropertiesFiltered(bean, gen0, provider, filterId);
             return;
         }
         
@@ -256,7 +256,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         final PropertyFilter filter = findPropertyFilter(provider, _propertyFilterId, bean);
         // better also allow missing filter actually..
         if (filter == null) {
-            _serializeFields(bean, gen0, provider);
+            _serializeProperties(bean, gen0, provider);
             return;
         }
 
@@ -286,10 +286,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        filter.serializeAsField(bean, xgen, provider, prop);
+                        filter.serializeAsProperty(bean, xgen, provider, prop);
                         xgen.setNextIsCData(false);
                     } else {
-                        filter.serializeAsField(bean, xgen, provider, prop);
+                        filter.serializeAsProperty(bean, xgen, provider, prop);
                     }
                 }
             }

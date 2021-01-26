@@ -298,7 +298,7 @@ public class FromXmlParser
     public boolean canReadTypeId() { return false; }
 
     @Override
-    public JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
+    public JacksonFeatureSet<StreamReadCapability> streamReadCapabilities() {
         return XML_READ_CAPABILITIES;
     }
 
@@ -417,7 +417,7 @@ public class FromXmlParser
     @Override
     public boolean isClosed() { return _closed; }
 
-    @Override public TokenStreamContext getParsingContext() { return _parsingContext; }
+    @Override public TokenStreamContext streamReadContext() { return _parsingContext; }
     @Override public void assignCurrentValue(Object v) { _parsingContext.assignCurrentValue(v); }
     @Override public Object currentValue() { return _parsingContext.currentValue(); }
 
@@ -436,7 +436,7 @@ public class FromXmlParser
      * usually for error reporting purposes
      */
     @Override
-    public JsonLocation getCurrentLocation() {
+    public JsonLocation currentLocation() {
         return _xmlTokens.getCurrentLocation();
     }
 

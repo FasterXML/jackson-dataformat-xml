@@ -125,9 +125,9 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
         }
         g.writeStartObject();
         if (_propertyFilterId != null) {
-            _serializeFieldsFiltered(bean, g, provider, _propertyFilterId);
+            _serializePropertiesFiltered(bean, g, provider, _propertyFilterId);
         } else {
-            _serializeFields(bean, g, provider);
+            _serializeProperties(bean, g, provider);
         }
         g.writeEndObject();
     }

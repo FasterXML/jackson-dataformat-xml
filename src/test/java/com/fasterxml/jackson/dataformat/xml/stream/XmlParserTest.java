@@ -252,22 +252,22 @@ public class XmlParserTest extends XmlTestBase
 
         // And then with array handling:
         xp = (FromXmlParser) _xmlMapper.createParser(XML);
-        assertTrue(xp.getParsingContext().inRoot());
+        assertTrue(xp.streamReadContext().inRoot());
 
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <array>
-        assertTrue(xp.getParsingContext().inObject()); // true until we do following:
+        assertTrue(xp.streamReadContext().inObject()); // true until we do following:
 
         // must request 'as-array' handling, which will "convert" current token:
         assertTrue("Should 'convert' START_OBJECT to START_ARRAY", xp.isExpectedStartArrayToken());
         assertToken(JsonToken.START_ARRAY, xp.currentToken()); // <elem>
-        assertTrue(xp.getParsingContext().inArray());
+        assertTrue(xp.streamReadContext().inArray());
 
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
-        assertTrue(xp.getParsingContext().inArray());
+        assertTrue(xp.streamReadContext().inArray());
         assertEquals("value", xp.getText());
 
         assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <property>
-        assertTrue(xp.getParsingContext().inObject());
+        assertTrue(xp.streamReadContext().inObject());
         assertToken(JsonToken.PROPERTY_NAME, xp.nextToken());
         assertEquals("property", xp.currentName());
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
@@ -277,16 +277,16 @@ public class XmlParserTest extends XmlTestBase
         assertEquals(3, xp.getText(w));
         assertEquals("123", w.toString());
         
-        assertTrue(xp.getParsingContext().inObject());
+        assertTrue(xp.streamReadContext().inObject());
         assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </property>
-        assertTrue(xp.getParsingContext().inArray());
+        assertTrue(xp.streamReadContext().inArray());
 
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
-        assertTrue(xp.getParsingContext().inArray());
+        assertTrue(xp.streamReadContext().inArray());
         assertEquals("1", xp.getText());
 
         assertToken(JsonToken.END_ARRAY, xp.nextToken()); // </array>
-        assertTrue(xp.getParsingContext().inRoot());
+        assertTrue(xp.streamReadContext().inRoot());
         xp.close();
     }
 

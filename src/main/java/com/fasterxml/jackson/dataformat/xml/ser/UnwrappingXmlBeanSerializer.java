@@ -138,9 +138,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
             return;
         }
         if (_propertyFilterId != null) {
-            _serializeFieldsFiltered(bean, jgen, provider, _propertyFilterId);
+            _serializePropertiesFiltered(bean, jgen, provider, _propertyFilterId);
         } else {
-            _serializeFields(bean, jgen, provider);
+            _serializeProperties(bean, jgen, provider);
         }
     }
 

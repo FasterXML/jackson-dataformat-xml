@@ -76,7 +76,7 @@ public class XmlBeanPropertyWriter
      * and as necessary.
      */
     @Override
-    public void serializeAsField(Object bean, JsonGenerator g, SerializerProvider prov)
+    public void serializeAsProperty(Object bean, JsonGenerator g, SerializerProvider prov)
         throws Exception
     {
         Object value = get(bean);

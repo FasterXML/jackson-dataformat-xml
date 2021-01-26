@@ -259,7 +259,7 @@ public class ToXmlGenerator
      */
     
     @Override
-    public final TokenStreamContext getOutputContext() { return _tokenWriteContext; }
+    public final TokenStreamContext streamWriteContext() { return _tokenWriteContext; }
 
     @Override
     public final Object currentValue() {
@@ -321,7 +321,7 @@ public class ToXmlGenerator
     public boolean canWriteFormattedNumbers() { return true; }
 
     @Override
-    public JacksonFeatureSet<StreamWriteCapability> getWriteCapabilities() {
+    public JacksonFeatureSet<StreamWriteCapability> streamWriteCapabilities() {
         return DEFAULT_TEXTUAL_WRITE_CAPABILITIES;
     }
 
@@ -1325,7 +1325,7 @@ public class ToXmlGenerator
         if (isEnabled(StreamWriteFeature.AUTO_CLOSE_CONTENT)) {
             try {
                 while (true) {
-                    TokenStreamContext ctxt = getOutputContext();
+                    TokenStreamContext ctxt = streamWriteContext();
                     if (ctxt.inArray()) {
                         writeEndArray();
                     } else if (ctxt.inObject()) {
