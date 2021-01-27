@@ -8,6 +8,11 @@ Project: jackson-dataformat-xml
 
 No change since 2.12
 
+2.12.2 (not yet released)
+
+#445: `XmlMapper`/`UntypedObjectDeserializer` mixes multiple unwrapped collections
+ (fix contributed by Migwel@github)
+
 2.12.1 (08-Jan-2021)
 
 #435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`

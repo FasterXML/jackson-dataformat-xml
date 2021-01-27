@@ -1,5 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -80,5 +84,26 @@ public class UntypedObjectDeserTest extends XmlTestBase
             ObjectWriter w = new JsonMapper().writerWithDefaultPrettyPrinter();
             fail("Expected:\n"+w.writeValueAsString(exp)+"\ngot:\n"+w.writeValueAsString(fromXml));
         }
+    }
+
+    // [dataformat-xml#445]: problem with earlier #205 implementation (from 2.12.0),
+    // fixed in 2.12.2
+    public void testDuplicateListDeser445() throws Exception
+    {
+        final String XML =
+                "<person>\n" +
+                        "    <name>a</name>\n" +
+                        "    <name>b</name>\n" +
+                        "    <surname>c</surname>\n" +
+                        "    <surname>d</surname>\n" +
+                        "</person>";
+        @SuppressWarnings("unchecked")
+        Map<String, List<String>> person = (Map<String, List<String>>) XML_MAPPER.readValue(XML, Object.class);
+        List<String> names = person.get("name");
+        List<String> surnames = person.get("surname");
+        assertEquals(2, names.size());
+        assertEquals(Arrays.asList("a", "b"), names);
+        assertEquals(2, surnames.size());
+        assertEquals(Arrays.asList("c", "d"), surnames);
     }
 }
