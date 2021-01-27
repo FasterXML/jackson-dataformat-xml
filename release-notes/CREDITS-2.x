@@ -120,7 +120,10 @@ Migwel@github
 * Contributed #360: Add a feature to support writing `xsi:nil` attribute for
   `null` values
  (2.12.0)
- 
+* Contributed fix for #445: `XmlMapper`/`UntypedObjectDeserializer` mixes
+  multiple unwrapped collections
+ (2.12.2)
+
 Ingo Wiarda (dewarim@github)
 
 * Reported #374: Deserialization fails with `XmlMapper` and
