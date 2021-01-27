@@ -283,7 +283,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public Object streamWriteTarget() {
+    public Object streamWriteOutputTarget() {
         // Stax2 does not expose underlying target, so best we can do is to return
         // the Stax XMLStreamWriter instance:
         return _originalXmlWriter;

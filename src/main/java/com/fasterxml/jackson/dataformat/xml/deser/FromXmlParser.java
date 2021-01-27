@@ -281,7 +281,7 @@ public class FromXmlParser
     }
 
     @Override // since 3.0
-    public XMLStreamReader2 streamReadSource() {
+    public XMLStreamReader2 streamReadInputSource() {
         return _xmlTokens.getXmlReader();
     }
 
