@@ -283,7 +283,7 @@ public class ToXmlGenerator
     }
 
     @Override
-    public Object getOutputTarget() {
+    public Object streamWriteTarget() {
         // Stax2 does not expose underlying target, so best we can do is to return
         // the Stax XMLStreamWriter instance:
         return _originalXmlWriter;
@@ -294,7 +294,7 @@ public class ToXmlGenerator
      * <code>-1</code> from here
      */
     @Override
-    public int getOutputBuffered() {
+    public int streamWriteOutputBuffered() {
         return -1;
     }
 

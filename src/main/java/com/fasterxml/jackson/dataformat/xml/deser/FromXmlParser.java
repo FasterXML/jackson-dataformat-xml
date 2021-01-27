@@ -281,7 +281,7 @@ public class FromXmlParser
     }
 
     @Override // since 3.0
-    public XMLStreamReader2 getInputSource() {
+    public XMLStreamReader2 streamReadSource() {
         return _xmlTokens.getXmlReader();
     }
 
@@ -427,7 +427,7 @@ public class FromXmlParser
      * that starts the current token.
      */
     @Override
-    public JsonLocation getTokenLocation() {
+    public JsonLocation currentTokenLocation() {
         return _xmlTokens.getTokenLocation();
     }
 
