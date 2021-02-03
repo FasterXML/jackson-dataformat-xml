@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 public class XmlModule
-    extends com.fasterxml.jackson.databind.Module
+    extends com.fasterxml.jackson.databind.JacksonModule
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 3L;
