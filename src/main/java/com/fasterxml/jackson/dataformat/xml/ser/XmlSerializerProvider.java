@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.SerializationContextExt;
 import com.fasterxml.jackson.databind.ser.SerializerCache;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
  * {@link com.fasterxml.jackson.databind.SerializerProvider}
  * implementation to handle oddities of XML output, like "extra" root element.
  */
-public class XmlSerializerProvider extends DefaultSerializerProvider
+public class XmlSerializerProvider extends SerializationContextExt
 {
     protected final XmlRootNameLookup _rootNameLookup;
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
+import com.fasterxml.jackson.databind.deser.DeserializationContextExt;
 import com.fasterxml.jackson.databind.deser.DeserializerCache;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 
@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
  * @since 2.12
  */
 public class XmlDeserializationContext
-    extends DefaultDeserializationContext
+    extends DeserializationContextExt
 {
     public XmlDeserializationContext(TokenStreamFactory tsf,
             DeserializerFactory deserializerFactory, DeserializerCache cache,

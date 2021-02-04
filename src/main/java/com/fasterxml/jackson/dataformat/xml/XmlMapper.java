@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.SerializationContextExt;
 
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContexts;
@@ -461,7 +461,7 @@ public class XmlMapper extends ObjectMapper
         //   because we need the context first...
         
         SerializationConfig config = serializationConfig();
-        DefaultSerializerProvider prov = _serializerProvider(config);
+        SerializationContextExt prov = _serializerProvider(config);
         ToXmlGenerator g = tokenStreamFactory().createGenerator(prov, w0);
 
         if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {

@@ -5,9 +5,10 @@ import com.fasterxml.jackson.core.TokenStreamFactory;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.SerializationContextExt;
 import com.fasterxml.jackson.databind.ser.SerializerCache;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
+
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
@@ -47,7 +48,7 @@ public class XmlSerializationContexts extends SerializationContexts
     }
 
     @Override
-    public DefaultSerializerProvider createContext(SerializationConfig config,
+    public SerializationContextExt createContext(SerializationConfig config,
             GeneratorSettings genSettings) {
         return new XmlSerializerProvider(_streamFactory,
                 config, genSettings, _serializerFactory, _cache,

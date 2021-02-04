@@ -6,17 +6,14 @@ import com.fasterxml.jackson.core.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.*;
+import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
+import com.fasterxml.jackson.databind.ser.bean.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
-import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
-import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 
 /**
  * Copy of {@link UnwrappingBeanSerializer} required to extend
  * {@link XmlBeanSerializerBase} for XML-specific handling.
- * 
- * @author Pascal Gélinas
- * 
  */
 public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
 {
