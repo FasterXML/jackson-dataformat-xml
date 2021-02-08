@@ -79,8 +79,8 @@ public class XmlBeanDeserializerModifier
     }
 
     @Override
-    public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
-            BeanDescription beanDesc, JsonDeserializer<?> deser0)
+    public ValueDeserializer<?> modifyDeserializer(DeserializationConfig config,
+            BeanDescription beanDesc, ValueDeserializer<?> deser0)
     {
         if (!(deser0 instanceof BeanDeserializerBase)) {
             return deser0;

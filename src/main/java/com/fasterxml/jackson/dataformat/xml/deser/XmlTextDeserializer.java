@@ -61,19 +61,19 @@ public class XmlTextDeserializer
      */
 
     @Override
-    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee0) {
+    protected ValueDeserializer<?> newDelegatingInstance(ValueDeserializer<?> newDelegatee0) {
         // default not enough, as we need to create a new wrapping deserializer
         // even if delegatee does not change
         throw new IllegalStateException("Internal error: should never get called");
     }
 
     @Override
-    public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
+    public ValueDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property)
     {
         // 15-Nov-2017, tatu: Important -- MUST contextualize thing we delegate to
         JavaType vt = ctxt.constructType(_delegatee.handledType());
-        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee,
+        ValueDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee,
                 property, vt);
         return new XmlTextDeserializer(_verifyDeserType(del), _xmlTextPropertyIndex);
     }
@@ -105,7 +105,7 @@ public class XmlTextDeserializer
             _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
             return bean;
         }
-        return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, bean);
+        return ((ValueDeserializer<Object>)_delegatee).deserialize(p, ctxt, bean);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class XmlTextDeserializer
     /**********************************************************************
      */
 
-    protected BeanDeserializerBase _verifyDeserType(JsonDeserializer<?> deser)
+    protected BeanDeserializerBase _verifyDeserType(ValueDeserializer<?> deser)
     {
         if (!(deser instanceof BeanDeserializerBase)) {
             throw new IllegalArgumentException("Can not change delegate to be of type "

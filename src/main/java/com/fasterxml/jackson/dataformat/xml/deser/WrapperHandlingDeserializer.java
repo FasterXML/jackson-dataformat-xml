@@ -58,21 +58,21 @@ public class WrapperHandlingDeserializer
      */
 
     @Override
-    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee0) {
+    protected ValueDeserializer<?> newDelegatingInstance(ValueDeserializer<?> newDelegatee0) {
         // default not enough, as we may need to create a new wrapping deserializer
         // even if delegatee does not change
         throw new IllegalStateException("Internal error: should never get called");
     }
 
     @Override
-    public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
+    public ValueDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property)
     {
         JavaType vt = _type;
         if (vt == null) {
             vt = ctxt.constructType(_delegatee.handledType());
         }
-        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
+        ValueDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
         BeanDeserializerBase newDelegatee = _verifyDeserType(del);
         
         // Let's go through the properties now...
@@ -124,7 +124,7 @@ public class WrapperHandlingDeserializer
         throws JacksonException
     {
         _configureParser(p);
-        return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
+        return ((ValueDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class WrapperHandlingDeserializer
         }
     }
     
-    protected BeanDeserializerBase _verifyDeserType(JsonDeserializer<?> deser)
+    protected BeanDeserializerBase _verifyDeserType(ValueDeserializer<?> deser)
     {
         if (!(deser instanceof BeanDeserializerBase)) {
             throw new IllegalArgumentException("Can not change delegate to be of type "

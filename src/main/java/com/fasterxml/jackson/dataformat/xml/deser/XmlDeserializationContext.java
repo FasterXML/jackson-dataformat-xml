@@ -38,7 +38,7 @@ public class XmlDeserializationContext
     // to match serialization
     @Override
     public Object readRootValue(JsonParser p, JavaType valueType,
-            JsonDeserializer<Object> deser, Object valueToUpdate)
+            ValueDeserializer<Object> deser, Object valueToUpdate)
         throws JacksonException
     {
 //        if (_config.useRootWrapping()) {
@@ -53,7 +53,7 @@ public class XmlDeserializationContext
     // To support case where XML element has attributes as well as CDATA, need
     // to "extract" scalar value (CDATA), after the fact
     @Override
-    public String extractScalarFromObject(JsonParser p, JsonDeserializer<?> deser,
+    public String extractScalarFromObject(JsonParser p, ValueDeserializer<?> deser,
             Class<?> scalarType)
         throws JacksonException
     {
