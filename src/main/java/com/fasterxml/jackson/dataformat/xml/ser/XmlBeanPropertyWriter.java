@@ -45,7 +45,7 @@ public class XmlBeanPropertyWriter
 
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
             PropertyName wrapperName, PropertyName wrappedName,
-            JsonSerializer<Object> serializer)
+            ValueSerializer<Object> serializer)
     {
         super(wrapped);
         _wrapperQName = _qname(wrapperName);
@@ -107,7 +107,7 @@ public class XmlBeanPropertyWriter
         }
 
         // then find serializer to use
-        JsonSerializer<Object> ser = _serializer;
+        ValueSerializer<Object> ser = _serializer;
         if (ser == null) {
             Class<?> cls = value.getClass();
             PropertySerializerMap map = _dynamicSerializers;

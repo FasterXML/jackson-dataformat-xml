@@ -69,7 +69,7 @@ public class XmlSerializerProvider extends SerializationContextExt
         }
         
         // From super-class implementation
-        final JsonSerializer<Object> ser = findTypedValueSerializer(cls, true);
+        final ValueSerializer<Object> ser = findTypedValueSerializer(cls, true);
         try {
             ser.serialize(value, gen, this);
         } catch (Exception e) { // but wrap RuntimeExceptions, to get path information
@@ -91,7 +91,7 @@ public class XmlSerializerProvider extends SerializationContextExt
     @SuppressWarnings("resource")
     @Override
     public void serializeValue(JsonGenerator gen, Object value, JavaType rootType,
-            JsonSerializer<Object> ser) throws JacksonException
+            ValueSerializer<Object> ser) throws JacksonException
     {
         _generator = gen;
         if (value == null) {
@@ -135,7 +135,7 @@ public class XmlSerializerProvider extends SerializationContextExt
     @SuppressWarnings("resource")
     @Override
     public void serializePolymorphic(JsonGenerator gen, Object value, JavaType rootType,
-            JsonSerializer<Object> valueSer, TypeSerializer typeSer)
+            ValueSerializer<Object> valueSer, TypeSerializer typeSer)
         throws JacksonException
     {
         _generator = gen;

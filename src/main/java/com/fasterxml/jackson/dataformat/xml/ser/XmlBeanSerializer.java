@@ -5,7 +5,7 @@ import java.util.Set;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ValueSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializer;
@@ -56,7 +56,7 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
      */
 
     @Override
-    public JsonSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
+    public ValueSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
         return new UnwrappingXmlBeanSerializer(this, unwrapper);
     }
     

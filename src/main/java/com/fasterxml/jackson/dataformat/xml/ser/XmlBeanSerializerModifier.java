@@ -72,8 +72,8 @@ public class XmlBeanSerializerModifier
     }
     
     @Override
-    public JsonSerializer<?> modifySerializer(SerializationConfig config,
-            BeanDescription beanDesc, JsonSerializer<?> serializer)
+    public ValueSerializer<?> modifySerializer(SerializationConfig config,
+            BeanDescription beanDesc, ValueSerializer<?> serializer)
     {
         /* First things first: we can only handle real BeanSerializers; question
          * is, what to do if it's not one: throw exception or bail out?
