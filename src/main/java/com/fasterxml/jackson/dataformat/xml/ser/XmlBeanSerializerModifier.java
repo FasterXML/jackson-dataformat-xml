@@ -11,12 +11,12 @@ import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
 /**
- * We need a {@link BeanSerializerModifier} to replace default <code>BeanSerializer</code>
+ * We need a {@link ValueSerializerModifier} to replace default <code>BeanSerializer</code>
  * with XML-specific one; mostly to ensure that attribute properties are output
  * before element properties.
  */
 public class XmlBeanSerializerModifier
-    extends BeanSerializerModifier
+    extends ValueSerializerModifier
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;

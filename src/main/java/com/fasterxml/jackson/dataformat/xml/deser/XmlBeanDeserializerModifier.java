@@ -14,7 +14,7 @@ import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
  * 'wrapped' Collection types.
  */
 public class XmlBeanDeserializerModifier
-    extends BeanDeserializerModifier
+    extends ValueDeserializerModifier
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
