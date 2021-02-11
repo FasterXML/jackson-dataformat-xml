@@ -8,6 +8,9 @@ Project: jackson-dataformat-xml
 
 #445: `XmlMapper`/`UntypedObjectDeserializer` mixes multiple unwrapped collections
  (fix contributed by Migwel@github)
+#451: Xml type resolver fails with NPE when property name is not specified in
+  polymorphic (de)serialization
+ (reported by MichalStehlikCz@github)
 
 2.12.1 (08-Jan-2021)
 
