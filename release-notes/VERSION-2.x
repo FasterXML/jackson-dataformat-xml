@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.11.5 (not yet released)
+
+- Upgrade Woodstox dependency to 6.2.4 (<- 6.2.3)
+
 2.11.4 (12-Dec-2020)
 
 - Upgrade Woodstox dependency to 6.2.3 (<- 6.2.1)
