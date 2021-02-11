@@ -51,6 +51,12 @@ public class StaxUtil
      */
     public static String sanitizeXmlTypeName(String name)
     {
+        // [dataformat-xml#451]: with DEDUCTION, at least, won't have property name
+        //   (but probably sensible to check for it anyway)
+        if (name == null) {
+            return null;
+        }
+        
         StringBuilder sb;
         int changes = 0;
         // First things first: remove array types' trailing[]...
