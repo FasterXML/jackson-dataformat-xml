@@ -15,6 +15,7 @@ No change since 2.12
 #451: Xml type resolver fails with NPE when property name is not specified in
   polymorphic (de)serialization
  (reported by MichalStehlikCz@github)
+- Woodstox dependency 6.2.4 (from 6.2.3)
 
 2.12.1 (08-Jan-2021)
 
