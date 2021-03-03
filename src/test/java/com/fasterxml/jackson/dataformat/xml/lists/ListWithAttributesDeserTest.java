@@ -151,7 +151,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
                 + "</Root>";
         ObjectReader r = MAPPER.readerFor(Root.class)
                 .without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        Root root = r.readValue(source, Root.class);
+        Root root = r.readValue(source);
         assertNotNull(root.values);
         assertEquals(1, root.values.size());
     }
