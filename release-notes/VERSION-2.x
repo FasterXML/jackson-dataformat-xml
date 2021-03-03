@@ -8,7 +8,7 @@ Project: jackson-dataformat-xml
 
 No change since 2.12
 
-2.12.2 (not yet released)
+2.12.2 (03-Mar-2021)
 
 #445: `XmlMapper`/`UntypedObjectDeserializer` mixes multiple unwrapped collections
  (fix contributed by Migwel@github)
