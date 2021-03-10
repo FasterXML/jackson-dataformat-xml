@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -68,6 +69,7 @@ public class ListDeserializationTest extends XmlTestBase
     static class ListBeanUnwrapped
     {
         @JacksonXmlElementWrapper(useWrapping=false)
+        @JsonAlias("aliasValue")
         public List<Integer> values;
     }
 
@@ -184,6 +186,19 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
         
         ListBeanUnwrapped bean = MAPPER.readValue(
                 "<ListBeanUnwrapped><values>1</values><values>2</values><values>3</values></ListBeanUnwrapped>",
+                ListBeanUnwrapped.class);
+        assertNotNull(bean);
+        assertNotNull(bean.values);
+        assertEquals(3, bean.values.size());
+        assertEquals(Integer.valueOf(1), bean.values.get(0));
+        assertEquals(Integer.valueOf(2), bean.values.get(1));
+        assertEquals(Integer.valueOf(3), bean.values.get(2));
+    }
+
+    public void testUnwrappedAliasListBeanDeser() throws Exception
+    {
+        ListBeanUnwrapped bean = MAPPER.readValue(
+                "<ListBeanUnwrapped><aliasValue>1</aliasValue><aliasValue>2</aliasValue><aliasValue>3</aliasValue></ListBeanUnwrapped>",
                 ListBeanUnwrapped.class);
         assertNotNull(bean);
         assertNotNull(bean.values);
