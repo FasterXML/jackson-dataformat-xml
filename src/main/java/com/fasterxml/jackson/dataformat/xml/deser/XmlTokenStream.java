@@ -10,6 +10,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 
 import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.io.InputSourceReference;
 
 /**
  * Simple helper class used on top of STAX {@link XMLStreamReader} to further
@@ -58,9 +59,10 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
-    final protected XMLStreamReader2 _xmlReader;
+    protected final XMLStreamReader2 _xmlReader;
 
-    final protected Object _sourceReference;
+    // @since 2.13 (was untyped before)
+    protected final InputSourceReference _sourceReference;
 
     /**
      * Bit flag composed of bits that indicate which
@@ -148,7 +150,7 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
-    public XmlTokenStream(XMLStreamReader xmlReader, Object sourceRef,
+    public XmlTokenStream(XMLStreamReader xmlReader, InputSourceReference sourceRef,
             int formatFeatures)
     {
         _sourceReference = sourceRef;

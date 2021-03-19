@@ -234,7 +234,7 @@ public class FromXmlParser
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _streamReadContext = XmlReadContext.createRootContext(-1, -1);
-        _xmlTokens = new XmlTokenStream(xmlReader, ctxt.getSourceReference(),
+        _xmlTokens = new XmlTokenStream(xmlReader, ctxt.sourceReference(),
                     _formatFeatures);
 
         final int firstToken;
@@ -1238,7 +1238,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             _reportInvalidEOF(String.format(
                     ": expected close marker for %s (start marker at %s)",
                     marker,
-                    _streamReadContext.getStartLocation(_ioContext.getSourceReference())),
+                    _streamReadContext.startLocation(_ioContext.sourceReference())),
                     null);
         }
     }

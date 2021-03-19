@@ -67,6 +67,7 @@ public class MapperCopyTest extends XmlTestBase
     }
 
     // [dataformat-xml#282]
+    @SuppressWarnings("deprecation")
     public void testCopyWith() throws Exception
     {
         XmlMapper xmlMapper = newMapper();
