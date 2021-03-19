@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.io.CharTypes;
+import com.fasterxml.jackson.core.io.InputSourceReference;
 
 /**
  * Extension of {@link JsonStreamContext}, which implements
@@ -147,7 +148,7 @@ public final class XmlReadContext
      *   start marker was found
      */
     @Override
-    public final JsonLocation getStartLocation(Object srcRef) {
+    public final JsonLocation startLocation(InputSourceReference srcRef) {
         // We don't keep track of offsets at this level (only reader does)
         long totalChars = -1L;
 

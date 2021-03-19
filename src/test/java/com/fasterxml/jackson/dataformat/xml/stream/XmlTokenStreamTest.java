@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.core.io.InputSourceReference;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlTokenStream;
@@ -14,13 +15,7 @@ public class XmlTokenStreamTest extends XmlTestBase
 
     public void testSimple() throws Exception
     {
-        String XML = "<root><leaf id='123'>abc</leaf></root>";
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
-        // must point to START_ELEMENT, so:
-        sr.nextTag();
-        XmlTokenStream tokens = new XmlTokenStream(sr, XML,
-                FromXmlParser.Feature.collectDefaults());
-        tokens.initialize();
+        XmlTokenStream tokens = _tokensFor("<root><leaf id='123'>abc</leaf></root>");
         assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
@@ -47,19 +42,14 @@ public class XmlTokenStreamTest extends XmlTestBase
 
     public void _testRootAttributes(boolean emptyAsNull) throws Exception
     {
-
         String XML = "<root id='x' />";
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
-        // must point to START_ELEMENT, so:
-        sr.nextTag();
         int f = FromXmlParser.Feature.collectDefaults();
         if (emptyAsNull) {
             f |= FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         } else {
             f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
-        XmlTokenStream tokens = new XmlTokenStream(sr, XML, f);
-        tokens.initialize();
+        XmlTokenStream tokens = _tokensFor(XML, f);
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_ATTRIBUTE_NAME, tokens.next());
@@ -83,17 +73,13 @@ public class XmlTokenStreamTest extends XmlTestBase
     private void _testEmptyTags(boolean emptyAsNull) throws Exception
     {
         String XML = "<root><leaf /></root>";
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
-        // must point to START_ELEMENT, so:
-        sr.nextTag();
         int f = FromXmlParser.Feature.collectDefaults();
         if (emptyAsNull) {
             f |= FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         } else {
             f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
-        XmlTokenStream tokens = new XmlTokenStream(sr, XML, f);
-        tokens.initialize();
+        XmlTokenStream tokens = _tokensFor(XML, f);
         assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
@@ -109,12 +95,7 @@ public class XmlTokenStreamTest extends XmlTestBase
 
     public void testNested() throws Exception
     {
-        String XML = "<root><a><b><c>abc</c></b></a></root>";
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
-        sr.nextTag();
-        XmlTokenStream tokens = new XmlTokenStream(sr, XML,
-                FromXmlParser.Feature.collectDefaults());
-        tokens.initialize();
+        XmlTokenStream tokens = _tokensFor( "<root><a><b><c>abc</c></b></a></root>");
         assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
@@ -135,11 +116,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     // For [dataformat-xml#402]
     public void testMixedContentBetween() throws Exception
     {
-        String XML = "<root>first<a>123</a> and second <b>abc</b>\n</root>";
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
-        sr.nextTag();
-        XmlTokenStream tokens = new XmlTokenStream(sr, XML, FromXmlParser.Feature.collectDefaults());
-        tokens.initialize();
+        XmlTokenStream tokens = _tokensFor("<root>first<a>123</a> and second <b>abc</b>\n</root>");
 
         assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
@@ -164,17 +141,12 @@ public class XmlTokenStreamTest extends XmlTestBase
 
         assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
         assertEquals(XmlTokenStream.XML_END, tokens.next());
-        sr.close();
     }
 
     // For [dataformat-xml#402]
     public void testMixedContentAfter() throws Exception
     {
-        String XML = "<root>first<a>123</a>last &amp; final</root>";
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(XML));
-        sr.nextTag();
-        XmlTokenStream tokens = new XmlTokenStream(sr, XML, FromXmlParser.Feature.collectDefaults());
-        tokens.initialize();
+        XmlTokenStream tokens = _tokensFor("<root>first<a>123</a>last &amp; final</root>");
 
         assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
@@ -193,6 +165,19 @@ public class XmlTokenStreamTest extends XmlTestBase
 
         assertEquals(XmlTokenStream.XML_END_ELEMENT, tokens.next());
         assertEquals(XmlTokenStream.XML_END, tokens.next());
-        sr.close();
+    }
+
+    private XmlTokenStream _tokensFor(String doc) throws Exception {
+        return _tokensFor(doc, FromXmlParser.Feature.collectDefaults());
+    }
+    
+    private XmlTokenStream _tokensFor(String doc, int flags) throws Exception
+    {
+        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(doc));
+        // must point to START_ELEMENT, so:
+        sr.nextTag();
+        XmlTokenStream stream = new XmlTokenStream(sr, InputSourceReference.rawSource(doc), flags);
+        stream.initialize();
+        return stream;
     }
 }
