@@ -342,9 +342,8 @@ public class XmlFactory
      */
     @Override
     public JsonParser createParser(ObjectReadContext readCtxt, String content) {
-        Reader r = new StringReader(content);
-        IOContext ioCtxt = _createContext(r, true);
-        return _createParser(readCtxt, ioCtxt, _decorate(ioCtxt, r));
+        IOContext ioCtxt = _createContext(_createContentReference(content), true);
+        return _createParser(readCtxt, ioCtxt, _decorate(ioCtxt, new StringReader(content)));
     }
 
     @Override
@@ -417,7 +416,8 @@ public class XmlFactory
         }
 
         // false -> not managed
-        FromXmlParser xp = new FromXmlParser(readCtxt, _createContext(sr, false),
+        FromXmlParser xp = new FromXmlParser(readCtxt,
+                _createContext(_createContentReference(sr), false),
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
                 sr);
@@ -436,7 +436,7 @@ public class XmlFactory
             XMLStreamWriter sw) throws IOException
     {
         sw = _initializeXmlWriter(sw);
-        IOContext ioCtxt = _createContext(sw, false);
+        IOContext ioCtxt = _createContext(_createContentReference(sw), false);
         return new ToXmlGenerator(writeCtxt, ioCtxt,
                 writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
