@@ -467,7 +467,7 @@ public class XmlFactory extends JsonFactory
     @Override
     public JsonParser createParser(String content) throws IOException {
         Reader r = new StringReader(content);
-        IOContext ctxt = _createContext(r, true);
+        IOContext ctxt = _createContext(_createContentReference(r), true);
         if (_inputDecorator != null) {
             r = _inputDecorator.decorate(ctxt, r);
         }
@@ -489,7 +489,7 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException
     {
         // false -> we won't manage the stream unless explicitly directed to
-        final IOContext ctxt = _createContext(out, false);
+        final IOContext ctxt = _createContext(_createContentReference(out), false);
         ctxt.setEncoding(enc);
         return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
@@ -499,7 +499,7 @@ public class XmlFactory extends JsonFactory
     @Override
     public ToXmlGenerator createGenerator(Writer out) throws IOException
     {
-        final IOContext ctxt = _createContext(out, false);
+        final IOContext ctxt = _createContext(_createContentReference(out), false);
         return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out));
@@ -511,7 +511,7 @@ public class XmlFactory extends JsonFactory
     {
         OutputStream out = new FileOutputStream(f);
         // true -> yes, we have to manage the stream since we created it
-        final IOContext ctxt = _createContext(out, true);
+        final IOContext ctxt = _createContext(_createContentReference(out), true);
         ctxt.setEncoding(enc);
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out));
@@ -537,7 +537,7 @@ public class XmlFactory extends JsonFactory
         }
 
         // false -> not managed
-        FromXmlParser xp = new FromXmlParser(_createContext(sr, false),
+        FromXmlParser xp = new FromXmlParser(_createContext(_createContentReference(sr), false),
                 _parserFeatures, _xmlParserFeatures, _objectCodec, sr);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -555,7 +555,7 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createGenerator(XMLStreamWriter sw) throws IOException
     {
         sw = _initializeXmlWriter(sw);
-        IOContext ctxt = _createContext(sw, false);
+        IOContext ctxt = _createContext(_createContentReference(sw), false);
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sw);
     }
