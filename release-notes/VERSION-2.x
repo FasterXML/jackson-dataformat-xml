@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.12.3 (not yet released)
+
+#456: Fix JsonAlias with unwrapped lists
+ (contributed by Westin M)
+
 2.12.2 (03-Mar-2021)
 
 #445: `XmlMapper`/`UntypedObjectDeserializer` mixes multiple unwrapped collections
