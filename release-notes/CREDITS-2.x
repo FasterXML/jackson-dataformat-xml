@@ -150,3 +150,8 @@ Francesco Chicchiriccò (ilgrosso@github)
 
 * Reported #435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
  (2.12.1)
+
+Westin Miller (westinrm@github)
+
+* Contributed #456: Fix JsonAlias with unwrapped lists
+ (2.12.3)
