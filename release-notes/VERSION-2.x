@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.11.5 (not yet released)
 
+#456: Fix JsonAlias with unwrapped lists
+ (contributed by Westin M)
 - Upgrade Woodstox dependency to 6.2.4 (<- 6.2.3)
 
 2.11.4 (12-Dec-2020)
