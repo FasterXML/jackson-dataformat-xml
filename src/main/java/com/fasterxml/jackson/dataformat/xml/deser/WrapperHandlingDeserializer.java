@@ -92,6 +92,9 @@ public class WrapperHandlingDeserializer
             }
             // not optimal; should be able to use PropertyName...
             unwrappedNames.add(prop.getName());
+            for (PropertyName alias : prop.findAliases(ctxt.getConfig())) {
+                unwrappedNames.add(alias.getSimpleName());
+            }
         }
         // Ok: if nothing to take care of, just return the delegatee...
         if (unwrappedNames == null) {
