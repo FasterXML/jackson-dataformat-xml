@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 // for [dataformat-xml#441]
 public class JsonNodeBasicSer441Test extends XmlTestBase
 {
-    final private ObjectMapper XML_MAPPER = newMapper();
+    private final ObjectMapper XML_MAPPER = newMapper();
 
     public void testSimpleNode() throws Exception
     {
