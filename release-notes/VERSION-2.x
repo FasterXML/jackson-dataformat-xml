@@ -12,6 +12,7 @@ No changes since 2.12
 
 #456: Fix JsonAlias with unwrapped lists
  (contributed by Westin M)
+#460: Deserialization from blank (not empty) String fails for Collections
 
 2.12.2 (03-Mar-2021)
 
