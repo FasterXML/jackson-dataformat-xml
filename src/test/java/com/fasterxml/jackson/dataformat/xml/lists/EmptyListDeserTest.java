@@ -38,14 +38,27 @@ public class EmptyListDeserTest extends XmlTestBase
     static class Value319 {
         public Long orderId, orderTypeId;
     }    
-    
+
+    // [dataformat-xml#460]
+    static class Channel460 {
+        public String channelId;
+    }
+
+    static class ChannelSet460 {
+        public String setId;
+
+        // is default but just for readability
+        @JacksonXmlElementWrapper(useWrapping = true)
+        public List<Channel460> channels;
+    }
+
     /*
     /**********************************************************
     /* Test methods
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#124]
     public  void test124() throws Exception {
@@ -100,5 +113,18 @@ public class EmptyListDeserTest extends XmlTestBase
                 new TypeReference<List<Config>>() {
         });
         assertNull(result);
+    }
+
+    // [dataformat-xml#460]
+    public void testWrappedEmptyListWithWhitespace458() throws Exception
+    {
+        String input = "<ChannelSet460>\n" +
+                "<setId>2</setId>\n" +
+                "<channels>\n" +
+                "</channels>\n" +
+                "</ChannelSet460>";
+        ChannelSet460 set = MAPPER.readValue(input, ChannelSet460.class);
+        assertEquals("List should be empty", 0,
+                set.channels.size());
     }
 }
