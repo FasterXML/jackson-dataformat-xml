@@ -4,7 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.core.io.InputSourceReference;
+import com.fasterxml.jackson.core.io.ContentReference;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlTokenStream;
@@ -176,7 +176,7 @@ public class XmlTokenStreamTest extends XmlTestBase
         XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(doc));
         // must point to START_ELEMENT, so:
         sr.nextTag();
-        XmlTokenStream stream = new XmlTokenStream(sr, InputSourceReference.rawSource(doc), flags);
+        XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags);
         stream.initialize();
         return stream;
     }
