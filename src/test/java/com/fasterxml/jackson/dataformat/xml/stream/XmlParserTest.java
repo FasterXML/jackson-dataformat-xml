@@ -14,23 +14,14 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 public class XmlParserTest extends XmlTestBase
 {
-    protected JsonFactory _jsonFactory;
-    protected XmlFactory _xmlFactory;
-    protected XmlMapper _xmlMapper;
-
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _jsonFactory = new JsonFactory();
-        _xmlFactory = new XmlFactory();
-        _xmlMapper = new XmlMapper();
-    }
+    protected final JsonFactory _jsonFactory = new JsonFactory();
+    protected final XmlMapper _xmlMapper = newMapper();
+    protected XmlFactory _xmlFactory = _xmlMapper.getFactory();
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Unit tests, simplest/manual
-    /**********************************************************
+    /**********************************************************************
      */
     
     public void testSimplest() throws Exception
@@ -119,11 +110,11 @@ public class XmlParserTest extends XmlTestBase
             assertNull(p.nextToken());
         }
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Unit tests, slightly bigger, automated
-    /**********************************************************
+    /**********************************************************************
      */
     
     public void testSimpleNested() throws Exception
@@ -370,9 +361,9 @@ public class XmlParserTest extends XmlTestBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Helper methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     private String _readXmlWriteJson(String xml) throws IOException
@@ -383,14 +374,13 @@ public class XmlParserTest extends XmlTestBase
     private String _readXmlWriteJson(XmlFactory xmlFactory, String xml) throws IOException
     {
         StringWriter w = new StringWriter();
-
-        JsonParser p = xmlFactory.createParser(xml);
-        JsonGenerator jg = _jsonFactory.createGenerator(w);
-        while (p.nextToken() != null) {
-            jg.copyCurrentEvent(p);
+        try (JsonParser p = xmlFactory.createParser(xml)) {
+            try (JsonGenerator jg = _jsonFactory.createGenerator(w)) {
+                while (p.nextToken() != null) {
+                    jg.copyCurrentEvent(p);
+                }
+            }
         }
-        p.close();
-        jg.close();
         return w.toString();
     }
 }
