@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.node;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -46,8 +47,8 @@ public class JsonNodeMixedContent403Test extends XmlTestBase
                 +"<a>mixed1 <b>leaf</b>"
                 +" mixed2</a>\n"
                 +"</root>";
-        assertEquals(JSON_MAPPER.readTree(
-                a2q("{'a':{'':['mixed1 ',' mixed2'],'b':'leaf'}}")),
-                XML_MAPPER.readTree(XML));
+        JsonNode fromJson = JSON_MAPPER.readTree(
+                a2q("{'a':{'':['mixed1 ',' mixed2'],'b':'leaf'}}"));
+        assertEquals(fromJson, XML_MAPPER.readTree(XML));
     }
 }

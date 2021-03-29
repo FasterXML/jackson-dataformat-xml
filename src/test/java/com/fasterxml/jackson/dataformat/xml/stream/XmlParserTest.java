@@ -4,31 +4,24 @@ import java.io.*;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.JsonParser.NumberType;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 public class XmlParserTest extends XmlTestBase
 {
-    protected ObjectMapper _jsonMapper;
-    protected XmlMapper _xmlMapper;
-
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _jsonMapper = new ObjectMapper();
-        _xmlMapper = new XmlMapper();
-    }
+    protected final ObjectMapper _jsonMapper = new JsonMapper();
+    protected final XmlMapper _xmlMapper = newMapper();
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Unit tests, simplest/manual
-    /**********************************************************
+    /**********************************************************************
      */
     
     public void testSimplest() throws Exception
@@ -115,11 +108,11 @@ public class XmlParserTest extends XmlTestBase
             assertNull(p.nextToken());
         }
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Unit tests, slightly bigger, automated
-    /**********************************************************
+    /**********************************************************************
      */
 
     public void testSimpleNested() throws Exception
@@ -364,9 +357,9 @@ public class XmlParserTest extends XmlTestBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Helper methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     private String _readXmlWriteJson(String xml) throws IOException
@@ -377,14 +370,13 @@ public class XmlParserTest extends XmlTestBase
     private String _readXmlWriteJson(ObjectReader xmlReader, String xml) throws IOException
     {
         StringWriter w = new StringWriter();
-
-        JsonParser xp = xmlReader.createParser(xml);
-        JsonGenerator jg = _jsonMapper.createGenerator(w);
-        while (xp.nextToken() != null) {
-            jg.copyCurrentEvent(xp);
+        try (JsonParser p = xmlReader.createParser(xml)) {
+            try (JsonGenerator jg = _jsonMapper.createGenerator(w)) {
+                while (p.nextToken() != null) {
+                    jg.copyCurrentEvent(p);
+                }
+            }
         }
-        xp.close();
-        jg.close();
         return w.toString();
     }
 }

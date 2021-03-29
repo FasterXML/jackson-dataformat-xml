@@ -5,13 +5,15 @@ import java.io.*;
 import javax.xml.stream.*;
 
 import com.fasterxml.jackson.core.io.ContentReference;
+
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlTokenStream;
 
 public class XmlTokenStreamTest extends XmlTestBase
 {
-    private final XMLInputFactory _staxInputFactory = XMLInputFactory.newInstance();
+    private final XmlFactory XML_FACTORY = newMapper().tokenStreamFactory();
 
     public void testSimple() throws Exception
     {
@@ -170,10 +172,10 @@ public class XmlTokenStreamTest extends XmlTestBase
     private XmlTokenStream _tokensFor(String doc) throws Exception {
         return _tokensFor(doc, FromXmlParser.Feature.collectDefaults());
     }
-    
+
     private XmlTokenStream _tokensFor(String doc, int flags) throws Exception
     {
-        XMLStreamReader sr = _staxInputFactory.createXMLStreamReader(new StringReader(doc));
+        XMLStreamReader sr = XML_FACTORY.getXMLInputFactory().createXMLStreamReader(new StringReader(doc));
         // must point to START_ELEMENT, so:
         sr.nextTag();
         XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags);
