@@ -153,7 +153,7 @@ public class FromXmlParser
      */
     protected boolean _closed;
 
-    final protected IOContext _ioContext;
+    protected final IOContext _ioContext;
 
     /*
     /**********************************************************************
@@ -178,6 +178,16 @@ public class FromXmlParser
     protected JsonToken _nextToken;
 
     protected String _currText;
+
+    /**
+     * Additional flag that is strictly needed when exposing "mixed" leading
+     * String value as "anonymous" property/string pair. If so, code returns
+     * START_OBJECT first, sets {@code _nextToken} to be {@code FIELD_NAME}
+     * and sets this flag to indicate use of "anonymous" marker.
+     *
+     * @since 2.13
+     */
+    protected boolean _nextIsLeadingMixed;
 
     /*
     /**********************************************************************
@@ -580,7 +590,15 @@ public class FromXmlParser
                 _streamReadContext = _streamReadContext.getParent();
                 break;
             case PROPERTY_NAME:
-                _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
+                // 29-Mar-2021, tatu: [dataformat-xml#442]: special case of leading
+                //    mixed text added
+                if (_nextIsLeadingMixed) {
+                    _nextIsLeadingMixed = false;
+                    _streamReadContext.setCurrentName(_cfgNameForTextElement);
+                    _nextToken = JsonToken.VALUE_STRING;
+                } else {
+                    _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
+                }
                 break;
             default: // VALUE_STRING, VALUE_NULL
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index` anyway; not
@@ -668,7 +686,7 @@ public class FromXmlParser
                 _currText = _xmlTokens.getText();
                 if (_mayBeLeaf) {
                     _mayBeLeaf = false;
-                    // One more refinement (pronunced like "hack") is that if
+                    // One more refinement (pronounced like "hack") is that if
                     // we had an empty String (or all white space), and we are
                     // deserializing an array, we better hide the empty text.
                     // Also: must skip following END_ELEMENT
@@ -704,7 +722,14 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must
                 // loop over again
                 if (_streamReadContext.inObject()) {
-                    if ((_currToken != JsonToken.PROPERTY_NAME) && XmlTokenStream._allWs(_currText)) {
+                    if (_currToken == JsonToken.PROPERTY_NAME) {
+                        // 29-Mar-2021, tatu: [dataformat-xml#442]: need special handling for
+                        //    leading mixed content; requires 3-token sequence for which _nextToken
+                        //    along is not enough.
+                        _nextIsLeadingMixed = true;
+                        _nextToken = JsonToken.PROPERTY_NAME;
+                        return (_currToken = JsonToken.START_OBJECT);
+                    } else if (XmlTokenStream._allWs(_currText)) {
                         token = _nextToken();
                         continue;
                     }
@@ -714,6 +739,11 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                         token = _nextToken();
                         continue;
                     }
+                    // 29-Mar-2021, tatu: This seems like an error condition...
+                    //   How should we indicate it? As of 2.13, report as unexpected state
+                    throw _constructReadException(
+"Unexpected non-whitespace text ('%s' in Array context: should not occur (or should be handled)",
+_currText);
                 }
 
                 // If not a leaf (or otherwise ignorable), need to transform into property...
@@ -954,14 +984,13 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 (_currToken != JsonToken.VALUE_EMBEDDED_OBJECT || _binaryValue == null)) {
             _reportError("Current token ("+_currToken+") not VALUE_STRING or VALUE_EMBEDDED_OBJECT, can not access as binary");
         }
-        /* To ensure that we won't see inconsistent data, better clear up
-         * state...
-         */
+        // To ensure that we won't see inconsistent data, better clear up state...
         if (_binaryValue == null) {
             try {
                 _binaryValue = _decodeBase64(b64variant);
             } catch (IllegalArgumentException iae) {
-                throw _constructReadException("Failed to decode VALUE_STRING as base64 ("+b64variant+"): "+iae.getMessage());
+                throw _constructReadException("Failed to decode VALUE_STRING as base64 (%s): %s",
+                        b64variant, iae.getMessage());
             }
         }        
         return _binaryValue;
