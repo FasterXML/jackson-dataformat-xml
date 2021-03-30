@@ -6,7 +6,8 @@ Project: jackson-dataformat-xml
 
 2.13.0 (not yet released)
 
-No changes since 2.12
+#442: Missing `START_OBJECT` token in complex element starting with text
+ (reported by richardsonwk@github)
 
 2.12.3 (not yet released)
 

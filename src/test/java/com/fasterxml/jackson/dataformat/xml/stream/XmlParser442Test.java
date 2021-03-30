@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.stream;
 
 import com.fasterxml.jackson.core.JsonToken;
 
@@ -11,26 +11,26 @@ public class XmlParser442Test extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // For [dataformat-xml#442]
-    public void testMixedContentAfter() throws Exception
+    public void testMixedContentBeforeElement442() throws Exception
     {
-        try (FromXmlParser xp = (FromXmlParser) MAPPER.createParser(
-                "<root>\n" // START_OBJECT
-                +"  <branch>\n" // *Missing* START_OBJECT
-                +"     text\n"
-                +"    <leaf>stuff</leaf>\n"
-                +"  </branch>\n" // END_OBJECT
-                +"</root>\n" // END_OBJECT
+        final String XML =
+            "<root>\n" // START_OBJECT
+            +"  <branch>\n" // *Missing* START_OBJECT
+            +"     text\n"
+            +"    <leaf>stuff</leaf>\n"
+            +"  </branch>\n" // END_OBJECT
+            +"</root>\n" // END_OBJECT
+            ;
 
-                /*
-"<SomeXml>\n" // START_OBJECT
-+"  <ParentElement>\n" // *Missing* START_OBJECT
-+"     text\n"
-+"     <ChildElement someAttribute=\"value\"/>\n" // START_OBJECT/END_OBJECT
-+"     further text\n"
-+"  </ParentElement>\n" // END_OBJECT
-+"</SomeXml>\n" // END_OBJECT
-*/
-)) {
+        // Should get equivalent of:
+        //
+        // { "branch" : {
+        //      "" : "  text  ",
+        //      "leaf" : "stuff"
+        //    }
+        // }
+
+        try (FromXmlParser xp = (FromXmlParser) MAPPER.createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, xp.nextToken());
             assertToken(JsonToken.FIELD_NAME, xp.nextToken());
             assertEquals("branch", xp.currentName());
