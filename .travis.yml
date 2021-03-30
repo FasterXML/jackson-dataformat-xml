@@ -12,7 +12,7 @@ script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean deploy --settings tar
 branches:
   only:
     - master
-    - "2.12"
+    - "2.13"
 
 env:
   global:
