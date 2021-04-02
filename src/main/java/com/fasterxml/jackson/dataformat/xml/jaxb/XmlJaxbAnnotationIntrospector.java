@@ -59,9 +59,4 @@ public class XmlJaxbAnnotationIntrospector
     public Boolean isOutputAsCData(MapperConfig<?> config, Annotated ann) {
         return null;
     }
-
-    @Override
-    public void setDefaultUseWrapper(boolean b) {
-        // nothing to do with JAXB
-    }
 }

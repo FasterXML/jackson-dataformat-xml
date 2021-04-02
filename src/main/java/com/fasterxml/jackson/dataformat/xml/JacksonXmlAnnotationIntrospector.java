@@ -14,7 +14,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
  * additional xml-specific annotation that Jackson provides. Note, however, that
  * there is no JAXB annotation support here; that is provided with
  * separate introspector (see
- * {@link com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector}).
+ * https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb,
+ * class {@code com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector}).
  */
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
@@ -44,6 +45,16 @@ public class JacksonXmlAnnotationIntrospector
 
     public JacksonXmlAnnotationIntrospector(boolean defaultUseWrapper) {
         _cfgDefaultUseWrapper = defaultUseWrapper;
+    }
+
+    /*
+    /**********************************************************************
+    /* Extended API XML format module requires
+    /**********************************************************************
+     */
+
+    public void setDefaultUseWrapper(boolean b) {
+        _cfgDefaultUseWrapper = b;
     }
 
     /*
@@ -146,11 +157,6 @@ public class JacksonXmlAnnotationIntrospector
             return prop.value() ? Boolean.TRUE : Boolean.FALSE;
         }
         return null;
-    }
-
-    @Override
-    public void setDefaultUseWrapper(boolean b) {
-        _cfgDefaultUseWrapper = b;
     }
 
     /*

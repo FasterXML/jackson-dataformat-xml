@@ -264,8 +264,8 @@ public class XmlMapper extends ObjectMapper
         // ser and deser configs should usually have the same introspector, so:
         AnnotationIntrospector ai0 = getDeserializationConfig().getAnnotationIntrospector();
         for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-            if (ai instanceof XmlAnnotationIntrospector) {
-                ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);
+            if (ai instanceof JacksonXmlAnnotationIntrospector) {
+                ((JacksonXmlAnnotationIntrospector) ai).setDefaultUseWrapper(state);
             }
         }
         return this;

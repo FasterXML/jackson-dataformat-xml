@@ -12,11 +12,6 @@ import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 public interface XmlAnnotationIntrospector
     extends AnnotationIntrospector.XmlExtensions
 {
-    /**
-     * @since 2.7
-     */
-    public void setDefaultUseWrapper(boolean b);
-
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -93,16 +88,6 @@ public interface XmlAnnotationIntrospector
                 value = _xmlSecondary.isOutputAsCData(config, ann);
             }
             return value;
-        }
-
-        @Override
-        public void setDefaultUseWrapper(boolean b) {
-            if (_xmlPrimary instanceof XmlAnnotationIntrospector) {
-                ((XmlAnnotationIntrospector)_xmlPrimary).setDefaultUseWrapper(b);
-            }
-            if (_xmlSecondary instanceof XmlAnnotationIntrospector) {
-                ((XmlAnnotationIntrospector)_xmlSecondary).setDefaultUseWrapper(b);
-            }
         }
     }
 }
