@@ -36,7 +36,7 @@ public class JacksonXmlAnnotationIntrospector
 
     // non-final from 2.7 on, to allow mapper to change
     protected boolean _cfgDefaultUseWrapper;
-    
+
     public JacksonXmlAnnotationIntrospector() {
         this(DEFAULT_USE_WRAPPER);
     }
