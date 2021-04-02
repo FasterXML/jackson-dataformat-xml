@@ -43,7 +43,7 @@ public interface XmlAnnotationIntrospector
     public Boolean isOutputAsCData(Annotated ann);
 
     public void setDefaultUseWrapper(boolean b);
-    
+
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -59,10 +59,10 @@ public interface XmlAnnotationIntrospector
         implements XmlAnnotationIntrospector
     {
         private static final long serialVersionUID = 1L;
-        
+
         protected final XmlAnnotationIntrospector _xmlPrimary;
         protected final XmlAnnotationIntrospector _xmlSecondary;
-        
+
         public Pair(AnnotationIntrospector p, AnnotationIntrospector s)
         {
             super(p, s);
@@ -139,7 +139,7 @@ public interface XmlAnnotationIntrospector
 
     /*
     /**********************************************************************
-    /* Helper class used to adapt JaxbAnnoationIntrospector as
+    /* Helper class used to adapt JaxbAnnotationIntrospector as
     /* XmlAnnotationIntrospector
     /**********************************************************************
      */
@@ -157,7 +157,7 @@ public interface XmlAnnotationIntrospector
         public JaxbWrapper(JaxbAnnotationIntrospector i) {
             _intr = i;
         }
-        
+
         @Override
         public String findNamespace(Annotated ann) {
             return _intr.findNamespace(ann);
