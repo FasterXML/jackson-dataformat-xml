@@ -48,7 +48,7 @@ public class XmlBeanDeserializerModifier
              * map them is to rename property to have name ""... (and
              * hope this does not break other parts...)
              */
-            Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
+            Boolean b = AnnotationUtil.findIsTextAnnotation(config, intr, acc);
             if (b != null && b.booleanValue()) {
                 // unwrapped properties will appear as 'unnamed' (empty String)
                 BeanPropertyDefinition newProp = prop.withSimpleName(_cfgNameForTextValue);
@@ -127,7 +127,7 @@ public class XmlBeanDeserializerModifier
                     continue;
                 }
                 // as-attribute are ok as well
-                Boolean b = AnnotationUtil.findIsAttributeAnnotation(ai, m);
+                Boolean b = AnnotationUtil.findIsAttributeAnnotation(config, ai, m);
                 if (b != null && b.booleanValue()) {
                     continue;
                 }

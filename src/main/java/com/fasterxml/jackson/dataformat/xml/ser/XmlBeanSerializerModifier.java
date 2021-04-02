@@ -41,10 +41,10 @@ public class XmlBeanSerializerModifier
         for (int i = 0, len = beanProperties.size(); i < len; ++i) {
             BeanPropertyWriter bpw = beanProperties.get(i);
             final AnnotatedMember member = bpw.getMember();
-            String ns = AnnotationUtil.findNamespaceAnnotation(intr, member);
-            Boolean isAttribute = AnnotationUtil.findIsAttributeAnnotation(intr, member);
-            Boolean isText = AnnotationUtil.findIsTextAnnotation(intr, member);
-            Boolean isCData = AnnotationUtil.findIsCDataAnnotation(intr, member);
+            String ns = AnnotationUtil.findNamespaceAnnotation(config, intr, member);
+            Boolean isAttribute = AnnotationUtil.findIsAttributeAnnotation(config, intr, member);
+            Boolean isText = AnnotationUtil.findIsTextAnnotation(config, intr, member);
+            Boolean isCData = AnnotationUtil.findIsCDataAnnotation(config, intr, member);
             bpw.setInternalSetting(XmlBeanSerializerBase.KEY_XML_INFO,
             		new XmlInfo(isAttribute, ns, isText, isCData));
 

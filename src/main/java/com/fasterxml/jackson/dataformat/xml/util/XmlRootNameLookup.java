@@ -3,11 +3,10 @@ package com.fasterxml.jackson.dataformat.xml.util;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.type.ClassKey;
 import com.fasterxml.jackson.databind.util.SimpleLookupCache;
-
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
 /**
  * Helper class used for efficiently finding root element name used with
@@ -90,7 +89,7 @@ public class XmlRootNameLookup
         }
         // Otherwise let's see if there's namespace, too (if we are missing it)
         if (ns == null || ns.isEmpty()) {
-            ns = _findNamespace(intr, ac);
+            ns = _findNamespace(ctxt, intr, ac);
         }
         return _qname(ns, localName);
     }
@@ -102,11 +101,13 @@ public class XmlRootNameLookup
         return new QName(ns, localName);
     }
 
-    private String _findNamespace(AnnotationIntrospector ai, AnnotatedClass ann)
+    private String _findNamespace(DatabindContext ctxt, AnnotationIntrospector ai,
+            AnnotatedClass ann)
     {
+        final MapperConfig<?> config = ctxt.getConfig();
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                String ns = ((XmlAnnotationIntrospector) intr).findNamespace(ann);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, ann);
                 if (ns != null) {
                     return ns;
                 }

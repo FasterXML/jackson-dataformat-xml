@@ -1,23 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.util;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class AnnotationUtil
 {
-    public static String findNamespaceAnnotation(AnnotationIntrospector ai,
+    public static String findNamespaceAnnotation(MapperConfig<?> config,
+            AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                String ns = ((XmlAnnotationIntrospector) intr).findNamespace(prop);
-                if (ns != null) {
-                    return ns;
-                }
-            } else  if (intr instanceof JaxbAnnotationIntrospector) {
-                String ns = ((JaxbAnnotationIntrospector) intr).findNamespace(prop);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, prop);
                 if (ns != null) {
                     return ns;
                 }
@@ -26,17 +21,13 @@ public class AnnotationUtil
         return null;
     }
 
-    public static Boolean findIsAttributeAnnotation(AnnotationIntrospector ai,
+    public static Boolean findIsAttributeAnnotation(MapperConfig<?> config,
+            AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                Boolean b = ((XmlAnnotationIntrospector) intr).isOutputAsAttribute(prop);
-                if (b != null) {
-                    return b;
-                }
-            } else  if (intr instanceof JaxbAnnotationIntrospector) {
-                Boolean b = ((JaxbAnnotationIntrospector) intr).isOutputAsAttribute(prop);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsAttribute(config, prop);
                 if (b != null) {
                     return b;
                 }
@@ -45,17 +36,13 @@ public class AnnotationUtil
         return null;
     }
 
-    public static Boolean findIsTextAnnotation(AnnotationIntrospector ai,
+    public static Boolean findIsTextAnnotation(MapperConfig<?> config,
+            AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                Boolean b = ((XmlAnnotationIntrospector) intr).isOutputAsText(prop);
-                if (b != null) {
-                    return b;
-                }
-            } else  if (intr instanceof JaxbAnnotationIntrospector) {
-                Boolean b = ((JaxbAnnotationIntrospector) intr).isOutputAsText(prop);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsText(config, prop);
                 if (b != null) {
                     return b;
                 }
@@ -64,12 +51,13 @@ public class AnnotationUtil
         return null;
     }
 
-    public static Boolean findIsCDataAnnotation(AnnotationIntrospector ai,
-                                               AnnotatedMember prop)
+    public static Boolean findIsCDataAnnotation(MapperConfig<?> config,
+            AnnotationIntrospector ai,
+            AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                Boolean b = ((XmlAnnotationIntrospector) intr).isOutputAsCData(prop);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsCData(config, prop);
                 if (b != null) {
                     return b;
                 }
