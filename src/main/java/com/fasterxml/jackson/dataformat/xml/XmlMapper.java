@@ -245,8 +245,8 @@ public class XmlMapper extends ObjectMapper
 
                 AnnotationIntrospector ai0 = annotationIntrospector();
                 for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-                    if (ai instanceof XmlAnnotationIntrospector) {
-                        ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(b);
+                    if (ai instanceof JacksonXmlAnnotationIntrospector) {
+                        ((JacksonXmlAnnotationIntrospector) ai).setDefaultUseWrapper(b);
                     }
                 }
             }
