@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.type.ClassKey;
 import com.fasterxml.jackson.databind.util.LRUMap;
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
 /**
  * Helper class used for efficiently finding root element name used with
@@ -62,14 +61,14 @@ public class XmlRootNameLookup
         if (name != null) {
             return name;
         }
-        name = _findRootName(rootType, config);
+        name = _findRootName(config, rootType);
         synchronized (_rootNames) {
             _rootNames.put(key, name);
         }
         return name;
     }
 
-    protected QName _findRootName(Class<?> rootType, MapperConfig<?> config)
+    protected QName _findRootName(MapperConfig<?> config, Class<?> rootType)
     {
         BeanDescription beanDesc = config.introspectClassAnnotations(rootType);
         AnnotationIntrospector intr = config.getAnnotationIntrospector();
@@ -91,7 +90,7 @@ public class XmlRootNameLookup
         }
         // Otherwise let's see if there's namespace, too (if we are missing it)
         if (ns == null || ns.isEmpty()) {
-            ns = _findNamespace(intr, ac);
+            ns = _findNamespace(config, intr, ac);
         }
         return _qname(ns, localName);
     }
@@ -103,11 +102,12 @@ public class XmlRootNameLookup
         return new QName(ns, localName);
     }
 
-    private String _findNamespace(AnnotationIntrospector ai, AnnotatedClass ann)
+    private String _findNamespace(MapperConfig<?> config, AnnotationIntrospector ai,
+            AnnotatedClass ann)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                String ns = ((XmlAnnotationIntrospector) intr).findNamespace(ann);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, ann);
                 if (ns != null) {
                     return ns;
                 }

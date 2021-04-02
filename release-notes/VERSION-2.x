@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #442: Missing `START_OBJECT` token in complex element starting with text
  (reported by richardsonwk@github)
+#462: Remove `jackson-module-jaxb-annotations` runtime dependency (leave
+  as a test dep)
 
 2.12.3 (not yet released)
 

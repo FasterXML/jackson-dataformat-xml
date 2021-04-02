@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyName;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
@@ -98,7 +99,7 @@ public class JacksonXmlAnnotationIntrospector
      */
 
     @Override
-    public String findNamespace(Annotated ann)
+    public String findNamespace(MapperConfig<?> config, Annotated ann)
     {
         JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
         if (prop != null) {
@@ -119,7 +120,7 @@ public class JacksonXmlAnnotationIntrospector
      */
 
     @Override
-    public Boolean isOutputAsAttribute(Annotated ann)
+    public Boolean isOutputAsAttribute(MapperConfig<?> config, Annotated ann)
     {
         JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
         if (prop != null) {
@@ -129,7 +130,7 @@ public class JacksonXmlAnnotationIntrospector
     }
     
     @Override
-    public Boolean isOutputAsText(Annotated ann)
+    public Boolean isOutputAsText(MapperConfig<?> config, Annotated ann)
     {
         JacksonXmlText prop = _findAnnotation(ann, JacksonXmlText.class);
         if (prop != null) {
@@ -139,7 +140,7 @@ public class JacksonXmlAnnotationIntrospector
     }
 
     @Override
-    public Boolean isOutputAsCData(Annotated ann) {
+    public Boolean isOutputAsCData(MapperConfig<?> config, Annotated ann) {
         JacksonXmlCData prop = ann.getAnnotation(JacksonXmlCData.class);
         if (prop != null) {
             return prop.value() ? Boolean.TRUE : Boolean.FALSE;
