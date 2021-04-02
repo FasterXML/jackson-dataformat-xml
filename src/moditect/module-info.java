@@ -7,8 +7,6 @@ module com.fasterxml.jackson.dataformat.xml {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
 
-    requires com.fasterxml.jackson.module.jaxb;
-
     exports com.fasterxml.jackson.dataformat.xml;
     exports com.fasterxml.jackson.dataformat.xml.annotation;
     exports com.fasterxml.jackson.dataformat.xml.deser;
