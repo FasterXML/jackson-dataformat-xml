@@ -35,6 +35,7 @@ All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/)
 [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
 [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme)
+[![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml)
 
 ## License
 
