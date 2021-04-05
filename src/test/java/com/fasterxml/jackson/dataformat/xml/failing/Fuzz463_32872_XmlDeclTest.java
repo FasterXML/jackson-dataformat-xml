@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 // [dataformat-xml#463]
 // (but root cause of https://github.com/FasterXML/woodstox/issues/123)
-public class XmlParserErrorHandling463Test extends XmlTestBase
+public class Fuzz463_32872_XmlDeclTest extends XmlTestBase
 {
     private final XmlMapper MAPPER = newMapper();
 
