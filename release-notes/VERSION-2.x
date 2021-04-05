@@ -10,6 +10,10 @@ Project: jackson-dataformat-xml
  (reported by richardsonwk@github)
 #462: Remove `jackson-module-jaxb-annotations` runtime dependency (leave
   as a test dep)
+#463: NPE via boundary condition, document with only XML declaration
+ (reported by Fabian M)
+#465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
+ (reported by Fabian M)
 
 2.12.3 (not yet released)
 
