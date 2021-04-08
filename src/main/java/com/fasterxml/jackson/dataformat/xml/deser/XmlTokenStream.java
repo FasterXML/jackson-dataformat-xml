@@ -143,7 +143,7 @@ public class XmlTokenStream
      */
     protected String _nextLocalName;
     protected String _nextNamespaceURI;
-    
+
     /*
     /**********************************************************************
     /* Life-cycle
@@ -426,7 +426,8 @@ public class XmlTokenStream
                     throw new IllegalStateException("Unexpected end-of-input after null token");
                 default:
                 }
-                throw new IllegalStateException("Unexpected START_ELEMENT after null token");
+                throw new IllegalStateException(
+"Unexpected START_ELEMENT after null token (inside element with 'xsi:nil' attribute)");
             }
             if (_nextAttributeIndex < _attributeCount) {
 //System.out.println(" XmlTokenStream._next(): Got attr(s)!");
