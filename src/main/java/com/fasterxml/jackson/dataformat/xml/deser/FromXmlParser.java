@@ -1361,6 +1361,10 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             return _xmlTokens.next();
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, this);
+        } catch (IllegalStateException e) {
+            // 08-Apr-2021, tatu: Should improve on this, wrt better information
+            //   on issue.
+            throw new JsonParseException(this, e.getMessage(), e);
         }
     }
 
