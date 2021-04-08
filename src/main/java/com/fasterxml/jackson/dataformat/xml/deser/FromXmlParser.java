@@ -1305,6 +1305,10 @@ _currText);
             return _xmlTokens.next();
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, this);
+        } catch (IllegalStateException e) {
+            // 08-Apr-2021, tatu: Should improve on this, wrt better information
+            //   on issue.
+            throw new StreamReadException(this, e.getMessage(), e);
         }
     }
 
