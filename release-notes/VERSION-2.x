@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.12.3 (not yet released)
+2.12.3 (12-Apr-2021)
 
 #456: Fix JsonAlias with unwrapped lists
  (contributed by Westin M)
