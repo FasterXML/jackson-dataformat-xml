@@ -15,7 +15,7 @@ Project: jackson-dataformat-xml
 #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (reported by Fabian M)
 
-2.12.3 (not yet released)
+2.12.3 (12-Apr-2021)
 
 #456: Fix JsonAlias with unwrapped lists
  (contributed by Westin M)
