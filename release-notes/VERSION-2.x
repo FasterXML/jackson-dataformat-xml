@@ -14,6 +14,7 @@ Project: jackson-dataformat-xml
  (reported by Fabian M)
 #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (reported by Fabian M)
+- Woodstox dependency 6.2.6 (from 6.2.4)
 
 2.12.3 (12-Apr-2021)
 
