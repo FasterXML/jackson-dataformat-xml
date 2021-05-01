@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -51,7 +52,7 @@ public class ListDeser469Test extends XmlTestBase
         public InnerBean2(String s) { str2 = s; }
     }
 
-    public void testIssue469() throws Exception
+    public void testIssue469WithDefaults() throws Exception
     {
         // Here we just use default settings (which defaults to wrappers)
         final XmlMapper mapper = newMapper();
@@ -92,5 +93,40 @@ public class ListDeser469Test extends XmlTestBase
         assertNotNull(mid.inner2);
         assertEquals(1, mid.inner2.size());
         assertEquals("aaaa", mid.inner2.get(0).str2);
+    }
+
+    static class OuterNoWrappers {
+        public List<InnerNoWrappers> inner;
+    }
+
+    static class InnerNoWrappers {
+        @JacksonXmlProperty(isAttribute = true)
+        public String str;
+
+        protected InnerNoWrappers() { }
+        public InnerNoWrappers(String s) { str = s; }
+    }
+
+    // But alternatively can try setting default to "no wrappers":
+    public void testIssue469WithNoWrapper() throws Exception
+    {
+        final XmlMapper mapper = XmlMapper.builder()
+                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false))
+                .build();
+
+        // First: check round-trip
+        {
+            OuterNoWrappers source = new OuterNoWrappers();
+            source.inner = new ArrayList<>();
+            source.inner.add(new InnerNoWrappers("value"));
+
+            String xml = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(source);
+//System.err.println("XML:\n"+xml);
+            OuterNoWrappers result = mapper.readValue(xml, OuterNoWrappers.class);
+            assertNotNull(result.inner);
+            assertEquals(1, result.inner.size());
+            assertEquals("value",result.inner.get(0).str);
+        }
     }
 }
