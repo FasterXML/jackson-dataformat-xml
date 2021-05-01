@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -81,6 +82,17 @@ public class ListSerializationTest extends XmlTestBase
         String xml = MAPPER.writeValueAsString(new ListBean(1, 2, 3));
         xml = removeSjsxpNamespace(xml);
         assertEquals("<ListBean><values><values>1</values><values>2</values><values>3</values></values></ListBean>", xml);
+
+        // for [dataformat-xml#469] try forcing wrapping:
+        XmlMapper unwrapMapper = XmlMapper.builder()
+                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false))
+                .build();
+        xml = unwrapMapper.writeValueAsString(new ListBean(1, 2, 3));
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<ListBean>"
+                +"<values>1</values><values>2</values><values>3</values>"
+                +"</ListBean>",
+                xml);
     }
 
     public void testStringList() throws IOException
