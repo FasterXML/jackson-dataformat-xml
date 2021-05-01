@@ -52,9 +52,28 @@ public class ListDeser469Test extends XmlTestBase
         public InnerBean2(String s) { str2 = s; }
     }
 
+    // also wrt [dataformat-xml#469]
+    static class OuterNoWrappers {
+        public List<InnerNoWrappers> inner;
+    }
+
+    static class InnerNoWrappers {
+        @JacksonXmlProperty(isAttribute = true)
+        public String str;
+
+        protected InnerNoWrappers() { }
+        public InnerNoWrappers(String s) { str = s; }
+    }
+
+    /*
+    /**********************************************************************
+    /* Test methods
+    /**********************************************************************
+     */
+
     public void testIssue469WithDefaults() throws Exception
     {
-        // Here we just use default settings (which defaults to wrappers)
+        // Here we just use default settings (which defaults to using wrappers)
         final XmlMapper mapper = newMapper();
 
         // First: create POJO value to test round-trip:
@@ -93,18 +112,6 @@ public class ListDeser469Test extends XmlTestBase
         assertNotNull(mid.inner2);
         assertEquals(1, mid.inner2.size());
         assertEquals("aaaa", mid.inner2.get(0).str2);
-    }
-
-    static class OuterNoWrappers {
-        public List<InnerNoWrappers> inner;
-    }
-
-    static class InnerNoWrappers {
-        @JacksonXmlProperty(isAttribute = true)
-        public String str;
-
-        protected InnerNoWrappers() { }
-        public InnerNoWrappers(String s) { str = s; }
     }
 
     // But alternatively can try setting default to "no wrappers":
