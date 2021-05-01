@@ -51,10 +51,11 @@ public class ListDeser469Test extends XmlTestBase
         public InnerBean2(String s) { str2 = s; }
     }
 
-    private final XmlMapper MAPPER = newMapper();
-
     public void testIssue469() throws Exception
     {
+        // Here we just use default settings (which defaults to wrappers)
+        final XmlMapper mapper = newMapper();
+
         // First: create POJO value to test round-trip:
         {
             OuterBean source = new OuterBean();
@@ -63,10 +64,10 @@ public class ListDeser469Test extends XmlTestBase
             items.add(new InnerBean2("foo"));
             source.middle.inner2 = items;
 
-            String xml = MAPPER.writerWithDefaultPrettyPrinter()
+            String xml = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(source);
 
-            OuterBean result = MAPPER.readValue(xml, OuterBean.class);
+            OuterBean result = mapper.readValue(xml, OuterBean.class);
 
             MiddleBean mid = result.middle;
             assertNotNull(mid);
@@ -83,7 +84,7 @@ public class ListDeser469Test extends XmlTestBase
             "  </Middle>\n" +
             "</OuterBean>\n";
 
-        OuterBean outer = MAPPER.readValue(xmlInput, OuterBean.class);
+        OuterBean outer = mapper.readValue(xmlInput, OuterBean.class);
 
         MiddleBean mid = outer.middle;
         assertNotNull(mid);
