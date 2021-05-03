@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.util.JsonParserDelegate;
 
 import com.fasterxml.jackson.databind.*;
@@ -154,7 +155,14 @@ public class WrapperHandlingDeserializer
             p = ((JsonParserDelegate) p).delegate();
         }
         if (p instanceof FromXmlParser) {
-            ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
+            // 03-May-2021, tatu: as per [dataformat-xml#469] there are special
+            //   cases where we get String token to represent XML empty element.
+            //   If so, need to refrain from adding wrapping as that would
+            //   override parent settings
+            JsonToken t = p.currentToken();
+            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
+                ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
+            }
         }
     }
     
