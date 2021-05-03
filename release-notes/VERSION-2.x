@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.12.4 (not yet released)
+
+#469: Empty tags cause incorrect deserialization of unwrapped lists
+ (reported by jackson-code1@github)
+
 2.12.3 (12-Apr-2021)
 
 #456: Fix JsonAlias with unwrapped lists

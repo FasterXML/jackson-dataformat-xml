@@ -83,6 +83,7 @@ public class ListDeser469FailingTest extends XmlTestBase
             "<outer>\n" +
             "  <inner1/>\n" +
             "  <inner2 str2='aaaa'/>\n" +
+//            "  <inner2><str2>aaaa</str2></inner2>\n" +
             "</outer>\n";
 
         Outer469 result = mapper.readValue(xmlInput, Outer469.class);
