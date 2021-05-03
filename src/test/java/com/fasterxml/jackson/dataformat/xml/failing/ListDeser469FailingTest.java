@@ -3,7 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -13,12 +13,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 // needed, alas
 public class ListDeser469FailingTest extends XmlTestBase
 {
-    static class OuterBean {
-        public MiddleBean middle;
-    }
-
     @JsonPropertyOrder({"inner1", "inner2"})
-    static class MiddleBean
+    @JsonRootName("outer")
+    static class Outer469
     {
         public InnerBean1 inner1;
 
@@ -64,40 +61,35 @@ public class ListDeser469FailingTest extends XmlTestBase
         final XmlMapper mapper = newMapper();
 
         // First: create POJO value to test round-trip:
-        {
-            OuterBean source = new OuterBean();
-            source.middle = new MiddleBean();
+        if (true) {
+            Outer469 source = new Outer469();
             List<InnerBean2> items = new ArrayList<>();
             items.add(new InnerBean2("foo"));
-            source.middle.inner2 = items;
+            source.inner2 = items;
 
             String xml = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(source);
+//System.err.println("XML: \n"+xml);
+            Outer469 result = mapper.readValue(xml, Outer469.class);
 
-            OuterBean result = mapper.readValue(xml, OuterBean.class);
-
-            MiddleBean mid = result.middle;
-            assertNotNull(mid);
-            assertNotNull(mid.inner2);
-            assertEquals(1, mid.inner2.size());
-            assertEquals("foo", mid.inner2.get(0).str2);
+            assertNotNull(result);
+            assertNotNull(result.inner2);
+            assertEquals(1, result.inner2.size());
+            assertEquals("foo", result.inner2.get(0).str2);
         }
 
         // And then verify from XML String
-        String xmlInput = "<OuterBean>\n" +
-            "  <middle>\n" +
-            "    <inner1/>\n" +
-            "    <inner2 str2='aaaa'/>\n" +
-            "  </middle>\n" +
-            "</OuterBean>\n";
+        String xmlInput =
+            "<outer>\n" +
+            "  <inner1/>\n" +
+            "  <inner2 str2='aaaa'/>\n" +
+            "</outer>\n";
 
-        OuterBean outer = mapper.readValue(xmlInput, OuterBean.class);
+        Outer469 result = mapper.readValue(xmlInput, Outer469.class);
+        assertNotNull(result);
 
-        MiddleBean mid = outer.middle;
-        assertNotNull(mid);
-
-        assertNotNull(mid.inner2);
-        assertEquals(1, mid.inner2.size());
-        assertEquals("aaaa", mid.inner2.get(0).str2);
+        assertNotNull(result.inner2);
+        assertEquals(1, result.inner2.size());
+        assertEquals("aaaa", result.inner2.get(0).str2);
     }
 }
