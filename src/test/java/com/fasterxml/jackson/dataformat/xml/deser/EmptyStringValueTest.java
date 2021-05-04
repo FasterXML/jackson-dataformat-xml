@@ -24,12 +24,12 @@ public class EmptyStringValueTest extends XmlTestBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Test methods
-    /**********************************************************
+    /**********************************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
 
     public void testEmptyString162() throws Exception
     {
