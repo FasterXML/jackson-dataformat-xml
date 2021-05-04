@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
+import com.fasterxml.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -177,7 +178,15 @@ public class XmlMapper extends ObjectMapper
             .setAcceptBlankAsEmpty(Boolean.TRUE)
             // and then coercion from empty String to empty value, in general
             .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty)
-        ;
+            ;
+        // 03-May-2021, tatu: ... except make sure to keep "empty to Null" for
+        //   scalar types...
+        coercionConfigFor(LogicalType.Integer)
+            .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+        coercionConfigFor(LogicalType.Float)
+            .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+        coercionConfigFor(LogicalType.Boolean)
+            .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
     }
 
     /**

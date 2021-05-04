@@ -20,6 +20,9 @@ Project: jackson-dataformat-xml
 
 #469: Empty tags cause incorrect deserialization of unwrapped lists
  (reported by jackson-code1@github)
+#473: Parsing of `null` Integer fields changed behavior between versions
+   2.11.4 and 2.12.X
+ (reported by Steviep@github)
 
 2.12.3 (12-Apr-2021)
 
