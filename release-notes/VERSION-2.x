@@ -14,6 +14,9 @@ Project: jackson-dataformat-xml
  (reported by Fabian M)
 #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (reported by Fabian M)
+#474: Empty String ("") parsed as 0 for int even if
+   DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES enabled (note:
+   actual fix in `jackson-databind)
 - Woodstox dependency 6.2.6 (from 6.2.4)
 
 2.12.4 (not yet released)

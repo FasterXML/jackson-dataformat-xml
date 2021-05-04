@@ -3,6 +3,10 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -72,7 +76,6 @@ public class EmptyWithScalarsTest extends XmlTestBase
     // (will try to fix in 2.13, but not 2.12)
     public void testPrimitivesNoNulls() throws Exception
     {
-        /*
         ObjectReader r = MAPPER
                 .readerFor(NumbersPrimitive.class)
                 .with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
@@ -88,9 +91,8 @@ public class EmptyWithScalarsTest extends XmlTestBase
             r.readValue(_emptyWrapped("i"));
             fail("Should not pass");
         } catch (MismatchedInputException e) {
-            verifyException(e, "Cannot coerce empty String");
+            verifyException(e, "Cannot coerce `null` to ");
         }
-        */
     }
 
     /*
