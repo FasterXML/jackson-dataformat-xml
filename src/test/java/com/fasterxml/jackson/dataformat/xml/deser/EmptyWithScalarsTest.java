@@ -3,6 +3,9 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -65,6 +68,27 @@ public class EmptyWithScalarsTest extends XmlTestBase
         p = MAPPER.readValue(_emptyWrapped("f"),
                 NumbersPrimitive.class);
         assertEquals(0f, p.f);
+    }
+
+    public void testPrimitivesNoNulls() throws Exception
+    {
+        ObjectReader r = MAPPER
+                .readerFor(NumbersPrimitive.class)
+                .with(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
+        _testPrimitivesNoNulls(r, _emptyWrapped("i"));
+        _testPrimitivesNoNulls(r, _emptyWrapped("l"));
+        _testPrimitivesNoNulls(r, _emptyWrapped("d"));
+        _testPrimitivesNoNulls(r, _emptyWrapped("f"));
+    }
+
+    private void _testPrimitivesNoNulls(ObjectReader r, String doc) throws Exception
+    {
+        try {
+            r.readValue(_emptyWrapped("i"));
+            fail("Should not pass");
+        } catch (MismatchedInputException e) {
+            verifyException(e, "Cannot coerce empty String");
+        }
     }
 
     /*
