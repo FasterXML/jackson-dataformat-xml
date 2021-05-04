@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.cfg.SerializationContexts;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.ser.SerializationContextExt;
-
+import com.fasterxml.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContexts;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -98,6 +98,14 @@ public class XmlMapper extends ObjectMapper
                 // and then coercion from empty String to empty value, in general
                 .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty)
             ;
+            // 03-May-2021, tatu: ... except make sure to keep "empty to Null" for
+            //   scalar types...
+            _coercionConfigs.findOrCreateCoercion(LogicalType.Integer)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+            _coercionConfigs.findOrCreateCoercion(LogicalType.Float)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+            _coercionConfigs.findOrCreateCoercion(LogicalType.Boolean)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
         }
 
         @Override
