@@ -4,17 +4,11 @@ jdk:
   - openjdk8
   - openjdk11
 
-# Below this line is configuration for deploying to the Sonatype OSS repo
-# https://knowm.org/configure-travis-ci-to-deploy-snapshots/
-before_install: "git clone -b travis `git config --get remote.origin.url` target/travis"
-script: "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && mvn clean deploy --settings target/travis/settings.xml || mvn clean verify --settings target/travis/settings.xml"
-
 branches:
   only:
     - master
     - "2.13"
 
-env:
-  global:
-    - secure: "z0xmU0VFKUHE6TVqDBIH5LRV/x1Cd4jk8uuiTXp0tH6980PzlN+cDTzSwXEEa+ugJ1g0slRFbE9/0hL7mJ+jPHEDHR1xE6iZT46EWWDyPJQelxO1K4lSzvpLvE07CaQuBAeDAoEOxKd2m7IBx9fRLdgp8QBpfjHxlh77Cmk4pug="
-    - secure: "wAgWG2GqyvXYcWOaoEE5YRncfF1Q23aiw8YmEveuC4xGCjvYCdKYrK/fz69dwNERN+H1dxM0IMNgkFXrnHsC6YcbGLsS+do28NK5e/ygF1P7dcpC6a6LYLTvrguMw+eco7xIaxUlMnTccj8K9T/OpKpGvGKaH4uW+GLoxCnXSv0="
+# 2021-06-25, tatu: Stop snapshot builds via Travis, only check for fails
+
+script: mvn -B clean verify
