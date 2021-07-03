@@ -15,7 +15,7 @@ public class XsiNilEnableDisable467Test extends XmlTestBase
     {
         JsonNode node = MAPPER.readTree(
 "<e>"
-+"<h xmlns:xsi='"+XSI_NS_DECL+"' xsi:nil='true'><child /></h>"
++"<h "+XSI_NS_DECL+" xsi:nil='true'><child /></h>"
 +"</e>"
                 );
         assertNotNull(node);
