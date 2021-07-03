@@ -1,30 +1,46 @@
-# Overview
+## Overview
 
-This projects contains [Jackson](http://wiki.fasterxml.com/JacksonHome) extension component for
+This projects contains [Jackson](../../../jackson) extension component for
 reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
-with "Code-first" approach (that is, no support is added for "Schema-first" approach).
-Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-module-jaxb-annotations);
+with "Code-first" approach (no support is added for "Schema-first" approach).
+Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb);
 this module provides low-level abstractions (`JsonParser`, `JsonGenerator`, `JsonFactory`) as well as small number of higher level
 overrides needed to make data-binding work.
 
-It is worth noting, however, that the goal is NOT to be full JAXB clone; or to be general purpose XML toolkit.
+It is worth noting, however, that the goal is NOT to be full JAXB clone; or to be a
+general purpose XML toolkit.
 
 Specifically:
 
- * While XML serialization should ideally be similar to JAXB output, deviations are not necessarily considered bugs -- we do "best-effort" matching
- * What should be guaranteed is that any XML written using this module must be readable using module as well: that is, we do aim for full XML serialization.
- * From above: there are XML constructs that module will not be able to handle; including some cases JAXB supports
- * This module may, however, also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
+* While XML serialization should ideally be similar to JAXB output, deviations are not automatically considered flaws (there are reasons for some differences)
+* What should be guaranteed is that any XML written using this module must be readable using module as well ("read what I wrote"): that is, we do aim for full round-trip support
+* From above: there are XML constructs that module will not be able to handle; including some cases JAXB (and other Java XML libraries) supports
+* This module also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
 
-[![Build Status](https://travis-ci.org/FasterXML/jackson-dataformat-xml.svg?branch=master)](https://travis-ci.org/FasterXML/jackson-dataformat-xml)
+## Branches
+
+`master` branch is for developing the next major Jackson version -- 3.0 -- but there
+are active maintenance branches in which much of development happens:
+
+* `2.13` is for developing the next minor 2.x version
+* `2.12` is for backported fixes to include in 2.10.x patch versions
+
+Older branches are usually not changed but are available for historic reasons.
+All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
+
+## Status
+
+[![Build (github)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml/badge.svg)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/)
-[![Javadoc](https://javadoc-emblem.rhcloud.com/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
+[![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
+[![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme)
+[![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml)
 
-# Status
+## License
 
-As of version 2.3, module is fully functional and considered production ready.
+All modules are licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
 
 ## Maven dependency
 
@@ -34,26 +50,24 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.9.6</version>
+  <version>2.12.3</version>
 </dependency>
 ```
 
 (or whatever version is most up-to-date at the moment)
 
-Also: you usually also want to make sure that XML library in use is [Woodstox](http://wiki.fasterxml.com/WoodstoxHome) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
+Also: you usually also want to make sure that XML library in use is [Woodstox](https://github.com/FasterXML/woodstox) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
 You can do this by adding this in your `pom.xml`:
 
 ```xml
 <dependency>
-  <groupId>org.codehaus.woodstox</groupId>
-  <artifactId>woodstox-core-asl</artifactId>
-  <version>4.4.1</version>
+  <groupId>com.fasterxml.woodstox</groupId>
+  <artifactId>woodstox-core</artifactId>
+  <version>6.2.5</version>
 </dependency>
 ```
 
 # Usage
-
-## Constructing Mapper
 
 Although module implements low-level (`JsonFactory` / `JsonParser` / `JsonGenerator`) abstractions,
 most usage is through data-binding level. This because a small number of work-arounds have been added
@@ -66,18 +80,15 @@ Usually you either create `XmlMapper` simply by:
 XmlMapper mapper = new XmlMapper();
 ```
 
-but in case you need to configure settings, you will want to do:
+but in case you need to configure settings, you will want to use Builder (added in
+Jackson 2.10) style construction:
 
 ```java
-JacksonXmlModule module = new JacksonXmlModule();
-// and then configure, for example:
-module.setDefaultUseWrapper(false);
-XmlMapper xmlMapper = new XmlMapper(module);
-// and you can also configure AnnotationIntrospectors etc here:
+XmlMapper mapper = XmlMapper.builder()
+   .defaultUseWrapper(false)
+   // enable/disable Features, change AnnotationIntrospector
+   .build();
 ```
-
-as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
-`XmlMapper` simply constructs module with default settings.
 
 Alternatively, sometimes you may want/need to configure low-level XML processing details
 controlled by underlying Stax library (Woodstox, Aalto or JDK-default Oracle implementation).
@@ -90,7 +101,10 @@ ifactory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32000);
 // configure
 XMLOutputFactory ofactory = new WstxOutputFactory(); // Woodstox XMLOutputfactory impl
 ofactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true);
-XmlFactory xf = new XmlFactory(ifactory, ofactory);
+XmlFactory xf = XmlFactory.builder()
+    .inputFactory(ifactory)
+    .outputFactory(ofactory)
+    .builder();
 XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
 ```
 
@@ -99,22 +113,16 @@ For configurable properties, you may want to check out
 
 ## Android quirks
 
-While usage on Android is the same as on standard JDKs, there is one thing that may cause issues:
-since Google has chosen not to include whole JDK 1.6 API, `Stax` API (package `javax.xml.stream`) is missing.
-This means that one has to add dependency explicitly. With Maven it can be done with
+Usage of this library on Android is currently not supported. This is due to the fact that the Stax API is unavailable on the Android platform, and attempts to declare an explicit dependency on the Stax API library will result in errors at build time (since the inclusion of the `javax.*` namespace in apps is restricted).
+For more on the issues, see:
 
-```xml
-<dependency>
-    <groupId>javax.xml.stream</groupId>
-    <artifactId>stax-api</artifactId>
-    <version>1.0-2</version>
-    <scope>compile</scope>
-</dependency>
-```
+* https://stackoverflow.com/questions/31360025/using-jackson-dataformat-xml-on-android
+* https://www.docx4java.org/blog/2012/05/jaxb-can-be-made-to-run-on-android/
 
-or, if using other build tools, include similar dependency or download actual jar from
-
-    http://repo1.maven.org/maven2/javax/xml/stream/stax-api/1.0-2/
+Note that as per articles linked to it MAY be possible to use the module on Android, but it unfortunately requires
+various work-arounds and development team can not do much to alleviate these issues.
+Suggestions for improvements would be welcome; discussions on
+[Jackson users list](https://groups.google.com/forum/#!forum/jackson-user) encouraged.
 
 ## Serializing POJOs as XML
 
@@ -219,28 +227,45 @@ for longer description, check out [XML module annotations](https://github.com/Fa
 
 ## Known Limitations
 
-Currently, following limitations exist beyond basic Jackson (JSON) limitations:
+Currently, following limitations exist beyond general Jackson (JSON) limitations:
 
-* Root value should be a POJO; and specifically following types can be serialized as properties but may not work as intended as root values
+* Streaming model is only meant to be used through databinding: direct usage is possible but not supported
+* Tree Model (`JsonNode`, `ObjectMapper.readTree()`) is based on JSON content model and it does not match exactly with XML infoset
+    * Mixed content (both textual content and elements as children of an element) not supported: text, if any, will be lost
+    * Prior to `2.12`, handling of repeated XML elements was problematic (it could only retain the last element read), but [#403](https://github.com/FasterXML/jackson-dataformat-xml/issues/403) improves handling
+* Root value should be a POJO (that is, a Java value expressed as a set of properties (key/value pairs)); and specifically following types can be serialized as properties but may not work as intended as root values
     * Primitive/Wrapper values (like `java.lang.Integer`)
+    * `String`s (and types that serialize as Strings such as Timestamps, Date/Time values)
     * `Enum`s
     * Java arrays
     * `java.util.Collection` values (Lists, Sets)
     * Note: over time some level of support has been added, and `Collection`s, for example, often work.
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
-    * Unwrapped List/array support was added in Jackson 2.1 (2.0 does NOT support them; arrays are always wrapped)
     * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
     * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
-* Tree Model is only supported in limited fashion: specifically, Java arrays and `Collection`s can be written, but can not be read, since it is not possible to distinguish Arrays and Objects without additional information.
+* Polymorphic Type Handling works, but only some of inclusion mechanisms are supported (`WRAPPER_ARRAY`, for example is not supported due to problems wrt mapping of XML, Arrays)
+    * JAXB-style "compact" Type Id where property name is replaced with Type Id is not supported.
+* Mixed Content (elements and text in same element) is not supported in databinding: child content must be either text OR element(s) (attributes are fine)
+* While XML namespaces are recognized, and produced on serialization, namespace URIs are NOT verified when deserializing: only local names are matched
+    * This also means that elements that only differ by namespace cannot be used.
 
-# Documentation
+-----
 
-* XML module [wiki page](https://github.com/FasterXML/jackson-dataformat-xml/wiki) for more information
-* Various Blog posts on Woodstox:
-    * [Standard Stax 1.x config properties](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-basic-stax-properties-39bdf88c18ec)
-    * [Stax2 extension config properties](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-stax2-properties-c80ef5a32ef1)
-    * [Woodstox-specific config properties](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
+## Support
+
+### Community support
+
+Jackson components are supported by the Jackson community through mailing lists, Gitter forum, Github issues. See [Participation, Contributing](../../../jackson#participation-contributing) for full details.
+
+### Enterprise support
+
+Available as part of the Tidelift Subscription.
+
+The maintainers of `jackson-dataformat-xml` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
+
+-----
 
 # See Also
 
+* XML module [wiki page](../../wiki) for more information
 * Using XML with [DropWizard](https://github.com/dropwizard/dropwizard)? Check out [this extension](https://github.com/yunspace/dropwizard-xml)!
