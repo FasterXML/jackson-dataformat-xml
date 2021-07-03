@@ -81,36 +81,44 @@ public class XmlFactory extends JsonFactory
      * and this reuse only works within context of a single
      * factory instance.
      */
-    public XmlFactory() { this(null, null, null); }
+    public XmlFactory() { this(null, null, null, null); }
+
+    public XmlFactory(ClassLoader cl) {
+        this(null, null, null, cl);
+    }
 
     public XmlFactory(ObjectCodec oc) {
-        this(oc, null, null);
+        this(oc, null, null, null);
     }
 
     public XmlFactory(XMLInputFactory xmlIn) {
-        this(null, xmlIn, null);
+        this(null, xmlIn, null, null);
     }
     
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
-        this(null, xmlIn, xmlOut);
+        this(null, xmlIn, xmlOut, null);
     }
     
-    public XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
+    public XmlFactory(ObjectCodec oc, XMLInputFactory xmlIn, XMLOutputFactory xmlOut, ClassLoader cl)
     {
         this(oc, DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
-                xmlIn, xmlOut, null);
+                xmlIn, xmlOut, null, null);
     }
 
     protected XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
             XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
-            String nameForTextElem)
+            String nameForTextElem, ClassLoader cl)
     {
         super(oc);
         _xmlParserFeatures = xpFeatures;
         _xmlGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
-            xmlIn = XMLInputFactory.newInstance();
+            if (cl != null) {
+                xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
+            } else {
+                xmlIn = XMLInputFactory.newInstance();
+            }
             // as per [dataformat-xml#190], disable external entity expansion by default
             xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
             // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
