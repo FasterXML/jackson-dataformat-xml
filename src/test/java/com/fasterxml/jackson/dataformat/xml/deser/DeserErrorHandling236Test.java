@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+
 import com.fasterxml.jackson.dataformat.xml.*;
 
 public class DeserErrorHandling236Test extends XmlTestBase
@@ -23,7 +24,7 @@ public class DeserErrorHandling236Test extends XmlTestBase
         final String XML = "<name>monica&</name>";
         try {
             MAPPER.readValue(XML, Employee.class);
-        } catch (JsonProcessingException e) {
+        } catch (StreamReadException e) {
             verifyException(e, "Unexpected character");
         } catch (Exception e) {
             fail("Wrong exception: "+e);

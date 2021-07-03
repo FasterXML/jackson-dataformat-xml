@@ -1,22 +1,19 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
 import java.util.Set;
 
 import com.fasterxml.jackson.core.*;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.*;
+import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
+import com.fasterxml.jackson.databind.ser.bean.UnwrappingBeanSerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
-import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
-import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
 
 /**
  * Copy of {@link UnwrappingBeanSerializer} required to extend
  * {@link XmlBeanSerializerBase} for XML-specific handling.
- * 
- * @author Pascal Gélinas
- * 
  */
 public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
 {
@@ -27,9 +24,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     protected final NameTransformer _nameTransformer;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: constructors
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -54,20 +51,28 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         _nameTransformer = src._nameTransformer;
     }
 
-    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src, Set<String> toIgnore)
+    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src,
+            Set<String> toIgnore, Set<String> toInclude)
     {
-        super(src, toIgnore);
+        super(src, toIgnore, toInclude);
+        _nameTransformer = src._nameTransformer;
+    }
+
+    protected UnwrappingXmlBeanSerializer(UnwrappingXmlBeanSerializer src,
+            BeanPropertyWriter[] properties, BeanPropertyWriter[] filteredProperties)
+    {
+        super(src, properties, filteredProperties);
         _nameTransformer = src._nameTransformer;
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle: factory methods, fluent factories
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
-    public JsonSerializer<Object> unwrappingSerializer(NameTransformer transformer)
+    public ValueSerializer<Object> unwrappingSerializer(NameTransformer transformer)
     {
         // !!! 23-Jan-2012, tatu: Should we chain transformers?
         return new UnwrappingXmlBeanSerializer(this, transformer);
@@ -91,9 +96,15 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
         return new UnwrappingXmlBeanSerializer(this, _objectIdWriter, filterId);
     }
 
-    @Override // since 2.8
-    protected BeanSerializerBase withIgnorals(Set<String> toIgnore) {
-        return new UnwrappingXmlBeanSerializer(this, toIgnore);
+    @Override // since 2.12
+    protected BeanSerializerBase withByNameInclusion(Set<String> toIgnore, Set<String> toInclude) {
+        return new UnwrappingXmlBeanSerializer(this, toIgnore, toInclude);
+    }
+
+    @Override // since 2.11.1
+    protected BeanSerializerBase withProperties(BeanPropertyWriter[] properties,
+            BeanPropertyWriter[] filteredProperties) {
+        return new UnwrappingXmlBeanSerializer(this, properties, filteredProperties);
     }
 
     /**
@@ -106,9 +117,9 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* JsonSerializer implementation that differs between impls
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -117,23 +128,23 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
      */
     @Override
     public final void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
-        throws IOException, JsonGenerationException
+        throws JacksonException
     {
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, jgen, provider, false);
             return;
         }
         if (_propertyFilterId != null) {
-            _serializeFieldsFiltered(bean, jgen, provider, _propertyFilterId);
+            _serializePropertiesFiltered(bean, jgen, provider, _propertyFilterId);
         } else {
-            _serializeFields(bean, jgen, provider);
+            _serializeProperties(bean, jgen, provider);
         }
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Standard methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override

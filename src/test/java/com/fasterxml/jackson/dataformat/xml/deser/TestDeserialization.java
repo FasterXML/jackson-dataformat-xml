@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -21,14 +22,32 @@ public class TestDeserialization extends XmlTestBase
         public String type = "NOT SET";
     }
 
+    // [dataformat-xml#219]
+    static class Worker219
+    {
+        @JacksonXmlProperty(localName = "developer")
+        String developer;
+        @JacksonXmlProperty(localName = "tester")
+        String tester;
+        @JacksonXmlProperty(localName = "manager")
+        String manager;
+    }
+
+    // [dataformat-xml#219]
+    @JsonRootName("line")
+    static class Line219 {
+        public String code; //This should ideally be complex type
+        public String amount;
+    }
+
     /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
-    
+    private final XmlMapper MAPPER = newMapper();
+
     /**
      * Unit test to ensure that we can successfully also round trip
      * example Bean used in Jackson tutorial
@@ -49,7 +68,7 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("abc", bean.text);
     }
     
-    // [Issue#14]
+    // [dataformat-xml#14]
     public void testMapWithAttr() throws Exception
     {
         final String xml = "<order><person lang='en'>John Smith</person></order>";
@@ -79,6 +98,10 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("work", ob.type);
     }
 
+    // 03-Jul-2020, tatu: Due to change on deserialization of root-level scalars,
+    //    this test that passed on 2.11 is no longer valid (it wasn't even before
+    //    wrt compatibility of serialization)
+    /*
     public void testMissingOptionalAttr() throws Exception
     {
         Optional ob = MAPPER.readValue("<Optional>123-456-7890</Optional>",
@@ -86,5 +109,35 @@ public class TestDeserialization extends XmlTestBase
         assertNotNull(ob);
         assertEquals("123-456-7890", ob.number);
         assertEquals("NOT SET", ob.type);
+    }
+    */
+
+    // [dataformat-xml#219]
+    public void testWithAttribute219Worker() throws Exception
+    {
+        final String DOC =
+"<worker>\n" + 
+"  <developer>test1</developer>\n" + 
+"  <tester grade='senior'>test2</tester>\n" + 
+"  <manager>test3</manager>\n" + 
+"</worker>"
+                ;
+        Worker219 result = MAPPER.readValue(DOC, Worker219.class);
+        assertNotNull(result);
+        assertEquals("test3", result.manager);
+    }
+
+    // [dataformat-xml#219]
+    public void testWithAttribute219Line() throws Exception
+    {
+        final String DOC =
+"<line>\n" + 
+"    <code type='ABC'>qsd</code>\n" + 
+"    <amount>138</amount>\n" + 
+"</line>"
+                ;
+        Line219 result = MAPPER.readValue(DOC, Line219.class);
+        assertNotNull(result);
+        assertEquals("138", result.amount);
     }
 }

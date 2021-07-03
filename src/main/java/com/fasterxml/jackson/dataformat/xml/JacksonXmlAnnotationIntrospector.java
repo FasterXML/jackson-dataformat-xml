@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import java.lang.annotation.Annotation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.*;
@@ -12,7 +13,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.*;
  * additional xml-specific annotation that Jackson provides. Note, however, that
  * there is no JAXB annotation support here; that is provided with
  * separate introspector (see
- * {@link com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector}).
+ * https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb,
+ * class {@code com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector}).
  */
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
@@ -35,13 +37,23 @@ public class JacksonXmlAnnotationIntrospector
 
     // non-final from 2.7 on, to allow mapper to change
     protected boolean _cfgDefaultUseWrapper;
-    
+
     public JacksonXmlAnnotationIntrospector() {
         this(DEFAULT_USE_WRAPPER);
     }
 
     public JacksonXmlAnnotationIntrospector(boolean defaultUseWrapper) {
         _cfgDefaultUseWrapper = defaultUseWrapper;
+    }
+
+    /*
+    /**********************************************************************
+    /* Extended API XML format module requires
+    /**********************************************************************
+     */
+
+    public void setDefaultUseWrapper(boolean b) {
+        _cfgDefaultUseWrapper = b;
     }
 
     /*
@@ -53,7 +65,7 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public PropertyName findWrapperName(MapperConfig<?> config, Annotated ann)
     {
-        JacksonXmlElementWrapper w = ann.getAnnotation(JacksonXmlElementWrapper.class);
+        JacksonXmlElementWrapper w = _findAnnotation(ann, JacksonXmlElementWrapper.class);
         if (w != null) {
             // Special case: wrapping explicitly blocked?
             if (!w.useWrapping()) {
@@ -66,8 +78,8 @@ public class JacksonXmlAnnotationIntrospector
             }
             return PropertyName.construct(w.localName(), w.namespace());
         }
-        // 09-Sep-2012, tatu: In absence of configurating we need to use our
-        //    default settings...
+        // 09-Sep-2012, tatu: In absence of configuration we need to use our
+        //   default settings...
         if (_cfgDefaultUseWrapper) {
             return PropertyName.USE_DEFAULT;
         }
@@ -77,7 +89,7 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public PropertyName findRootName(MapperConfig<?> config, AnnotatedClass ac)
     {
-        JacksonXmlRootElement root = ac.getAnnotation(JacksonXmlRootElement.class);
+        JacksonXmlRootElement root = _findAnnotation(ac, JacksonXmlRootElement.class);
         if (root != null) {
             String local = root.localName();
             String ns = root.namespace();
@@ -97,11 +109,16 @@ public class JacksonXmlAnnotationIntrospector
      */
 
     @Override
-    public String findNamespace(Annotated ann)
+    public String findNamespace(MapperConfig<?> config, Annotated ann)
     {
-        JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
+        JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
         if (prop != null) {
             return prop.namespace();
+        }
+        // 14-Nov-2020, tatu: 2.12 adds namespace for this too
+        JsonProperty jprop = _findAnnotation(ann, JsonProperty.class);
+        if (jprop != null) {
+            return jprop.namespace();
         }
         return null;
     }
@@ -111,11 +128,11 @@ public class JacksonXmlAnnotationIntrospector
     /* XmlAnnotationIntrospector, isXxx methods
     /**********************************************************************
      */
-    
+
     @Override
-    public Boolean isOutputAsAttribute(Annotated ann)
+    public Boolean isOutputAsAttribute(MapperConfig<?> config, Annotated ann)
     {
-        JacksonXmlProperty prop = ann.getAnnotation(JacksonXmlProperty.class);
+        JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
         if (prop != null) {
             return prop.isAttribute() ? Boolean.TRUE : Boolean.FALSE;
         }
@@ -123,9 +140,9 @@ public class JacksonXmlAnnotationIntrospector
     }
     
     @Override
-    public Boolean isOutputAsText(Annotated ann)
+    public Boolean isOutputAsText(MapperConfig<?> config, Annotated ann)
     {
-        JacksonXmlText prop = ann.getAnnotation(JacksonXmlText.class);
+        JacksonXmlText prop = _findAnnotation(ann, JacksonXmlText.class);
         if (prop != null) {
             return prop.value() ? Boolean.TRUE : Boolean.FALSE;
         }
@@ -133,17 +150,12 @@ public class JacksonXmlAnnotationIntrospector
     }
 
     @Override
-    public Boolean isOutputAsCData(Annotated ann) {
+    public Boolean isOutputAsCData(MapperConfig<?> config, Annotated ann) {
         JacksonXmlCData prop = ann.getAnnotation(JacksonXmlCData.class);
         if (prop != null) {
             return prop.value() ? Boolean.TRUE : Boolean.FALSE;
         }
         return null;
-    }
-
-    @Override
-    public void setDefaultUseWrapper(boolean b) {
-        _cfgDefaultUseWrapper = b;
     }
 
     /*
@@ -190,7 +202,7 @@ public class JacksonXmlAnnotationIntrospector
 
     protected PropertyName _findXmlName(Annotated a)
     {
-        JacksonXmlProperty pann = a.getAnnotation(JacksonXmlProperty.class);
+        JacksonXmlProperty pann = _findAnnotation(a, JacksonXmlProperty.class);
         if (pann != null) {
             return PropertyName.construct(pann.localName(), pann.namespace());
         }

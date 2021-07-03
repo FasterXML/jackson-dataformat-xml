@@ -2,8 +2,6 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -29,14 +27,13 @@ public class EnumIssue9Test extends XmlTestBase
     /**********************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
-    
+    private final XmlMapper MAPPER = newMapper();
+
     public void testUntypedEnum() throws Exception
     {
-        ObjectMapper mapper = new XmlMapper();
-        String xml = mapper.writeValueAsString(new UntypedEnumBean(TestEnum.B));
+        String xml = MAPPER.writeValueAsString(new UntypedEnumBean(TestEnum.B));
         
-        UntypedEnumBean result = mapper.readValue(xml, UntypedEnumBean.class);
+        UntypedEnumBean result = MAPPER.readValue(xml, UntypedEnumBean.class);
         assertNotNull(result);
         assertNotNull(result.value);
         Object ob = result.value;
@@ -46,14 +43,5 @@ public class EnumIssue9Test extends XmlTestBase
         }
 
         assertEquals(TestEnum.B, result.value);
-    }
-
-    // [dataformat-xml#121]
-    public void testRootEnumIssue121() throws Exception
-    {
-        String xml = MAPPER.writeValueAsString(TestEnum.B);
-        TestEnum result = MAPPER.readValue(xml, TestEnum.class);
-        assertNotNull(result);
-        assertEquals(TestEnum.B, result);
     }
 }

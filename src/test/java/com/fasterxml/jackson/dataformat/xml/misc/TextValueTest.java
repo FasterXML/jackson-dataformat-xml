@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
@@ -137,8 +138,8 @@ public class TextValueTest extends XmlTestBase
         try {
             MAPPER.readValue(XML, JAXBStyle.class);
             fail("Should have failed");
-        } catch (JsonProcessingException e) {
-            verifyException(e, "Unrecognized");
+        } catch (MismatchedInputException e) {
+            verifyException(e, "Cannot construct instance of");
         }
         XmlMapper mapper = XmlMapper.builder()
                 .nameForTextElement("value")

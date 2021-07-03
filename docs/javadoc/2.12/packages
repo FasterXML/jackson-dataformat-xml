@@ -1,0 +1,6 @@
+com.fasterxml.jackson.dataformat.xml
+com.fasterxml.jackson.dataformat.xml.util
+com.fasterxml.jackson.dataformat.xml.deser
+com.fasterxml.jackson.dataformat.xml.annotation
+com.fasterxml.jackson.dataformat.xml.jaxb
+com.fasterxml.jackson.dataformat.xml.ser

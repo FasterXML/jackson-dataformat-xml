@@ -13,14 +13,18 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
+import com.fasterxml.jackson.databind.cfg.DeserializationContexts;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
 import com.fasterxml.jackson.databind.cfg.SerializationContexts;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-
+import com.fasterxml.jackson.databind.ser.SerializationContextExt;
+import com.fasterxml.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
+import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContexts;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializationContexts;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -75,11 +79,9 @@ public class XmlMapper extends ObjectMapper
             addModule(new XmlModule());
 
             // 04-May-2018, tatu: Important! Let's also default `String` `null` handling to coerce
-            //   to empty string -- this lets us induce `null` from empty tags first
-
+            //   to empty string -- this lets us induce `null` from empty tags firs
             // 08-Sep-2019, tatu: This causes [dataformat-xml#359] (follow-up for #354), but
             //    can not simply be removed.
-
             _configOverrides.findOrCreateOverride(String.class)
                 .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
 
@@ -87,6 +89,23 @@ public class XmlMapper extends ObjectMapper
             //    Base64 default as "MIME" (not MIME-NO-LINEFEEDS), to preserve pre-2.12
             //    behavior
             defaultBase64Variant(Base64Variants.MIME);
+
+            // 04-Jun-2020, tatu: Use new (2.12) "CoercionConfigs" to support coercion
+            //   from empty and blank Strings to "empty" POJOs etc
+            _coercionConfigs.defaultCoercions()
+                // To allow indentation without problems, need to accept blank String as empty:
+                .setAcceptBlankAsEmpty(Boolean.TRUE)
+                // and then coercion from empty String to empty value, in general
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsEmpty)
+            ;
+            // 03-May-2021, tatu: ... except make sure to keep "empty to Null" for
+            //   scalar types...
+            _coercionConfigs.findOrCreateCoercion(LogicalType.Integer)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+            _coercionConfigs.findOrCreateCoercion(LogicalType.Float)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+            _coercionConfigs.findOrCreateCoercion(LogicalType.Boolean)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
         }
 
         @Override
@@ -114,6 +133,11 @@ public class XmlMapper extends ObjectMapper
         @Override
         protected SerializationContexts _defaultSerializationContexts() {
             return new XmlSerializationContexts();
+        }
+
+        @Override
+        protected DeserializationContexts _defaultDeserializationContexts() {
+            return new XmlDeserializationContexts();
         }
 
         /**
@@ -229,8 +253,8 @@ public class XmlMapper extends ObjectMapper
 
                 AnnotationIntrospector ai0 = annotationIntrospector();
                 for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-                    if (ai instanceof XmlAnnotationIntrospector) {
-                        ((XmlAnnotationIntrospector) ai).setDefaultUseWrapper(b);
+                    if (ai instanceof JacksonXmlAnnotationIntrospector) {
+                        ((JacksonXmlAnnotationIntrospector) ai).setDefaultUseWrapper(b);
                     }
                 }
             }
@@ -445,7 +469,7 @@ public class XmlMapper extends ObjectMapper
         //   because we need the context first...
         
         SerializationConfig config = serializationConfig();
-        DefaultSerializerProvider prov = _serializerProvider(config);
+        SerializationContextExt prov = _serializerProvider(config);
         ToXmlGenerator g = tokenStreamFactory().createGenerator(prov, w0);
 
         if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {

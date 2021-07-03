@@ -3,8 +3,11 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -27,20 +30,34 @@ public class EmptyStringValueTest extends XmlTestBase
     }
 
     // [dataformat-xml#25]
-    private static class EmptyStrings
+    static class EmptyStrings25
     {
         @JacksonXmlProperty(isAttribute=true)
         public String a = "NOT SET";
         public String b = "NOT SET";
     }
 
+    // [dataformat-xml#427]
+    static class Stuff427 {
+        String str;
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public Stuff427(String s) { str = s; }
+    }
+
+    static class Product427 {
+        Stuff427 stuff;
+
+        public Product427(@JsonProperty("stuff") Stuff427 s) { stuff = s; }
+    }
+    
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Test methods
-    /**********************************************************
+    /**********************************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
 
     public void testEmptyString162() throws Exception
     {
@@ -63,6 +80,7 @@ public class EmptyStringValueTest extends XmlTestBase
 
         // but can be changed
         XmlMapper mapper2 = mapperBuilder()
+                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
                 .withConfigOverride(String.class,
                         o -> o.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.SET)))
             .build();
@@ -85,10 +103,22 @@ public class EmptyStringValueTest extends XmlTestBase
     // [dataformat-xml#25]
     public void testEmptyStringFromElemAndAttr() throws Exception
     {
-        EmptyStrings ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
-                EmptyStrings.class);
+        EmptyStrings25 ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
+                EmptyStrings25.class);
         assertNotNull(ob);
         assertEquals("", ob.a);
         assertEquals("", ob.b);
+    }
+
+    // [dataformat-xml#427]
+    public void testEmptyIssue427() throws Exception
+    {
+        String xml = "<product><stuff></stuff></product>";
+
+        Product427 product = MAPPER.readValue(xml, Product427.class);
+
+        assertNotNull(product);
+        assertNotNull(product.stuff);
+        assertEquals("", product.stuff.str);
     }
 }

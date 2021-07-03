@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class TestSerializationAttr extends XmlTestBase
 {
@@ -18,7 +17,7 @@ public class TestSerializationAttr extends XmlTestBase
         public String attr = "3";
     }
 
-    @JacksonXmlRootElement(localName="test", namespace="http://root")
+    @JsonRootName(value="test", namespace="http://root")
     static class Issue19Bean
     {
         @JsonProperty
@@ -37,7 +36,7 @@ public class TestSerializationAttr extends XmlTestBase
         protected int value = 13;
     }
 
-    @JacksonXmlRootElement(localName = "dynaBean", namespace = "")
+    @JsonRootName(value = "dynaBean", namespace = "")
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "class", include = JsonTypeInfo.As.PROPERTY)
     public class DynaBean {
         private final Map<String, String> _properties = new TreeMap<String, String>();

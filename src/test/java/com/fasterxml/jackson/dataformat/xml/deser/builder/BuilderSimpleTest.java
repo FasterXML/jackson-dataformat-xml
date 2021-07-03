@@ -220,7 +220,7 @@ public class BuilderSimpleTest extends XmlTestBase
     static class ValueClass822
     */
 
-    protected static class NopModule1557 extends com.fasterxml.jackson.databind.Module
+    protected static class NopModule1557 extends com.fasterxml.jackson.databind.JacksonModule
     {
         @Override
         public String getModuleName() {

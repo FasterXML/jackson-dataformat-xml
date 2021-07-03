@@ -1,26 +1,124 @@
 Project: jackson-dataformat-xml
 
 ------------------------------------------------------------------------
-= Releases
+=== Releases ===
 ------------------------------------------------------------------------
 
-2.12.0 (not yet released)
+2.13.0 (not yet released)
 
+#442: Missing `START_OBJECT` token in complex element starting with text
+ (reported by richardsonwk@github)
+#462: Remove `jackson-module-jaxb-annotations` runtime dependency (leave
+  as a test dep)
+#463: NPE via boundary condition, document with only XML declaration
+ (reported by Fabian M)
+#465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
+ (reported by Fabian M)
+#474: Empty String ("") parsed as 0 for int even if
+   DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES enabled (note:
+   actual fix in `jackson-databind)
+- Rename `XmlFactoryBuilder` methods "inputFactory()"->"xmlInputFactory()",
+  "outputFactory()" -> "xmlOutputFactory()"
+- Woodstox dependency 6.2.6 (from 6.2.4)
+
+2.12.4 (not yet released)
+
+#469: Empty tags cause incorrect deserialization of unwrapped lists
+ (reported by jackson-code1@github)
+#473: Parsing of `null` Integer fields changed behavior between versions
+   2.11.4 and 2.12.X
+ (reported by Steviep@github)
+
+2.12.3 (12-Apr-2021)
+
+#456: Fix JsonAlias with unwrapped lists
+ (contributed by Westin M)
+#460: Deserialization from blank (not empty) String fails for Collections
+
+2.12.2 (03-Mar-2021)
+
+#445: `XmlMapper`/`UntypedObjectDeserializer` mixes multiple unwrapped collections
+ (fix contributed by Migwel@github)
+#451: Xml type resolver fails with NPE when property name is not specified in
+  polymorphic (de)serialization
+ (reported by MichalStehlikCz@github)
+- Woodstox dependency 6.2.4 (from 6.2.3)
+
+2.12.1 (08-Jan-2021)
+
+#435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
+ (reported by Francesco C)
+- Minor improvement wrt #18 (use namespace annotation from supertype)
+
+2.12.0 (29-Nov-2020)
+
+#97: Weird Exception during read with Type info
+ (reported by Pascal G)
+#121: `XmlMapper` not deserializing root-level Enums
+ (reported by bhkjersten@github)
+#124: Deserialization if an empty list (with empty XML tag) results in `null`
+ (reported by Denis C)
 #205: `XmlMapper`/`UntypedObjectDeserializer` swallows duplicated elements in
   XML documents
  (reported by joaovarandas@github)
+#226: XML to JSON - IOException when parsing XML with XMLMapper
+ (reported by dbories@github)
+#252: Empty (or self-closing) Element representing `List` is incorrectly
+  deserialized as null, not Empty List
+ (reported by Julien D)
+#254: No String-argument constructor/factory method to deserialize from
+  String value when it is a Integer
+ (reported by mrdgsmith@github)
+#257: Deserialization fails of lists containing elements with `xml:space` attribute
+ (reported by Quurks@github)
 #262: Make `ToXmlGenerator` non-final
  (requested by Dave J)
 #273: Input mismatch with case-insensitive properties
  (reported by Joseph P)
+#307: Missing collection item when they are not wrapped during unmarshal
+  with multiple namespaces
+ (reported by wanchongtai@github)
+#314: Jackson gets confused by parent list element
+ (reported by Eduard W)
 #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (reported by Jochen S)
+#319: Empty root tag into `List` deserialization bug
+ (reported by Seatec13@github)
+#360: Add a feature to support writing `xsi:nil` attribute for `null` values
+ (contributed by Migwel@github)
+#374: Deserialization fails with `XmlMapper` and `DeserializationFeature.UNWRAP_ROOT_VALUE`
+ (reported by Ingo W)
 #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
  (reported by Ghenadii B)
+#380: Unable to deserialize root-level `Instant` value from XML
+ (reported by afayes@github)
+#390: Unexpected attribute at string fields causes extra objects to be
+  created in parent list
+ (reported by David S
 #397: `XmlReadContext` does not keep track of array index
 #403: Make `JsonNode` implicitly create `ArrayNode`s for repeated XML Elements
+#405: Mixed content not exposed through `FromXmlParser`, lost by `JsonNode`
+#411: Change default setting of `FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL`
+  from `true` to `false`
+#412: Coercion from element-with-attribute-and-text only works for `String`,
+  not other scalar types
+#422: Elements containing <CDATA/> parsed incorrectly when at the end of another element
+ (reported by Akop K)
+#434: Add missing `ElementType.ANNOTATION_TYPE` for Jackson xml annotations
+  to allow bundling 
+- Add Gradle Module Metadata (https://blog.gradle.org/alignment-with-gradle-module-metadata)
 
-2.11.1 (not yet released)
+2.11.4 (12-Dec-2020)
+
+- Upgrade Woodstox dependency to 6.2.3 (<- 6.2.1)
+- Deprecate `XmlJaxbAnnotationIntrospector` (has been unnecessary since 2.4, forgot)
+
+2.11.3 (02-Oct-2020)
+2.11.2 (02-Aug-2020)
+
+No changes since 2.11.1
+
+2.11.1 (25-Jun-2020)
 
 #86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
    matches `@JacksonXmlRootElement` localName
@@ -41,11 +139,13 @@ Project: jackson-dataformat-xml
 
 No changes since 2.10.x
 
-2.10.5 (not yet released)
+2.10.5 (21-Jul-2020)
 
 #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
  (reported by Martin V)
-- Upgrade Woodstox dependency to 6.2.0 (minor fix to namespace binding)
+#413: Null String field serialization through ToXmlGenerator causes NullPointerException
+ (suggested by James B)
+- Upgrade Woodstox dependency to 6.2.1
 
 2.10.4 (03-May-2020)
 
@@ -80,7 +180,7 @@ No changes since 2.10.x
  (reported by Sam S)
 #351: XmlBeanSerializer serializes AnyGetters field even with FilterExceptFilter
  (reported by Rohit N)
-#354: Support mapping `xsi:nul` marked elements as `null`s (`JsonToken.VALUE_NULL`)
+#354: Support mapping `xsi:nil` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
 2.9.10 (21-Sep-2019)
 

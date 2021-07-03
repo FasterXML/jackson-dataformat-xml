@@ -1,10 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
+import com.fasterxml.jackson.databind.deser.bean.BeanDeserializerBase;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 
@@ -62,20 +61,19 @@ public class XmlTextDeserializer
      */
 
     @Override
-    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee0) {
+    protected ValueDeserializer<?> newDelegatingInstance(ValueDeserializer<?> newDelegatee0) {
         // default not enough, as we need to create a new wrapping deserializer
         // even if delegatee does not change
         throw new IllegalStateException("Internal error: should never get called");
     }
 
     @Override
-    public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
+    public ValueDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property)
-        throws JsonMappingException
     {
         // 15-Nov-2017, tatu: Important -- MUST contextualize thing we delegate to
         JavaType vt = ctxt.constructType(_delegatee.handledType());
-        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee,
+        ValueDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee,
                 property, vt);
         return new XmlTextDeserializer(_verifyDeserType(del), _xmlTextPropertyIndex);
     }
@@ -88,7 +86,7 @@ public class XmlTextDeserializer
 
     @Override
     public Object deserialize(JsonParser p, DeserializationContext ctxt)
-        throws IOException
+        throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
             Object bean = _valueInstantiator.createUsingDefault(ctxt);
@@ -100,20 +98,20 @@ public class XmlTextDeserializer
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt,
-            Object bean) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt, Object bean)
+        throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
             _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
             return bean;
         }
-        return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, bean);
+        return ((ValueDeserializer<Object>)_delegatee).deserialize(p, ctxt, bean);
     }
 
     @Override
     public Object deserializeWithType(JsonParser p, DeserializationContext ctxt,
             TypeDeserializer typeDeserializer)
-        throws IOException
+        throws JacksonException
     {
         return _delegatee.deserializeWithType(p, ctxt, typeDeserializer);
     }
@@ -124,7 +122,7 @@ public class XmlTextDeserializer
     /**********************************************************************
      */
 
-    protected BeanDeserializerBase _verifyDeserType(JsonDeserializer<?> deser)
+    protected BeanDeserializerBase _verifyDeserType(ValueDeserializer<?> deser)
     {
         if (!(deser instanceof BeanDeserializerBase)) {
             throw new IllegalArgumentException("Can not change delegate to be of type "

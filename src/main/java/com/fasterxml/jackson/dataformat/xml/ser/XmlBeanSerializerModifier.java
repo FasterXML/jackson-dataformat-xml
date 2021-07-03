@@ -5,18 +5,18 @@ import java.util.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.ser.*;
-import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
+import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
 import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
 /**
- * We need a {@link BeanSerializerModifier} to replace default <code>BeanSerializer</code>
+ * We need a {@link ValueSerializerModifier} to replace default <code>BeanSerializer</code>
  * with XML-specific one; mostly to ensure that attribute properties are output
  * before element properties.
  */
 public class XmlBeanSerializerModifier
-    extends BeanSerializerModifier
+    extends ValueSerializerModifier
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -41,10 +41,10 @@ public class XmlBeanSerializerModifier
         for (int i = 0, len = beanProperties.size(); i < len; ++i) {
             BeanPropertyWriter bpw = beanProperties.get(i);
             final AnnotatedMember member = bpw.getMember();
-            String ns = AnnotationUtil.findNamespaceAnnotation(intr, member);
-            Boolean isAttribute = AnnotationUtil.findIsAttributeAnnotation(intr, member);
-            Boolean isText = AnnotationUtil.findIsTextAnnotation(intr, member);
-            Boolean isCData = AnnotationUtil.findIsCDataAnnotation(intr, member);
+            String ns = AnnotationUtil.findNamespaceAnnotation(config, intr, member);
+            Boolean isAttribute = AnnotationUtil.findIsAttributeAnnotation(config, intr, member);
+            Boolean isText = AnnotationUtil.findIsTextAnnotation(config, intr, member);
+            Boolean isCData = AnnotationUtil.findIsCDataAnnotation(config, intr, member);
             bpw.setInternalSetting(XmlBeanSerializerBase.KEY_XML_INFO,
             		new XmlInfo(isAttribute, ns, isText, isCData));
 
@@ -72,8 +72,8 @@ public class XmlBeanSerializerModifier
     }
     
     @Override
-    public JsonSerializer<?> modifySerializer(SerializationConfig config,
-            BeanDescription beanDesc, JsonSerializer<?> serializer)
+    public ValueSerializer<?> modifySerializer(SerializationConfig config,
+            BeanDescription beanDesc, ValueSerializer<?> serializer)
     {
         /* First things first: we can only handle real BeanSerializers; question
          * is, what to do if it's not one: throw exception or bail out?

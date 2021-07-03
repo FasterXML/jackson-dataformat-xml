@@ -3,12 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.io.*;
 import java.util.*;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
@@ -58,6 +53,12 @@ public class TestSerialization extends XmlTestBase
         public String text = "blah";
     }
 
+    static class NsElemBean2
+    {
+        @JsonProperty(namespace="http://foo")
+        public String text = "blah";
+    }
+    
     static class CDataStringBean
     {
         @JacksonXmlCData
@@ -70,17 +71,6 @@ public class TestSerialization extends XmlTestBase
         public String[] value = {"<some<data\"", "abc"};
     }
 
-    static class CustomSerializer extends StdScalarSerializer<String>
-    {
-        public CustomSerializer() { super(String.class); }
-        
-        @Override
-        public void serialize(String value, JsonGenerator jgen,
-                SerializerProvider provider) throws IOException {
-            jgen.writeString("custom:"+value);
-        }
-    }
-
     static class CustomMap extends LinkedHashMap<String, Integer> { }
 
     /*
@@ -89,7 +79,7 @@ public class TestSerialization extends XmlTestBase
     /**********************************************************
      */
 
-    protected XmlMapper _xmlMapper = new XmlMapper();
+    private final XmlMapper _xmlMapper = new XmlMapper();
 
     public void testSimpleAttribute() throws IOException
     {
@@ -105,6 +95,14 @@ public class TestSerialization extends XmlTestBase
         // here we assume woodstox automatic prefixes, not very robust but:
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
     }
+
+    public void testSimpleNsElemWithJsonProp() throws IOException
+    {
+        String xml = _xmlMapper.writeValueAsString(new NsElemBean2());
+        xml = removeSjsxpNamespace(xml);
+        // here we assume woodstox automatic prefixes, not very robust but:
+        assertEquals("<NsElemBean2><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean2>", xml);
+    }
     
     public void testSimpleAttrAndElem() throws IOException
     {
@@ -113,7 +111,6 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
-    @SuppressWarnings("boxing")
     public void testMap() throws IOException
     {
         // First, map in a general wrapper
@@ -167,17 +164,6 @@ public class TestSerialization extends XmlTestBase
         String xml = _xmlMapper.writeValueAsString(new CDataStringArrayBean());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<CDataStringArrayBean><value><value><![CDATA[<some<data\"]]></value><value><![CDATA[abc]]></value></value></CDataStringArrayBean>", xml);
-    }
-    
-    // for [dataformat-xml#41]
-    public void testCustomSerializer() throws Exception
-    {
-        SimpleModule module = new SimpleModule("test");
-        module.addSerializer(String.class, new CustomSerializer());
-        XmlMapper xml = XmlMapper.builder()
-                .addModule(module)
-                .build();
-        assertEquals("<String>custom:foo</String>", xml.writeValueAsString("foo"));
     }
 
     // manual 'test' to see "what would JAXB do?"

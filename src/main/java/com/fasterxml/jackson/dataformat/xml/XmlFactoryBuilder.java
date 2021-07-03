@@ -23,12 +23,12 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      */
 
     /**
-     * Set of {@link FromXmlParser.Feature}s enabled, as bitmask.
+     * Set of {@code FromXmlParser.Feature}s enabled, as bitmask.
      */
     protected int _formatParserFeatures;
 
     /**
-     * Set of {@link ToXmlGenerator.Feature}s enabled, as bitmask.
+     * Set of {@@code ToXmlGenerator.Feature}s enabled, as bitmask.
      */
     protected int _formatGeneratorFeatures;
 
@@ -179,22 +179,20 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
-    public XmlFactoryBuilder inputFactory(XMLInputFactory xmlIn) {
+    public XmlFactoryBuilder xmlInputFactory(XMLInputFactory xmlIn) {
         _xmlInputFactory = xmlIn;
         return _this();
     }
 
-    public XmlFactoryBuilder outputFactory(XMLOutputFactory xmlOut)
-    {
+    public XmlFactoryBuilder xmlOutputFactory(XMLOutputFactory xmlOut) {
         _xmlOutputFactory = xmlOut;
         return _this();
     }
-    
+
     // // // Actual construction
 
     @Override
     public XmlFactory build() {
-        // 28-Dec-2017, tatu: No special settings beyond base class ones, so:
         return new XmlFactory(this);
     }
 }

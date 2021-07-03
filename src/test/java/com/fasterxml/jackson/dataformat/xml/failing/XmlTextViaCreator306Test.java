@@ -2,10 +2,11 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.beans.ConstructorProperties;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 // [dataformat-xml#306]: Problem is that `@XmlText` has no nominal property name
@@ -13,7 +14,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 // special meaning so that annotation CANNOT specify it, either.
 public class XmlTextViaCreator306Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName = "ROOT")
+    // [dataformat-xml#306]
+    @JsonRootName("ROOT")
     static class Root {
         @JacksonXmlProperty(localName = "CHILD")
         final Child child;
@@ -41,7 +43,7 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName = "ROOT")
+    @JsonRootName("ROOT")
     static class RootWithoutConstructor {
         @JacksonXmlProperty(localName = "CHILD")
         final ChildWithoutConstructor child;
@@ -64,6 +66,21 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         public String el;
     }
 
+    // [dataformat-xml#423]
+    static class Sample423
+    {
+        final String text;
+        final String attribute;
+
+        @JsonCreator
+        public Sample423(@JacksonXmlText String text,
+                @JacksonXmlProperty(localName = "attribute", isAttribute = true)
+                String attribute) {
+            this.text = text;
+            this.attribute = attribute;
+        }
+    }
+
     /*
     /********************************************************
     /* Test methods
@@ -72,6 +89,7 @@ public class XmlTextViaCreator306Test extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    // [dataformat-xml#306]
     public void testIssue306WithCtor() throws Exception
     {
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
@@ -84,5 +102,14 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
         RootWithoutConstructor rootNoCtor = MAPPER.readValue(XML, RootWithoutConstructor.class);
         assertNotNull(rootNoCtor);
+    }
+
+    // [dataformat-xml#423]
+    public void testXmlTextViaCtor423() throws Exception
+    {
+        final String XML = "<Sample423 attribute='attrValue'>text value</Sample423>";
+        Sample423 result = MAPPER.readValue(XML, Sample423.class);
+        assertEquals("attrValue", result.attribute);
+        assertEquals("text value", result.text);
     }
 }

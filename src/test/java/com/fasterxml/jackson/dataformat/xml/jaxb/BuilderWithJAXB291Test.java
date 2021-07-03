@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 // Test for [dataformat-xml#291]: works via field, not constructor
 // (name mismatch to fix in test case)
@@ -26,7 +27,7 @@ public class BuilderWithJAXB291Test extends XmlTestBase
         private final String country;
         private final String county;
 
-        private Address(AddressBuilder addressbuilder) {
+        Address(AddressBuilder addressbuilder) {
             this.address1 = addressbuilder.address1;
             this.city = addressbuilder.city;
             this.stateProvince = addressbuilder.stateProvince;
@@ -118,7 +119,7 @@ public class BuilderWithJAXB291Test extends XmlTestBase
                 "</Address>";
 
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-                (new XmlJaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
+                (new JaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
         XmlMapper mapper = mapperBuilder()
                 .annotationIntrospector(intr)
                 .build();

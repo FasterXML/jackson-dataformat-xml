@@ -15,7 +15,9 @@ Pascal Gelinas:
  (2.3.1)
 * Reported and fixed #83: Add support for @JsonUnwrapped
  (2.4.0)
-
+* Reported #97: Weird Exception during read with Type info
+ (2.12.0)
+ 
 Dan Jasek: (oillio@github)
 
 * Contributed #126: Allow specifying properties that should be written as CData
@@ -66,6 +68,11 @@ Martin Vysny (mvysny@github)
 * Reported #395: Namespace repairing generates xmlns definitions for xml: prefix (which is implicit)
  (2.10.5)
 
+James Bushell (jimnz111@github)
+
+* Suggested #413: Null String field serialization through ToXmlGenerator causes NullPointerException
+ (2.10.5)
+
 Alexei Volkov (softkot@github)
 
 * Reported #294: XML parser error with nested same element names
@@ -75,6 +82,17 @@ Eric Schoonover (spoon16@github)
 
 * Reported #86: Can not deserialize unwrapped list when `@JacksonXmlProperty` localName
   matches `@JacksonXmlRootElement` localName
+ (2.12.0)
+
+Denis Chernyshov (danblack@github)
+
+* Reported #124: Deserialization if an empty list (with empty XML tag) results in `null`
+ (2.12.0)
+
+Julien Debon (Sir4ur0n@github)
+
+* Reported #252: Empty (or self-closing) Element representing `List` is incorrectly
+  deserialized as null, not Empty List
  (2.12.0)
 
 Dave Jarvis (DaveJarvis@github)
@@ -87,12 +105,61 @@ Joseph Petersen (jetersen@github)
 * Reported #273: Input mismatch with case-insensitive properties
  (2.12.0)
 
-Ghenadii Batalski (ghenadiibatalski@github)
+Eduard Wirch (ewirch@github)
 
-* Reported #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
+* Reported #314: Jackson gets confused by parent list element
  (2.12.0)
 
 Jochen Schalanda (joschi@github)
 
 * Reported #318: XMLMapper fails to deserialize null (POJO reference) from blank tag
  (2.12.0)
+
+Migwel@github
+
+* Contributed #360: Add a feature to support writing `xsi:nil` attribute for
+  `null` values
+ (2.12.0)
+* Contributed fix for #445: `XmlMapper`/`UntypedObjectDeserializer` mixes
+  multiple unwrapped collections
+ (2.12.2)
+
+Ingo Wiarda (dewarim@github)
+
+* Reported #374: Deserialization fails with `XmlMapper` and
+  `DeserializationFeature.UNWRAP_ROOT_VALUE`
+ (2.12.0)
+
+Ghenadii Batalski (ghenadiibatalski@github)
+
+* Reported #377: `ToXmlGenerator` ignores `Base64Variant` while serializing `byte[]`
+ (2.12.0)
+
+David Schmidt (d-schmidt@github)
+
+* Reported #390: Unexpected attribute at string fields causes extra objects to be
+  created in parent list
+ (2.12.0)
+
+Akop Karapetyan (0xe1f@github)
+
+* Reported #422: Elements containing <CDATA/> parsed incorrectly when at the end of another element
+ (2.12.0)
+
+Francesco Chicchiriccò (ilgrosso@github)
+
+* Reported #435: After upgrade to 2.12.0, NPE when deserializing an empty element to `ArrayList`
+ (2.12.1)
+
+Westin Miller (westinrm@github)
+
+* Contributed #456: Fix JsonAlias with unwrapped lists
+ (2.12.3)
+
+Fabian Meumertzheim (fmeum@github)
+
+* Reported #463: NPE via boundary condition, document with only XML declaration
+ (2.13.0)
+* Reported #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
+ (2.13.0)
+

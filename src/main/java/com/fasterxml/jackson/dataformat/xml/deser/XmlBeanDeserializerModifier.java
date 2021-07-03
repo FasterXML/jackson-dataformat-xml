@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
+import com.fasterxml.jackson.databind.deser.bean.BeanDeserializerBase;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
@@ -13,7 +14,7 @@ import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
  * 'wrapped' Collection types.
  */
 public class XmlBeanDeserializerModifier
-    extends BeanDeserializerModifier
+    extends ValueDeserializerModifier
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public class XmlBeanDeserializerModifier
              * map them is to rename property to have name ""... (and
              * hope this does not break other parts...)
              */
-            Boolean b = AnnotationUtil.findIsTextAnnotation(intr, acc);
+            Boolean b = AnnotationUtil.findIsTextAnnotation(config, intr, acc);
             if (b != null && b.booleanValue()) {
                 // unwrapped properties will appear as 'unnamed' (empty String)
                 BeanPropertyDefinition newProp = prop.withSimpleName(_cfgNameForTextValue);
@@ -78,8 +79,8 @@ public class XmlBeanDeserializerModifier
     }
 
     @Override
-    public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
-            BeanDescription beanDesc, JsonDeserializer<?> deser0)
+    public ValueDeserializer<?> modifyDeserializer(DeserializationConfig config,
+            BeanDescription beanDesc, ValueDeserializer<?> deser0)
     {
         if (!(deser0 instanceof BeanDeserializerBase)) {
             return deser0;
@@ -100,7 +101,7 @@ public class XmlBeanDeserializerModifier
         //    coercion.
         // 30-Apr-2020, tatu: Complication from [dataformat-xml#318] as we now
         //    have a delegate too...
-        if ((inst instanceof XmlBeanInstantiator) || !inst.canCreateFromString()) {
+        if (!inst.canCreateFromString()) {
             SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
             if (textProp != null) {
                 return new XmlTextDeserializer(deser, textProp);
@@ -126,7 +127,7 @@ public class XmlBeanDeserializerModifier
                     continue;
                 }
                 // as-attribute are ok as well
-                Boolean b = AnnotationUtil.findIsAttributeAnnotation(ai, m);
+                Boolean b = AnnotationUtil.findIsAttributeAnnotation(config, ai, m);
                 if (b != null && b.booleanValue()) {
                     continue;
                 }

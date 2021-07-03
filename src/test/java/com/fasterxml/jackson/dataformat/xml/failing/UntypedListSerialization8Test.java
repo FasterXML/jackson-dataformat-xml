@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class UntypedListSerialization8Test extends XmlTestBase
 {
-    @JacksonXmlRootElement(localName="L")
+    @JsonRootName("L")
     static class UntypedListBean
     {
         public final Object list;
@@ -23,7 +23,7 @@ public class UntypedListSerialization8Test extends XmlTestBase
         }
     }
 
-    @JacksonXmlRootElement(localName="L")
+    @JsonRootName("L")
     static class TypedListBean
     {
         public final List<String> list;

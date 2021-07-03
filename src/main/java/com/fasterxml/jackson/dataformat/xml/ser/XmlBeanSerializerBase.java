@@ -1,22 +1,24 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
 import java.util.BitSet;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.JsonMappingException;
+
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
+import com.fasterxml.jackson.databind.ser.WritableObjectId;
+import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
-import com.fasterxml.jackson.databind.ser.impl.WritableObjectId;
-import com.fasterxml.jackson.databind.ser.std.BeanSerializerBase;
 import com.fasterxml.jackson.databind.util.NameTransformer;
+
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 
 /**
@@ -62,9 +64,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     {
         super(src);
 
-        /* Then make sure attributes are sorted before elements, keep track
-         * of how many there are altogether
-         */
+        // Then make sure attributes are sorted before elements, keep track
+        // of how many there are altogether
         int attrCount = 0;
         for (BeanPropertyWriter bpw : _props) {
             if (_isAttribute(bpw)) { // Yup: let's build re-ordered list then
@@ -123,9 +124,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _cdata = src._cdata;
     }
 
-    protected XmlBeanSerializerBase(XmlBeanSerializerBase src, Set<String> toIgnore)
+    protected XmlBeanSerializerBase(XmlBeanSerializerBase src,
+            Set<String> toIgnore, Set<String> toInclude)
     {
-        super(src, toIgnore);
+        super(src, toIgnore, toInclude);
         _attributeCount = src._attributeCount;
         _textPropertyIndex = src._textPropertyIndex;
         _xmlNames = src._xmlNames;
@@ -141,10 +143,19 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         _cdata = src._cdata;
     }
 
+    protected XmlBeanSerializerBase(XmlBeanSerializerBase src,
+            BeanPropertyWriter[] properties, BeanPropertyWriter[] filteredProperties) {
+        super(src, properties, filteredProperties);
+        _attributeCount = src._attributeCount;
+        _textPropertyIndex = src._textPropertyIndex;
+        _xmlNames = src._xmlNames;
+        _cdata = src._cdata;
+    }
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overridden serialization methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -153,12 +164,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      * elements.
      */
     @Override
-    protected void _serializeFields(Object bean, JsonGenerator gen0, SerializerProvider provider)
-        throws IOException
+    protected void _serializeProperties(Object bean, JsonGenerator gen0, SerializerProvider provider)
+        throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super._serializeFields(bean, gen0, provider);
+            super._serializeProperties(bean, gen0, provider);
             return;
         }
         final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
@@ -195,10 +206,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        prop.serializeAsField(bean, xgen, provider);
+                        prop.serializeAsProperty(bean, xgen, provider);
                         xgen.setNextIsCData(false);
                     } else {
-                        prop.serializeAsField(bean, xgen, provider);
+                        prop.serializeAsProperty(bean, xgen, provider);
                     }
                 }
                 // Reset to avoid next value being written as unwrapped, 
@@ -217,22 +228,20 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) { // Bit tricky, can't do more calls as stack is full; so:
-            JsonMappingException mapE = JsonMappingException.from(gen0,
-                    "Infinite recursion (StackOverflowError)");
-            String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            mapE.prependPath(new JsonMappingException.Reference(bean, name));
-            throw mapE;
+            final String name = (i == props.length) ? "[anySetter]" : props[i].getName();
+            throw DatabindException.from(gen0, "Infinite recursion (StackOverflowError)")
+                .prependPath(bean, name);
         }
     }
 
     @Override
-    protected void _serializeFieldsFiltered(Object bean, JsonGenerator gen0,
+    protected void _serializePropertiesFiltered(Object bean, JsonGenerator gen0,
             SerializerProvider provider, Object filterId)
-        throws IOException
+        throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super._serializeFieldsFiltered(bean, gen0, provider, filterId);
+            super._serializePropertiesFiltered(bean, gen0, provider, filterId);
             return;
         }
         
@@ -247,7 +256,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         final PropertyFilter filter = findPropertyFilter(provider, _propertyFilterId, bean);
         // better also allow missing filter actually..
         if (filter == null) {
-            _serializeFields(bean, gen0, provider);
+            _serializeProperties(bean, gen0, provider);
             return;
         }
 
@@ -277,10 +286,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        filter.serializeAsField(bean, xgen, provider, prop);
+                        filter.serializeAsProperty(bean, xgen, provider, prop);
                         xgen.setNextIsCData(false);
                     } else {
-                        filter.serializeAsField(bean, xgen, provider, prop);
+                        filter.serializeAsProperty(bean, xgen, provider, prop);
                     }
                 }
             }
@@ -295,17 +304,16 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             wrapAndThrow(provider, e, bean, name);
         } catch (StackOverflowError e) {
-            JsonMappingException mapE = JsonMappingException.from(gen0, "Infinite recursion (StackOverflowError)", e);
-            String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            mapE.prependPath(new JsonMappingException.Reference(bean, name));
-            throw mapE;
+            final String name = (i == props.length) ? "[anySetter]" : props[i].getName();
+            throw DatabindException.from(gen0, "Infinite recursion (StackOverflowError)", e)
+                .prependPath(bean, name);
         }
     }
-    
+
     @Override
     public void serializeWithType(Object bean, JsonGenerator gen, SerializerProvider provider,
             TypeSerializer typeSer)
-        throws IOException
+        throws JacksonException
     {
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, gen, provider, typeSer);
@@ -327,7 +335,8 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     
     @Override
     protected void _serializeObjectId(Object bean, JsonGenerator gen, SerializerProvider provider,
-            TypeSerializer typeSer, WritableObjectId objectId) throws IOException
+            TypeSerializer typeSer, WritableObjectId objectId)
+        throws JacksonException
     {
         // Ok: let's serialize type id as attribute, but if (and only if!) we are using AS_PROPERTY
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
@@ -343,9 +352,9 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Helper methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     protected static boolean _isAttribute(BeanPropertyWriter bpw)

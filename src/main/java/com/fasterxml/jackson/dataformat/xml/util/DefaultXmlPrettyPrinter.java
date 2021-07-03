@@ -1,10 +1,10 @@
 package com.fasterxml.jackson.dataformat.xml.util;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamWriter2;
@@ -37,7 +37,7 @@ public class DefaultXmlPrettyPrinter
      */
     public interface Indenter
     {
-        public void writeIndentation(JsonGenerator g, int level) throws IOException;
+        public void writeIndentation(JsonGenerator g, int level) throws JacksonException;
 
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException;
 
@@ -49,9 +49,9 @@ public class DefaultXmlPrettyPrinter
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -77,10 +77,10 @@ public class DefaultXmlPrettyPrinter
     protected boolean _spacesInObjectEntries = true;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* State
-    /**********************************************************
-    */
+    /**********************************************************************
+     */
     
     /**
      * Number of open levels of nesting. Used to determine amount of
@@ -98,10 +98,10 @@ public class DefaultXmlPrettyPrinter
     protected transient boolean _justHadStartElement;
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life-cycle (construct, configure)
-    /**********************************************************
-    */
+    /**********************************************************************
+     */
 
     public DefaultXmlPrettyPrinter() { }
 
@@ -126,9 +126,9 @@ public class DefaultXmlPrettyPrinter
     public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Instantiatable impl
-    /**********************************************************
+    /**********************************************************************
      */
     
     @Override
@@ -137,58 +137,57 @@ public class DefaultXmlPrettyPrinter
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* PrettyPrinter impl
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
-    public void writeRootValueSeparator(JsonGenerator gen) throws IOException {
+    public void writeRootValueSeparator(JsonGenerator gen) {
         // Not sure if this should ever be applicable; but if multiple roots were allowed, we'd use linefeed
         gen.writeRaw('\n');
     }
     
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Array values
-    /**********************************************************
+    /**********************************************************************
      */
     
     @Override
-    public void beforeArrayValues(JsonGenerator gen) throws IOException {
+    public void beforeArrayValues(JsonGenerator gen) {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeStartArray(JsonGenerator gen) throws IOException {
+    public void writeStartArray(JsonGenerator gen) {
         // anything to do here?
     }
 
     @Override
-    public void writeArrayValueSeparator(JsonGenerator gen)  throws IOException {
+    public void writeArrayValueSeparator(JsonGenerator gen) {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeEndArray(JsonGenerator gen, int nrOfValues) throws IOException {
+    public void writeEndArray(JsonGenerator gen, int nrOfValues) {
         // anything to do here?
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Object values
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
     public void beforeObjectEntries(JsonGenerator gen)
-        throws IOException, JsonGenerationException
     {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeStartObject(JsonGenerator gen) throws IOException
+    public void writeStartObject(JsonGenerator gen) throws JacksonException
     {
         if (!_objectIndenter.isInline()) {
             if (_nesting > 0) {
@@ -201,17 +200,17 @@ public class DefaultXmlPrettyPrinter
     }
 
     @Override
-    public void writeObjectEntrySeparator(JsonGenerator gen) throws IOException {
+    public void writeObjectEntrySeparator(JsonGenerator gen) throws JacksonException {
         // never called for ToXmlGenerator
     }
 
     @Override
-    public void writeObjectFieldValueSeparator(JsonGenerator gen) throws IOException {
+    public void writeObjectFieldValueSeparator(JsonGenerator gen) throws JacksonException {
         // never called for ToXmlGenerator
     }
     
     @Override
-    public void writeEndObject(JsonGenerator gen, int nrOfEntries) throws IOException
+    public void writeEndObject(JsonGenerator gen, int nrOfEntries) throws JacksonException
     {
         if (!_objectIndenter.isInline()) {
             --_nesting;
@@ -224,11 +223,11 @@ public class DefaultXmlPrettyPrinter
         }
         ((ToXmlGenerator) gen)._handleEndObject();
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* XML-specific additions
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -425,6 +424,19 @@ public class DefaultXmlPrettyPrinter
         _justHadStartElement = false;
     }
 
+    @Override
+    public void writeLeafXsiNilElement(XMLStreamWriter2 sw,
+            String nsURI, String localName)
+        throws XMLStreamException
+    {
+        if (!_objectIndenter.isInline()) {
+            _objectIndenter.writeIndentation(sw, _nesting);
+        }
+        sw.writeEmptyElement(nsURI, localName);
+        sw.writeAttribute("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil", "true");
+        _justHadStartElement = false;    
+    }
+
     @Override // since 2.7
     public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException
     {
@@ -433,11 +445,10 @@ public class DefaultXmlPrettyPrinter
     }
 
     /*
-    /**********************************************************
-    /* Helper classes
-    /* (note: copied from jackson-core to avoid dependency;
+    /**********************************************************************
+    /* Helper classes (note: copied from jackson-core to avoid dependency;
     /* allow local changes)
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -474,7 +485,7 @@ public class DefaultXmlPrettyPrinter
         }
         
         @Override
-        public void writeIndentation(JsonGenerator g, int level) throws IOException
+        public void writeIndentation(JsonGenerator g, int level) throws JacksonException
         {
             g.writeRaw(' ');
         }
@@ -525,15 +536,15 @@ public class DefaultXmlPrettyPrinter
         }
         
         @Override
-        public void writeIndentation(JsonGenerator jg, int level) throws IOException
+        public void writeIndentation(JsonGenerator g, int level) throws JacksonException
         {
-            jg.writeRaw(SYSTEM_LINE_SEPARATOR);
+            g.writeRaw(SYSTEM_LINE_SEPARATOR);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
-                jg.writeRaw(SPACES, 0, SPACE_COUNT); 
+                g.writeRaw(SPACES, 0, SPACE_COUNT); 
                 level -= SPACES.length;
             }
-            jg.writeRaw(SPACES, 0, level);
+            g.writeRaw(SPACES, 0, level);
         }
     }
 }

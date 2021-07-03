@@ -56,10 +56,10 @@ public class FailingNamespace326Test extends XmlTestBase
         
         XmlMapper mapper = XmlMapper.builder(
                 XmlFactory.builder()
-                    .inputFactory(new WstxInputFactory())
-                    .outputFactory(xmlOutputFactory)
+                    .xmlInputFactory(new WstxInputFactory())
+                    .xmlOutputFactory(xmlOutputFactory)
                     .build()
-                    )
+            )
             .enable(SerializationFeature.INDENT_OUTPUT)
             .build();
 

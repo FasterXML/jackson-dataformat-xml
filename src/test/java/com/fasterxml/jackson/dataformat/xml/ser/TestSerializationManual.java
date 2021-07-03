@@ -7,7 +7,6 @@ import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 // Temporarily failing with Jackson 3.x until there are methods for
 // constructing "fully-configured and linked" generators
@@ -40,9 +39,9 @@ public class TestSerializationManual extends XmlTestBase
         values.add(new Value(13));
         values.add(new Value(456));
         for (Value value : values) {
-            generator.writeFieldName("foo");
+            generator.writeName("foo");
             generator.setNextName(new QName("item"));
-            generator.writeObject(value);
+            generator.writePOJO(value);
         }
         generator.writeEndObject();
         generator.close();

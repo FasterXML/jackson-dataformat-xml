@@ -1,14 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import java.io.IOException;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.util.JsonParserDelegate;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.*;
+import com.fasterxml.jackson.databind.deser.bean.BeanDeserializerBase;
 import com.fasterxml.jackson.databind.deser.std.DelegatingDeserializer;
 import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 
 /**
@@ -55,22 +59,21 @@ public class WrapperHandlingDeserializer
      */
 
     @Override
-    protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee0) {
+    protected ValueDeserializer<?> newDelegatingInstance(ValueDeserializer<?> newDelegatee0) {
         // default not enough, as we may need to create a new wrapping deserializer
         // even if delegatee does not change
         throw new IllegalStateException("Internal error: should never get called");
     }
 
     @Override
-    public JsonDeserializer<?> createContextual(DeserializationContext ctxt,
+    public ValueDeserializer<?> createContextual(DeserializationContext ctxt,
             BeanProperty property)
-        throws JsonMappingException
     {
         JavaType vt = _type;
         if (vt == null) {
             vt = ctxt.constructType(_delegatee.handledType());
         }
-        JsonDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
+        ValueDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
         BeanDeserializerBase newDelegatee = _verifyDeserType(del);
         
         // Let's go through the properties now...
@@ -94,6 +97,9 @@ public class WrapperHandlingDeserializer
             }
             // not optimal; should be able to use PropertyName...
             unwrappedNames.add(prop.getName());
+            for (PropertyName alias : prop.findAliases(ctxt.getConfig())) {
+                unwrappedNames.add(alias.getSimpleName());
+            }
         }
         // Ok: if nothing to take care of, just return the delegatee...
         if (unwrappedNames == null) {
@@ -110,7 +116,7 @@ public class WrapperHandlingDeserializer
      */
 
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException
     {
         _configureParser(p);
         return _delegatee.deserialize(p,  ctxt);
@@ -118,16 +124,16 @@ public class WrapperHandlingDeserializer
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt,
-            Object intoValue) throws IOException
+    public Object deserialize(JsonParser p, DeserializationContext ctxt, Object intoValue)
+        throws JacksonException
     {
         _configureParser(p);
-        return ((JsonDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
+        return ((ValueDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
     }
 
     @Override
-    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt,
-            TypeDeserializer typeDeserializer) throws IOException
+    public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer)
+        throws JacksonException
     {
         _configureParser(p);
         return _delegatee.deserializeWithType(p, ctxt, typeDeserializer);
@@ -140,7 +146,7 @@ public class WrapperHandlingDeserializer
      */
 
     @SuppressWarnings("resource")
-    protected final void _configureParser(JsonParser p) throws IOException
+    protected final void _configureParser(JsonParser p) throws JacksonException
     {
         // 05-Sep-2019, tatu: May get XML parser, except for case where content is
         //   buffered. In that case we may still have access to real parser if we
@@ -149,11 +155,18 @@ public class WrapperHandlingDeserializer
             p = ((JsonParserDelegate) p).delegate();
         }
         if (p instanceof FromXmlParser) {
-            ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
+            // 03-May-2021, tatu: as per [dataformat-xml#469] there are special
+            //   cases where we get String token to represent XML empty element.
+            //   If so, need to refrain from adding wrapping as that would
+            //   override parent settings
+            JsonToken t = p.currentToken();
+            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
+                ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
+            }
         }
     }
     
-    protected BeanDeserializerBase _verifyDeserType(JsonDeserializer<?> deser)
+    protected BeanDeserializerBase _verifyDeserType(ValueDeserializer<?> deser)
     {
         if (!(deser instanceof BeanDeserializerBase)) {
             throw new IllegalArgumentException("Can not change delegate to be of type "
