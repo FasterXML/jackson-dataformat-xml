@@ -4,34 +4,35 @@ This projects contains [Jackson](../../../jackson) extension component for
 reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
-with "Code-first" approach (that is, no support is added for "Schema-first" approach).
+with "Code-first" approach (no support is added for "Schema-first" approach).
 Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb);
 this module provides low-level abstractions (`JsonParser`, `JsonGenerator`, `JsonFactory`) as well as small number of higher level
 overrides needed to make data-binding work.
 
-It is worth noting, however, that the goal is NOT to be full JAXB clone; or to be general purpose XML toolkit.
+It is worth noting, however, that the goal is NOT to be full JAXB clone; or to be a
+general purpose XML toolkit.
 
 Specifically:
 
- * While XML serialization should ideally be similar to JAXB output, deviations are not necessarily considered bugs -- we do "best-effort" matching
- * What should be guaranteed is that any XML written using this module must be readable using module as well: that is, we do aim for full XML serialization.
- * From above: there are XML constructs that module will not be able to handle; including some cases JAXB supports
- * This module may, however, also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
+* While XML serialization should ideally be similar to JAXB output, deviations are not automatically considered flaws (there are reasons for some differences)
+* What should be guaranteed is that any XML written using this module must be readable using module as well ("read what I wrote"): that is, we do aim for full round-trip support
+* From above: there are XML constructs that module will not be able to handle; including some cases JAXB (and other Java XML libraries) supports
+* This module also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
 
 ## Branches
 
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.11` is for developing the next minor 2.x version
-* `2.10` is for backported fixes to include in 2.10.x patch versions
+* `2.13` is for developing the next minor 2.x version
+* `2.12` is for backported fixes to include in 2.10.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
 
 ## Status
 
-[![Build Status](https://travis-ci.org/FasterXML/jackson-dataformat-xml.svg?branch=master)](https://travis-ci.org/FasterXML/jackson-dataformat-xml)
+[![Build (github)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml/badge.svg)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/)
 [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
 [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme)
@@ -49,7 +50,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.10.1</version>
+  <version>2.12.3</version>
 </dependency>
 ```
 
@@ -62,7 +63,7 @@ You can do this by adding this in your `pom.xml`:
 <dependency>
   <groupId>com.fasterxml.woodstox</groupId>
   <artifactId>woodstox-core</artifactId>
-  <version>5.1.0</version>
+  <version>6.2.5</version>
 </dependency>
 ```
 
@@ -79,18 +80,15 @@ Usually you either create `XmlMapper` simply by:
 XmlMapper mapper = new XmlMapper();
 ```
 
-but in case you need to configure settings, you will want to do:
+but in case you need to configure settings, you will want to use Builder (added in
+Jackson 2.10) style construction:
 
 ```java
-JacksonXmlModule module = new JacksonXmlModule();
-// and then configure, for example:
-module.setDefaultUseWrapper(false);
-XmlMapper xmlMapper = new XmlMapper(module);
-// and you can also configure AnnotationIntrospectors etc here:
+XmlMapper mapper = XmlMapper.builder()
+   .defaultUseWrapper(false)
+   // enable/disable Features, change AnnotationIntrospector
+   .build();
 ```
-
-as many features that `XmlMapper` needs are provided by `JacksonXmlModule`; default
-`XmlMapper` simply constructs module with default settings.
 
 Alternatively, sometimes you may want/need to configure low-level XML processing details
 controlled by underlying Stax library (Woodstox, Aalto or JDK-default Oracle implementation).
@@ -103,7 +101,10 @@ ifactory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32000);
 // configure
 XMLOutputFactory ofactory = new WstxOutputFactory(); // Woodstox XMLOutputfactory impl
 ofactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true);
-XmlFactory xf = new XmlFactory(ifactory, ofactory);
+XmlFactory xf = XmlFactory.builder()
+    .inputFactory(ifactory)
+    .outputFactory(ofactory)
+    .builder();
 XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
 ```
 
@@ -245,6 +246,8 @@ Currently, following limitations exist beyond general Jackson (JSON) limitations
 * Polymorphic Type Handling works, but only some of inclusion mechanisms are supported (`WRAPPER_ARRAY`, for example is not supported due to problems wrt mapping of XML, Arrays)
     * JAXB-style "compact" Type Id where property name is replaced with Type Id is not supported.
 * Mixed Content (elements and text in same element) is not supported in databinding: child content must be either text OR element(s) (attributes are fine)
+* While XML namespaces are recognized, and produced on serialization, namespace URIs are NOT verified when deserializing: only local names are matched
+    * This also means that elements that only differ by namespace cannot be used.
 
 -----
 
