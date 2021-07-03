@@ -9,7 +9,7 @@ Project: jackson-dataformat-xml
 #442: Missing `START_OBJECT` token in complex element starting with text
  (reported by richardsonwk@github)
 #462: Remove `jackson-module-jaxb-annotations` runtime dependency (leave
-  as a test dep)
+  as a test dep). Also upgrade to use new "Jakarta" variety of annotations
 #463: NPE via boundary condition, document with only XML declaration
  (reported by Fabian M)
 #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)

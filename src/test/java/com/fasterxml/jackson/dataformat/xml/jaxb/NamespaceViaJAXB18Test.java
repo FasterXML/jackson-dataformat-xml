@@ -3,10 +3,8 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 public class NamespaceViaJAXB18Test extends XmlTestBase
 {
@@ -34,7 +32,7 @@ public class NamespaceViaJAXB18Test extends XmlTestBase
     }
     
     private final XmlMapper MAPPER = mapperBuilder()
-            .annotationIntrospector(new JaxbAnnotationIntrospector())
+            .annotationIntrospector(jakartaXMLBindAnnotationIntrospector())
             .build();
 
     // [dataformat-xml#18]

@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class ElementWrapperTest extends XmlTestBase
 {
@@ -43,7 +42,7 @@ public class ElementWrapperTest extends XmlTestBase
     {
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-            (new JaxbAnnotationIntrospector(),
+            (jakartaXMLBindAnnotationIntrospector(),
                     new JacksonAnnotationIntrospector());
         XmlMapper jaxbMapper = XmlMapper.builder()
                 .annotationIntrospector(intr)
@@ -68,7 +67,7 @@ public class ElementWrapperTest extends XmlTestBase
     public void testNoElementWrapper() throws Exception
     {
         XmlMapper jaxbMapper = mapperBuilder()
-                .annotationIntrospector(new JaxbAnnotationIntrospector())
+                .annotationIntrospector(jakartaXMLBindAnnotationIntrospector())
                 .build();
 
         MyPerson2 person = new MyPerson2();

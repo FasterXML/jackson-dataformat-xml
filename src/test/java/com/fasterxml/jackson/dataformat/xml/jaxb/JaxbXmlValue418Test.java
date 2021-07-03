@@ -1,8 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.jaxb;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
@@ -105,7 +105,7 @@ public class JaxbXmlValue418Test extends XmlTestBase
         //    annotation to getter or (b) remove "implicit name" for `@XmlValue`.
         //    We'll do latter here:
         final XmlMapper mapper = XmlMapper.builder()
-                .addModule(new com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule()
+                .addModule(new com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule()
                         .setNameUsedForXmlValue(null)
                 )
                 .build();

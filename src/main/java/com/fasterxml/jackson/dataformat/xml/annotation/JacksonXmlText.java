@@ -3,13 +3,13 @@ package com.fasterxml.jackson.dataformat.xml.annotation;
 import java.lang.annotation.*;
 
 /**
- * Interface that is loosely similar to {@link javax.xml.bind.annotation.XmlValue}
+ * Interface that is loosely similar to {@code jakarta.xml.bind.annotation.XmlValue}
  * in that it can be used on one (and only one!) property of a POJO.
  * It will result in value of the property be serialized without element wrapper,
  * as long as there are no element-wrapped other properties (attribute-valued
  * properties are acceptable).
- * It is also somewhat similar to core Jackson <code>JsonValue</code> annotation; but
- * has to be separate as <code>JsonValue</code> does not allow any other
+ * It is also somewhat similar to core Jackson {@code @JsonValue} annotation; but
+ * has to be separate as {@code @JsonValue} does not allow any other
  * properties.
  *<p>
  * Note that only one such property is allowed on a POJO: if multiple properties

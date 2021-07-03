@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that is similar to JAXB <code>javax.xml.bind.annotation.XmlElementWrapper</code>,
+ * Annotation that is similar to JAXB {@code jakarta.xml.bind.annotation.XmlElementWrapper},
  * to indicate wrapper element to use (if any) for Collection types (arrays,
  * {@link java.util.Collection}). If defined, a separate container (wrapper) element
  * is used; if not, entries are written with wrapping.

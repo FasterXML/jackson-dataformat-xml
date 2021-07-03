@@ -10,6 +10,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.core.*;
 
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public abstract class XmlTestBase
@@ -165,11 +169,11 @@ public abstract class XmlTestBase
             return String.format("[x=%d, y=%d]", x, y);
         }
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Some sample documents:
-    /**********************************************************
+    /**********************************************************************
      */
 
     protected final static int SAMPLE_SPEC_VALUE_WIDTH = 800;
@@ -200,9 +204,9 @@ public abstract class XmlTestBase
         ;
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Construction, factory methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     protected XmlTestBase() {
@@ -232,10 +236,14 @@ public abstract class XmlTestBase
                 .build();
     }
 
+    protected AnnotationIntrospector jakartaXMLBindAnnotationIntrospector() {
+        return new JakartaXmlBindAnnotationIntrospector();
+    }
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Additional assertion methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     protected void assertToken(JsonToken expToken, JsonToken actToken)
@@ -290,11 +298,11 @@ public abstract class XmlTestBase
         fail("Expected an exception with one of substrings ("+Arrays.asList(matches)+"): got one ("+
                 e.getClass().getName()+") with message \""+msg+"\"");
     }
-    
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Helper methods, other
-    /**********************************************************
+    /**********************************************************************
      */
 
     protected static String a2q(String content) {
