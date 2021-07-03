@@ -179,17 +179,39 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return _this();
     }
 
-    public XmlFactoryBuilder inputFactory(XMLInputFactory xmlIn) {
+    /**
+     * @since 2.13 (was misnamed as {@code inputFactory(in) formerly})
+     */
+    public XmlFactoryBuilder xmlInputFactory(XMLInputFactory xmlIn) {
         _xmlInputFactory = xmlIn;
         return _this();
     }
 
-    public XmlFactoryBuilder outputFactory(XMLOutputFactory xmlOut)
+    /**
+     * @since 2.13 (was misnamed as {@code outputFactory(in) formerly})
+     */
+    public XmlFactoryBuilder xmlOutputFactory(XMLOutputFactory xmlOut)
     {
         _xmlOutputFactory = xmlOut;
         return _this();
     }
-    
+
+    /**
+     * @deprecated Since 2.13 use {@link #xmlInputFactory()} instead
+     */
+    @Deprecated // since 2.13
+    public XmlFactoryBuilder inputFactory(XMLInputFactory xmlIn) {
+        return xmlInputFactory(xmlIn);
+    }
+
+    /**
+     * @deprecated Since 2.13 use {@link #xmlOutputFactory()} instead
+     */
+    @Deprecated // since 2.13
+    public XmlFactoryBuilder outputFactory(XMLOutputFactory xmlOut) {
+        return xmlOutputFactory(xmlOut);
+    }
+
     // // // Actual construction
 
     @Override

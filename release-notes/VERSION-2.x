@@ -17,6 +17,8 @@ Project: jackson-dataformat-xml
 #474: Empty String ("") parsed as 0 for int even if
    DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES enabled (note:
    actual fix in `jackson-databind)
+- Rename `XmlFactoryBuilder` methods "inputFactory()"->"xmlInputFactory()",
+  "outputFactory()" -> "xmlOutputFactory()"
 - Woodstox dependency 6.2.6 (from 6.2.4)
 
 2.12.4 (not yet released)

@@ -102,8 +102,8 @@ ifactory.setProperty(WstxInputProperties.P_MAX_ATTRIBUTE_SIZE, 32000);
 XMLOutputFactory ofactory = new WstxOutputFactory(); // Woodstox XMLOutputfactory impl
 ofactory.setProperty(WstxOutputProperties.P_OUTPUT_CDATA_AS_TEXT, true);
 XmlFactory xf = XmlFactory.builder()
-    .inputFactory(ifactory)
-    .outputFactory(ofactory)
+    .xmlInputFactory(ifactory) // note: in 2.12 and before "inputFactory()"
+    .xmlOutputFactory(ofactory) // note: in 2.12 and before "outputFactory()"
     .builder();
 XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
 ```
