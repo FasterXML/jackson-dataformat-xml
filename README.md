@@ -25,7 +25,7 @@ Specifically:
 are active maintenance branches in which much of development happens:
 
 * `2.13` is for developing the next minor 2.x version
-* `2.12` is for backported fixes to include in 2.10.x patch versions
+* `2.12` is for backported fixes to include in 2.12.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
