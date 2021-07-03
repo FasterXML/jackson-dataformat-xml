@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import java.io.IOException;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

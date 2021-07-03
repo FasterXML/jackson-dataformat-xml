@@ -33,7 +33,7 @@ public class ListSerializationTest extends XmlTestBase
     static class StringListBean
     {
         // to see what JAXB gives, uncomment:
-        //@javax.xml.bind.annotation.XmlElementWrapper(name="stringList")
+        //@jakarta.xml.bind.annotation.XmlElementWrapper(name="stringList")
         @JacksonXmlElementWrapper(localName="stringList")
         public List<StringBean> strings;
         
