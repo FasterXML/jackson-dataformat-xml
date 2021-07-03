@@ -58,7 +58,7 @@ public class NonNamespaceAwareDeser422Test extends XmlTestBase
         final XMLInputFactory xmlInputFactory = new WstxInputFactory();
         xmlInputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
         final XmlMapper xmlMapper = XmlMapper.builder(XmlFactory.builder()
-                .inputFactory(xmlInputFactory)
+                .xmlInputFactory(xmlInputFactory)
                 .build()).build();
 
         final String XML =
