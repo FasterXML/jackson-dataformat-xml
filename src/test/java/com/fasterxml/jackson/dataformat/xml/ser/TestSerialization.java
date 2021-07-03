@@ -171,7 +171,7 @@ public class TestSerialization extends XmlTestBase
     public void testJAXB() throws Exception
     {
         StringWriter sw = new StringWriter();
-        javax.xml.bind.JAXB.marshal(new StringListBean("a", "b", "c"), sw);
+        jakarta.xml.bind.JAXB.marshal(new StringListBean("a", "b", "c"), sw);
         System.out.println("JAXB -> "+sw);
     }
     */

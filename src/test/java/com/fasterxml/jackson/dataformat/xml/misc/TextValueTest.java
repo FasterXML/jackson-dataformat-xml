@@ -15,11 +15,11 @@ public class TextValueTest extends XmlTestBase
     static class Simple
     {
         @JacksonXmlProperty(isAttribute=true)
-        // same as: @javax.xml.bind.annotation.XmlAttribute
+        // same as: @jakarta.xml.bind.annotation.XmlAttribute
         public int a = 13;
 
         @JacksonXmlText
-        // about same as: @javax.xml.bind.annotation.XmlValue
+        // about same as: @jakarta.xml.bind.annotation.XmlValue
         public String text = "something";
     }
 	
