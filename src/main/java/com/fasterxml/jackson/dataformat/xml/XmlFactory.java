@@ -610,7 +610,11 @@ public class XmlFactory extends JsonFactory
         //    is always same as if 'false' was passed
         XMLStreamReader sr;
         try {
-            sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
+            try {
+                sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
+            } catch (UnsupportedOperationException e) {
+                sr = _xmlInputFactory.createXMLStreamReader(new CharArrayReader(data, offset, len));
+            }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, null);
         }
@@ -628,7 +632,12 @@ public class XmlFactory extends JsonFactory
     {
         XMLStreamReader sr;
         try {
-            sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
+            try {
+                sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
+            } catch (UnsupportedOperationException e) {
+                // Perhaps we got com.sun.xml.internal.stream.XMLInputFactoryImpl rather than the recommended Woodstox.
+                sr = _xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(data, offset, len));
+            }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, null);
         }
