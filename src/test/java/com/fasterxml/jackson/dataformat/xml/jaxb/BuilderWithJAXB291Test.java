@@ -4,15 +4,15 @@ import jakarta.xml.bind.annotation.XmlElement;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 // Test for [dataformat-xml#291]: works via field, not constructor
 // (name mismatch to fix in test case)
@@ -119,7 +119,7 @@ public class BuilderWithJAXB291Test extends XmlTestBase
                 "    <PostalCode>94132</PostalCode>\n" + 
                 "</Address>";
 
-        AnnotationIntrospector xmlIntr = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+        AnnotationIntrospector xmlIntr = jakartaXMLBindAnnotationIntrospector();
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
                 (xmlIntr, new JacksonAnnotationIntrospector());
         XmlMapper mapper = mapperBuilder()

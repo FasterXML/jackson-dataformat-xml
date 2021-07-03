@@ -4,10 +4,8 @@ import java.io.IOException;
 
 import jakarta.xml.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class AttributesWithJAXBTest extends XmlTestBase
 {
@@ -41,16 +39,18 @@ public class AttributesWithJAXBTest extends XmlTestBase
 
     public void testTwoAttributes() throws IOException
     {
-        XmlMapper mapper = new XmlMapper();
-        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        XmlMapper mapper = XmlMapper.builder()
+                .annotationIntrospector(jakartaXMLBindAnnotationIntrospector())
+                .build();
         String xml = mapper.writeValueAsString(new Jurisdiction());
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>", xml);
     }
 
     public void testAttributeAndElement() throws IOException
     {
-        XmlMapper mapper = new XmlMapper();
-        mapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
+        XmlMapper mapper = XmlMapper.builder()
+                .annotationIntrospector(jakartaXMLBindAnnotationIntrospector())
+                .build();
         String xml = mapper.writeValueAsString(new Problem("x", "Stuff"));
         assertEquals("<problem id=\"x\"><description>Stuff</description></problem>", xml);
     }

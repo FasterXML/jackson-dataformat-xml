@@ -9,12 +9,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class ElementWrapperTest extends XmlTestBase
 {
@@ -45,7 +43,7 @@ public class ElementWrapperTest extends XmlTestBase
         XmlMapper _jaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
-            (new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()),
+            (jakartaXMLBindAnnotationIntrospector(),
                     new JacksonAnnotationIntrospector());
         _jaxbMapper.setAnnotationIntrospector(intr);
 
@@ -68,7 +66,7 @@ public class ElementWrapperTest extends XmlTestBase
     public void testNoElementWrapper() throws Exception
     {
         XmlMapper jaxbMapper = mapperBuilder()
-                .annotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))
+                .annotationIntrospector(jakartaXMLBindAnnotationIntrospector())
                 .build();
 
         MyPerson2 person = new MyPerson2();

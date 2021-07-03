@@ -9,6 +9,12 @@ import junit.framework.TestCase;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.core.*;
+
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public abstract class XmlTestBase
@@ -229,6 +235,10 @@ public abstract class XmlTestBase
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(useListWrapping);
         return new XmlMapper(module);
+    }
+
+    protected AnnotationIntrospector jakartaXMLBindAnnotationIntrospector() {
+        return new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance());
     }
 
     /*

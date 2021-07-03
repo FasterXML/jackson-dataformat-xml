@@ -95,23 +95,21 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       </exclusions> 
     </dependency>
 
-    <!--  JAXB annotation introspector is needed BUT ONLY for tests
-          (starting 2.13: previously compile/runtime)
+    <!--  Jakarta XMLBind (nee javax/jaxb( annotation introspector is needed BUT ONLY
+          for tests (starting 2.13: previously compile/runtime)
        -->
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-jaxb-annotations</artifactId>
+      <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
       <scope>test</scope>
     </dependency>
 
-    <!-- 04-Feb-2018, tatu: Finally, Java 9 does not bundle JAXB, not even API;
-            at least include it for tests. May need to include actual dep to
-            API for runtime too, but first for tests
+    <!-- 03-Jul-2021, tatu: We may or may not need this, but only for tests
       -->
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
-      <version>2.3.2</version>
+      <version>3.0.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -127,7 +125,6 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <plugin>
 	<groupId>org.jacoco</groupId>
 	<artifactId>jacoco-maven-plugin</artifactId>
-	<version>0.8.5</version>
 	<executions>
           <execution>
             <goals>
