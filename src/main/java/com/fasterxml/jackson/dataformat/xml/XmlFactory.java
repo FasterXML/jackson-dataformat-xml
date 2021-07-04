@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
+import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
 import org.codehaus.stax2.io.Stax2CharArraySource;
 
@@ -610,7 +611,13 @@ public class XmlFactory extends JsonFactory
         //    is always same as if 'false' was passed
         XMLStreamReader sr;
         try {
-            sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
+            // 03-Jul-2021, tatu: [dataformat-xml#482] non-Stax2 impls unlikely to
+            //    support so avoid:
+            if (_xmlInputFactory instanceof XMLInputFactory2) {
+                sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
+            } else {
+                sr = _xmlInputFactory.createXMLStreamReader(new CharArrayReader(data, offset, len));
+            }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, null);
         }
@@ -628,7 +635,13 @@ public class XmlFactory extends JsonFactory
     {
         XMLStreamReader sr;
         try {
-            sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
+            // 03-Jul-2021, tatu: [dataformat-xml#482] non-Stax2 impls unlikely to
+            //    support so avoid:
+            if (_xmlInputFactory instanceof XMLInputFactory2) {
+                sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
+            } else {
+                sr = _xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(data, offset, len));
+            }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, null);
         }

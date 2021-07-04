@@ -11,6 +11,9 @@ Project: jackson-dataformat-xml
 #473: Parsing of `null` Integer fields changed behavior between versions
    2.11.4 and 2.12.X
  (reported by Steviep@github)
+#482: Use of non-Stax2-compatible Stax2 implementation fails when reading
+  from byte[]
+ (reported by Tim J)
 
 2.12.3 (12-Apr-2021)
 

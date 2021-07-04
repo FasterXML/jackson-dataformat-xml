@@ -155,3 +155,8 @@ Westin Miller (westinrm@github)
 
 * Contributed #456: Fix JsonAlias with unwrapped lists
  (2.12.3)
+
+Tim Jacomb (timja@github)
+
+* Reported #482: Use of non-Stax2-compatible Stax2 implementation fails when reading
+ (2.12.4)
