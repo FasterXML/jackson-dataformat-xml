@@ -156,10 +156,14 @@ Westin Miller (westinrm@github)
 * Contributed #456: Fix JsonAlias with unwrapped lists
  (2.12.3)
 
+Tim Jacomb (timja@github)
+
+* Reported #482: Use of non-Stax2-compatible Stax2 implementation fails when reading
+ (2.12.4)
+
 Fabian Meumertzheim (fmeum@github)
 
 * Reported #463: NPE via boundary condition, document with only XML declaration
  (2.13.0)
 * Reported #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (2.13.0)
-
