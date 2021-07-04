@@ -17,8 +17,8 @@ public class NonWoodstoxStaxImpl482Test extends XmlTestBase
 
     private final XmlMapper SJSXP_MAPPER = XmlMapper.builder(
             XmlFactory.builder()
-                .inputFactory(new ZephyrParserFactory())
-                .outputFactory(new ZephyrWriterFactory())
+                .xmlInputFactory(new ZephyrParserFactory())
+                .xmlOutputFactory(new ZephyrWriterFactory())
             .build())
             .build();
  
