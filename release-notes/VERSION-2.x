@@ -4,10 +4,11 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.11.5 (not yet released)
+Fixes in 2.11 branch, not released (may or may not be released)
 
 #456: Fix JsonAlias with unwrapped lists
  (contributed by Westin M)
+#482: Use of non-Stax2-compatible Stax2 implementation fails when reading from byte[]
 - Upgrade Woodstox dependency to 6.2.4 (<- 6.2.3)
 
 2.11.4 (12-Dec-2020)
