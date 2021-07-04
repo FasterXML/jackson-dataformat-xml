@@ -97,6 +97,15 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <version>3.0.1</version>
       <scope>test</scope>
     </dependency>
+    <!-- 03-Jul-2021, tatu: For sanity checking of non-Woodstox impl usage
+        need, say, Sjsxp
+      -->
+    <dependency>
+      <groupId>com.sun.xml.stream</groupId>
+      <artifactId>sjsxp</artifactId>
+      <version>1.0.2</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
