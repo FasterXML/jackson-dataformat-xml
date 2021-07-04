@@ -73,7 +73,25 @@ public class ToXmlGenerator
          *
          * @since 2.10
          */
-        WRITE_NULLS_AS_XSI_NIL(false)
+        WRITE_NULLS_AS_XSI_NIL(false),
+
+        /**
+         * Feature that determines writing of root values of type {@code ObjectNode}
+         * ({@code JsonNode} that represents Object content values), regarding
+         * XML output.
+         * If enabled and {@code ObjectNode} has exactly one entry (key/value pair),
+         * then key of that entry is used as the root element name (and value
+         * is written as contents. Otherwise (if feature disabled, or if root
+         * {@code ObjectNode} has any other number of key/value entries,
+         * root element name is determined using normal logic (either explicitly
+         * configured, or {@code ObjectNode} otherwise).
+         *<p>
+         * Default setting is {@code disabled} in Jackson 2.x, for backwards compatibility:
+         * likely to be changed in 3.0 to {@code enabled}.
+         *
+         * @since 2.13
+         */
+        UNWRAP_ROOT_OBJECT_NODE(false),
         ;
 
         final boolean _defaultState;
@@ -110,17 +128,17 @@ public class ToXmlGenerator
     /**********************************************************
      */
 
-    final protected XMLStreamWriter2 _xmlWriter;
+    protected final XMLStreamWriter2 _xmlWriter;
 
-    final protected XMLStreamWriter _originalXmlWriter;
+    protected final XMLStreamWriter _originalXmlWriter;
     
     /**
      * Marker flag set if the underlying stream writer has to emulate
      * Stax2 API: this is problematic if trying to use {@link #writeRaw} calls.
      */
-    final protected boolean _stax2Emulation;
+    protected final boolean _stax2Emulation;
     
-    final protected IOContext _ioContext;
+    protected final IOContext _ioContext;
 
     /**
      * Bit flag composed of bits that indicate which
@@ -133,7 +151,7 @@ public class ToXmlGenerator
      * We may need to use XML-specific indentation as well
      */
     protected XmlPrettyPrinter _xmlPrettyPrinter;
-    
+
     /*
     /**********************************************************
     /* XML Output state
@@ -146,7 +164,7 @@ public class ToXmlGenerator
      * @since 2.2
      */
     protected boolean _initialized;
-    
+
     /**
      * Element or attribute name to use for next output call.
      * Assigned by either code that initiates serialization
@@ -173,13 +191,13 @@ public class ToXmlGenerator
      * value should be as CData
      */
     protected boolean _nextIsCData = false;
-    
+
     /**
      * To support proper serialization of arrays it is necessary to keep
      * stack of element names, so that we can "revert" to earlier 
      */
     protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
-    
+
     /*
     /**********************************************************
     /* Life-cycle
