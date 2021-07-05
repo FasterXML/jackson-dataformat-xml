@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.base.TextualTSFactory;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.json.JsonFactoryBuilder;
+
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -100,10 +100,10 @@ public class XmlFactory
         super(xpFeatures, xgFeatures);
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
-            xmlIn = XmlFactoryBuilder.defaultInputFactory();
+            xmlIn = XmlFactoryBuilder.defaultXmlInputFactory(getClass().getClassLoader());
         }
         if (xmlOut == null) {
-            xmlOut = XmlFactoryBuilder.defaultOutputFactory();
+            xmlOut = XmlFactoryBuilder.defaultXmlOutputFactory(getClass().getClassLoader());
         }
         _initFactories(xmlIn, xmlOut);
         _xmlInputFactory = xmlIn;
@@ -111,7 +111,7 @@ public class XmlFactory
     }
 
     /**
-     * Constructors used by {@link JsonFactoryBuilder} for instantiation.
+     * Constructors used by {@link XmlFactoryBuilder} for instantiation.
      *
      * @since 3.0
      */
@@ -119,8 +119,8 @@ public class XmlFactory
     {
         super(b);
         _cfgNameForTextElement = b.nameForTextElement();
-        _xmlInputFactory = b.inputFactory();
-        _xmlOutputFactory = b.outputFactory();
+        _xmlInputFactory = b.xmlInputFactory();
+        _xmlOutputFactory = b.xmlOutputFactory();
         _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 

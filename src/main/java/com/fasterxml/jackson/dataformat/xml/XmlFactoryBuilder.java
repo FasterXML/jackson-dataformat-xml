@@ -9,17 +9,14 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 /**
  * {@link com.fasterxml.jackson.core.TokenStreamFactory.TSFBuilder}
- * implementation for constructing {@link XmlFactory}
- * instances.
- *
- * @since 3.0
+ * implementation for constructing {@link XmlFactory} instances.
  */
 public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactoryBuilder>
 {
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Configuration
-    /**********************************************************
+    /**********************************************************************
      */
 
     /**
@@ -51,20 +48,29 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      *<p>
      * Name used for pseudo-property used for returning XML Text value (which does
      * not have actual element name to use). Defaults to empty String, but
-     * may be changed for inter-operability reasons: JAXB, for example, uses
+     * may be changed for interoperability reasons: JAXB, for example, uses
      * "value" as name.
      */
     protected String _nameForTextElement;
 
+    /**
+     * Optional {@link ClassLoader} to use for constructing
+     * {@link XMLInputFactory} and {@kink XMLOutputFactory} instances if
+     * not explicitly specified by caller. If not specified, will
+     * default to {@link ClassLoader} that loaded this class.
+     */
+    protected ClassLoader _classLoaderForStax;
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Life cycle
-    /**********************************************************
+    /**********************************************************************
      */
     
     protected XmlFactoryBuilder() {
         super(XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS,
                 XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS);
+        _classLoaderForStax = null;
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
@@ -72,21 +78,27 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
+        _classLoaderForStax = null;
     }
 
     // // // Accessors
 
     public String nameForTextElement() { return _nameForTextElement; }
 
-    public XMLInputFactory inputFactory() {
+    public XMLInputFactory xmlInputFactory() {
         if (_xmlInputFactory == null) {
-            return defaultInputFactory();
+            return defaultXmlInputFactory(_classLoaderForStax);
         }
         return _xmlInputFactory;
     }
 
-    protected static XMLInputFactory defaultInputFactory() {
-        XMLInputFactory xmlIn = XMLInputFactory.newInstance();
+    protected XMLInputFactory defaultXmlInputFactory() {
+        return defaultXmlInputFactory(staxClassLoader());
+    }
+
+    protected static XMLInputFactory defaultXmlInputFactory(ClassLoader cl) {
+        // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
+        XMLInputFactory xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
         // as per [dataformat-xml#190], disable external entity expansion by default
         xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
@@ -94,18 +106,28 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return xmlIn;
     }
 
-    public XMLOutputFactory outputFactory() {
+    public XMLOutputFactory xmlOutputFactory() {
         if (_xmlOutputFactory == null) {
-            return defaultOutputFactory();
+            return defaultXmlOutputFactory(_classLoaderForStax);
         }
         return _xmlOutputFactory;
     }
 
-    protected static XMLOutputFactory defaultOutputFactory() {
-        XMLOutputFactory xmlOut = XMLOutputFactory.newInstance();
+    protected XMLOutputFactory defaultXmlOutputFactory() {
+        return defaultXmlOutputFactory(staxClassLoader());
+    }
+
+    protected static XMLOutputFactory defaultXmlOutputFactory(ClassLoader cl) {
+        // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
+        XMLOutputFactory xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(), cl);
         // [dataformat-xml#326]: Better ensure namespaces get built properly:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         return xmlOut;
+    }
+
+    protected ClassLoader staxClassLoader() {
+        return (_classLoaderForStax == null) ?
+                getClass().getClassLoader() : _classLoaderForStax;
     }
 
     // // // Parser features
@@ -186,6 +208,21 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     public XmlFactoryBuilder xmlOutputFactory(XMLOutputFactory xmlOut) {
         _xmlOutputFactory = xmlOut;
+        return _this();
+    }
+
+    /**
+     * Method that can be used to specific {@link ClassLoader} for creating
+     * {@link XMLInputFactory} and {@link XMLOutputFactory} instances if
+     * those are not explicitly defined by caller: passed to respective
+     * {@code newFactory()} methods.
+     *<br>
+     * NOTE: recommended approach is to explicitly pass {@link XMLInputFactory}
+     * and {@link XMLOutputFactory} methods instead of relying on JDK SPI
+     * mechanism.
+     */
+    public XmlFactoryBuilder staxClassLoader(ClassLoader cl) {
+        _classLoaderForStax = cl;
         return _this();
     }
 
