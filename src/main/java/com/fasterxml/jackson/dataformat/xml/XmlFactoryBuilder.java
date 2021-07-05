@@ -8,11 +8,8 @@ import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 /**
- * {@link com.fasterxml.jackson.core.TSFBuilder}
- * implementation for constructing {@link XmlFactory}
- * instances.
- *
- * @since 3.0
+ * {@link com.fasterxml.jackson.core.TSFBuilder} implementation
+ * for constructing {@link XmlFactory} instances.
  */
 public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
 {
@@ -51,10 +48,20 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
      *<p>
      * Name used for pseudo-property used for returning XML Text value (which does
      * not have actual element name to use). Defaults to empty String, but
-     * may be changed for inter-operability reasons: JAXB, for example, uses
+     * may be changed for interoperability reasons: JAXB, for example, uses
      * "value" as name.
      */
     protected String _nameForTextElement;
+
+    /**
+     * Optional {@link ClassLoader} to use for constructing
+     * {@link XMLInputFactory} and {@kink XMLOutputFactory} instances if
+     * not explicitly specified by caller. If not specified, will
+     * default to {@link ClassLoader} that loaded this class.
+     *
+     * @since 2.13
+     */
+    protected ClassLoader _classLoaderForStax;
 
     /*
     /**********************************************************
@@ -65,6 +72,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     protected XmlFactoryBuilder() {
         _formatParserFeatures = XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS;
         _formatGeneratorFeatures = XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
+        _classLoaderForStax = null;
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
@@ -74,6 +82,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
+        _classLoaderForStax = null;
     }
 
     // // // Accessors
@@ -90,8 +99,11 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         return _xmlInputFactory;
     }
 
-    protected static XMLInputFactory defaultInputFactory() {
-        XMLInputFactory xmlIn = XMLInputFactory.newInstance();
+    protected XMLInputFactory defaultInputFactory() {
+        // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
+        XMLInputFactory xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(),
+                staxClassLoader());
+
         // as per [dataformat-xml#190], disable external entity expansion by default
         xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
@@ -106,11 +118,19 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         return _xmlOutputFactory;
     }
 
-    protected static XMLOutputFactory defaultOutputFactory() {
-        XMLOutputFactory xmlOut = XMLOutputFactory.newInstance();
+    protected XMLOutputFactory defaultOutputFactory() {
+        // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
+        XMLOutputFactory xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(),
+                staxClassLoader());
         // [dataformat-xml#326]: Better ensure namespaces get built properly:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         return xmlOut;
+    }
+
+    // @since 2.13
+    protected ClassLoader staxClassLoader() {
+        return (_classLoaderForStax == null) ?
+                getClass().getClassLoader() : _classLoaderForStax;
     }
 
     // // // Parser features
@@ -217,11 +237,27 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         return xmlOutputFactory(xmlOut);
     }
 
+    /**
+     * Method that can be used to specific {@link ClassLoader} for creating
+     * {@link XMLInputFactory} and {@link XMLOutputFactory} instances if
+     * those are not explicitly defined by caller: passed to respective
+     * {@code newFactory()} methods.
+     *<br>
+     * NOTE: recommended approach is to explicitly pass {@link XMLInputFactory}
+     * and {@link XMLOutputFactory} methods instead of relying on JDK SPI
+     * mechanism.
+     *
+     * @since 2.13
+     */
+    public XmlFactoryBuilder staxClassLoader(ClassLoader cl) {
+        _classLoaderForStax = cl;
+        return _this();
+    }
+    
     // // // Actual construction
 
     @Override
     public XmlFactory build() {
-        // 28-Dec-2017, tatu: No special settings beyond base class ones, so:
         return new XmlFactory(this);
     }
 }

@@ -111,14 +111,18 @@ public class XmlFactory extends JsonFactory
         _xmlGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
-            xmlIn = XMLInputFactory.newInstance();
+            // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
+            xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(),
+                    getClass().getClassLoader());
             // as per [dataformat-xml#190], disable external entity expansion by default
             xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
             // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
             xmlIn.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         }
         if (xmlOut == null) {
-            xmlOut = XMLOutputFactory.newInstance();
+            // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
+            xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(),
+                    getClass().getClassLoader());
         }
         _initFactories(xmlIn, xmlOut);
         _xmlInputFactory = xmlIn;

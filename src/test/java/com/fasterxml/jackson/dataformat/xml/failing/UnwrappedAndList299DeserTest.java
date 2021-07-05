@@ -53,7 +53,7 @@ public class UnwrappedAndList299DeserTest extends XmlTestBase
         assertEquals(request.composite.number, anotherRequest.composite.number);
         
         assertEquals("ABC", anotherRequest.composite.messageId);
-        assertEquals(new Integer(123), anotherRequest.composite.number);
+        assertEquals(Integer.valueOf(123), anotherRequest.composite.number);
         assertEquals(2, anotherRequest.composite.headers.size());
         assertEquals("headerID1", anotherRequest.composite.headers.get(0).headerId);
         assertEquals("headerID2", anotherRequest.composite.headers.get(1).headerId);

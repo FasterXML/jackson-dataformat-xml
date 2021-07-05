@@ -17,6 +17,8 @@ Project: jackson-dataformat-xml
 #474: Empty String ("") parsed as 0 for int even if
    DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES enabled (note:
    actual fix in `jackson-databind)
+#483: Explicitly pass ClassLoader of XmlFactory when creating Stax input/output factory,
+   instead of context ClassLoader
 - Rename `XmlFactoryBuilder` methods "inputFactory()"->"xmlInputFactory()",
   "outputFactory()" -> "xmlOutputFactory()"
 - Woodstox dependency 6.2.6 (from 6.2.4)
