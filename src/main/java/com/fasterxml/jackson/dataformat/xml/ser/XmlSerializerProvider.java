@@ -62,8 +62,7 @@ public class XmlSerializerProvider extends SerializationContextExt
         } else {
             // [dataformat-xml#441]: allow ObjectNode unwrapping
             if (_shouldUnwrapObjectNode(xgen, value)) {
-                _serializeUnwrappedObjectNode(xgen, value,
-                        findTypedValueSerializer(cls, true));
+                _serializeUnwrappedObjectNode(xgen, value, null);
                 return;
             }
             QName rootName = _rootNameFromConfig();
