@@ -80,8 +80,8 @@ public class ToXmlGenerator
 
         /**
          * Feature that determines writing of root values of type {@code ObjectNode}
-         * ({@code JsonNode} that represents Object content values), regarding
-         * XML output.
+         * ({@code JsonNode} subtype that represents Object content values),
+         * regarding XML output.
          * If enabled and {@code ObjectNode} has exactly one entry (key/value pair),
          * then key of that entry is used as the root element name (and value
          * is written as contents. Otherwise (if feature disabled, or if root

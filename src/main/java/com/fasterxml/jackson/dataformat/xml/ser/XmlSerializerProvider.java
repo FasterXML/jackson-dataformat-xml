@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -10,10 +11,12 @@ import com.fasterxml.jackson.core.exc.WrappedIOException;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.SerializationContextExt;
 import com.fasterxml.jackson.databind.ser.SerializerCache;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
+
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -57,6 +60,12 @@ public class XmlSerializerProvider extends SerializationContextExt
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
+            // [dataformat-xml#441]: allow ObjectNode unwrapping
+            if (_shouldUnwrapObjectNode(xgen, value)) {
+                _serializeUnwrappedObjectNode(xgen, value,
+                        findTypedValueSerializer(cls, true));
+                return;
+            }
             QName rootName = _rootNameFromConfig();
             if (rootName == null) {
                 rootName = _rootNameLookup.findRootName(this, cls);
@@ -107,6 +116,11 @@ public class XmlSerializerProvider extends SerializationContextExt
         if (xgen == null) { // called by convertValue()
             asArray = false;
         } else {
+            // [dataformat-xml#441]: allow ObjectNode unwrapping
+            if (_shouldUnwrapObjectNode(xgen, value)) {
+                _serializeUnwrappedObjectNode(xgen, value, ser);
+                return;
+            }
             QName rootName = _rootNameFromConfig();
             if (rootName == null) {
                 rootName = _rootNameLookup.findRootName(this, rootType);
@@ -181,7 +195,7 @@ public class XmlSerializerProvider extends SerializationContextExt
             gen.writeEndObject();
         }
     }
-    
+
     protected void _serializeXmlNull(JsonGenerator gen) throws JacksonException
     {
         // 14-Nov-2016, tatu: As per [dataformat-xml#213], we may have explicitly
@@ -215,10 +229,9 @@ public class XmlSerializerProvider extends SerializationContextExt
         }
         xgen.initGenerator();
         String ns = rootName.getNamespaceURI();
-        /* [dataformat-xml#26] If we just try writing root element with namespace,
-         * we will get an explicit prefix. But we'd rather use the default
-         * namespace, so let's try to force that.
-         */
+        // [dataformat-xml#26] If we just try writing root element with namespace,
+        // we will get an explicit prefix. But we'd rather use the default
+        // namespace, so let's try to force that.
         if (ns != null && ns.length() > 0) {
             try {
                 xgen.getStaxWriter().setDefaultNamespace(ns);
@@ -239,6 +252,29 @@ public class XmlSerializerProvider extends SerializationContextExt
             return new QName(name.getSimpleName());
         }
         return new QName(ns, name.getSimpleName());
+    }
+
+    protected boolean _shouldUnwrapObjectNode(ToXmlGenerator xgen, Object value)
+    {
+        return xgen.isEnabled(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE)
+                && (value instanceof ObjectNode)
+                && (((ObjectNode) value).size() == 1);
+    }
+
+    protected void _serializeUnwrappedObjectNode(ToXmlGenerator xgen, Object value,
+            ValueSerializer<Object> ser) throws JacksonException
+    {
+        ObjectNode root = (ObjectNode) value;
+        Map.Entry<String, JsonNode> entry = root.fields().next();
+        final JsonNode newRoot = entry.getValue();
+
+        // No namespace associated with JsonNode:
+        _initWithRootName(xgen, new QName(entry.getKey()));
+        if (ser == null) {
+            ser = findTypedValueSerializer(newRoot.getClass(), true);
+        }
+        // From super-class implementation
+        ser.serialize(newRoot, xgen, this);
     }
 
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
