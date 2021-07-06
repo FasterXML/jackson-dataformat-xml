@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.13.0 (not yet released)
 
+#441: Add `ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE` (to avoid
+  root `ObjectNode` wrapper element)
 #442: Missing `START_OBJECT` token in complex element starting with text
  (reported by richardsonwk@github)
 #462: Remove `jackson-module-jaxb-annotations` runtime dependency (leave
