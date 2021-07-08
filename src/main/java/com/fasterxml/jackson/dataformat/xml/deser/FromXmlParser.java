@@ -71,6 +71,20 @@ public class FromXmlParser
          */
         EMPTY_ELEMENT_AS_NULL(false),
 
+        /**
+         * Feature that indicates whether XML Schema Instance attribute
+         * {@code xsi:nil} will be processed automatically -- to indicate {@code null}
+         * values -- or not.
+         * If enabled, {@code xsi:nil} attribute on any XML element will mark such
+         * elements as "null values" and any other attributes or child elements they
+         * might have to be ignored. If disabled this attribute will be exposed like
+         * any other attribute.
+         *<p>
+         * Default setting is {@code true} since processing was enabled in 2.12.
+         *
+         * @since 2.13
+         */
+        PROCESS_XSI_NIL(true),
         // 16-Nov-2020, tatu: would have been nice to add in 2.12 but is not
         //    trivial to implement... so leaving out for now
 

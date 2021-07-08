@@ -69,8 +69,10 @@ public class XmlTokenStream
      * {@link FromXmlParser.Feature}s
      * are enabled.
      */
-    final protected int _formatFeatures;
-    
+    protected final int _formatFeatures;
+
+    protected final boolean _cfgProcessXsiNil;
+
     /*
     /**********************************************************************
     /* Parsing state
@@ -155,6 +157,7 @@ public class XmlTokenStream
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
+        _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
         _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
     }
 
@@ -679,7 +682,9 @@ public class XmlTokenStream
 
         // [dataformat-xml#354]: xsi:nul handling; at first only if first attribute
         if (count >= 1) {
-            if ("nil".equals(_xmlReader.getAttributeLocalName(0))) {
+            // [dataformat-xml#468]: may disable xsi:nil processing
+            if (_cfgProcessXsiNil
+                     && "nil".equals(_xmlReader.getAttributeLocalName(0))) {
                 if (XSI_NAMESPACE.equals(_xmlReader.getAttributeNamespace(0))) {
                     // need to skip, regardless of value
                     _nextAttributeIndex = 1;

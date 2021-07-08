@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -99,5 +101,36 @@ public class XsiNilBasicTest extends XmlTestBase
 "<Point "+XSI_NS_DECL+" xsi:nil='false'></Point>",
                 Point.class);
         assertNotNull(bean);
+    }
+
+    // [dataformat-xml#468]: Allow disabling xsi:nil special handling
+    public void testDisableXsiNilLeafProcessing() throws Exception
+    {
+        final ObjectReader r = MAPPER.readerFor(JsonNode.class);
+        final String DOC = "<Point "+XSI_NS_DECL+"><x xsi:nil='true'></x></Point>";
+ 
+        // with default processing:
+        assertEquals(a2q("{'x':null}"), r.readValue(DOC).toString());
+
+        assertEquals(a2q("{'x':{'nil':'true'}}"),
+                r.without(FromXmlParser.Feature.PROCESS_XSI_NIL)
+                    .readValue(DOC).toString());
+    }
+
+    // [dataformat-xml#468]: Allow disabling xsi:nil special handling
+
+    public void testDisableXsiNilRootProcessing() throws Exception
+    {
+        final ObjectReader r = MAPPER.readerFor(JsonNode.class);
+        final String DOC = "<Point "+XSI_NS_DECL+" xsi:nil='true'></Point>";
+
+        // with default processing:
+        assertEquals("null", r.readValue(DOC).toString());
+
+        // 07-Jul-2021, tatu: Alas! 2.x sets format feature flags too late to
+        //   affect root element. But 3.0 works correctly! yay
+        ObjectReader noXsiNilReader = r.without(FromXmlParser.Feature.PROCESS_XSI_NIL);
+        assertEquals(a2q("{'nil':'true'}"),
+                noXsiNilReader.readValue(DOC).toString());
     }
 }
