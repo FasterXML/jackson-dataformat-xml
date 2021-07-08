@@ -16,6 +16,8 @@ Project: jackson-dataformat-xml
  (reported by Fabian M)
 #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (reported by Fabian M)
+#468: Add `FromXmlParser.Feature.PROCESS_XSI_NIL` to allow disabling
+  processing of `xsi:nil` attributes on reading
 #474: Empty String ("") parsed as 0 for int even if
    DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES enabled (note:
    actual fix in `jackson-databind)

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 /**
  * Alternative {@link com.fasterxml.jackson.databind.AnnotationIntrospector}
  * implementation that
- * that USED TO built on {@code JaxbAnnotationIntrospector} from
+ * that USED TO build on {@code JaxbAnnotationIntrospector} from
  * {@code jackson-module-jaxb-annotatins} package.
  * But as of Jackson 2.13, SHOULD NOT BE USED as it DOES NOT WORK.
  * Removal was necessary because XML format package does not (and can not)
