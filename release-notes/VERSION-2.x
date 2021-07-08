@@ -16,6 +16,8 @@ Project: jackson-dataformat-xml
  (reported by Fabian M)
 #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (reported by Fabian M)
+#467: Ignore contents of elements annotated with xsi:nil="true" (when
+  xsi:nil handling enabled)
 #468: Add `FromXmlParser.Feature.PROCESS_XSI_NIL` to allow disabling
   processing of `xsi:nil` attributes on reading
 #474: Empty String ("") parsed as 0 for int even if

@@ -103,6 +103,18 @@ public class XsiNilBasicTest extends XmlTestBase
         assertNotNull(bean);
     }
 
+    // [dataformat-xml#467]: Ok to have contents within "xsi:nil" element
+    public void testXsiNilWithNonEmptyElement() throws Exception
+    {
+        JsonNode node = MAPPER.readTree(
+"<e>"
++"<h "+XSI_NS_DECL+" xsi:nil='true'><child>stuff</child></h>"
++"</e>"
+                );
+        assertNotNull(node);
+        assertEquals(a2q("{'h':null}"), node.toString());
+    }
+
     // [dataformat-xml#468]: Allow disabling xsi:nil special handling
     public void testDisableXsiNilLeafProcessing() throws Exception
     {
