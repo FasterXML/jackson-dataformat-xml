@@ -81,6 +81,7 @@ public class FromXmlParser
          * @since 2.13
          */
         PROCESS_XSI_NIL(true),
+
         // 16-Nov-2020, tatu: would have been nice to add in 2.12 but is not
         //    trivial to implement... so leaving out for now
 
