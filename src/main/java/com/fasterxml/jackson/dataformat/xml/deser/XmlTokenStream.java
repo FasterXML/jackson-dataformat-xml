@@ -688,7 +688,7 @@ public class XmlTokenStream
         if (type == REPLAY_START_DUP) {
 //System.out.println(" XMLTokenStream._handleRepeatElement() for START_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             // important: add the virtual element second time, but not with name to match
-            _currentWrapper = _currentWrapper.intermediateWrapper();
+            _currentWrapper = _currentWrapper.intermediateWrapper(); // lgtm [java/dereferenced-value-may-be-null]
             return XML_START_ELEMENT;
         }
         if (type == REPLAY_END) {
