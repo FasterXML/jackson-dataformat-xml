@@ -411,19 +411,13 @@ public class XmlTokenStream
             ++_nextAttributeIndex;
             // fall through
         case XML_START_ELEMENT: // attributes to return?
-
             // 06-Sep-2019, tatu: `xsi:nil` to induce "real" null value?
             if (_xsiNilFound) {
                 _xsiNilFound = false;
-                switch (_skipUntilTag()) {
-                case XMLStreamConstants.END_ELEMENT:
-                    return _handleEndElement();
-                case XMLStreamConstants.END_DOCUMENT:
-                    throw new IllegalStateException("Unexpected end-of-input after null token");
-                default:
-                }
-                throw new IllegalStateException(
-"Unexpected START_ELEMENT after null token (inside element with 'xsi:nil' attribute)");
+                // 08-Jul-2021, tatu: as per [dataformat-xml#467] just skip anything
+                //   element might have, no need to ensure it was empty
+                _xmlReader.skipElement();
+                return _handleEndElement();
             }
             if (_nextAttributeIndex < _attributeCount) {
 //System.out.println(" XmlTokenStream._next(): Got attr(s)!");
@@ -565,23 +559,6 @@ public class XmlTokenStream
         }
     }
 
-    // Called to simply skip tokens until start/end tag, or end-of-document found
-    private final int _skipUntilTag() throws XMLStreamException
-    {
-        while (_xmlReader.hasNext()) {
-            int type;
-            switch (type = _xmlReader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-            case XMLStreamConstants.END_ELEMENT:
-            case XMLStreamConstants.END_DOCUMENT:
-                return type;
-            default:
-                // any other type (proc instr, comment etc) is just ignored
-            }
-        }
-        throw new IllegalStateException("Expected to find a tag, instead reached end of input");
-    }
-
     // Called to skip tokens until start/end tag (or end-of-document) found, but
     // also collecting cdata until then, if any found, for possible "mixed content"
     // to report
@@ -712,7 +689,7 @@ public class XmlTokenStream
         if (type == REPLAY_START_DUP) {
 //System.out.println(" XMLTokenStream._handleRepeatElement() for START_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             // important: add the virtual element second time, but not with name to match
-            _currentWrapper = _currentWrapper.intermediateWrapper();
+            _currentWrapper = _currentWrapper.intermediateWrapper(); // lgtm [java/dereferenced-value-may-be-null]
             return XML_START_ELEMENT;
         }
         if (type == REPLAY_END) {
