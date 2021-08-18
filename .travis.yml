@@ -12,3 +12,7 @@ branches:
 # 2021-06-25, tatu: Stop snapshot builds via Travis, only check for fails
 
 script: mvn -B clean verify
+
+cache:
+  directories:
+  - $HOME/.m2
