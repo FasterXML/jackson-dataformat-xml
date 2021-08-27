@@ -29,6 +29,10 @@ Project: jackson-dataformat-xml
   "outputFactory()" -> "xmlOutputFactory()"
 - Woodstox dependency 6.2.6 (from 6.2.4)
 
+2.12.5 (27-Aug-2021)
+
+No changes since 2.12.4
+
 2.12.4 (06-Jul-2021)
 
 #469: Empty tags cause incorrect deserialization of unwrapped lists
