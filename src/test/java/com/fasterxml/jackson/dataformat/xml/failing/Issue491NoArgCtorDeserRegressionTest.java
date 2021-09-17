@@ -9,9 +9,25 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 /**
- * Reproduces <i>no default no-arg ctor found</i> deserialization regression introduced to {@link XmlMapper} in 2.12.0.
+ * Reproduces <i>no default no-arg ctor found</i> deserialization regression
+ * introduced to {@link XmlMapper} in 2.12.0.
  *
  * @see <a href="https://github.com/FasterXML/jackson-dataformat-xml/issues/491">jackson-dataformat-xml issue 491</a>
+ *<p>
+ * The underlying problem is due to the empty root element being recognized as a String
+ * token (for consistency with how XML is mapper to tokens); this leads to deserialization
+ * attempting to use "empty Object" construction which expects availability of the
+ * default constructor.
+ * To resolve the issue there are at least two possible ways:
+ *<ul>
+ * <li>Try to make root element appears as START-OBJECT/END-OBJECT sequence instead of VALUE_STRING
+ *  </li>
+ * <li>Change {@code StdDeserializer} (from jackson-databind) to allow use of "properties-based"
+ *   Creator as well -- passing equivalent of all-absent values. This could either be for all
+ *   content, or just for specific formats (using a {@code StreamReadFeature} to detect).
+ *  </li>
+ *</ul>
+ * Either approach could work, although former could cause other kinds of regression.
  */
 public class Issue491NoArgCtorDeserRegressionTest extends XmlTestBase
 {
@@ -48,6 +64,11 @@ public class Issue491NoArgCtorDeserRegressionTest extends XmlTestBase
             this.type = type != null ? type : Problem.DEFAULT_TYPE;
             this.status = status != null ? status : Problem.DEFAULT_STATUS;
         }
+
+        // Adding this would work around the issue
+//        DefaultProblem() {
+//            this(null, null);
+//        }
 
         @Override
         public String getType() {
