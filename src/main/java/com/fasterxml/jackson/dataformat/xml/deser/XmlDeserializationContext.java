@@ -77,16 +77,16 @@ public class XmlDeserializationContext
     /**********************************************************
      */
 
-    // [dataformat-xml#374]: need to remove handling of expected root name unwrapping
-    // to match serialization
     @Override // since 2.12
     public Object readRootValue(JsonParser p, JavaType valueType,
             JsonDeserializer<Object> deser, Object valueToUpdate)
         throws IOException
     {
-//        if (_config.useRootWrapping()) {
-//            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
-//        }
+        // 18-Sep-2021, tatu: Complicated mess; with 2.12, had [dataformat-xml#374]
+        //    to disable handling. With 2.13, via [dataformat-xml#485] undid this change
+        if (_config.useRootWrapping()) {
+            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
+        }
         if (valueToUpdate == null) {
             return deser.deserialize(p, this);
         }
