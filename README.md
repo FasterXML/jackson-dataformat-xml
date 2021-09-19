@@ -19,17 +19,6 @@ Specifically:
 * From above: there are XML constructs that module will not be able to handle; including some cases JAXB (and other Java XML libraries) supports
 * This module also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
 
-## Branches
-
-`master` branch is for developing the next major Jackson version -- 3.0 -- but there
-are active maintenance branches in which much of development happens:
-
-* `2.13` is for developing the next minor 2.x version
-* `2.12` is for backported fixes to include in 2.12.x patch versions
-
-Older branches are usually not changed but are available for historic reasons.
-All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
-
 ## Status
 
 | Type | Status |
@@ -41,6 +30,17 @@ All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
 | Code coverage (2.13) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.13)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.13) |
 | CodeQ (LGTM.com) | [![LGTM alerts](https://img.shields.io/lgtm/alerts/g/FasterXML/jackson-dataformat-xml.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FasterXML/jackson-dataformat-xml/alerts/) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/FasterXML/jackson-dataformat-xml.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FasterXML/jackson-dataformat-xml/context:java) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
+
+## Branches
+
+`master` branch is for developing the next major Jackson version -- 3.0 -- but there
+are active maintenance branches in which much of development happens:
+
+* `2.13` is for developing the next minor 2.x version
+* `2.12` is for backported fixes to include in 2.12.x patch versions
+
+Older branches are usually not changed but are available for historic reasons.
+All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
 
 ## License
 
