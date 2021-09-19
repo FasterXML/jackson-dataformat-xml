@@ -14,8 +14,6 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 /**
  * XML-specific {@link DeserializationContext} needed to override certain
  * handlers.
- *
- * @since 2.12
  */
 public class XmlDeserializationContext
     extends DeserializationContextExt
@@ -34,16 +32,16 @@ public class XmlDeserializationContext
     /**********************************************************
      */
 
-    // [dataformat-xml#374]: need to remove handling of expected root name unwrapping
-    // to match serialization
     @Override
     public Object readRootValue(JsonParser p, JavaType valueType,
             ValueDeserializer<Object> deser, Object valueToUpdate)
         throws JacksonException
     {
-//        if (_config.useRootWrapping()) {
-//            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
-//        }
+        // 18-Sep-2021, tatu: Complicated mess; with 2.12, had [dataformat-xml#374]
+        //    to disable handling. With 2.13, via [dataformat-xml#485] undid this change
+        if (_config.useRootWrapping()) {
+            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
+        }
         if (valueToUpdate == null) {
             return deser.deserialize(p, this);
         }
