@@ -160,7 +160,7 @@ public class WrapperHandlingDeserializer
             //   If so, need to refrain from adding wrapping as that would
             //   override parent settings
             JsonToken t = p.currentToken();
-            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
+            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY || t == JsonToken.FIELD_NAME) {
                 ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
             }
         }
