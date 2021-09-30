@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.13.0 (not yet released)
+2.13.0 (30-Sep-2021)
 
 #441: Add `ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE` (to avoid
   root `ObjectNode` wrapper element)
