@@ -4,6 +4,11 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.13.1 (not yet released)
+
+#493: SequenceWriter returns NPE when trying XML serialization
+ (reported by Moribund7@github)
+
 2.13.0 (30-Sep-2021)
 
 #441: Add `ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE` (to avoid
