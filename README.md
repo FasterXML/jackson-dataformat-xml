@@ -36,7 +36,8 @@ Specifically:
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.13` is for developing the next minor 2.x version
+* `2.14` is for developing the next minor 2.x version
+* `2.13` is for backported fixes to include in 2.12.x patch versions
 * `2.12` is for backported fixes to include in 2.12.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
@@ -54,7 +55,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.12.3</version>
+  <version>2.13.0</version>
 </dependency>
 ```
 
