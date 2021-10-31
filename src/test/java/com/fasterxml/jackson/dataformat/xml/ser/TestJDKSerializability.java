@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.io.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 public class TestJDKSerializability extends XmlTestBase
 {
     @JsonRootName("MyPojo")
+    @JsonPropertyOrder({ "x", "y" })
     static class MyPojo {
         public int x;
         int y;

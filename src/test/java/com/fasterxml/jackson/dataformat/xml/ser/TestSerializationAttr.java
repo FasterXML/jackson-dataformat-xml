@@ -29,6 +29,7 @@ public class TestSerializationAttr extends XmlTestBase
         public String id = "abc";
     }
 
+    @JsonPropertyOrder({ "name", "value" })
     public class Jurisdiction {
         @JacksonXmlProperty(isAttribute=true)
         protected String name = "Foo";

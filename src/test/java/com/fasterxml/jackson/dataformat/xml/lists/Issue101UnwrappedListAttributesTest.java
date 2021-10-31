@@ -21,7 +21,7 @@ public class Issue101UnwrappedListAttributesTest extends XmlTestBase
 
         public String name;
     }
-
+     @JsonPropertyOrder({ "id", "type" })
      static class UnwrappedElement {
         public UnwrappedElement () {}
 
