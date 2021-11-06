@@ -12,7 +12,9 @@ No changes since 2.13
 
 #493: SequenceWriter returns NPE when trying XML serialization
  (reported by Moribund7@github)
-
+#599: Fix 8 Flaky Tests
+ (contributed by ZeyuCai@github)
+ 
 2.13.0 (30-Sep-2021)
 
 #441: Add `ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE` (to avoid

@@ -3,20 +3,22 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.io.*;
 
 import javax.xml.namespace.QName;
-
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 /**
- * Unit test related to core [Issue#31] (https://github.com/FasterXML/jackson-core/issues/31)
+ * Unit test related to core [core#31](https://github.com/FasterXML/jackson-core/issues/31)
  * as it relates to XmlFactory.
  */
 public class TestJDKSerializability extends XmlTestBase
 {
     @JsonRootName("MyPojo")
+    @JsonPropertyOrder({ "x", "y" })
     static class MyPojo {
         public int x;
         int y;
