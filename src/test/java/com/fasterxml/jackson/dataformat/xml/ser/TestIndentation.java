@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -57,6 +58,7 @@ public class TestIndentation extends XmlTestBase
         public List<Employee> employee = new ArrayList<Employee>();
     }
 
+    @JsonPropertyOrder({"id", "type"})
     static class Employee {
         public String id;
         public EmployeeType type;

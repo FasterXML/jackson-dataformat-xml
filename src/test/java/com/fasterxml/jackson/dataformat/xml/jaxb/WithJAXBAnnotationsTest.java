@@ -6,6 +6,7 @@ import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -47,6 +48,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
     }
 
     @XmlRootElement(name = "Individual")
+    @JsonPropertyOrder({ "id", "firstName", "lastName"})
     static class MyPerson {
         @XmlAttribute(name = "identifier")
         public Long id;
