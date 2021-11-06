@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -21,6 +22,7 @@ public class ListAnnotationSharingTest extends XmlTestBase
         }
     }
 
+    @JsonPropertyOrder({"x", "y"})
     static class Point {
         public int x, y;
 

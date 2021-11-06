@@ -35,6 +35,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
         }
     }
 
+    @JsonPropertyOrder({ "name", "location" })
     static class UnwrappingWithAttributes{
         @JacksonXmlProperty(isAttribute=true)
         public String name;
