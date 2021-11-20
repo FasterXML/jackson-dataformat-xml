@@ -14,7 +14,8 @@ No changes since 2.13
  (reported by Moribund7@github)
 #499: Fix 8 Flaky Tests
  (contributed by ZeyuCai@github)
- 
+- Woodstox dep to 6.2.7 (from 6.2.6)
+
 2.13.0 (30-Sep-2021)
 
 #441: Add `ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE` (to avoid
