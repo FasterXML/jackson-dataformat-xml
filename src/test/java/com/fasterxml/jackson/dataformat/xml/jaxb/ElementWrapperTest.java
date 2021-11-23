@@ -79,7 +79,8 @@ public class ElementWrapperTest extends XmlTestBase
 
         String xml = jaxbMapper.writeValueAsString(person);
         
-        String expected = "<p><name>Jay</name><child><name>Junior</name></child></p>";
-        assertEquals(expected, xml);
+        boolean expected1 = xml.equals("<p><name>Jay</name><child><name>Junior</name></child></p>");
+        boolean expected2 = xml.equals("<p><child><name>Junior</name></child><name>Jay</name></p>");
+        assertTrue(expected1 || expected2);
     }
 }
