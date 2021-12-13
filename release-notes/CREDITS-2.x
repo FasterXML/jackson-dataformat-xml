@@ -160,3 +160,15 @@ Tim Jacomb (timja@github)
 
 * Reported #482: Use of non-Stax2-compatible Stax2 implementation fails when reading
  (2.12.4)
+
+Daniel Kreck (daniel-kr@github)
+
+* Reported #490: Problem when using defaultUseWrapper(false) in
+  combination with polymorphic types
+ (2.12.6)
+
+Lennart Glauer (lglauer@github)
+
+* Contributed fix for #490: Problem when using defaultUseWrapper(false) in
+  combination with polymorphic types
+ (2.12.6)
