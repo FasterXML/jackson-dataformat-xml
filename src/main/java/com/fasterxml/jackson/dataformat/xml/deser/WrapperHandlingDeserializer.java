@@ -160,7 +160,12 @@ public class WrapperHandlingDeserializer
             //   If so, need to refrain from adding wrapping as that would
             //   override parent settings
             JsonToken t = p.currentToken();
-            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
+            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY
+                    // 12-Dec-2021, tatu: [dataformat-xml#490] There seems to be
+                    //    cases here (similar to regular JSON) where leading START_OBJECT
+                    //    is consumed during buffering, so need to consider that too
+                    //    it seems (just hope we are at correct level and not off by one...)
+                    || t == JsonToken.FIELD_NAME) {
                 ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
             }
         }
