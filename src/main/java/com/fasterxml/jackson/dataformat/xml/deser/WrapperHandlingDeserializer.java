@@ -165,7 +165,7 @@ public class WrapperHandlingDeserializer
                     //    cases here (similar to regular JSON) where leading START_OBJECT
                     //    is consumed during buffering, so need to consider that too
                     //    it seems (just hope we are at correct level and not off by one...)
-                    || t == JsonToken.FIELD_NAME) {
+                    || t == JsonToken.PROPERTY_NAME) {
                 ((FromXmlParser) p).addVirtualWrapping(_namesToWrap, _caseInsensitive);
             }
         }
