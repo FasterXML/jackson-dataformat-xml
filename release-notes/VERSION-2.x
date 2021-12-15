@@ -44,6 +44,12 @@ No changes since 2.13
   "outputFactory()" -> "xmlOutputFactory()"
 - Woodstox dependency 6.2.6 (from 6.2.4)
 
+2.12.6 (15-Dec-2021)
+
+#490: Problem when using defaultUseWrapper(false) in combination with
+  polymorphic types
+ (reported by Daniel K; fix contributed by Lennart G)
+
 2.12.5 (27-Aug-2021)
 
 No changes since 2.12.4
