@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.12.6 (not yet released)
+2.12.6 (15-Dec-2021)
 
 #490: Problem when using defaultUseWrapper(false) in combination with
   polymorphic types
