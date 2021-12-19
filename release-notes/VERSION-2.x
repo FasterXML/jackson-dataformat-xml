@@ -8,7 +8,7 @@ Project: jackson-dataformat-xml
 
 No changes since 2.13
 
-2.13.1 (not yet released)
+2.13.1 (19-Dec-2021)
 
 #493: SequenceWriter returns NPE when trying XML serialization
  (reported by Moribund7@github)
@@ -43,6 +43,12 @@ No changes since 2.13
 - Rename `XmlFactoryBuilder` methods "inputFactory()"->"xmlInputFactory()",
   "outputFactory()" -> "xmlOutputFactory()"
 - Woodstox dependency 6.2.6 (from 6.2.4)
+
+2.12.6 (15-Dec-2021)
+
+#490: Problem when using defaultUseWrapper(false) in combination with
+  polymorphic types
+ (reported by Daniel K; fix contributed by Lennart G)
 
 2.12.5 (27-Aug-2021)
 
