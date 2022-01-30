@@ -1,8 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import java.util.*;
-
 import com.fasterxml.jackson.annotation.JsonRootName;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -42,7 +41,7 @@ public class TestDeserialization extends XmlTestBase
 
     /*
     /**********************************************************
-    /* Unit tests
+    /* Test methods
     /**********************************************************
      */
 
@@ -66,25 +65,6 @@ public class TestDeserialization extends XmlTestBase
         AttributeBean bean = MAPPER.readValue("<AttributeBean attr=\"abc\"></AttributeBean>", AttributeBean.class);
         assertNotNull(bean);
         assertEquals("abc", bean.text);
-    }
-    
-    // [dataformat-xml#14]
-    public void testMapWithAttr() throws Exception
-    {
-        final String xml = "<order><person lang='en'>John Smith</person></order>";
-        Map<?,?> map = MAPPER.readValue(xml, Map.class);
-    	
-    	// Will result in equivalent of:
-    	// { "person" : {
-    	//     "lang" : "en",
-    	//     "" : "John Smith"
-    	//   }
-    	// }
-    	//
-    	// which may or may not be what we want. Without attribute
-    	// we would just have '{ "person" : "John Smith" }'
-    	
-    	    assertNotNull(map);
     }
 
     // // Tests for [dataformat-xml#64]
