@@ -8,6 +8,10 @@ Project: jackson-dataformat-xml
 
 No changes since 2.13
 
+2.13.2 (06-Mar-2022)
+
+No changes since 2.13.1
+
 2.13.1 (19-Dec-2021)
 
 #493: SequenceWriter returns NPE when trying XML serialization
