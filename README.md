@@ -37,7 +37,7 @@ Specifically:
 are active maintenance branches in which much of development happens:
 
 * `2.14` is for developing the next minor 2.x version
-* `2.13` is for backported fixes to include in 2.12.x patch versions
+* `2.13` is for backported fixes to include in 2.13.x patch versions
 * `2.12` is for backported fixes to include in 2.12.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
@@ -138,7 +138,7 @@ Serialization is done very similar to JSON serialization: all that needs to chan
 ObjectMapper xmlMapper = new XmlMapper();
 String xml = xmlMapper.writeValueAsString(new Simple());
 // or
-xmlMapper.writeValue(new File("/tmp/stuff.json"), new Simple());
+xmlMapper.writeValue(new File("/tmp/stuff.xml"), new Simple());
 ```
 
 and with POJO like:
