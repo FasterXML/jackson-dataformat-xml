@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.12.7 (26-May-2022)
+
+No changes since 2.12.6
+
 2.12.6 (15-Dec-2021)
 
 #490: Problem when using defaultUseWrapper(false) in combination with
