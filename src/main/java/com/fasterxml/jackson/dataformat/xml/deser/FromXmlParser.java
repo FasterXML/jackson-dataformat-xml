@@ -19,6 +19,8 @@ import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTagProcessor;
+import com.fasterxml.jackson.dataformat.xml.XmlTagProcessors;
 import com.fasterxml.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
@@ -252,7 +254,7 @@ public class FromXmlParser
      */
 
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-            ObjectCodec codec, XMLStreamReader xmlReader)
+             ObjectCodec codec, XMLStreamReader xmlReader, XmlTagProcessor tagProcessor)
         throws IOException
     {
         super(genericParserFeatures);
@@ -261,7 +263,7 @@ public class FromXmlParser
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
-                    _formatFeatures);
+                    _formatFeatures, tagProcessor);
 
         final int firstToken;
         try {

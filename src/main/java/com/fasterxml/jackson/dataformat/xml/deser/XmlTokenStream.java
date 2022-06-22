@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.dataformat.xml.XmlTagProcessor;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
@@ -72,6 +73,8 @@ public class XmlTokenStream
     protected int _formatFeatures;
 
     protected boolean _cfgProcessXsiNil;
+
+    protected XmlTagProcessor _tagProcessor;
 
     /*
     /**********************************************************************
@@ -153,12 +156,13 @@ public class XmlTokenStream
      */
 
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
-            int formatFeatures)
+            int formatFeatures, XmlTagProcessor tagProcessor)
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
         _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
+        _tagProcessor = tagProcessor;
     }
 
     /**
@@ -177,6 +181,7 @@ public class XmlTokenStream
         _namespaceURI = _xmlReader.getNamespaceURI();
 
         _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
+        _decodeXmlTagName();
 
         // 02-Jul-2020, tatu: Two choices: if child elements OR attributes, expose
         //    as Object value; otherwise expose as Text
@@ -646,6 +651,7 @@ public class XmlTokenStream
         }
         _localName = localName;
         _namespaceURI = ns;
+        _decodeXmlTagName();
         return (_currentState = XML_START_ELEMENT);
     }
 
@@ -676,6 +682,15 @@ public class XmlTokenStream
     }
 
     /**
+     * @since 2.14
+     */
+    protected void _decodeXmlTagName() {
+        XmlTagProcessor.XmlTagName tagName = _tagProcessor.decodeTag(new XmlTagProcessor.XmlTagName(_namespaceURI, _localName));
+        _namespaceURI = tagName.namespace;
+        _localName = tagName.localPart;
+    }
+
+    /**
      * Method called to handle details of repeating "virtual"
      * start/end elements, needed for handling 'unwrapped' lists.
      */
@@ -695,6 +710,7 @@ public class XmlTokenStream
 //System.out.println(" XMLTokenStream._handleRepeatElement() for END_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
             _localName = _xmlReader.getLocalName();
             _namespaceURI = _xmlReader.getNamespaceURI();
+            _decodeXmlTagName();
             if (_currentWrapper != null) {
                 _currentWrapper = _currentWrapper.getParent();
             }
@@ -708,6 +724,7 @@ public class XmlTokenStream
             _namespaceURI = _nextNamespaceURI;
             _nextLocalName = null;
             _nextNamespaceURI = null;
+            _decodeXmlTagName();
 
 //System.out.println(" XMLTokenStream._handleRepeatElement() for START_DELAYED: "+_localName+" ("+_xmlReader.getLocalName()+")");
 

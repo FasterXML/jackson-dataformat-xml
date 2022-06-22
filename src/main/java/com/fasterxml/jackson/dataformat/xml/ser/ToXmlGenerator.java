@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.fasterxml.jackson.dataformat.xml.XmlTagProcessor;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.ri.Stax2WriterAdapter;
 
@@ -152,6 +153,13 @@ public class ToXmlGenerator
      */
     protected XmlPrettyPrinter _xmlPrettyPrinter;
 
+    /**
+     * Escapes tag names with invalid XML characters
+     *
+     * @since 2.14
+     */
+    protected XmlTagProcessor _tagProcessor;
+
     /*
     /**********************************************************
     /* XML Output state
@@ -205,7 +213,7 @@ public class ToXmlGenerator
      */
 
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
-            ObjectCodec codec, XMLStreamWriter sw)
+            ObjectCodec codec, XMLStreamWriter sw, XmlTagProcessor tagProcessor)
     {
         super(stdFeatures, codec);
         _formatFeatures = xmlFeatures;
@@ -213,6 +221,7 @@ public class ToXmlGenerator
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
+        _tagProcessor = tagProcessor;
         _xmlPrettyPrinter = (_cfgPrettyPrinter instanceof XmlPrettyPrinter) ?
         		(XmlPrettyPrinter) _cfgPrettyPrinter : null;
     }
@@ -476,7 +485,8 @@ public class ToXmlGenerator
         }
         // Should this ever get called?
         String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-        setNextName(new QName(ns, name));
+        XmlTagProcessor.XmlTagName tagName = _tagProcessor.encodeTag(new XmlTagProcessor.XmlTagName(ns, name));
+        setNextName(new QName(tagName.namespace, tagName.localPart));
     }
     
     @Override

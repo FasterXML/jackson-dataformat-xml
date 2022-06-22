@@ -63,6 +63,13 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
      */
     protected ClassLoader _classLoaderForStax;
 
+    /**
+     * See {@link XmlTagProcessor} and {@link XmlTagProcessors}
+     *
+     * @since 2.14
+     */
+    protected XmlTagProcessor _tagProcessor;
+
     /*
     /**********************************************************
     /* Life cycle
@@ -73,6 +80,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         _formatParserFeatures = XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS;
         _formatGeneratorFeatures = XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
         _classLoaderForStax = null;
+        _tagProcessor = XmlTagProcessors.newPassthroughProcessor();
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
@@ -82,6 +90,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
+        _tagProcessor = base._tagProcessor;
         _classLoaderForStax = null;
     }
 
@@ -131,6 +140,10 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     protected ClassLoader staxClassLoader() {
         return (_classLoaderForStax == null) ?
                 getClass().getClassLoader() : _classLoaderForStax;
+    }
+
+    public XmlTagProcessor xmlTagProcessor() {
+        return _tagProcessor;
     }
 
     // // // Parser features
@@ -251,6 +264,14 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
      */
     public XmlFactoryBuilder staxClassLoader(ClassLoader cl) {
         _classLoaderForStax = cl;
+        return _this();
+    }
+
+    /**
+     * @since 2.14
+     */
+    public XmlFactoryBuilder xmlTagProcessor(XmlTagProcessor tagProcessor) {
+        _tagProcessor = tagProcessor;
         return _this();
     }
     
