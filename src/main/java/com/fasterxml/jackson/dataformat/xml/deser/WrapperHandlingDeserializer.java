@@ -154,7 +154,7 @@ public class WrapperHandlingDeserializer
         while (p instanceof JsonParserDelegate) {
             p = ((JsonParserDelegate) p).delegate();
         }
-        if (p instanceof FromXmlParser) {
+        if ((p instanceof FromXmlParser) && (_namesToWrap != null)) {
             // 03-May-2021, tatu: as per [dataformat-xml#469] there are special
             //   cases where we get String token to represent XML empty element.
             //   If so, need to refrain from adding wrapping as that would
