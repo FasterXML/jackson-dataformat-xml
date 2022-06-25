@@ -47,10 +47,30 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         public BigDecimal value;
     }
 
+    static class DoubleHolder2784 {
+        public Double value;
+    }
+
+    static class FloatHolder2784 {
+        public Float value;
+    }
+
     @JsonRootName("Nested")
     static class NestedBigDecimalHolder2784 {
         @JsonUnwrapped
         public BigDecimalHolder2784 holder;
+    }
+
+    @JsonRootName("Nested")
+    static class NestedDoubleHolder2784 {
+        @JsonUnwrapped
+        public DoubleHolder2784 holder;
+    }
+
+    @JsonRootName("Nested")
+    static class NestedFloatHolder2784 {
+        @JsonUnwrapped
+        public FloatHolder2784 holder;
     }
 
     /*
@@ -84,5 +104,19 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         final String DOC = "<Nested><value>5.00</value></Nested>";
         NestedBigDecimalHolder2784 result = MAPPER.readValue(DOC, NestedBigDecimalHolder2784.class);
         assertEquals(new BigDecimal("5.00"), result.holder.value);
+    }
+
+    public void testDoubleUnwrapped() throws Exception
+    {
+        final String DOC = "<Nested><value>125.123456789</value></Nested>";
+        NestedDoubleHolder2784 result = MAPPER.readValue(DOC, NestedDoubleHolder2784.class);
+        assertEquals(Double.parseDouble("125.123456789"), result.holder.value);
+    }
+
+    public void testFloatUnwrapped() throws Exception
+    {
+        final String DOC = "<Nested><value>125.123</value></Nested>";
+        NestedFloatHolder2784 result = MAPPER.readValue(DOC, NestedFloatHolder2784.class);
+        assertEquals(Float.parseFloat("125.123"), result.holder.value);
     }
 }
