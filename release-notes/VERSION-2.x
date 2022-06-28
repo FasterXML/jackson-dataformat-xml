@@ -8,6 +8,10 @@ Project: jackson-dataformat-xml
 
 No changes since 2.13
 
+2.13.4 (not yet released)
+
+#536: Upgrade Woodstox to 6.3.0 to get OSGi metadata
+
 2.13.3 (14-May-2022)
 2.13.2 (06-Mar-2022)
 
