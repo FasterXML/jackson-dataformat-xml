@@ -83,10 +83,11 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
         less likely users accidentally try to use Sjsxp from JDK, which leads to probs
       -->
     <!-- 16-Jul-2016, tatu: For 2.10, need Woodstox 6.x to get module info -->
+    <!-- 28-Jun-2022, tatu: For 2.13.4+, 6.3 to get OSGi metadata -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.2.7</version>
+      <version>6.3.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
