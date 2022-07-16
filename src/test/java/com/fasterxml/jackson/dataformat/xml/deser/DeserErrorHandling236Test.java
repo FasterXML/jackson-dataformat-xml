@@ -1,6 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
+import tools.jackson.core.exc.StreamReadException;
 
 import com.fasterxml.jackson.dataformat.xml.*;
 

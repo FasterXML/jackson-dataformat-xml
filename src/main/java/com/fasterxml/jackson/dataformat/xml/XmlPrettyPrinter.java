@@ -7,7 +7,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamWriter2;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
+import tools.jackson.core.PrettyPrinter;
 
 /**
  * There are some XML-specific quirks that need extra TLC when

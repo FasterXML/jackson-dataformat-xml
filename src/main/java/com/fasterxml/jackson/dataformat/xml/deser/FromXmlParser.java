@@ -12,13 +12,13 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.codehaus.stax2.XMLStreamReader2;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.base.ParserMinimalBase;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.io.NumberInput;
-import com.fasterxml.jackson.core.util.ByteArrayBuilder;
-import com.fasterxml.jackson.core.util.JacksonFeatureSet;
+import tools.jackson.core.*;
+import tools.jackson.core.base.ParserMinimalBase;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.core.io.IOContext;
+import tools.jackson.core.io.NumberInput;
+import tools.jackson.core.util.ByteArrayBuilder;
+import tools.jackson.core.util.JacksonFeatureSet;
 
 import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.util.CaseInsensitiveNameSet;

@@ -9,8 +9,8 @@ import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 
-import com.fasterxml.jackson.core.JsonLocation;
-import com.fasterxml.jackson.core.io.ContentReference;
+import tools.jackson.core.JsonLocation;
+import tools.jackson.core.io.ContentReference;
 
 /**
  * Simple helper class used on top of STAX {@link XMLStreamReader} to further

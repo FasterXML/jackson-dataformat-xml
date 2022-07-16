@@ -2,11 +2,11 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.*;
-import com.fasterxml.jackson.databind.deser.bean.BeanDeserializerBase;
-import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
-import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
+import tools.jackson.databind.*;
+import tools.jackson.databind.deser.*;
+import tools.jackson.databind.deser.bean.BeanDeserializerBase;
+import tools.jackson.databind.introspect.AnnotatedMember;
+import tools.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.dataformat.xml.util.AnnotationUtil;
 
 /**

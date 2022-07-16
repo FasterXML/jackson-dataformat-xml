@@ -1,7 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import tools.jackson.databind.ObjectReader;
+import tools.jackson.databind.ObjectWriter;
 
 public class RoundtripContentTest extends XmlTestBase
 {

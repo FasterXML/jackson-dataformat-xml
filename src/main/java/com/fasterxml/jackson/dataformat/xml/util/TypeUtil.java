@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.util;
 
 import java.util.Collection;
 
-import com.fasterxml.jackson.databind.JavaType;
+import tools.jackson.databind.JavaType;
 
 public class TypeUtil
 {

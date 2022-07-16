@@ -1,20 +1,19 @@
-// Generated 20-Mar-2019 using Moditect maven plugin
-module com.fasterxml.jackson.dataformat.xml {
+module tools.jackson.dataformat.xml {
     requires java.xml;
     requires org.codehaus.stax2;
 
     requires com.fasterxml.jackson.annotation;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
+    requires tools.jackson.core;
+    requires tools.jackson.databind;
 
-    exports com.fasterxml.jackson.dataformat.xml;
-    exports com.fasterxml.jackson.dataformat.xml.annotation;
-    exports com.fasterxml.jackson.dataformat.xml.deser;
-    exports com.fasterxml.jackson.dataformat.xml.ser;
-    exports com.fasterxml.jackson.dataformat.xml.util;
+    exports tools.jackson.dataformat.xml;
+    exports tools.jackson.dataformat.xml.annotation;
+    exports tools.jackson.dataformat.xml.deser;
+    exports tools.jackson.dataformat.xml.ser;
+    exports tools.jackson.dataformat.xml.util;
 
-    provides com.fasterxml.jackson.core.TokenStreamFactory with
-        com.fasterxml.jackson.dataformat.xml.XmlFactory;
-    provides com.fasterxml.jackson.databind.ObjectMapper with
-        com.fasterxml.jackson.dataformat.xml.XmlMapper;
+    provides tools.jackson.core.TokenStreamFactory with
+        tools.jackson.dataformat.xml.XmlFactory;
+    provides tools.jackson.databind.ObjectMapper with
+        tools.jackson.dataformat.xml.XmlMapper;
 }

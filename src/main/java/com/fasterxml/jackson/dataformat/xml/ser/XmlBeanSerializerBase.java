@@ -7,17 +7,17 @@ import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import com.fasterxml.jackson.core.*;
+import tools.jackson.core.*;
 
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.PropertyFilter;
-import com.fasterxml.jackson.databind.ser.WritableObjectId;
-import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
-import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
-import com.fasterxml.jackson.databind.util.NameTransformer;
+import tools.jackson.databind.DatabindException;
+import tools.jackson.databind.SerializerProvider;
+import tools.jackson.databind.jsontype.TypeSerializer;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.PropertyFilter;
+import tools.jackson.databind.ser.WritableObjectId;
+import tools.jackson.databind.ser.bean.BeanSerializerBase;
+import tools.jackson.databind.ser.impl.ObjectIdWriter;
+import tools.jackson.databind.util.NameTransformer;
 
 import com.fasterxml.jackson.dataformat.xml.util.XmlInfo;
 

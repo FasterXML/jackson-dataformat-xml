@@ -1,12 +1,14 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import com.fasterxml.jackson.core.Version;
+import tools.jackson.core.Version;
+
+import tools.jackson.databind.JacksonModule;
 
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 public class XmlModule
-    extends com.fasterxml.jackson.databind.JacksonModule
+    extends JacksonModule
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 3L;

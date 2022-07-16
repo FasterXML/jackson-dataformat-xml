@@ -2,13 +2,13 @@ package com.fasterxml.jackson.dataformat.xml.deser.builder;
 
 import com.fasterxml.jackson.annotation.*;
 
-import com.fasterxml.jackson.core.Version;
+import tools.jackson.core.Version;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
+import tools.jackson.databind.*;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
+import tools.jackson.databind.introspect.NopAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -220,7 +220,7 @@ public class BuilderSimpleTest extends XmlTestBase
     static class ValueClass822
     */
 
-    protected static class NopModule1557 extends com.fasterxml.jackson.databind.JacksonModule
+    protected static class NopModule1557 extends JacksonModule
     {
         @Override
         public String getModuleName() {

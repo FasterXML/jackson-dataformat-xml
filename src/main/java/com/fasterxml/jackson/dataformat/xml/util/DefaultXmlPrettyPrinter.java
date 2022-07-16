@@ -9,8 +9,8 @@ import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamWriter2;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.util.Instantiatable;
+import tools.jackson.core.*;
+import tools.jackson.core.util.Instantiatable;
 
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;

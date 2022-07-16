@@ -6,16 +6,16 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.exc.WrappedIOException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.GeneratorSettings;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.ser.SerializerFactory;
-import com.fasterxml.jackson.databind.ser.SerializationContextExt;
-import com.fasterxml.jackson.databind.ser.SerializerCache;
-import com.fasterxml.jackson.databind.util.TokenBuffer;
+import tools.jackson.core.*;
+import tools.jackson.core.exc.WrappedIOException;
+import tools.jackson.databind.*;
+import tools.jackson.databind.cfg.GeneratorSettings;
+import tools.jackson.databind.jsontype.TypeSerializer;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ser.SerializerFactory;
+import tools.jackson.databind.ser.SerializationContextExt;
+import tools.jackson.databind.ser.SerializerCache;
+import tools.jackson.databind.util.TokenBuffer;
 
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 import com.fasterxml.jackson.dataformat.xml.util.TypeUtil;
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
  * We need to override some parts of
- * {@link com.fasterxml.jackson.databind.SerializerProvider}
+ * {@link tools.jackson.databind.SerializerProvider}
  * implementation to handle oddities of XML output, like "extra" root element.
  */
 public class XmlSerializerProvider extends SerializationContextExt

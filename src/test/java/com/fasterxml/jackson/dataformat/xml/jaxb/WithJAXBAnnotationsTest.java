@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import jakarta.xml.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import tools.jackson.databind.AnnotationIntrospector;
+import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;

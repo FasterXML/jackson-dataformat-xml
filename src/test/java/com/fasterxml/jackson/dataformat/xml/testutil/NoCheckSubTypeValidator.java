@@ -1,7 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.testutil;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import tools.jackson.databind.*;
+import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 
 /**
  * Test-only {@link PolymorphicTypeValidator} used by tests that should not block

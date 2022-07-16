@@ -3,9 +3,9 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.lang.annotation.Annotation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyName;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.introspect.*;
+import tools.jackson.databind.PropertyName;
+import tools.jackson.databind.cfg.MapperConfig;
+import tools.jackson.databind.introspect.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**

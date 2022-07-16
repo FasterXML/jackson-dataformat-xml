@@ -2,17 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonGenerator;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
 
-import com.fasterxml.jackson.databind.ValueSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.BeanSerializer;
-import com.fasterxml.jackson.databind.ser.bean.BeanAsArraySerializer;
-import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
-import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
-import com.fasterxml.jackson.databind.util.NameTransformer;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.SerializerProvider;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.BeanSerializer;
+import tools.jackson.databind.ser.bean.BeanAsArraySerializer;
+import tools.jackson.databind.ser.bean.BeanSerializerBase;
+import tools.jackson.databind.ser.impl.ObjectIdWriter;
+import tools.jackson.databind.util.NameTransformer;
 
 /**
  * Variant of {@link BeanSerializer} for XML handling.

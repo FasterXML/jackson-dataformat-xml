@@ -2,10 +2,10 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.ser.*;
-import com.fasterxml.jackson.databind.ser.impl.PropertySerializerMap;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.*;
+import tools.jackson.databind.ser.*;
+import tools.jackson.databind.ser.impl.PropertySerializerMap;
 
 /**
  * Property writer sub-class used for handling element wrapping needed for serializing

@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 

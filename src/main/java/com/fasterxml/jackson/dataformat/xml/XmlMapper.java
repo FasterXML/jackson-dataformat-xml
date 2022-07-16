@@ -9,20 +9,20 @@ import javax.xml.stream.XMLStreamWriter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.Nulls;
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.type.TypeReference;
+import tools.jackson.core.*;
+import tools.jackson.core.type.TypeReference;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.CoercionAction;
-import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
-import com.fasterxml.jackson.databind.cfg.DeserializationContexts;
-import com.fasterxml.jackson.databind.cfg.MapperBuilder;
-import com.fasterxml.jackson.databind.cfg.MapperBuilderState;
-import com.fasterxml.jackson.databind.cfg.SerializationContexts;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
-import com.fasterxml.jackson.databind.ser.SerializationContextExt;
-import com.fasterxml.jackson.databind.type.LogicalType;
+import tools.jackson.databind.*;
+import tools.jackson.databind.cfg.CoercionAction;
+import tools.jackson.databind.cfg.CoercionInputShape;
+import tools.jackson.databind.cfg.DeserializationContexts;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.cfg.MapperBuilderState;
+import tools.jackson.databind.cfg.SerializationContexts;
+import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
+import tools.jackson.databind.jsontype.TypeResolverBuilder;
+import tools.jackson.databind.ser.SerializationContextExt;
+import tools.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContexts;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -31,7 +31,7 @@ import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 
 /**
  * Customized {@link ObjectMapper} that will read and write XML instead of JSON,
- * using XML-backed {@link com.fasterxml.jackson.core.TokenStreamFactory}
+ * using XML-backed {@link tools.jackson.core.TokenStreamFactory}
  * implementation ({@link XmlFactory}), operation on STAX
  * {@link javax.xml.stream.XMLStreamReader}s and
  * {@link javax.xml.stream.XMLStreamWriter}s.

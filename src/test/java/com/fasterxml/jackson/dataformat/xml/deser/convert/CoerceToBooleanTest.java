@@ -3,11 +3,11 @@ package com.fasterxml.jackson.dataformat.xml.deser.convert;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.CoercionAction;
-import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.fasterxml.jackson.databind.type.LogicalType;
+import tools.jackson.databind.*;
+import tools.jackson.databind.cfg.CoercionAction;
+import tools.jackson.databind.cfg.CoercionInputShape;
+import tools.jackson.databind.exc.InvalidFormatException;
+import tools.jackson.databind.type.LogicalType;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 

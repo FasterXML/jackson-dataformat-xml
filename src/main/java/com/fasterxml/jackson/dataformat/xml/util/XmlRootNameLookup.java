@@ -2,11 +2,11 @@ package com.fasterxml.jackson.dataformat.xml.util;
 
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
-import com.fasterxml.jackson.databind.type.ClassKey;
-import com.fasterxml.jackson.databind.util.SimpleLookupCache;
+import tools.jackson.databind.*;
+import tools.jackson.databind.cfg.MapperConfig;
+import tools.jackson.databind.introspect.AnnotatedClass;
+import tools.jackson.databind.type.ClassKey;
+import tools.jackson.databind.util.SimpleLookupCache;
 
 /**
  * Helper class used for efficiently finding root element name used with

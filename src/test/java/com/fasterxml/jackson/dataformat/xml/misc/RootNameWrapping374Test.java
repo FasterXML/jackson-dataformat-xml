@@ -1,8 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.*;
 
 // Test originally for [dataformat-xml#374] but later (2.13)

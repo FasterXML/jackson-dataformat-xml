@@ -3,7 +3,7 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.io.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 public class MapperCopyTest extends XmlTestBase

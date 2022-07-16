@@ -8,8 +8,8 @@ import java.io.SequenceInputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
-import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.io.InputDecorator;
+import tools.jackson.core.io.IOContext;
+import tools.jackson.core.io.InputDecorator;
 
 @SuppressWarnings("serial")
 public class PrefixInputDecorator extends InputDecorator

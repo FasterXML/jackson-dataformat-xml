@@ -6,7 +6,7 @@ import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-import com.fasterxml.jackson.databind.MapperFeature;
+import tools.jackson.databind.MapperFeature;
 
 public class AttributesWithJAXBTest extends XmlTestBase
 {

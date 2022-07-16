@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import com.fasterxml.jackson.core.io.IOContext;
-import com.fasterxml.jackson.core.io.OutputDecorator;
+import tools.jackson.core.io.IOContext;
+import tools.jackson.core.io.OutputDecorator;
 
 @SuppressWarnings("serial")
 public class PrefixOutputDecorator extends OutputDecorator

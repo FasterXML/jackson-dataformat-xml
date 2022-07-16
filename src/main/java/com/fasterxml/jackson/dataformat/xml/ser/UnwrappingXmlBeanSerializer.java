@@ -2,14 +2,14 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.core.*;
+import tools.jackson.core.*;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.ser.*;
-import com.fasterxml.jackson.databind.ser.bean.BeanSerializerBase;
-import com.fasterxml.jackson.databind.ser.bean.UnwrappingBeanSerializer;
-import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
-import com.fasterxml.jackson.databind.util.NameTransformer;
+import tools.jackson.databind.*;
+import tools.jackson.databind.ser.*;
+import tools.jackson.databind.ser.bean.BeanSerializerBase;
+import tools.jackson.databind.ser.bean.UnwrappingBeanSerializer;
+import tools.jackson.databind.ser.impl.ObjectIdWriter;
+import tools.jackson.databind.util.NameTransformer;
 
 /**
  * Copy of {@link UnwrappingBeanSerializer} required to extend

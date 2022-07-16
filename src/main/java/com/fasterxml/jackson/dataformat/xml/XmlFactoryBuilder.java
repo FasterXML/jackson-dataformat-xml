@@ -3,12 +3,12 @@ package com.fasterxml.jackson.dataformat.xml;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
-import com.fasterxml.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
+import tools.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 /**
- * {@link com.fasterxml.jackson.core.TokenStreamFactory.TSFBuilder}
+ * {@link tools.jackson.core.TokenStreamFactory.TSFBuilder}
  * implementation for constructing {@link XmlFactory} instances.
  */
 public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactoryBuilder>

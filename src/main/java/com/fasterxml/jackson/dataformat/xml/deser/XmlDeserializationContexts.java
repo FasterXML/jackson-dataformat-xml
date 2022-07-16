@@ -1,13 +1,13 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import com.fasterxml.jackson.core.FormatSchema;
-import com.fasterxml.jackson.core.TokenStreamFactory;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.cfg.DeserializationContexts;
-import com.fasterxml.jackson.databind.deser.DeserializationContextExt;
-import com.fasterxml.jackson.databind.deser.DeserializerCache;
-import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+import tools.jackson.core.FormatSchema;
+import tools.jackson.core.TokenStreamFactory;
+import tools.jackson.databind.DeserializationConfig;
+import tools.jackson.databind.InjectableValues;
+import tools.jackson.databind.cfg.DeserializationContexts;
+import tools.jackson.databind.deser.DeserializationContextExt;
+import tools.jackson.databind.deser.DeserializerCache;
+import tools.jackson.databind.deser.DeserializerFactory;
 
 public class XmlDeserializationContexts
     extends DeserializationContexts

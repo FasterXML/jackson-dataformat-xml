@@ -2,9 +2,9 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.io.CharTypes;
-import com.fasterxml.jackson.core.io.ContentReference;
+import tools.jackson.core.*;
+import tools.jackson.core.io.CharTypes;
+import tools.jackson.core.io.ContentReference;
 
 /**
  * Extension of {@link TokenStreamContext}, which implements

@@ -62,7 +62,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
                 + "</wrapper>";
 
         // This fails with the following exception:
-        // com.fasterxml.jackson.databind.exc.MismatchedInputException:
+        //   tools.jackson.databind.exc.MismatchedInputException:
         // Cannot construct instance of `JacksonXMLTest$Nested` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('    ')
         Wrapper value = MAPPER.readValue(s, Wrapper.class);
         assertEquals("id", value.id);

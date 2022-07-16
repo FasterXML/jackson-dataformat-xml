@@ -1,15 +1,15 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
-import com.fasterxml.jackson.core.FormatSchema;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.TokenStreamFactory;
+import tools.jackson.core.FormatSchema;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.TokenStreamFactory;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.DeserializationContextExt;
-import com.fasterxml.jackson.databind.deser.DeserializerCache;
-import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.*;
+import tools.jackson.databind.deser.DeserializationContextExt;
+import tools.jackson.databind.deser.DeserializerCache;
+import tools.jackson.databind.deser.DeserializerFactory;
 
 /**
  * XML-specific {@link DeserializationContext} needed to override certain

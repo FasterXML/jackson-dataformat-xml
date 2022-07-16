@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.fuzz;
 
 import java.nio.charset.StandardCharsets;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
+import tools.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 

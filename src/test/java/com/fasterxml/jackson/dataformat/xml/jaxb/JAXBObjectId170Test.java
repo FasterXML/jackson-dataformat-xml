@@ -7,8 +7,8 @@ import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.*;
 
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import tools.jackson.databind.AnnotationIntrospector;
+import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

@@ -3,14 +3,14 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
-import com.fasterxml.jackson.databind.jsontype.impl.ClassNameIdResolver;
-import com.fasterxml.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
-import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.*;
+import tools.jackson.databind.jsontype.NamedType;
+import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
+import tools.jackson.databind.jsontype.TypeIdResolver;
+import tools.jackson.databind.jsontype.impl.ClassNameIdResolver;
+import tools.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
+import tools.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 

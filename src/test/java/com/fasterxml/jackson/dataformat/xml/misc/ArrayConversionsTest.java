@@ -3,8 +3,8 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 import java.util.*;
 import java.lang.reflect.Array;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 

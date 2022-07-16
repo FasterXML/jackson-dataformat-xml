@@ -4,7 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.core.io.ContentReference;
+import tools.jackson.core.io.ContentReference;
 
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
