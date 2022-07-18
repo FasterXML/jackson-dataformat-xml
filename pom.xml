@@ -7,11 +7,11 @@
   <!-- do_not_remove: published-with-gradle-metadata -->
   <modelVersion>4.0.0</modelVersion> 
   <parent>
-    <groupId>com.fasterxml.jackson</groupId>
+    <groupId>tools.jackson</groupId>
     <artifactId>jackson-base</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <groupId>com.fasterxml.jackson.dataformat</groupId>
+  <groupId>tools.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
@@ -27,7 +27,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
+    <packageVersion.dir>tools/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
     <!-- Default export should work fine... -->
@@ -39,7 +39,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
          deploy time), Stax2 API.
       -->
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
@@ -47,7 +47,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
 
@@ -83,7 +83,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
           for tests (starting 2.13: previously compile/runtime)
         -->
     <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
+      <groupId>tools.jackson.module</groupId>
       <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
       <scope>test</scope>
     </dependency>
@@ -115,7 +115,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <repository>
       <id>sonatype-nexus-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
@@ -153,7 +153,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
           <version>${version.plugin.surefire}</version>
           <configuration>
             <excludes>
-              <exclude>com/fasterxml/jackson/dataformat/xml/failing/*.java</exclude>
+              <exclude>tools/jackson/dataformat/xml/failing/*.java</exclude>
             </excludes>
             <includes>
               <include>**/Test*.java</include>
