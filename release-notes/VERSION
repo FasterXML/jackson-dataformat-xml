@@ -9,4 +9,5 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 #25: `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` not honored in xml module for attributes
  (reported by Morten-Olav H)
+#540: Rename "com.fasterxml.jackson" -> "tools.jackson"
 - Add `XmlMapper.shared()`
