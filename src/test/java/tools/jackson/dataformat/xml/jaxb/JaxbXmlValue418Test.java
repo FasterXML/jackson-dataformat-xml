@@ -104,7 +104,7 @@ public class JaxbXmlValue418Test extends XmlTestBase
         //    annotation to getter or (b) remove "implicit name" for `@XmlValue`.
         //    We'll do latter here:
         final XmlMapper mapper = XmlMapper.builder()
-                .addModule(new com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule()
+                .addModule(new tools.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule()
                         .setNameUsedForXmlValue(null)
                 )
                 .build();

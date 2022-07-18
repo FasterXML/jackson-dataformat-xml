@@ -83,7 +83,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
           for tests (starting 2.13: previously compile/runtime)
         -->
     <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
+      <groupId>tools.jackson.module</groupId>
       <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
       <scope>test</scope>
     </dependency>

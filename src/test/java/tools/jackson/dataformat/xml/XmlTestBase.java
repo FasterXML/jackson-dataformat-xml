@@ -11,12 +11,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import tools.jackson.core.*;
 
 import tools.jackson.databind.AnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlFactory;
-import tools.jackson.dataformat.xml.XmlFactoryBuilder;
-import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+import tools.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
 
 public abstract class XmlTestBase
     extends TestCase
