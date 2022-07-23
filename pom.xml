@@ -111,11 +111,21 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
 
   <!-- Alas, need to include snapshot reference since otherwise can not find
        snapshot of parent... -->
+  <!-- 14-Jul-2022, tatu: Worse. We need both "new" and "old" Snapshot repositories
+       because "jackson-annotations" is published via "old"
+    -->
   <repositories>
     <repository>
       <id>sonatype-nexus-snapshots</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+    <repository>
+      <id>sonatype-old-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots (old)</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases><enabled>false</enabled></releases>
       <snapshots><enabled>true</enabled></snapshots>
     </repository>
