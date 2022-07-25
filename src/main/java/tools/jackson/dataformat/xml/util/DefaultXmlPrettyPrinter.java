@@ -204,10 +204,10 @@ public class DefaultXmlPrettyPrinter
     }
 
     @Override
-    public void writeObjectFieldValueSeparator(JsonGenerator gen) throws JacksonException {
+    public void writeObjectNameValueSeparator(JsonGenerator gen) throws JacksonException {
         // never called for ToXmlGenerator
     }
-    
+
     @Override
     public void writeEndObject(JsonGenerator gen, int nrOfEntries) throws JacksonException
     {
