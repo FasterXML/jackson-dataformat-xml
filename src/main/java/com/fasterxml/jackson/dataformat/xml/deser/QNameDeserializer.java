@@ -1,20 +1,23 @@
-package tools.jackson.dataformat.xml.deser;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import javax.xml.namespace.QName;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.core.JsonParser;
-import tools.jackson.databind.DeserializationContext;
-import tools.jackson.databind.ValueDeserializer;
+import java.io.IOException;
 
-public class QNameDeserializer extends ValueDeserializer {
-    ValueDeserializer<?> originalDeserializer;
-    public QNameDeserializer(ValueDeserializer<?> deserializer) {
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+
+public class QNameDeserializer extends JsonDeserializer {
+    JsonDeserializer<?> originalDeserializer;
+    public QNameDeserializer(JsonDeserializer<?> deserializer) {
         originalDeserializer = deserializer;
     }
 
     @Override
-    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
+    public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
         QName qName = (QName) originalDeserializer.deserialize(p, ctxt);
 
         if (qName.getLocalPart().indexOf(":") > 0) {

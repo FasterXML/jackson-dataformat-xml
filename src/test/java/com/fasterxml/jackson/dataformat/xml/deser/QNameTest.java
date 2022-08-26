@@ -1,11 +1,11 @@
-package tools.jackson.dataformat.xml.deser;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import static junit.framework.TestCase.assertEquals;
 
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.Test;
-import tools.jackson.dataformat.xml.XmlMapper;
 
 public class QNameTest {
     protected static class Parent {
