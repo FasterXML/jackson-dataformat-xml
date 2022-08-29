@@ -732,6 +732,8 @@ public class ToXmlGenerator
 
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeRaw(text);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
                 _xmlWriter.writeRaw(text);
@@ -756,6 +758,8 @@ public class ToXmlGenerator
 
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text.substring(offset, offset + len));
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeRaw(text, offset, len);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
                 _xmlWriter.writeRaw(text, offset, len);
@@ -779,6 +783,8 @@ public class ToXmlGenerator
         try {
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
+            } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeRaw(text, offset, len);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
                 _xmlWriter.writeRaw(text, offset, len);
