@@ -179,3 +179,13 @@ Fabian Meumertzheim (fmeum@github)
  (2.13.0)
 * Reported #465: ArrayIndexOutOfBoundsException in UTF8Reader (ossfuzz)
  (2.13.0)
+
+James Dudley (@dudleycodes)
+
+* Reported #545: `@JacksonXmlText` does not work when paired with `@JsonRawValue`
+ (2.14.0)
+
+Jonas Konrad (@yawkat)
+
+* Contributed fix for #545: `@JacksonXmlText` does not work when paired with `@JsonRawValue`
+ (2.14.0)

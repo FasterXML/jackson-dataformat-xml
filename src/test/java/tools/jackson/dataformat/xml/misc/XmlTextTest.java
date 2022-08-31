@@ -1,7 +1,8 @@
 package tools.jackson.dataformat.xml.misc;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
@@ -45,11 +46,17 @@ public class XmlTextTest extends XmlTestBase
         public int value;
     }
 
-        
+    // for [dataformat-xml#545]
+    static class RawValue545 {
+        @JacksonXmlText
+        @JsonRawValue
+        public String foo = "<a>b</a>";
+    }
+
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Test methods
-    /**********************************************************
+    /**********************************************************************
      */
 
     private final XmlMapper MAPPER = xmlMapper(true);
@@ -80,5 +87,12 @@ public class XmlTextTest extends XmlTestBase
         String xml = MAPPER.writeValueAsString(new Phone());
         Phone result = MAPPER.readValue(xml, Phone.class);
         assertNotNull(result);
+    }
+
+    // for [dataformat-xml#545]
+    public void testRawValue545() throws Exception
+    {
+        String xml = MAPPER.writeValueAsString(new RawValue545());
+        assertEquals("<RawValue545><a>b</a></RawValue545>", xml);
     }
 }

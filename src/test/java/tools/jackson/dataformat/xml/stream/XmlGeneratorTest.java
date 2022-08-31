@@ -180,6 +180,60 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem>value</elem></root>", xml);
     }
 
+    public void testRawSimpleValueUnwrapped() throws Exception
+    {
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.setNextIsUnwrapped(true);
+        gen.writeName("elem");
+        gen.writeRawValue("value");
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root>value</root>", xml);
+    }
+
+    public void testRawOffsetValueUnwrapped() throws Exception
+    {
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.setNextIsUnwrapped(true);
+        gen.writeName("elem");
+        gen.writeRawValue("NotAValue_value_NotAValue", 10, 5);
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root>value</root>", xml);
+    }
+
+    public void testRawCharArrayValueUnwrapped() throws Exception
+    {
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        // root name is special, need to be fed first:
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.setNextIsUnwrapped(true);
+        gen.writeName("elem");
+        gen.writeRawValue(new char[] {'!', 'v', 'a', 'l', 'u', 'e', '!'}, 1, 5);
+        gen.writeEndObject();
+        gen.close();
+        String xml = out.toString();
+        // one more thing: remove that annoying 'xmlns' decl, if it's there:
+        xml = removeSjsxpNamespace(xml);
+        assertEquals("<root>value</root>", xml);
+    }
+
     public void testRawSimpleAttribute() throws Exception
     {
         StringWriter out = new StringWriter();
