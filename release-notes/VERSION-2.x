@@ -6,7 +6,9 @@ Project: jackson-dataformat-xml
 
 2.14.0 (not yet released)
 
-No changes since 2.13
+#545: `@JacksonXmlText` does not work when paired with `@JsonRawValue`
+ (reported by James D)
+ (fix contributed by Jonas K)
 
 2.13.4 (not yet released)
 
