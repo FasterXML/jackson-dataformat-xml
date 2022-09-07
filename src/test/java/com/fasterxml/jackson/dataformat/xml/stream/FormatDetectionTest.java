@@ -48,7 +48,9 @@ public class FormatDetectionTest extends XmlTestBase
         assertEquals(MatchStrength.FULL_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
         try (JsonParser p = matcher.createParserWithMatch()) {
-            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
         }
     }
 
@@ -63,7 +65,10 @@ public class FormatDetectionTest extends XmlTestBase
         assertEquals(MatchStrength.SOLID_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
         try (JsonParser p = matcher.createParserWithMatch()) {
-            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+//            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
         }
     }
 
@@ -78,7 +83,9 @@ public class FormatDetectionTest extends XmlTestBase
         assertEquals(MatchStrength.SOLID_MATCH, matcher.getMatchStrength());
         // ensure we could build a parser...
         try (JsonParser p = matcher.createParserWithMatch()) {
-            assertToken(JsonToken.VALUE_STRING, p.nextToken());
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertNull(p.nextToken());
         }
     }
 

@@ -41,11 +41,13 @@ public class SimpleStringValuesTest extends XmlTestBase
     //   empty String can be used in two different ways... behavior change b/w 2.11
     //   and 2.12; 2.11 would lead to coercion from empty Object into default-ctor
     //   build Bean, but with gets empty String, passed via String-creator.
+    // 06-Sep-2022, tatu: With 2.14 behavior should become closer to 2.11 in
+    //   this respect.
     public void testMissingString() throws Exception
     {
         StringBean bean = MAPPER.readValue("<StringBean />", StringBean.class);
         assertNotNull(bean);
-        assertEquals("", bean.text);
+        assertEquals(new StringBean().text, bean.text);
     }
 
     /*
