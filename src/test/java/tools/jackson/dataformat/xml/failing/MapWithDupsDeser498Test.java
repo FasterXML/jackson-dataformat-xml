@@ -7,7 +7,7 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 
-public class MapDeserialization498Test extends XmlTestBase
+public class MapWithDupsDeser498Test extends XmlTestBase
 {
     /*
     /**********************************************************************

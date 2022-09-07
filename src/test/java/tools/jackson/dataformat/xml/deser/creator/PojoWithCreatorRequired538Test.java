@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.deser.creator;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +8,7 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.exc.MismatchedInputException;
 import tools.jackson.dataformat.xml.*;
 
-public class PojoWithRequired538Test extends XmlTestBase
+public class PojoWithCreatorRequired538Test extends XmlTestBase
 {
     @JsonRootName(value = "bar")
     static class Bar538
