@@ -6,6 +6,10 @@ Project: jackson-dataformat-xml
 
 2.14.0 (not yet released)
 
+#491: `XmlMapper` 2.12 regression: no default no-arg ctor found
+ (reported by Volkan Y)
+#538: Required attribute of `@JsonProperty` is ignored when deserializing from XML
+ (reported by johandeschutterGET@github)
 #545: `@JacksonXmlText` does not work when paired with `@JsonRawValue`
  (reported by James D)
  (fix contributed by Jonas K)

@@ -79,8 +79,12 @@ public class XmlParserTest extends XmlTestBase
         // 02-Jul-2020, tatu: Does not work quite yet
         final String XML = "<data>value</data>";
         try (JsonParser p = _xmlMapper.createParser(XML)) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
+            assertEquals("", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("value", p.getText());
+            assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
             // should be ok to call again tho
             assertNull(p.nextToken());

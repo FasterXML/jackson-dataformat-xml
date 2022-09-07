@@ -277,7 +277,8 @@ public class FromXmlParser
         } else {
             switch (firstToken) {
             case XmlTokenStream.XML_START_ELEMENT:
-            case XmlTokenStream.XML_DELAYED_START_ELEMENT:
+            // Removed from 2.14:
+            // case XmlTokenStream.XML_DELAYED_START_ELEMENT:
                 _nextToken = JsonToken.START_OBJECT;
                 break;
             case XmlTokenStream.XML_ROOT_TEXT:

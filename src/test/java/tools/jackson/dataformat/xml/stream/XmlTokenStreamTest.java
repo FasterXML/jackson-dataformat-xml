@@ -10,6 +10,8 @@ import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.deser.XmlTokenStream;
 
+
+// NOTE: test changed a lot between 2.13 and 2.14:
 public class XmlTokenStreamTest extends XmlTestBase
 {
     private final XmlFactory XML_FACTORY = newMapper().tokenStreamFactory();
@@ -17,7 +19,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     public void testSimple() throws Exception
     {
         XmlTokenStream tokens = _tokensFor("<root><leaf id='123'>abc</leaf></root>");
-        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
         assertEquals("leaf", tokens.getLocalName());
@@ -81,7 +83,7 @@ public class XmlTokenStreamTest extends XmlTestBase
             f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
         XmlTokenStream tokens = _tokensFor(XML, f);
-        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
         assertEquals("leaf", tokens.getLocalName());
@@ -97,7 +99,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     public void testNested() throws Exception
     {
         XmlTokenStream tokens = _tokensFor( "<root><a><b><c>abc</c></b></a></root>");
-        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.next());
         assertEquals("a", tokens.getLocalName());
@@ -119,7 +121,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     {
         XmlTokenStream tokens = _tokensFor("<root>first<a>123</a> and second <b>abc</b>\n</root>");
 
-        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
 
         assertEquals(XmlTokenStream.XML_TEXT, tokens.next());
@@ -149,7 +151,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     {
         XmlTokenStream tokens = _tokensFor("<root>first<a>123</a>last &amp; final</root>");
 
-        assertEquals(XmlTokenStream.XML_DELAYED_START_ELEMENT, tokens.getCurrentToken());
+        assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
         assertEquals("root", tokens.getLocalName());
 
         assertEquals(XmlTokenStream.XML_TEXT, tokens.next());

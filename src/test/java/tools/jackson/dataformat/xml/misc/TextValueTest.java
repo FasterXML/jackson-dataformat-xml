@@ -139,7 +139,8 @@ public class TextValueTest extends XmlTestBase
             MAPPER.readValue(XML, JAXBStyle.class);
             fail("Should have failed");
         } catch (MismatchedInputException e) {
-            verifyException(e, "Cannot construct instance of");
+//            verifyException(e, "Cannot construct instance of");
+            verifyException(e, "Unrecognized property");
         }
         XmlMapper mapper = XmlMapper.builder()
                 .nameForTextElement("value")

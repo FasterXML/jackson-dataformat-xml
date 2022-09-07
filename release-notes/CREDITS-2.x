@@ -189,3 +189,9 @@ Jonas Konrad (@yawkat)
 
 * Contributed fix for #545: `@JacksonXmlText` does not work when paired with `@JsonRawValue`
  (2.14.0)
+
+Volkan Yazıcı (vy@github)
+
+* Reported #491: `XmlMapper` 2.12 regression: no default no-arg ctor found
+ (2.14.0)
+
