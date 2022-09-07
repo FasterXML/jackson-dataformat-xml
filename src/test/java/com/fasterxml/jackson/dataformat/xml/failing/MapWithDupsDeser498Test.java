@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class MapDeserialization498Test extends XmlTestBase
+public class MapWithDupsDeser498Test extends XmlTestBase
 {
     /*
     /**********************************************************************

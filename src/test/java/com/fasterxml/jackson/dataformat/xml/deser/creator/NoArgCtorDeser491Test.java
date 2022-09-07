@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.deser.creator;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -29,7 +29,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
  *</ul>
  * Either approach could work, although former could cause other kinds of regression.
  */
-public class Issue491NoArgCtorDeserRegressionTest extends XmlTestBase
+public class NoArgCtorDeser491Test extends XmlTestBase
 {
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.NAME,
