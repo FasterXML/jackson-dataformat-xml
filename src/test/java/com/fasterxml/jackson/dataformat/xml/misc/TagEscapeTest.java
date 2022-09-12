@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTagProcessors;
+import com.fasterxml.jackson.dataformat.xml.XmlNameProcessors;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public class TagEscapeTest extends XmlTestBase {
         dto.badMap.put("$ I am <fancy>! &;", "xyz");
         dto.badMap.put("<!-- No comment=\"but' fancy tag!\"$ />", "xyz");
 
-        XmlMapper mapper = XmlMapper.builder().xmlTagProcessor(XmlTagProcessors.newBase64Processor()).build();
+        XmlMapper mapper = XmlMapper.builder().xmlNameProcessor(XmlNameProcessors.newBase64Processor()).build();
 
         final String res = mapper.writeValueAsString(dto);
 
@@ -74,7 +74,7 @@ public class TagEscapeTest extends XmlTestBase {
         dto.badMap.put("$ I am <fancy>! &;", "xyz");
         dto.badMap.put("<!-- No comment=\"but' fancy tag!\"$ />", "xyz");
 
-        XmlMapper mapper = XmlMapper.builder().xmlTagProcessor(XmlTagProcessors.newAlwaysOnBase64Processor()).build();
+        XmlMapper mapper = XmlMapper.builder().xmlNameProcessor(XmlNameProcessors.newAlwaysOnBase64Processor()).build();
 
         final String res = mapper.writeValueAsString(dto);
 
@@ -90,7 +90,7 @@ public class TagEscapeTest extends XmlTestBase {
         dto.badMap.put("$ I am <fancy>! &;", "xyz");
         dto.badMap.put("<!-- No comment=\"but' fancy tag!\"$ />", "xyz");
 
-        XmlMapper mapper = XmlMapper.builder().xmlTagProcessor(XmlTagProcessors.newReplacementProcessor()).build();
+        XmlMapper mapper = XmlMapper.builder().xmlNameProcessor(XmlNameProcessors.newReplacementProcessor()).build();
 
         final String res = mapper.writeValueAsString(dto);
 
@@ -106,7 +106,7 @@ public class TagEscapeTest extends XmlTestBase {
     public void testBadVarName() throws JsonProcessingException {
         BadVarNameDTO dto = new BadVarNameDTO();
 
-        XmlMapper mapper = XmlMapper.builder().xmlTagProcessor(XmlTagProcessors.newBase64Processor()).build();
+        XmlMapper mapper = XmlMapper.builder().xmlNameProcessor(XmlNameProcessors.newBase64Processor()).build();
 
         final String res = mapper.writeValueAsString(dto);
 

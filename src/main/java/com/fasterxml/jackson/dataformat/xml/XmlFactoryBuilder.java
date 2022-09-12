@@ -64,11 +64,11 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     protected ClassLoader _classLoaderForStax;
 
     /**
-     * See {@link XmlTagProcessor} and {@link XmlTagProcessors}
+     * See {@link XmlNameProcessor} and {@link XmlNameProcessors}
      *
      * @since 2.14
      */
-    protected XmlTagProcessor _tagProcessor;
+    protected XmlNameProcessor _nameProcessor;
 
     /*
     /**********************************************************
@@ -80,7 +80,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         _formatParserFeatures = XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS;
         _formatGeneratorFeatures = XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS;
         _classLoaderForStax = null;
-        _tagProcessor = XmlTagProcessors.newPassthroughProcessor();
+        _nameProcessor = XmlNameProcessors.newPassthroughProcessor();
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
@@ -90,7 +90,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
-        _tagProcessor = base._tagProcessor;
+        _nameProcessor = base._nameProcessor;
         _classLoaderForStax = null;
     }
 
@@ -142,8 +142,8 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
                 getClass().getClassLoader() : _classLoaderForStax;
     }
 
-    public XmlTagProcessor xmlTagProcessor() {
-        return _tagProcessor;
+    public XmlNameProcessor xmlTagProcessor() {
+        return _nameProcessor;
     }
 
     // // // Parser features
@@ -270,8 +270,8 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     /**
      * @since 2.14
      */
-    public XmlFactoryBuilder xmlTagProcessor(XmlTagProcessor tagProcessor) {
-        _tagProcessor = tagProcessor;
+    public XmlFactoryBuilder xmlTagProcessor(XmlNameProcessor nameProcessor) {
+        _nameProcessor = nameProcessor;
         return _this();
     }
     

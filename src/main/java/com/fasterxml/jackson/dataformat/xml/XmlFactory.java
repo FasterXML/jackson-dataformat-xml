@@ -66,7 +66,7 @@ public class XmlFactory extends JsonFactory
 
     protected String _cfgNameForTextElement;
 
-    protected XmlTagProcessor _tagProcessor;
+    protected XmlNameProcessor _nameProcessor;
     
     /*
     /**********************************************************
@@ -107,15 +107,15 @@ public class XmlFactory extends JsonFactory
     public XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
                          XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
                          String nameForTextElem) {
-        this(oc, xpFeatures, xgFeatures, xmlIn, xmlOut, nameForTextElem, XmlTagProcessors.newPassthroughProcessor());
+        this(oc, xpFeatures, xgFeatures, xmlIn, xmlOut, nameForTextElem, XmlNameProcessors.newPassthroughProcessor());
     }
 
     protected XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
             XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
-            String nameForTextElem, XmlTagProcessor tagProcessor)
+            String nameForTextElem, XmlNameProcessor nameProcessor)
     {
         super(oc);
-        _tagProcessor = tagProcessor;
+        _nameProcessor = nameProcessor;
         _xmlParserFeatures = xpFeatures;
         _xmlGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
@@ -149,7 +149,7 @@ public class XmlFactory extends JsonFactory
         _cfgNameForTextElement = src._cfgNameForTextElement;
         _xmlInputFactory = src._xmlInputFactory;
         _xmlOutputFactory = src._xmlOutputFactory;
-        _tagProcessor = src._tagProcessor;
+        _nameProcessor = src._nameProcessor;
     }
 
     /**
@@ -165,7 +165,7 @@ public class XmlFactory extends JsonFactory
         _cfgNameForTextElement = b.nameForTextElement();
         _xmlInputFactory = b.xmlInputFactory();
         _xmlOutputFactory = b.xmlOutputFactory();
-        _tagProcessor = b.xmlTagProcessor();
+        _nameProcessor = b.xmlTagProcessor();
         _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 
@@ -336,12 +336,12 @@ public class XmlFactory extends JsonFactory
         return _xmlGeneratorFeatures;
     }
 
-    public XmlTagProcessor getXmlTagProcessor() {
-        return _tagProcessor;
+    public XmlNameProcessor getXmlTagProcessor() {
+        return _nameProcessor;
     }
 
-    public void setXmlTagProcessor(XmlTagProcessor _tagProcessor) {
-        this._tagProcessor = _tagProcessor;
+    public void setXmlTagProcessor(XmlNameProcessor processor) {
+        _nameProcessor = processor;
     }
 
     /*
@@ -517,7 +517,7 @@ public class XmlFactory extends JsonFactory
         ctxt.setEncoding(enc);
         return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(ctxt, out), _tagProcessor);
+                _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
     
     @Override
@@ -526,7 +526,7 @@ public class XmlFactory extends JsonFactory
         final IOContext ctxt = _createContext(_createContentReference(out), false);
         return new ToXmlGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(ctxt, out), _tagProcessor);
+                _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
 
     @SuppressWarnings("resource")
@@ -538,7 +538,7 @@ public class XmlFactory extends JsonFactory
         final IOContext ctxt = _createContext(_createContentReference(out), true);
         ctxt.setEncoding(enc);
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, _createXmlWriter(ctxt, out), _tagProcessor);
+                _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
 
     /*
@@ -562,7 +562,7 @@ public class XmlFactory extends JsonFactory
 
         // false -> not managed
         FromXmlParser xp = new FromXmlParser(_createContext(_createContentReference(sr), false),
-                _parserFeatures, _xmlParserFeatures, _objectCodec, sr, _tagProcessor);
+                _parserFeatures, _xmlParserFeatures, _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -581,7 +581,7 @@ public class XmlFactory extends JsonFactory
         sw = _initializeXmlWriter(sw);
         IOContext ctxt = _createContext(_createContentReference(sw), false);
         return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
-                _objectCodec, sw, _tagProcessor);
+                _objectCodec, sw, _nameProcessor);
     }
 
     /*
@@ -601,7 +601,7 @@ public class XmlFactory extends JsonFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr, _tagProcessor);
+                _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -619,7 +619,7 @@ public class XmlFactory extends JsonFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr, _tagProcessor);
+                _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -646,7 +646,7 @@ public class XmlFactory extends JsonFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr, _tagProcessor);
+                _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -670,7 +670,7 @@ public class XmlFactory extends JsonFactory
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
-                _objectCodec, sr, _tagProcessor);
+                _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }

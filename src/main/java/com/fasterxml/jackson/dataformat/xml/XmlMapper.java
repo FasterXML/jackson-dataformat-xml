@@ -112,8 +112,8 @@ public class XmlMapper extends ObjectMapper
         /**
          * @since 2.14
          */
-        public Builder xmlTagProcessor(XmlTagProcessor tagProcessor) {
-            _mapper.setXmlTagProcessor(tagProcessor);
+        public Builder xmlNameProcessor(XmlNameProcessor processor) {
+            _mapper.setXmlNameProcessor(processor);
             return this;
         }
     }
@@ -291,15 +291,8 @@ public class XmlMapper extends ObjectMapper
     /**
      * @since 2.14
      */
-    public void setXmlTagProcessor(XmlTagProcessor tagProcessor) {
-        ((XmlFactory)_jsonFactory).setXmlTagProcessor(tagProcessor);
-    }
-
-    /**
-     * @since 2.14
-     */
-    public XmlTagProcessor getXmlTagProcessor() {
-        return ((XmlFactory)_jsonFactory).getXmlTagProcessor();
+    public void setXmlNameProcessor(XmlNameProcessor processor) {
+        ((XmlFactory)_jsonFactory).setXmlTagProcessor(processor);
     }
 
     /*

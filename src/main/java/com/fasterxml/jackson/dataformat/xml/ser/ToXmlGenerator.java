@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTagProcessor;
+import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.codehaus.stax2.ri.Stax2WriterAdapter;
 
@@ -154,11 +154,11 @@ public class ToXmlGenerator
     protected XmlPrettyPrinter _xmlPrettyPrinter;
 
     /**
-     * Escapes tag names with invalid XML characters
+     * Escapes names with invalid XML characters
      *
      * @since 2.14
      */
-    protected XmlTagProcessor _tagProcessor;
+    protected XmlNameProcessor _nameProcessor;
 
     /*
     /**********************************************************
@@ -206,6 +206,13 @@ public class ToXmlGenerator
      */
     protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
 
+    /**
+     * Reusable internal value object
+     *
+     * @since 2.14
+     */
+    protected XmlNameProcessor.XmlName _nameToEncode = new XmlNameProcessor.XmlName();
+
     /*
     /**********************************************************
     /* Life-cycle
@@ -213,7 +220,7 @@ public class ToXmlGenerator
      */
 
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
-            ObjectCodec codec, XMLStreamWriter sw, XmlTagProcessor tagProcessor)
+            ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor)
     {
         super(stdFeatures, codec);
         _formatFeatures = xmlFeatures;
@@ -221,7 +228,7 @@ public class ToXmlGenerator
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
-        _tagProcessor = tagProcessor;
+        _nameProcessor = nameProcessor;
         _xmlPrettyPrinter = (_cfgPrettyPrinter instanceof XmlPrettyPrinter) ?
         		(XmlPrettyPrinter) _cfgPrettyPrinter : null;
     }
@@ -485,10 +492,12 @@ public class ToXmlGenerator
         }
         // Should this ever get called?
         String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-        XmlTagProcessor.XmlTagName tagName = _tagProcessor.encodeTag(new XmlTagProcessor.XmlTagName(ns, name));
-        setNextName(new QName(tagName.namespace, tagName.localPart));
+        _nameToEncode.namespace = ns;
+        _nameToEncode.localPart = name;
+        _nameProcessor.encodeName(_nameToEncode);
+        setNextName(new QName(_nameToEncode.namespace, _nameToEncode.localPart));
     }
-    
+
     @Override
     public final void writeStringField(String fieldName, String value) throws IOException
     {
