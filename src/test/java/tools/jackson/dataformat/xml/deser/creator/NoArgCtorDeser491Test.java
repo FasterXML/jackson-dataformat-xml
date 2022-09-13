@@ -57,8 +57,6 @@ public class NoArgCtorDeser491Test extends XmlTestBase
         DefaultProblem(@JsonProperty("type") String type, @JsonProperty("status") Integer status) {
             this.type = type != null ? type : Problem.DEFAULT_TYPE;
             this.status = status != null ? status : Problem.DEFAULT_STATUS;
-
-        if (true) throw new Error();
         }
 
         // Adding this would work around the issue
