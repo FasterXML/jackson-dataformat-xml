@@ -165,7 +165,7 @@ public class XmlFactory extends JsonFactory
         _cfgNameForTextElement = b.nameForTextElement();
         _xmlInputFactory = b.xmlInputFactory();
         _xmlOutputFactory = b.xmlOutputFactory();
-        _nameProcessor = b.xmlTagProcessor();
+        _nameProcessor = b.xmlNameProcessor();
         _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 
@@ -336,11 +336,11 @@ public class XmlFactory extends JsonFactory
         return _xmlGeneratorFeatures;
     }
 
-    public XmlNameProcessor getXmlTagProcessor() {
+    public XmlNameProcessor getXmlNameProcessor() {
         return _nameProcessor;
     }
 
-    public void setXmlTagProcessor(XmlNameProcessor processor) {
+    public void setXmlNameProcessor(XmlNameProcessor processor) {
         _nameProcessor = processor;
     }
 

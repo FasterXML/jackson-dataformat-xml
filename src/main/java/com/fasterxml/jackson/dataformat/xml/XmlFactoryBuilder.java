@@ -142,7 +142,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
                 getClass().getClassLoader() : _classLoaderForStax;
     }
 
-    public XmlNameProcessor xmlTagProcessor() {
+    public XmlNameProcessor xmlNameProcessor() {
         return _nameProcessor;
     }
 
@@ -270,7 +270,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     /**
      * @since 2.14
      */
-    public XmlFactoryBuilder xmlTagProcessor(XmlNameProcessor nameProcessor) {
+    public XmlFactoryBuilder xmlNameProcessor(XmlNameProcessor nameProcessor) {
         _nameProcessor = nameProcessor;
         return _this();
     }

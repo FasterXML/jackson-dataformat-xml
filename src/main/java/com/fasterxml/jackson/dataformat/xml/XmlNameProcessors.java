@@ -40,7 +40,7 @@ public final class XmlNameProcessors
      * @since 2.14
      */
     public static XmlNameProcessor newPassthroughProcessor() {
-        return new PassthroughTagProcessor();
+        return new PassthroughProcessor();
     }
 
     /**
@@ -157,10 +157,10 @@ public final class XmlNameProcessors
         return new AlwaysOnBase64NameProcessor();
     }
 
-    static class PassthroughTagProcessor implements XmlNameProcessor {
+    static class PassthroughProcessor implements XmlNameProcessor {
         private static final long serialVersionUID = 1L;
 
-        public PassthroughTagProcessor() { }
+        public PassthroughProcessor() { }
 
         @Override
         public void encodeName(XmlName name) { }

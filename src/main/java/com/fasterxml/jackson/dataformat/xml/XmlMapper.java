@@ -292,7 +292,7 @@ public class XmlMapper extends ObjectMapper
      * @since 2.14
      */
     public void setXmlNameProcessor(XmlNameProcessor processor) {
-        ((XmlFactory)_jsonFactory).setXmlTagProcessor(processor);
+        ((XmlFactory)_jsonFactory).setXmlNameProcessor(processor);
     }
 
     /*
