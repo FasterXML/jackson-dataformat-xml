@@ -6,10 +6,10 @@ import javax.xml.stream.*;
 
 import tools.jackson.core.io.ContentReference;
 import tools.jackson.dataformat.xml.XmlFactory;
+import tools.jackson.dataformat.xml.XmlNameProcessors;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.deser.XmlTokenStream;
-
 
 // NOTE: test changed a lot between 2.13 and 2.14:
 public class XmlTokenStreamTest extends XmlTestBase
@@ -179,7 +179,8 @@ public class XmlTokenStreamTest extends XmlTestBase
         XMLStreamReader sr = XML_FACTORY.getXMLInputFactory().createXMLStreamReader(new StringReader(doc));
         // must point to START_ELEMENT, so:
         sr.nextTag();
-        XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags);
+        XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags,
+                XmlNameProcessors.newPassthroughProcessor());
         stream.initialize();
         return stream;
     }

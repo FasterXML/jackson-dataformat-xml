@@ -60,6 +60,8 @@ public class XmlFactory
     // !!! 09-Jan-2018, tatu: make final ASAP
     protected String _cfgNameForTextElement;
 
+    protected final XmlNameProcessor _nameProcessor;
+
     // // Transient just because JDK serializability requires some trickery
 
     protected transient final XMLInputFactory _xmlInputFactory;
@@ -90,14 +92,17 @@ public class XmlFactory
 
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
         this(DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
-                xmlIn, xmlOut, null);
+                xmlIn, xmlOut, XmlNameProcessors.newPassthroughProcessor(),
+                null);
     }
 
     protected XmlFactory(int xpFeatures, int xgFeatures,
             XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
+            XmlNameProcessor nameProcessor,
             String nameForTextElem)
     {
         super(xpFeatures, xgFeatures);
+        _nameProcessor = nameProcessor;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
             xmlIn = XmlFactoryBuilder.defaultXmlInputFactory(getClass().getClassLoader());
@@ -121,6 +126,7 @@ public class XmlFactory
         _cfgNameForTextElement = b.nameForTextElement();
         _xmlInputFactory = b.xmlInputFactory();
         _xmlOutputFactory = b.xmlOutputFactory();
+        _nameProcessor = b.xmlNameProcessor();
         _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 
@@ -135,6 +141,7 @@ public class XmlFactory
         _cfgNameForTextElement = nameForTextElement;
         _xmlInputFactory = src._xmlInputFactory;
         _xmlOutputFactory = src._xmlOutputFactory;
+        _nameProcessor = src._nameProcessor;
     }
     
     protected void _initFactories(XMLInputFactory xmlIn, XMLOutputFactory xmlOut)
@@ -218,7 +225,7 @@ public class XmlFactory
             throw new IllegalArgumentException(e);
         }
         return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
-                inf, outf, _cfgNameForTextElement);
+                inf, outf, _nameProcessor, _cfgNameForTextElement);
     }
 
     /**
@@ -370,7 +377,8 @@ public class XmlFactory
                 writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 _createXmlWriter(out),
-                _xmlPrettyPrinter(writeCtxt));
+                _xmlPrettyPrinter(writeCtxt),
+                _nameProcessor);
     }
 
     @Override
@@ -381,7 +389,8 @@ public class XmlFactory
                 writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 _createXmlWriter(out),
-                _xmlPrettyPrinter(writeCtxt));
+                _xmlPrettyPrinter(writeCtxt),
+                _nameProcessor);
     }
 
     private final XmlPrettyPrinter _xmlPrettyPrinter(ObjectWriteContext writeCtxt)
@@ -421,7 +430,7 @@ public class XmlFactory
                 _createContext(_createContentReference(sr), false),
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr);
+                sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -442,7 +451,7 @@ public class XmlFactory
                 writeCtxt.getStreamWriteFeatures(_streamWriteFeatures),
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 sw,
-                _xmlPrettyPrinter(writeCtxt));
+                _xmlPrettyPrinter(writeCtxt), _nameProcessor);
     }
 
     /*
@@ -465,7 +474,7 @@ public class XmlFactory
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr);
+                sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -486,7 +495,7 @@ public class XmlFactory
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr);
+                sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -516,7 +525,7 @@ public class XmlFactory
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr);
+                sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
@@ -543,7 +552,7 @@ public class XmlFactory
         FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr);
+                sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }

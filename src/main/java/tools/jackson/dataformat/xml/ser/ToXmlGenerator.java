@@ -24,6 +24,7 @@ import tools.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import tools.jackson.dataformat.xml.util.StaxUtil;
 import tools.jackson.core.util.JacksonFeatureSet;
 
+import tools.jackson.dataformat.xml.XmlNameProcessor;
 import tools.jackson.dataformat.xml.PackageVersion;
 
 /**
@@ -166,6 +167,13 @@ public class ToXmlGenerator
      */
     protected SimpleStreamWriteContext _streamWriteContext;
 
+    /**
+     * Escapes names with invalid XML characters
+     *
+     * @since 2.14
+     */
+    protected XmlNameProcessor _nameProcessor;
+
     /*
     /**********************************************************************
     /* XML Output state
@@ -210,6 +218,11 @@ public class ToXmlGenerator
      */
     protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
 
+    /**
+     * Reusable internal value object
+     */
+    protected XmlNameProcessor.XmlName _nameToEncode = new XmlNameProcessor.XmlName();
+
     /*
     /**********************************************************************
     /* Life-cycle
@@ -218,7 +231,7 @@ public class ToXmlGenerator
 
     public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
             int streamWriteFeatures, int xmlFeatures,
-            XMLStreamWriter sw, XmlPrettyPrinter pp)
+            XMLStreamWriter sw, XmlPrettyPrinter pp, XmlNameProcessor nameProcessor)
     {
         super(writeCtxt, streamWriteFeatures);
         _formatFeatures = xmlFeatures;
@@ -230,6 +243,7 @@ public class ToXmlGenerator
         final DupDetector dups = StreamWriteFeature.STRICT_DUPLICATE_DETECTION.enabledIn(streamWriteFeatures)
                 ? DupDetector.rootDetector(this) : null;
         _streamWriteContext = SimpleStreamWriteContext.createRootContext(dups);
+        _nameProcessor = nameProcessor;
     }
 
     /**
@@ -478,7 +492,10 @@ public class ToXmlGenerator
         }
         // Should this ever get called?
         String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-        setNextName(new QName(ns, name));
+        _nameToEncode.namespace = ns;
+        _nameToEncode.localPart = name;
+        _nameProcessor.encodeName(_nameToEncode);
+        setNextName(new QName(_nameToEncode.namespace, _nameToEncode.localPart));
         return this;
     }
 

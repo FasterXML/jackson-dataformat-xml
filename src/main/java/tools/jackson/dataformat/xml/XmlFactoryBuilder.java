@@ -61,6 +61,11 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      */
     protected ClassLoader _classLoaderForStax;
 
+    /**
+     * See {@link XmlNameProcessor} and {@link XmlNameProcessors}
+     */
+    protected XmlNameProcessor _nameProcessor;
+
     /*
     /**********************************************************************
     /* Life cycle
@@ -71,6 +76,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         super(XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS,
                 XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS);
         _classLoaderForStax = null;
+        _nameProcessor = XmlNameProcessors.newPassthroughProcessor();
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
@@ -78,6 +84,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
+        _nameProcessor = base._nameProcessor;
         _classLoaderForStax = null;
     }
 
@@ -128,6 +135,10 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     protected ClassLoader staxClassLoader() {
         return (_classLoaderForStax == null) ?
                 getClass().getClassLoader() : _classLoaderForStax;
+    }
+
+    public XmlNameProcessor xmlNameProcessor() {
+        return _nameProcessor;
     }
 
     // // // Parser features
@@ -223,6 +234,11 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      */
     public XmlFactoryBuilder staxClassLoader(ClassLoader cl) {
         _classLoaderForStax = cl;
+        return _this();
+    }
+
+    public XmlFactoryBuilder xmlNameProcessor(XmlNameProcessor nameProcessor) {
+        _nameProcessor = nameProcessor;
         return _this();
     }
 

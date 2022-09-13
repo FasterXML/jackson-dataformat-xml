@@ -195,3 +195,8 @@ Volkan Yazıcı (vy@github)
 * Reported #491: `XmlMapper` 2.12 regression: no default no-arg ctor found
  (2.14.0)
 
+Daniel Mensinger (mensinda@github)
+
+* Contributed #531: Add mechanism for processing invalid XML names (transforming to
+  valid ones)
+ (2.14.0)

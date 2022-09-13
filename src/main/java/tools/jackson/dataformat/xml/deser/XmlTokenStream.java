@@ -12,6 +12,8 @@ import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 import tools.jackson.core.JsonLocation;
 import tools.jackson.core.io.ContentReference;
 
+import tools.jackson.dataformat.xml.XmlNameProcessor;
+
 /**
  * Simple helper class used on top of STAX {@link XMLStreamReader} to further
  * abstract out all irrelevant details, and to expose equivalent of flat token
@@ -73,6 +75,8 @@ public class XmlTokenStream
 
     protected final boolean _cfgProcessXsiNil;
 
+    protected XmlNameProcessor _nameProcessor;
+
     /*
     /**********************************************************************
     /* Parsing state
@@ -122,6 +126,13 @@ public class XmlTokenStream
      */
     protected boolean _repeatCurrentToken;
 
+    /**
+     * Reusable internal value object
+     *
+     * @since 2.14
+     */
+    protected XmlNameProcessor.XmlName _nameToDecode = new XmlNameProcessor.XmlName();
+
     /*
     /**********************************************************************
     /* State for handling virtual wrapping
@@ -153,12 +164,13 @@ public class XmlTokenStream
      */
 
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
-            int formatFeatures)
+            int formatFeatures, XmlNameProcessor nameProcessor)
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
         _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
+        _nameProcessor = nameProcessor;
     }
 
     /**
@@ -173,10 +185,8 @@ public class XmlTokenStream
             throw new IllegalArgumentException("Invalid XMLStreamReader passed: should be pointing to START_ELEMENT ("
                     +XMLStreamConstants.START_ELEMENT+"), instead got "+_xmlReader.getEventType());
         }
-        _localName = _xmlReader.getLocalName();
-        _namespaceURI = _xmlReader.getNamespaceURI();
-
         _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
+        _decodeElementName(_xmlReader.getNamespaceURI(), _xmlReader.getLocalName());
 
         // 02-Jul-2020, tatu: Two choices: if child elements OR attributes, expose
         //    as Object value; otherwise expose as Text
@@ -440,8 +450,8 @@ public class XmlTokenStream
             }
             if (_nextAttributeIndex < _attributeCount) {
 //System.out.println(" XmlTokenStream._next(): Got attr(s)!");
-                _localName = _xmlReader.getAttributeLocalName(_nextAttributeIndex);
-                _namespaceURI = _xmlReader.getAttributeNamespace(_nextAttributeIndex);
+                _decodeAttributeName(_xmlReader.getAttributeNamespace(_nextAttributeIndex),
+                        _xmlReader.getAttributeLocalName(_nextAttributeIndex));
                 _textValue = _xmlReader.getAttributeValue(_nextAttributeIndex);
                 return (_currentState = XML_ATTRIBUTE_NAME);
             }
@@ -666,8 +676,7 @@ public class XmlTokenStream
                 return (_currentState = XML_END_ELEMENT);
             }
         }
-        _localName = localName;
-        _namespaceURI = ns;
+        _decodeElementName(ns, localName);
         return (_currentState = XML_START_ELEMENT);
     }
 
@@ -698,6 +707,28 @@ public class XmlTokenStream
     }
 
     /**
+     * @since 2.14
+     */
+    protected void _decodeElementName(String namespaceURI, String localName) {
+        _nameToDecode.namespace = namespaceURI;
+        _nameToDecode.localPart = localName;
+        _nameProcessor.decodeName(_nameToDecode);
+        _namespaceURI = _nameToDecode.namespace;
+        _localName = _nameToDecode.localPart;
+    }
+
+    /**
+     * @since 2.14
+     */
+    protected void _decodeAttributeName(String namespaceURI, String localName) {
+        _nameToDecode.namespace = namespaceURI;
+        _nameToDecode.localPart = localName;
+        _nameProcessor.decodeName(_nameToDecode);
+        _namespaceURI = _nameToDecode.namespace;
+        _localName = _nameToDecode.localPart;
+    }
+
+    /**
      * Method called to handle details of repeating "virtual"
      * start/end elements, needed for handling 'unwrapped' lists.
      */
@@ -715,8 +746,7 @@ public class XmlTokenStream
         }
         if (type == REPLAY_END) {
 //System.out.println(" XMLTokenStream._handleRepeatElement() for END_ELEMENT: "+_localName+" ("+_xmlReader.getLocalName()+")");
-            _localName = _xmlReader.getLocalName();
-            _namespaceURI = _xmlReader.getNamespaceURI();
+            _decodeElementName(_xmlReader.getNamespaceURI(), _xmlReader.getLocalName());
             if (_currentWrapper != null) {
                 _currentWrapper = _currentWrapper.getParent();
             }
@@ -726,8 +756,7 @@ public class XmlTokenStream
             if (_currentWrapper != null) {
                 _currentWrapper = _currentWrapper.intermediateWrapper();
             }
-            _localName = _nextLocalName;
-            _namespaceURI = _nextNamespaceURI;
+            _decodeElementName(_nextNamespaceURI, _nextLocalName);
             _nextLocalName = null;
             _nextNamespaceURI = null;
 
@@ -746,6 +775,7 @@ public class XmlTokenStream
             // important: if we close the scope, must duplicate END_ELEMENT as well
             if (w.isMatching()) {
                 _repeatElement = REPLAY_END;
+                // 11-Sep-2022, tatu: I _think_ these are already properly decoded
                 _localName = w.getWrapperLocalName();
                 _namespaceURI = w.getWrapperNamespace();
                 _currentWrapper = _currentWrapper.getParent();

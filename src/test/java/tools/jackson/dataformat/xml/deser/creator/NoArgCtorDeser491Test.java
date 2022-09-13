@@ -58,10 +58,12 @@ public class NoArgCtorDeser491Test extends XmlTestBase
          *
          * @see <a href="https://github.com/FasterXML/jackson-databind/issues/1820">jackson-databind issue 1820</a>
          */
-        @JsonCreator
+        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
         DefaultProblem(@JsonProperty("type") String type, @JsonProperty("status") Integer status) {
             this.type = type != null ? type : Problem.DEFAULT_TYPE;
             this.status = status != null ? status : Problem.DEFAULT_STATUS;
+
+        if (true) throw new Error();
         }
 
         // Adding this would work around the issue

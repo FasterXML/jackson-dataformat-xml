@@ -23,6 +23,7 @@ import tools.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
 import tools.jackson.dataformat.xml.util.StaxUtil;
 
 import tools.jackson.dataformat.xml.PackageVersion;
+import tools.jackson.dataformat.xml.XmlNameProcessor;
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as
@@ -253,14 +254,15 @@ public class FromXmlParser
 
     public FromXmlParser(ObjectReadContext readCtxt, IOContext ctxt,
             int parserFeatures, int xmlFeatures,
-            XMLStreamReader xmlReader)
+            XMLStreamReader xmlReader,
+            XmlNameProcessor nameProcessor)
     {
         super(readCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _streamReadContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
-                    _formatFeatures);
+                    _formatFeatures, nameProcessor);
 
         final int firstToken;
         try {
