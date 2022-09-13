@@ -17,16 +17,11 @@ import tools.jackson.dataformat.xml.XmlTestBase;
  * token (for consistency with how XML is mapper to tokens); this leads to deserialization
  * attempting to use "empty Object" construction which expects availability of the
  * default constructor.
- * To resolve the issue there are at least two possible ways:
- *<ul>
- * <li>Try to make root element appears as START-OBJECT/END-OBJECT sequence instead of VALUE_STRING
- *  </li>
- * <li>Change {@code StdDeserializer} (from jackson-databind) to allow use of "properties-based"
- *   Creator as well -- passing equivalent of all-absent values. This could either be for all
- *   content, or just for specific formats (using a {@code StreamReadFeature} to detect).
- *  </li>
- *</ul>
- * Either approach could work, although former could cause other kinds of regression.
+ *<p>
+ * Jackson 2.14 solved this issue by reverting earlier changes so that empty element
+ * is exposed as simple START_OBJECT/END_OBJECT sequence (that is, empty Object).
+ * Use cases where (non-empty) element needs to map to Scalar types is now handled
+ * with mechanism introduced in 2.13.
  */
 public class NoArgCtorDeser491Test extends XmlTestBase
 {
@@ -102,10 +97,14 @@ public class NoArgCtorDeser491Test extends XmlTestBase
     public void test_empty_Problem_XML_deserialization() throws Exception
     {
         Problem problem = XML_MAPPER.readValue(
-                // This WOULD work:
-//                "<problem><status>500</status></problem>",
-                // but not missing
                 "<problem />",
+                Problem.class);
+        assertEquals(Problem.DEFAULT_TYPE, problem.getType());
+        assertEquals(Problem.DEFAULT_STATUS, problem.getStatus());
+
+        // Also ensure variations of empty do not vary
+        problem = XML_MAPPER.readValue(
+                "<problem>\n</problem>",
                 Problem.class);
         assertEquals(Problem.DEFAULT_TYPE, problem.getType());
         assertEquals(Problem.DEFAULT_STATUS, problem.getStatus());
