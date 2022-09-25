@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.14.0 (not yet released)
+2.14.0-rc1 (25-Sep-2022)
 
 #491: `XmlMapper` 2.12 regression: no default no-arg ctor found
  (reported by Volkan Y)
