@@ -92,11 +92,11 @@ public class UntypedObjectDeserTest extends XmlTestBase
     {
         final String XML =
                 "<person>\n" +
-                        "    <name>a</name>\n" +
-                        "    <name>b</name>\n" +
-                        "    <surname>c</surname>\n" +
-                        "    <surname>d</surname>\n" +
-                        "</person>";
+                "    <name>a</name>\n" +
+                "    <name>b</name>\n" +
+                "    <surname>c</surname>\n" +
+                "    <surname>d</surname>\n" +
+                "</person>";
         @SuppressWarnings("unchecked")
         Map<String, List<String>> person = (Map<String, List<String>>) XML_MAPPER.readValue(XML, Object.class);
         List<String> names = person.get("name");

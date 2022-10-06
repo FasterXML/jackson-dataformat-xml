@@ -1,9 +1,10 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.deser;
 
 import java.util.Map;
 
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
+
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 

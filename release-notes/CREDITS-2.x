@@ -200,3 +200,9 @@ Daniel Mensinger (mensinda@github)
 * Contributed #531: Add mechanism for processing invalid XML names (transforming to
   valid ones)
  (2.14.0)
+
+Eric Law (ericcwlaw@github)
+
+* Reported #498: `XmlMapper` fails to parse XML array when the array only has one level
+ (2.14.0)
+
