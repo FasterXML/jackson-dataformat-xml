@@ -25,9 +25,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        java_version: ['8', '11' ]
         # 05-Oct-2022, tatu: Alas, ONE test fails on JDK 17; no way to yet skip
 	#   tests on specific JDKs so comment out for now
-        java_version: ['8', '11' ]
         # java_version: ['8', '11', '17']
         os: ['ubuntu-20.04']
     env:
