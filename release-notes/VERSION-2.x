@@ -8,6 +8,8 @@ Project: jackson-dataformat-xml
 
 #491: `XmlMapper` 2.12 regression: no default no-arg ctor found
  (reported by Volkan Y)
+#498: `XmlMapper` fails to parse XML array when the array only has one level
+ (reported by Eric L)
 #531: Add mechanism for processing invalid XML names (transforming to valid ones)
  (contributed by Daniel M)
 #538: Required attribute of `@JsonProperty` is ignored when deserializing from XML
