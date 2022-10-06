@@ -33,14 +33,14 @@ public class ListAsObjectTest extends XmlTestBase
     
         @JacksonXmlElementWrapper(localName = "value", useWrapping = false)
         @JacksonXmlProperty(localName = "value")
-         List<Value> values = new ArrayList<Value>();
-    
+        List<Value> values = new ArrayList<Value>();
+
         String getType() { return type; }
-    
+
         void setType(final String type) { this.type = type; }
-    
+
         List<Value> getValues() { return values; }
-    
+
         void setValues(final List<Value> values) { this.values = values; }
     }
 
