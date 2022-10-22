@@ -343,7 +343,7 @@ No changes since 2.7.8
 
 #210: In `ToXmlGenerator` `WRITE_BIGDECIMAL_AS_PLAIN` is used the wrong way round
  (reported by xmluzr@github)
-#211: Disable `SUPPORT_DTD` for `XMLInputFactory` unless explicitly overridden
+#211: Disable `SUPPORT_DTD` for `XMLInputFactory` unless explicitly overridden [CVE-2016-7051]
 
 2.7.7 (27-Aug-2016)
 
