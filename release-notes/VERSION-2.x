@@ -360,7 +360,7 @@ No changes since 2.7.4
 #178: Problem with polymorphic serialization, inclusion type of
   `As.WRAPPER_OBJECT`, extra tag
 #190: Ensure that defaults for `XMLInputFactory` have expansion of external
-  parsed general entities disabled
+  parsed general entities disabled [CVE-2016-3720]
 #191: Strange behaviour of an empty item (but with whitespace between
   start/end tags) in List
  (reported by Hronom@github)
