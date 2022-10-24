@@ -19,6 +19,10 @@ Project: jackson-dataformat-xml
  (reported by James D)
  (fix contributed by Jonas K)
 
+2.13.5 (not yet released)
+
+* Upgrade Woodstox to 6.4.0 for a fix to one CVE
+
 2.13.4 (03-Sep-2022)
 
 #536: Upgrade Woodstox to 6.3.1 to get OSGi metadata
