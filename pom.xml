@@ -84,10 +84,11 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       -->
     <!-- 16-Jul-2016, tatu: For 2.10, need Woodstox 6.x to get module info -->
     <!-- 28-Jun-2022, tatu: For 2.13.4+, 6.3 to get OSGi metadata -->
+    <!-- 24-Oct-2022, tatu: For 2.13.5+, 6.4 for bug fixes (including 1 CVE) -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.3.1</version>
+      <version>6.4.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
