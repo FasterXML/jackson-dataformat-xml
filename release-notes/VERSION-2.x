@@ -19,6 +19,10 @@ Project: jackson-dataformat-xml
  (reported by James D)
  (fix contributed by Jonas K)
 
+2.13.5 (not yet released)
+
+* Upgrade Woodstox to 6.4.0 for a fix to one CVE
+
 2.13.4 (03-Sep-2022)
 
 #536: Upgrade Woodstox to 6.3.1 to get OSGi metadata
@@ -343,7 +347,7 @@ No changes since 2.7.8
 
 #210: In `ToXmlGenerator` `WRITE_BIGDECIMAL_AS_PLAIN` is used the wrong way round
  (reported by xmluzr@github)
-#211: Disable `SUPPORT_DTD` for `XMLInputFactory` unless explicitly overridden
+#211: Disable `SUPPORT_DTD` for `XMLInputFactory` unless explicitly overridden [CVE-2016-7051]
 
 2.7.7 (27-Aug-2016)
 
@@ -360,7 +364,7 @@ No changes since 2.7.4
 #178: Problem with polymorphic serialization, inclusion type of
   `As.WRAPPER_OBJECT`, extra tag
 #190: Ensure that defaults for `XMLInputFactory` have expansion of external
-  parsed general entities disabled
+  parsed general entities disabled [CVE-2016-3720]
 #191: Strange behaviour of an empty item (but with whitespace between
   start/end tags) in List
  (reported by Hronom@github)
