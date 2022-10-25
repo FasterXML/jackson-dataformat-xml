@@ -104,8 +104,6 @@ public class StaxUtil
      *
      * @return Stax2 Base64 variant that most closely resembles Jackson canonical Base64 variant
      *     passed in as argument
-     *
-     * @since 2.12
      */
     public static org.codehaus.stax2.typed.Base64Variant toStax2Base64Variant(Base64Variant j64b) {
         return Base64Mapper.instance.map(j64b);

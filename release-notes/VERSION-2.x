@@ -18,6 +18,9 @@ Project: jackson-dataformat-xml
 #545: `@JacksonXmlText` does not work when paired with `@JsonRawValue`
  (reported by James D)
  (fix contributed by Jonas K)
+#550: Use of `ClassLoader`-taking `newFactory()` variant breaks applications
+  using default JDK XML implementation
+ (reported by David-F E)
 
 2.13.5 (not yet released)
 

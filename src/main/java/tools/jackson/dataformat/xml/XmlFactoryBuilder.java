@@ -1,5 +1,6 @@
 package tools.jackson.dataformat.xml;
 
+import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
@@ -105,7 +106,13 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     protected static XMLInputFactory defaultXmlInputFactory(ClassLoader cl) {
         // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
-        XMLInputFactory xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
+        XMLInputFactory xmlIn;
+        try {
+            xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
+        } catch (FactoryConfigurationError e) {
+            // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
+            xmlIn = XMLInputFactory.newFactory();
+        }
         // as per [dataformat-xml#190], disable external entity expansion by default
         xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
@@ -126,7 +133,13 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     protected static XMLOutputFactory defaultXmlOutputFactory(ClassLoader cl) {
         // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
-        XMLOutputFactory xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(), cl);
+        XMLOutputFactory xmlOut;
+        try {
+            xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(), cl);
+        } catch (FactoryConfigurationError e) {
+            // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
+            xmlOut = XMLOutputFactory.newFactory();
+        }
         // [dataformat-xml#326]: Better ensure namespaces get built properly:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         return xmlOut;
