@@ -120,18 +120,16 @@ public class XmlFactory extends JsonFactory
         _xmlGeneratorFeatures = xgFeatures;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
-            // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
-            xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(),
-                    getClass().getClassLoader());
+            xmlIn = StaxUtil.defaultInputFactory(getClass().getClassLoader());
             // as per [dataformat-xml#190], disable external entity expansion by default
             xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
             // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
             xmlIn.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
         }
         if (xmlOut == null) {
-            // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
-            xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(),
-                    getClass().getClassLoader());
+            xmlOut = StaxUtil.defaultOutputFactory(getClass().getClassLoader());
+            // [dataformat-xml#326]: Better ensure namespaces get built properly:
+            xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         }
         _initFactories(xmlIn, xmlOut);
         _xmlInputFactory = xmlIn;

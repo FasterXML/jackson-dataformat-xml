@@ -206,3 +206,10 @@ Eric Law (ericcwlaw@github)
 * Reported #498: `XmlMapper` fails to parse XML array when the array only has one level
  (2.14.0)
 
+David F. Elliott (dfelliott@github)
+
+* Reported #550: Use of `ClassLoader`-taking `newFactory()` variant breaks applications
+  using default JDK XML implementation
+ (2.14.0)
+
+

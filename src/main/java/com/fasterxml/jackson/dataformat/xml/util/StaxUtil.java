@@ -135,6 +135,32 @@ public class StaxUtil
         return Base64Mapper.instance.map(j64b);
     }
 
+    /**
+     * @since 2.14
+     */
+    public static XMLInputFactory defaultInputFactory(ClassLoader cl) {
+        // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
+        try {
+            return XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
+        } catch (FactoryConfigurationError e) {
+            // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
+            return XMLInputFactory.newFactory();
+        }
+    }
+
+    /**
+     * @since 2.14
+     */
+    public static XMLOutputFactory defaultOutputFactory(ClassLoader cl) {
+        // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
+        try {
+            return XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(), cl);
+        } catch (FactoryConfigurationError e) {
+            // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
+            return XMLOutputFactory.newFactory();
+        }
+    }
+
     private static class Base64Mapper {
         public final static Base64Mapper instance = new Base64Mapper();
 

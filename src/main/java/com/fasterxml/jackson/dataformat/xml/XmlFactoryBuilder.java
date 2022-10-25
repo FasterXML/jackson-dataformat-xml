@@ -6,6 +6,7 @@ import javax.xml.stream.XMLOutputFactory;
 import com.fasterxml.jackson.core.TSFBuilder;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
  * {@link com.fasterxml.jackson.core.TSFBuilder} implementation
@@ -109,10 +110,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     }
 
     protected XMLInputFactory defaultInputFactory() {
-        // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
-        XMLInputFactory xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(),
-                staxClassLoader());
-
+        XMLInputFactory xmlIn = StaxUtil.defaultInputFactory(_classLoaderForStax);
         // as per [dataformat-xml#190], disable external entity expansion by default
         xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
@@ -128,9 +126,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     }
 
     protected XMLOutputFactory defaultOutputFactory() {
-        // 05-Jul-2021, tatu: as per [dataformat-xml#483], consider ClassLoader
-        XMLOutputFactory xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(),
-                staxClassLoader());
+        XMLOutputFactory xmlOut = StaxUtil.defaultOutputFactory(_classLoaderForStax);
         // [dataformat-xml#326]: Better ensure namespaces get built properly:
         xmlOut.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
         return xmlOut;
