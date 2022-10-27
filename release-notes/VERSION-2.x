@@ -21,10 +21,11 @@ Project: jackson-dataformat-xml
 #550: Use of `ClassLoader`-taking `newFactory()` variant breaks applications
   using default JDK XML implementation
  (reported by David-F E)
+* Upgrade Woodstox to 6.4.0 for a fix to [CVE-2022-40152]
 
 2.13.5 (not yet released)
 
-* Upgrade Woodstox to 6.4.0 for a fix to one CVE
+* Upgrade Woodstox to 6.4.0 for a fix to [CVE-2022-40152]
 
 2.13.4 (03-Sep-2022)
 
