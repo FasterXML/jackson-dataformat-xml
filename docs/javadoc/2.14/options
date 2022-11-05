@@ -1,0 +1,30 @@
+-classpath
+'/Users/tatu/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.14.0/jackson-core-2.14.0.jar:/Users/tatu/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.14.0/jackson-annotations-2.14.0.jar:/Users/tatu/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.14.0/jackson-databind-2.14.0.jar:/Users/tatu/.m2/repository/org/codehaus/woodstox/stax2-api/4.2.1/stax2-api-4.2.1.jar:/Users/tatu/.m2/repository/com/fasterxml/woodstox/woodstox-core/6.4.0/woodstox-core-6.4.0.jar'
+-encoding
+'UTF-8'
+-protected
+-quiet
+-source
+'1.8'
+-sourcepath
+'/Users/tatu/jackson/jackson-dataformat-xml/src/main/java:/Users/tatu/jackson/jackson-dataformat-xml/target/generated-sources:/Users/tatu/jackson/jackson-dataformat-xml/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2022 <a href="http://fasterxml.com/">FasterXML</a>. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/tatu/jackson/jackson-dataformat-xml/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Jackson-dataformat-XML 2.14.0 API'
+-link
+'https://docs.oracle.com/javase/8/docs/api'
+-linkoffline
+'https://docs.oracle.com/javase/8/docs/api' '/Users/tatu/jackson/jackson-dataformat-xml/target/javadoc-bundle-options'
+-notimestamp
+-use
+-version
+-windowtitle
+'Jackson-dataformat-XML 2.14.0 API'
