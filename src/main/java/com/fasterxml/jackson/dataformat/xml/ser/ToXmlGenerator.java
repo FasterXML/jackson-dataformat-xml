@@ -612,13 +612,6 @@ public class ToXmlGenerator
             // note: since attributes don't nest, can only have one attribute active, so:
             _nextIsAttribute = false;
             _xmlWriter.writeEndElement();
-            // [databind-xml#172]: possibly also need indentation
-            if (_elementNameStack.isEmpty() && (_xmlPrettyPrinter != null)) {
-                // ... but only if it is likely to succeed:
-                if (!_stax2Emulation) {
-                    _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
-                }
-            }
         } catch (XMLStreamException e) {
             StaxUtil.throwAsGenerationException(e, this);
         }
