@@ -9,10 +9,10 @@ public class TestSerializationOrdering extends XmlTestBase
 {
     @JsonPropertyOrder({"a", "c" })
     static class Bean91 {
-        public String a;
+        public String c;
         @JacksonXmlProperty(isAttribute = true)
         public String b;
-        public String c;
+        public String a;
 
         public Bean91(String a, String b, String c) {
             this.a = a;
@@ -21,10 +21,11 @@ public class TestSerializationOrdering extends XmlTestBase
         }
     }
 
+    private final XmlMapper MAPPER = newMapper();
+
     public void testOrdering() throws Exception
     {
-        XmlMapper xmlMapper = new XmlMapper();
-        String xml = xmlMapper.writeValueAsString(new Bean91("1", "2", "3"));
+        String xml = MAPPER.writeValueAsString(new Bean91("1", "2", "3"));
         assertEquals("<Bean91 b=\"2\"><a>1</a><c>3</c></Bean91>", xml);
     }
 }

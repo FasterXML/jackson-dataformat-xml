@@ -1,6 +1,5 @@
 package tools.jackson.dataformat.xml.ser;
 
-import java.io.IOException;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.*;
@@ -51,21 +50,6 @@ public class TestSerializationAttr extends XmlTestBase
         public Map<String, String> getProperties() {
             return _properties;
         }
-    }    
-    
-    /*
-    /**********************************************************
-    /* Set up
-    /**********************************************************
-     */
-
-    protected XmlMapper _xmlMapper;
-
-    // let's actually reuse XmlMapper to make things bit faster
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        _xmlMapper = new XmlMapper();
     }
 
     /*
@@ -74,17 +58,19 @@ public class TestSerializationAttr extends XmlTestBase
     /**********************************************************
      */
 
-    public void testSimpleNsAttr() throws IOException
+    private final XmlMapper XML_MAPPER = newMapper();
+
+    public void testSimpleNsAttr() throws Exception
     {
-        String xml = _xmlMapper.writeValueAsString(new NsAttrBean());
+        String xml = XML_MAPPER.writeValueAsString(new NsAttrBean());
         xml = removeSjsxpNamespace(xml);
         // here we assume woodstox automatic prefixes, not very robust but:
         assertEquals("<NsAttrBean xmlns:wstxns1=\"http://foo\" wstxns1:attr=\"3\"/>", xml);
     }
 
-    public void testIssue19() throws IOException
+    public void testIssue19() throws Exception
     {
-        String xml = _xmlMapper.writeValueAsString(new Issue19Bean());
+        String xml = XML_MAPPER.writeValueAsString(new Issue19Bean());
         xml = removeSjsxpNamespace(xml);
         xml = xml.replaceAll("\"", "'");
         // as with above, assumes exact NS allocation strategy, not optimal:
@@ -93,22 +79,22 @@ public class TestSerializationAttr extends XmlTestBase
         	xml);
     }
 
-    public void testIssue6() throws IOException
+    public void testIssue6() throws Exception
     {
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>",
-                _xmlMapper.writeValueAsString(new Jurisdiction()));
+                XML_MAPPER.writeValueAsString(new Jurisdiction()));
     }
 
-    public void testIssue117AnySetterAttrs() throws IOException
+    public void testIssue117AnySetterAttrs() throws Exception
     {
         Map<String, String> values = new HashMap<String, String>();
         values.put("prop1", "val1");
 
-        String xml = _xmlMapper.writeValueAsString(new DynaBean(values));
+        String xml = XML_MAPPER.writeValueAsString(new DynaBean(values));
         assertEquals("<dynaBean class=\"TestSerializationAttr$DynaBean\"><prop1>val1</prop1></dynaBean>",
                 removeSjsxpNamespace(xml));
     }
-    
+
     /*
     /**********************************************************
     /* Helper methods
