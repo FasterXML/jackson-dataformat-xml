@@ -6,7 +6,8 @@ Project: jackson-dataformat-xml
 
 2.15.0 (not yet released)
 
--
+#547: Parsing empty tags without default no-arguments constructor fails in 2.14
+ (reported by @henrik242)
 
 2.14.0 (05-Nov-2022)
 
