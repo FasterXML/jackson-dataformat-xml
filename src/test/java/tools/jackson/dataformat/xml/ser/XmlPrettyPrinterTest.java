@@ -12,7 +12,7 @@ import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestIndentation extends XmlTestBase
+public class XmlPrettyPrinterTest extends XmlTestBase
 {
     static class StringWrapperBean {
         public StringWrapper string;
