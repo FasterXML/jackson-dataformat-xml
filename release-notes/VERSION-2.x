@@ -9,6 +9,10 @@ Project: jackson-dataformat-xml
 #547: Parsing empty tags without default no-arguments constructor fails in 2.14
  (reported by @henrik242)
 
+2.14.1 (21-Nov-2022)
+
+No changes since 2.14.0
+
 2.14.0 (05-Nov-2022)
 
 #491: `XmlMapper` 2.12 regression: no default no-arg ctor found
