@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.lists;
+package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,15 +13,17 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+// Test originally from [dataformat-xml#76].
+//
+// Under "failing/" for Jackson 2.14 since it fails on JDK 17+
 @SuppressWarnings("serial")
-public class ListAsObjectTest extends XmlTestBase
+public class ListAsObject76Test extends XmlTestBase
 {
     static final class Value {
         @XmlElement(name = "v")
         public String v;
-    
+
         public String getV() { return v; }
-    
         public void setV(final String v) { this.v = v; }
     }
 
