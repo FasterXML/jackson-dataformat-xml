@@ -13,15 +13,17 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+// Test originally from [dataformat-xml#76].
+//
+// Should pass on JDK17+ too on Jackson 2.15+
 @SuppressWarnings("serial")
-public class ListAsObjectTest extends XmlTestBase
+public class ListAsObject76Test extends XmlTestBase
 {
     static final class Value {
         @XmlElement(name = "v")
         public String v;
-    
+
         public String getV() { return v; }
-    
         public void setV(final String v) { this.v = v; }
     }
 
