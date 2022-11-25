@@ -9,7 +9,7 @@ import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 /**
- * {@link tools.jackson.core.TokenStreamFactory.TSFBuilder}
+ * {@link tools.jackson.core.TSFBuilder}
  * implementation for constructing {@link XmlFactory} instances.
  */
 public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactoryBuilder>
