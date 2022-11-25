@@ -13,15 +13,15 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+// Test originally from [dataformat-xml#76]
 @SuppressWarnings("serial")
 public class ListAsObjectTest extends XmlTestBase
 {
     static final class Value {
         @XmlElement(name = "v")
         public String v;
-    
+
         public String getV() { return v; }
-    
         public void setV(final String v) { this.v = v; }
     }
 
