@@ -101,7 +101,7 @@ public class XmlFactory
             XmlNameProcessor nameProcessor,
             String nameForTextElem)
     {
-        super(xpFeatures, xgFeatures);
+        super(StreamReadConstraints.defaults(), xpFeatures, xgFeatures);
         _nameProcessor = nameProcessor;
         _cfgNameForTextElement = nameForTextElem;
         if (xmlIn == null) {
