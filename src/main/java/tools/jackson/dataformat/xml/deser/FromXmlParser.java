@@ -252,16 +252,16 @@ public class FromXmlParser
     /**********************************************************************
      */
 
-    public FromXmlParser(ObjectReadContext readCtxt, IOContext ctxt,
+    public FromXmlParser(ObjectReadContext readCtxt, IOContext ioCtxt,
             int parserFeatures, int xmlFeatures,
             XMLStreamReader xmlReader,
             XmlNameProcessor nameProcessor)
     {
-        super(readCtxt, parserFeatures);
+        super(readCtxt, ioCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
-        _ioContext = ctxt;
+        _ioContext = ioCtxt;
         _streamReadContext = XmlReadContext.createRootContext(-1, -1);
-        _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
+        _xmlTokens = new XmlTokenStream(xmlReader, ioCtxt.contentReference(),
                     _formatFeatures, nameProcessor);
 
         final int firstToken;
