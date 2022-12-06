@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.deser.creator;
+package tools.jackson.dataformat.xml.failing;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -79,9 +79,6 @@ public class NoArgCtorDeser491Test extends XmlTestBase
 
     private static final XmlMapper XML_MAPPER = newMapper();
 
-    /**
-     * Passes on 2.11.4 and 2.12.{0..4}.
-     */
     public void test_empty_Problem_JSON_deserialization() throws Exception
     {
         Problem problem = JSON_MAPPER.readValue("{}", Problem.class);
@@ -90,7 +87,7 @@ public class NoArgCtorDeser491Test extends XmlTestBase
     }
 
     /**
-     * Passes on 2.11.4, but fails on 2.12.{0..4}.
+     * Passes on 2.14+ but somehow fails on 3.0
      */
     public void test_empty_Problem_XML_deserialization() throws Exception
     {
