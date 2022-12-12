@@ -8,7 +8,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
+import com.fasterxml.jackson.core.StreamReadConstraints;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -118,5 +121,39 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         final String DOC = "<Nested><value>125.123</value></Nested>";
         NestedFloatHolder2784 result = MAPPER.readValue(DOC, NestedFloatHolder2784.class);
         assertEquals(Float.parseFloat("125.123"), result.holder.value);
+    }
+
+    public void testVeryBigDecimalUnwrapped() throws Exception
+    {
+        final int len = 1200;
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append("1");
+        }
+        final String value = sb.toString();
+        final String DOC = "<Nested><value>" + value + "</value></Nested>";
+        try {
+            MAPPER.readValue(DOC, NestedBigDecimalHolder2784.class);
+            fail("expected JsonMappingException");
+        } catch (JsonMappingException jme) {
+            assertTrue("unexpected exception message: " + jme.getMessage(),
+                    jme.getMessage().startsWith("Number length (1200) exceeds the maximum length (1000)"));
+        }
+    }
+
+    public void testVeryBigDecimalUnwrappedWithUnlimitedNumLength() throws Exception
+    {
+        final int len = 1200;
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append("1");
+        }
+        final String value = sb.toString();
+        final String DOC = "<Nested><value>" + value + "</value></Nested>";
+        XmlFactory f = streamFactoryBuilder()
+                .streamReadConstraints(StreamReadConstraints.builder().maxNumberLength(Integer.MAX_VALUE).build())
+                .build();
+        NestedBigDecimalHolder2784 result = new XmlMapper(f).readValue(DOC, NestedBigDecimalHolder2784.class);
+        assertEquals(new BigDecimal(value), result.holder.value);
     }
 }
