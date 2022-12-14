@@ -162,14 +162,19 @@ public class FromXmlParser
     /**********************************************************
      */
 
+    protected final IOContext _ioContext;
+
+    /**
+     * @since 2.15
+     */
+    protected final StreamReadConstraints _streamReadConstraints;
+
     /**
      * Flag that indicates whether parser is closed or not. Gets
      * set when parser is either closed by explicit call
      * ({@link #close}) or when end-of-input is reached.
      */
     protected boolean _closed;
-
-    protected final IOContext _ioContext;
 
     /*
     /**********************************************************
@@ -259,6 +264,7 @@ public class FromXmlParser
         super(genericParserFeatures);
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
+        _streamReadConstraints = ctxt.streamReadConstraints();
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
@@ -382,7 +388,7 @@ public class FromXmlParser
 
     @Override
     public StreamReadConstraints streamReadConstraints() {
-        return _ioContext.streamReadConstraints();
+        return _streamReadConstraints;
     }
 
     /*
