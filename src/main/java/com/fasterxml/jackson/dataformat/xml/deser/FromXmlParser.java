@@ -380,7 +380,12 @@ public class FromXmlParser
         return this;
     }
 
-    /*                                                                                       
+    @Override
+    public StreamReadConstraints streamReadConstraints() {
+        return _ioContext.streamReadConstraints();
+    }
+
+    /*
     /**********************************************************                              
     /* FormatFeature support                                                                             
     /**********************************************************                              
