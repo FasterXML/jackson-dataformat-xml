@@ -650,7 +650,7 @@ public class FromXmlParser
                     }
                 }
                 // finally, need BigInteger
-                streamReadConstraints().validateFPLength(text.length());
+                streamReadConstraints().validateIntegerLength(text.length());
                 _numberBigInt = NumberInput.parseBigInteger(
                         text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
                 _numTypesValid = NR_BIGINT;
