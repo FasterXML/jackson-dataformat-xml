@@ -650,7 +650,9 @@ public class FromXmlParser
                     }
                 }
                 // finally, need BigInteger
-                _numberBigInt = new BigInteger(text);
+                streamReadConstraints().validateIntegerLength(text.length());
+                _numberBigInt = NumberInput.parseBigInteger(
+                        text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
                 _numTypesValid = NR_BIGINT;
                 _currToken = JsonToken.VALUE_NUMBER_INT;
                 return true;
