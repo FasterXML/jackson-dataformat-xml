@@ -4,10 +4,6 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
-import org.codehaus.stax2.XMLInputFactory2;
-import org.codehaus.stax2.io.Stax2ByteArraySource;
-import org.codehaus.stax2.io.Stax2CharArraySource;
-
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
@@ -17,6 +13,7 @@ import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
+import com.fasterxml.jackson.dataformat.xml.util.Stax2Util;
 
 /**
 * Factory used for constructing {@link FromXmlParser} and {@link ToXmlGenerator}
@@ -48,6 +45,19 @@ public class XmlFactory extends JsonFactory
      * by default.
      */
     final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = ToXmlGenerator.Feature.collectDefaults();
+
+    /**
+     * Whether to try to use STAX2 enhancements
+     */
+    private static boolean STAX2_ENABLED = true;
+
+    static {
+        try {
+            Class.forName("org.codehaus.stax2.XMLInputFactory2");
+        } catch (ClassNotFoundException cnfe) {
+            STAX2_ENABLED = false;
+        }
+    }
 
     /*
     /**********************************************************
@@ -617,8 +627,8 @@ public class XmlFactory extends JsonFactory
         try {
             // 03-Jul-2021, tatu: [dataformat-xml#482] non-Stax2 impls unlikely to
             //    support so avoid:
-            if (_xmlInputFactory instanceof XMLInputFactory2) {
-                sr = _xmlInputFactory.createXMLStreamReader(new Stax2CharArraySource(data, offset, len));
+            if (STAX2_ENABLED) {
+                sr = Stax2Util.createXMLStreamReader(_xmlInputFactory, data, offset, len);
             } else {
                 sr = _xmlInputFactory.createXMLStreamReader(new CharArrayReader(data, offset, len));
             }
@@ -641,8 +651,8 @@ public class XmlFactory extends JsonFactory
         try {
             // 03-Jul-2021, tatu: [dataformat-xml#482] non-Stax2 impls unlikely to
             //    support so avoid:
-            if (_xmlInputFactory instanceof XMLInputFactory2) {
-                sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
+            if (STAX2_ENABLED) {
+                sr = Stax2Util.createXMLStreamReader(_xmlInputFactory, data, offset, len);
             } else {
                 sr = _xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(data, offset, len));
             }
