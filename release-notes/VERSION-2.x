@@ -11,7 +11,7 @@ Project: jackson-dataformat-xml
 
 2.14.2 (not yet released)
 
-* Upgrade Woodstox to 6.4.0 for a fix to OSGi metadata
+* Upgrade Woodstox to 6.5.0 for a fix to OSGi metadata
 
 2.14.1 (21-Nov-2022)
 
