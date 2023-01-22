@@ -6,6 +6,9 @@ Project: jackson-dataformat-xml
 
 2.15.0 (not yet released)
 
+#542: `XmlMapper` does not find no-argument record constructor for
+  deserialization of empty XML
+ (reported by @MichalStehlikCz)
 #547: Parsing empty tags without default no-arguments constructor fails in 2.14
  (reported by @henrik242)
 

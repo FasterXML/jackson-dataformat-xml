@@ -30,14 +30,13 @@ public class NestedSingleArgCtors547Test extends XmlTestBase
     static class Inner547Props {
         protected String value;
 
-        // 20-Nov-2022, tatu: [dataformat-xml#547] Should not need "default"
-        //   Creator
-        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+        // 20-Nov-2022, tatu: [dataformat-xml#547] Shouldn't need annotation
+//        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
         public Inner547Props(@JsonProperty("value") String v) {
             value = v;
         }
     }
-    
+
     // [dataformat-xml#547]
     public void testNested1ArgCtorsDelegating() throws Exception
     {
