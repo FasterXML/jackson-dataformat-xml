@@ -30,7 +30,7 @@ No changes since 2.14.0
  (reported by David-F E)
 * Upgrade Woodstox to 6.4.0 for a fix to [CVE-2022-40152]
 
-2.13.5 (not yet released)
+2.13.5 (23-Jan-2023)
 
 * Upgrade Woodstox to 6.4.0 for a fix to [CVE-2022-40152]
 
