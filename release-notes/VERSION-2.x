@@ -12,7 +12,7 @@ Project: jackson-dataformat-xml
 #547: Parsing empty tags without default no-arguments constructor fails in 2.14
  (reported by @henrik242)
 
-2.14.2 (not yet released)
+2.14.2 (28-Jan-2023)
 
 * Upgrade Woodstox to 6.5.0 for a fix to OSGi metadata
 
