@@ -149,7 +149,7 @@ public class DefaultXmlPrettyPrinter
      * Sets custom linefeed
      * @since 2.15
      */
-    public DefaultXmlPrettyPrinter withCustomlineFeed(String lineFeed) {
+    public DefaultXmlPrettyPrinter withCustomLineFeed(String lineFeed) {
         // 06-Feb-2023, joohyukkim: when JacksonException extends RuntimeExceptions, throw it?
         if (lineFeed != null) {
             _lineFeed = lineFeed;
