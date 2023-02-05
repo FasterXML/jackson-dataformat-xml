@@ -202,7 +202,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         xml = a2q(xml);
 
         // with indentation, should get linefeeds in prolog/epilog too
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\rLF\n\r"
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<Company>\n\rLF\n\r"
                 + "  <e>\n\rLF\n\r"
                 + "    <employee>\n\rLF\n\r"
@@ -210,7 +210,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 + "      <type>FULL_TIME</type>\n\rLF\n\r"
                 + "    </employee>\n\rLF\n\r"
                 + "  </e>\n\rLF\n\r"
-                + "</Company>\n\rLF\n\r",
+                + "</Company>\n",
             xml);
     }
 
