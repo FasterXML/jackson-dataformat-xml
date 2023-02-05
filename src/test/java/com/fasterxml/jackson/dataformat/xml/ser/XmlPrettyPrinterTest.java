@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 
 public class XmlPrettyPrinterTest extends XmlTestBase
 {
@@ -187,5 +188,77 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 +"  </e>\n"
                 +"</Company>\n",
                 xml);
+    }
+
+    public void testLineFeed_withCustomLineFeed() throws Exception {
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+
+        String xml = _xmlMapper.writer()
+            .with(new DefaultXmlPrettyPrinter().withCustomlineFeed("\n\rLF\n\r"))
+            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = a2q(xml);
+
+        // with indentation, should get linefeeds in prolog/epilog too
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\rLF\n\r"
+                + "<Company>\n\rLF\n\r"
+                + "  <e>\n\rLF\n\r"
+                + "    <employee>\n\rLF\n\r"
+                + "      <id>abc</id>\n\rLF\n\r"
+                + "      <type>FULL_TIME</type>\n\rLF\n\r"
+                + "    </employee>\n\rLF\n\r"
+                + "  </e>\n\rLF\n\r"
+                + "</Company>\n\rLF\n\r",
+            xml);
+    }
+
+    public void testLineFeed_systemDefault() throws Exception {
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+
+        String xml = _xmlMapper.writer()
+            .with(new DefaultXmlPrettyPrinter())
+            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = a2q(xml);
+
+        // with indentation, should get linefeeds in prolog/epilog too
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<Company>\n"
+                + "  <e>\n"
+                + "    <employee>\n"
+                + "      <id>abc</id>\n"
+                + "      <type>FULL_TIME</type>\n"
+                + "    </employee>\n"
+                + "  </e>\n"
+                + "</Company>\n",
+            xml);
+    }
+
+    public void testLineFeed_UseSystemDefaultLineSeperatorOnNullCustomLineFeed() throws Exception {
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+
+        String xml = _xmlMapper.writer()
+            .with(new DefaultXmlPrettyPrinter().withCustomlineFeed(null))
+            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = a2q(xml);
+
+        // with indentation, should get linefeeds in prolog/epilog too
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<Company>\n"
+                + "  <e>\n"
+                + "    <employee>\n"
+                + "      <id>abc</id>\n"
+                + "      <type>FULL_TIME</type>\n"
+                + "    </employee>\n"
+                + "  </e>\n"
+                + "</Company>\n",
+            xml);
     }
 }

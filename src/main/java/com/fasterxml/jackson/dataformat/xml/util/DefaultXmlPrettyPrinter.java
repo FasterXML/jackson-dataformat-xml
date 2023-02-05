@@ -77,6 +77,13 @@ public class DefaultXmlPrettyPrinter
      */
     protected boolean _spacesInObjectEntries = true;
 
+    /**
+     * By default, will try to set as System.getProperty("line.separator")
+     * can later set custom lineFeed with withCustomlineFeed method
+     * @since 2.15
+     */
+    protected static String _lineFeed;
+
     /*
     /**********************************************************
     /* State
@@ -125,6 +132,30 @@ public class DefaultXmlPrettyPrinter
     }
 
     public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
+
+    /**
+     * Initialize lineFeed with systemDefault.
+     * @since 2.15
+     */
+    static {
+        String lf = null;
+        try {
+            lf = System.getProperty("line.separator");
+        } catch (Throwable t) { } // access exception?
+        _lineFeed = lf;
+    }
+
+    /**
+     * Sets custom linefeed
+     * @since 2.15
+     */
+    public DefaultXmlPrettyPrinter withCustomlineFeed(String lineFeed) {
+        // 06-Feb-2023, joohyukkim: when JacksonException extends RuntimeExceptions, throw it?
+        if (lineFeed != null) {
+            _lineFeed = lineFeed;
+        }
+        return this;
+    }
 
     /*
     /**********************************************************
@@ -443,7 +474,7 @@ public class DefaultXmlPrettyPrinter
     public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException
     {
         // 06-Dec-2015, tatu: Alternatively could try calling `writeSpace()`...
-        sw.writeRaw(Lf2SpacesIndenter.SYSTEM_LINE_SEPARATOR);
+        sw.writeRaw(_lineFeed);
     }
 
     /*
@@ -506,15 +537,6 @@ public class DefaultXmlPrettyPrinter
     {
         private static final long serialVersionUID = 1L;
 
-        final static String SYSTEM_LINE_SEPARATOR;
-        static {
-            String lf = null;
-            try {
-                lf = System.getProperty("line.separator");
-            } catch (Throwable t) { } // access exception?
-            SYSTEM_LINE_SEPARATOR = (lf == null) ? "\n" : lf;
-        }
-
         final static int SPACE_COUNT = 64;
         final static char[] SPACES = new char[SPACE_COUNT];
         static {
@@ -529,7 +551,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
-            sw.writeRaw(SYSTEM_LINE_SEPARATOR);
+            sw.writeRaw(_lineFeed);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
             	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
@@ -541,7 +563,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(JsonGenerator jg, int level) throws IOException
         {
-            jg.writeRaw(SYSTEM_LINE_SEPARATOR);
+            jg.writeRaw(_lineFeed);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
                 jg.writeRaw(SPACES, 0, SPACE_COUNT); 

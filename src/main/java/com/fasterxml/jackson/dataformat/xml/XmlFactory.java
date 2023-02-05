@@ -197,7 +197,7 @@ public class XmlFactory extends JsonFactory
 
     @Override
     public Version version() {
-        return PackageVersion.VERSION;
+        return null;
     }
 
     /*
