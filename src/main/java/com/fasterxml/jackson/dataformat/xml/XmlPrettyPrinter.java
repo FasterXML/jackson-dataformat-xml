@@ -98,4 +98,6 @@ public interface XmlPrettyPrinter extends PrettyPrinter
 //    public void writeLeafXsiNilElement(XMLStreamWriter2 sw,
 //            String nsURI, String localName)
 //        throws XMLStreamException;
+
+    public String lineFeed();
 }

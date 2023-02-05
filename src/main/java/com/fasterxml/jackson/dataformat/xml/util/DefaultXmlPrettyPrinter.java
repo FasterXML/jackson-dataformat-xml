@@ -66,7 +66,7 @@ public class DefaultXmlPrettyPrinter
      * system-specific linefeeds, and 2 spaces per level (as opposed to,
      * say, single tabs)
      */
-    protected Indenter _objectIndenter = new Lf2SpacesIndenter();
+    protected Indenter _objectIndenter = new Lf2SpacesIndenter(this);
 
     // // // Config, other white space configuration
 
@@ -459,6 +459,11 @@ public class DefaultXmlPrettyPrinter
         _justHadStartElement = false;
     }
 
+    @Override
+    public String lineFeed() {
+        return _lineFeed;
+    }
+
     // @since 2.12
     public void writeLeafXsiNilElement(XMLStreamWriter2 sw,
             String nsURI, String localName)
@@ -545,7 +550,11 @@ public class DefaultXmlPrettyPrinter
             Arrays.fill(SPACES, ' ');
         }
 
-        public Lf2SpacesIndenter() { }
+        private final XmlPrettyPrinter xmlPrettyPrinter;
+
+        public Lf2SpacesIndenter(XmlPrettyPrinter xmlPrettyPrinter) {
+            this.xmlPrettyPrinter = xmlPrettyPrinter;
+        }
 
         @Override
         public boolean isInline() { return false; }
@@ -553,7 +562,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
-            sw.writeRaw(_lineFeed);
+            sw.writeRaw(xmlPrettyPrinter.lineFeed());
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
             	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
@@ -565,7 +574,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(JsonGenerator jg, int level) throws IOException
         {
-            jg.writeRaw(_lineFeed);
+            jg.writeRaw(xmlPrettyPrinter.lineFeed());
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
                 jg.writeRaw(SPACES, 0, SPACE_COUNT); 
