@@ -66,7 +66,7 @@ public class DefaultXmlPrettyPrinter
      * system-specific linefeeds, and 2 spaces per level (as opposed to,
      * say, single tabs)
      */
-    protected Indenter _objectIndenter = new Lf2SpacesIndenter(this);
+    protected Indenter _objectIndenter = new Lf2SpacesIndenter();
 
     // // // Config, other white space configuration
 
@@ -88,12 +88,7 @@ public class DefaultXmlPrettyPrinter
         try {
             lf = System.getProperty("line.separator");
         } catch (Throwable t) { } // access exception?
-
-        if (lf != null) {
-            DEFAULT_LINE_FEED = lf;
-        } else {
-            DEFAULT_LINE_FEED = "\n"; // incase system has changed property name? line.separator
-        }
+        DEFAULT_LINE_FEED = lf;
     }
     
     protected String _lineFeed = DEFAULT_LINE_FEED;
@@ -459,11 +454,6 @@ public class DefaultXmlPrettyPrinter
         _justHadStartElement = false;
     }
 
-    @Override
-    public String lineFeed() {
-        return _lineFeed;
-    }
-
     // @since 2.12
     public void writeLeafXsiNilElement(XMLStreamWriter2 sw,
             String nsURI, String localName)
@@ -495,7 +485,7 @@ public class DefaultXmlPrettyPrinter
     /**
      * Dummy implementation that adds no indentation whatsoever
      */
-    protected static class NopIndenter
+    protected class NopIndenter
         implements Indenter, java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
@@ -511,7 +501,7 @@ public class DefaultXmlPrettyPrinter
      * single space for indentation. It is used as the default
      * indenter for array values.
      */
-    protected static class FixedSpaceIndenter
+    protected class FixedSpaceIndenter
         implements Indenter, java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
@@ -539,21 +529,16 @@ public class DefaultXmlPrettyPrinter
      * Default linefeed-based indenter uses system-specific linefeeds and
      * 2 spaces for indentation per level.
      */
-    protected static class Lf2SpacesIndenter
+    protected class Lf2SpacesIndenter
         implements Indenter, java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
 
         final static int SPACE_COUNT = 64;
-        final static char[] SPACES = new char[SPACE_COUNT];
-        static {
+        final char[] SPACES = new char[SPACE_COUNT];
+
+        public Lf2SpacesIndenter() {
             Arrays.fill(SPACES, ' ');
-        }
-
-        private final DefaultXmlPrettyPrinter defaultXmlPrettyPrinter;
-
-        public Lf2SpacesIndenter(DefaultXmlPrettyPrinter defaultXmlPrettyPrinter) {
-            this.defaultXmlPrettyPrinter = defaultXmlPrettyPrinter;
         }
 
         @Override
@@ -562,7 +547,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
-            sw.writeRaw(defaultXmlPrettyPrinter.lineFeed());
+            sw.writeRaw(_lineFeed);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
             	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
@@ -574,7 +559,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(JsonGenerator jg, int level) throws IOException
         {
-            jg.writeRaw(defaultXmlPrettyPrinter.lineFeed());
+            jg.writeRaw(_lineFeed);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
                 jg.writeRaw(SPACES, 0, SPACE_COUNT); 
