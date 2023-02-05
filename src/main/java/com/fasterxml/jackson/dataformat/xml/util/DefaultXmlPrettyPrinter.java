@@ -78,8 +78,8 @@ public class DefaultXmlPrettyPrinter
     protected boolean _spacesInObjectEntries = true;
 
     /**
-     * By default, will try to set as System.getProperty("line.separator")
-     * Can later set custom lineFeed with withCustomlineFeed method
+     * By default, will try to set as System.getProperty("line.separator").
+     * Can later set custom lineFeed with withCustomlineFeed method.
      * @since 2.15
      */
     private final static String DEFAULT_LINE_FEED;
