@@ -79,10 +79,24 @@ public class DefaultXmlPrettyPrinter
 
     /**
      * By default, will try to set as System.getProperty("line.separator")
-     * can later set custom lineFeed with withCustomlineFeed method
+     * Can later set custom lineFeed with withCustomlineFeed method
      * @since 2.15
      */
-    protected static String _lineFeed;
+    private final static String DEFAULT_LINE_FEED;
+    static {
+        String lf = null;
+        try {
+            lf = System.getProperty("line.separator");
+        } catch (Throwable t) { } // access exception?
+
+        if (lf != null) {
+            DEFAULT_LINE_FEED = lf;
+        } else {
+            DEFAULT_LINE_FEED = "\n"; // incase system has changed property name? line.separator
+        }
+    }
+    
+    protected static String _lineFeed = DEFAULT_LINE_FEED;
 
     /*
     /**********************************************************
@@ -132,18 +146,6 @@ public class DefaultXmlPrettyPrinter
     }
 
     public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
-
-    /**
-     * Initialize lineFeed with systemDefault.
-     * @since 2.15
-     */
-    static {
-        String lf = null;
-        try {
-            lf = System.getProperty("line.separator");
-        } catch (Throwable t) { } // access exception?
-        _lineFeed = lf;
-    }
 
     /**
      * Sets custom linefeed
