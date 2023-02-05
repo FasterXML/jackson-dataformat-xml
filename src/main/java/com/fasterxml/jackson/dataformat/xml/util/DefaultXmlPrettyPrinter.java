@@ -550,10 +550,10 @@ public class DefaultXmlPrettyPrinter
             Arrays.fill(SPACES, ' ');
         }
 
-        private final XmlPrettyPrinter xmlPrettyPrinter;
+        private final DefaultXmlPrettyPrinter defaultXmlPrettyPrinter;
 
-        public Lf2SpacesIndenter(XmlPrettyPrinter xmlPrettyPrinter) {
-            this.xmlPrettyPrinter = xmlPrettyPrinter;
+        public Lf2SpacesIndenter(DefaultXmlPrettyPrinter defaultXmlPrettyPrinter) {
+            this.defaultXmlPrettyPrinter = defaultXmlPrettyPrinter;
         }
 
         @Override
@@ -562,7 +562,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
-            sw.writeRaw(xmlPrettyPrinter.lineFeed());
+            sw.writeRaw(defaultXmlPrettyPrinter.lineFeed());
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
             	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
@@ -574,7 +574,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(JsonGenerator jg, int level) throws IOException
         {
-            jg.writeRaw(xmlPrettyPrinter.lineFeed());
+            jg.writeRaw(defaultXmlPrettyPrinter.lineFeed());
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
                 jg.writeRaw(SPACES, 0, SPACE_COUNT); 
