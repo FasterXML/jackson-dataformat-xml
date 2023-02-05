@@ -96,7 +96,7 @@ public class DefaultXmlPrettyPrinter
         }
     }
     
-    protected static String _lineFeed = DEFAULT_LINE_FEED;
+    protected String _lineFeed = DEFAULT_LINE_FEED;
 
     /*
     /**********************************************************
