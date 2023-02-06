@@ -82,16 +82,16 @@ public class DefaultXmlPrettyPrinter
      * Can later set custom lineFeed with withCustomlineFeed method.
      * @since 2.15
      */
-    private final static String DEFAULT_LINE_FEED;
+    private final static String SYSTEM_DEFAULT_NEW_LINE;
     static {
         String lf = null;
         try {
             lf = System.getProperty("line.separator");
         } catch (Throwable t) { } // access exception?
-        DEFAULT_LINE_FEED = lf;
+        SYSTEM_DEFAULT_NEW_LINE = lf;
     }
     
-    protected String _lineFeed = DEFAULT_LINE_FEED;
+    protected String _newLine = SYSTEM_DEFAULT_NEW_LINE;
 
     /*
     /**********************************************************
@@ -146,10 +146,10 @@ public class DefaultXmlPrettyPrinter
      * Sets custom linefeed
      * @since 2.15
      */
-    public DefaultXmlPrettyPrinter withCustomLineFeed(String lineFeed) {
+    public DefaultXmlPrettyPrinter withCustomNewLine(String newLine) {
         // 06-Feb-2023, joohyukkim: when JacksonException extends RuntimeExceptions, throw it?
-        if (lineFeed != null) {
-            _lineFeed = lineFeed;
+        if (newLine != null) {
+            _newLine = newLine;
         }
         return this;
     }
@@ -471,7 +471,7 @@ public class DefaultXmlPrettyPrinter
     public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException
     {
         // 06-Dec-2015, tatu: Alternatively could try calling `writeSpace()`...
-        sw.writeRaw(_lineFeed);
+        sw.writeRaw(_newLine);
     }
 
     /*
@@ -547,7 +547,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
-            sw.writeRaw(_lineFeed);
+            sw.writeRaw(_newLine);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
             	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
@@ -559,7 +559,7 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(JsonGenerator jg, int level) throws IOException
         {
-            jg.writeRaw(_lineFeed);
+            jg.writeRaw(_newLine);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
                 jg.writeRaw(SPACES, 0, SPACE_COUNT); 

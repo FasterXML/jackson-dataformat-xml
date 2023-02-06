@@ -195,7 +195,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         root.employee.add(new Employee("abc"));
 
         String xml = _xmlMapper.writer()
-            .with(new DefaultXmlPrettyPrinter().withCustomLineFeed("\n\rLF\n\r"))
+            .with(new DefaultXmlPrettyPrinter().withCustomNewLine("\n\rLF\n\r"))
             .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
             .writeValueAsString(root);
         // unify possible apostrophes to quotes
@@ -243,7 +243,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         root.employee.add(new Employee("abc"));
 
         String xml = _xmlMapper.writer()
-            .with(new DefaultXmlPrettyPrinter().withCustomLineFeed(null))
+            .with(new DefaultXmlPrettyPrinter().withCustomNewLine(null))
             .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
             .writeValueAsString(root);
         // unify possible apostrophes to quotes
