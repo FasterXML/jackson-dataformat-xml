@@ -87,7 +87,7 @@ public class DefaultXmlPrettyPrinter
         String lf = null;
         try {
             lf = System.getProperty("line.separator");
-        } catch (Throwable t) { } // access exception?
+        } catch (Exception t) { } // access exception?
         SYSTEM_DEFAULT_NEW_LINE = lf;
     }
     
@@ -147,7 +147,6 @@ public class DefaultXmlPrettyPrinter
      * @since 2.15
      */
     public DefaultXmlPrettyPrinter withCustomNewLine(String newLine) {
-        // 06-Feb-2023, joohyukkim: when JacksonException extends RuntimeExceptions, throw it?
         if (newLine != null) {
             _newLine = newLine;
         }
@@ -485,7 +484,7 @@ public class DefaultXmlPrettyPrinter
     /**
      * Dummy implementation that adds no indentation whatsoever
      */
-    protected class NopIndenter
+    protected static class NopIndenter
         implements Indenter, java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
