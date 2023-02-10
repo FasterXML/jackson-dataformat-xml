@@ -500,7 +500,7 @@ public class DefaultXmlPrettyPrinter
      * single space for indentation. It is used as the default
      * indenter for array values.
      */
-    protected class FixedSpaceIndenter
+    protected static class FixedSpaceIndenter
         implements Indenter, java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
