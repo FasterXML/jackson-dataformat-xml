@@ -79,7 +79,7 @@ public class DefaultXmlPrettyPrinter
 
     /**
      * By default, will try to set as System.getProperty("line.separator").
-     * Can later set custom lineFeed with withCustomlineFeed method.
+     * Can later set custom new line with withCustomNewLine method.
      * @since 2.15
      */
     private final static String SYSTEM_DEFAULT_NEW_LINE;
