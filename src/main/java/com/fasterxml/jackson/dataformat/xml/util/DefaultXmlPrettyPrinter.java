@@ -82,7 +82,7 @@ public class DefaultXmlPrettyPrinter
      * Can later set custom new line with withCustomNewLine method.
      * @since 2.15
      */
-    private final static String SYSTEM_DEFAULT_NEW_LINE;
+    private static final String SYSTEM_DEFAULT_NEW_LINE;
     static {
         String lf = null;
         try {
@@ -90,8 +90,13 @@ public class DefaultXmlPrettyPrinter
         } catch (Exception t) { } // access exception?
         SYSTEM_DEFAULT_NEW_LINE = lf;
     }
-    
     protected String _newLine = SYSTEM_DEFAULT_NEW_LINE;
+
+    static final int SPACE_COUNT = 64;
+    static final char[] SPACES = new char[SPACE_COUNT];
+    static {
+        Arrays.fill(SPACES, ' ');
+    }
 
     /*
     /**********************************************************
@@ -143,7 +148,7 @@ public class DefaultXmlPrettyPrinter
     public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
 
     /**
-     * Sets custom linefeed
+     * Sets custom new-line
      * @since 2.15
      */
     public DefaultXmlPrettyPrinter withCustomNewLine(String newLine) {
@@ -513,7 +518,7 @@ public class DefaultXmlPrettyPrinter
         {
             sw.writeRaw(" ");
         }
-        
+
         @Override
         public void writeIndentation(JsonGenerator g, int level) throws IOException
         {
@@ -532,13 +537,6 @@ public class DefaultXmlPrettyPrinter
         implements Indenter, java.io.Serializable
     {
         private static final long serialVersionUID = 1L;
-
-        final static int SPACE_COUNT = 64;
-        final char[] SPACES = new char[SPACE_COUNT];
-
-        public Lf2SpacesIndenter() {
-            Arrays.fill(SPACES, ' ');
-        }
 
         @Override
         public boolean isInline() { return false; }
