@@ -177,7 +177,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);
-        // with indentation, should get linefeeds in prolog/epilog too
+
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 +"<Company>\n"
                 +"  <e>\n"
@@ -190,7 +190,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 xml);
     }
 
-    public void testLineFeed_withCustomLineFeed() throws Exception {
+    public void testNewLine_withCustomNewLine() throws Exception {
         Company root = new Company();
         root.employee.add(new Employee("abc"));
 
@@ -201,7 +201,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        // with indentation, should get linefeeds in prolog/epilog too
+        // with indentation, should get newLines in prolog/epilog too
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<Company>\n\rLF\n\r"
                 + "  <e>\n\rLF\n\r"
@@ -214,7 +214,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
             xml);
     }
 
-    public void testLineFeed_systemDefault() throws Exception {
+    public void testNewLine_systemDefault() throws Exception {
         Company root = new Company();
         root.employee.add(new Employee("abc"));
 
@@ -225,7 +225,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        // with indentation, should get linefeeds in prolog/epilog too
+        // with indentation, should get newLines in prolog/epilog too
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<Company>\n"
                 + "  <e>\n"
@@ -238,7 +238,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
             xml);
     }
 
-    public void testLineFeed_UseSystemDefaultLineSeperatorOnNullCustomLineFeed() throws Exception {
+    public void testNewLine_UseSystemDefaultLineSeperatorOnNullCustomNewLine() throws Exception {
         Company root = new Company();
         root.employee.add(new Employee("abc"));
 
@@ -249,7 +249,6 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        // with indentation, should get linefeeds in prolog/epilog too
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<Company>\n"
                 + "  <e>\n"
