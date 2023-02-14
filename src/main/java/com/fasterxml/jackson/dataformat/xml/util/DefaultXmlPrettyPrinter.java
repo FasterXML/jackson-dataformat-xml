@@ -538,6 +538,8 @@ public class DefaultXmlPrettyPrinter
     {
         private static final long serialVersionUID = 1L;
 
+        public Lf2SpacesIndenter() { }
+
         @Override
         public boolean isInline() { return false; }
 
