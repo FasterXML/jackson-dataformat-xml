@@ -133,6 +133,7 @@ public class DefaultXmlPrettyPrinter
         _objectIndenter = base._objectIndenter;
         _spacesInObjectEntries = base._spacesInObjectEntries;
         _nesting = base._nesting;
+        _newLine = base._newLine;
     }
 
     public void indentArraysWith(Indenter i)

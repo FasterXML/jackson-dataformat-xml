@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -199,26 +200,29 @@ public class XmlPrettyPrinterTest extends XmlTestBase {
     }
 
     public void testNewLine_withCustomNewLine() throws Exception {
+        String customNewLine = "\n\rLF\n\r";
+        PrettyPrinter customXmlPrettyPrinter = new DefaultXmlPrettyPrinter().withCustomNewLine(customNewLine);
+
         Company root = new Company();
         root.employee.add(new Employee("abc"));
 
         String xml = _xmlMapper.writer()
-            .with(new DefaultXmlPrettyPrinter().withCustomNewLine("\n\rLF\n\r"))
+            .with(customXmlPrettyPrinter)
             .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
             .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
         // with indentation, should get newLines in prolog/epilog too
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
-                + "<Company>\n\rLF\n\r"
-                + "  <e>\n\rLF\n\r"
-                + "    <employee>\n\rLF\n\r"
-                + "      <id>abc</id>\n\rLF\n\r"
-                + "      <type>FULL_TIME</type>\n\rLF\n\r"
-                + "    </employee>\n\rLF\n\r"
-                + "  </e>\n\rLF\n\r"
-                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + customNewLine
+                + "<Company>" + customNewLine
+                + "  <e>" + customNewLine
+                + "    <employee>" + customNewLine
+                + "      <id>abc</id>" + customNewLine
+                + "      <type>FULL_TIME</type>" + customNewLine
+                + "    </employee>" + customNewLine
+                + "  </e>" + customNewLine
+                + "</Company>" + customNewLine,
             xml);
     }
 
