@@ -12,43 +12,37 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 
-public class XmlPrettyPrinterTest extends XmlTestBase {
+public class XmlPrettyPrinterTest extends XmlTestBase
+{
     static class StringWrapperBean {
         public StringWrapper string;
 
-        public StringWrapperBean() {
-        }
-
-        public StringWrapperBean(String s) {
-            string = new StringWrapper(s);
-        }
+        public StringWrapperBean() { }
+        public StringWrapperBean(String s) { string = new StringWrapper(s); }
     }
 
     static class IntWrapperBean {
         public IntWrapper wrapped;
 
-        public IntWrapperBean() {
-        }
-
-        public IntWrapperBean(int i) {
-            wrapped = new IntWrapper(i);
-        }
+        public IntWrapperBean() { }
+        public IntWrapperBean(int i) { wrapped = new IntWrapper(i); }
     }
 
     // [dataformat-xml#45]
     static class AttrBean {
-        @JacksonXmlProperty(isAttribute = true)
+        @JacksonXmlProperty(isAttribute=true)
         public int count = 3;
     }
 
     static class AttrBean2 {
-        @JacksonXmlProperty(isAttribute = true)
+        @JacksonXmlProperty(isAttribute=true)
         public int count = 3;
 
         public int value = 14;
     }
 
-    public class PojoFor123 {
+    public class PojoFor123
+    {
         @JacksonXmlProperty(isAttribute = true)
         public String name;
 
@@ -62,7 +56,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase {
 
     // for [dataformat-xml#172]
     static class Company {
-        @JacksonXmlElementWrapper(localName = "e")
+        @JacksonXmlElementWrapper(localName="e")
         public List<Employee> employee = new ArrayList<Employee>();
     }
 
