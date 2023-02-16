@@ -11,51 +11,57 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 
-public class XmlPrettyPrinterTest extends XmlTestBase
-{
+public class XmlPrettyPrinterTest extends XmlTestBase {
     static class StringWrapperBean {
         public StringWrapper string;
-        
-        public StringWrapperBean() { }
-        public StringWrapperBean(String s) { string = new StringWrapper(s); }
+
+        public StringWrapperBean() {
+        }
+
+        public StringWrapperBean(String s) {
+            string = new StringWrapper(s);
+        }
     }
 
     static class IntWrapperBean {
         public IntWrapper wrapped;
-        
-        public IntWrapperBean() { }
-        public IntWrapperBean(int i) { wrapped = new IntWrapper(i); }
+
+        public IntWrapperBean() {
+        }
+
+        public IntWrapperBean(int i) {
+            wrapped = new IntWrapper(i);
+        }
     }
 
     // [dataformat-xml#45]
     static class AttrBean {
-        @JacksonXmlProperty(isAttribute=true)
+        @JacksonXmlProperty(isAttribute = true)
         public int count = 3;
     }
 
     static class AttrBean2 {
-        @JacksonXmlProperty(isAttribute=true)
+        @JacksonXmlProperty(isAttribute = true)
         public int count = 3;
 
         public int value = 14;
     }
 
-    public class PojoFor123
-    {
+    public class PojoFor123 {
         @JacksonXmlProperty(isAttribute = true)
         public String name;
 
-        @JsonInclude(JsonInclude.Include.NON_EMPTY) 
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public String property;
-        
+
         public PojoFor123(String name) {
-            this.name = name;       
+            this.name = name;
         }
     }
 
     // for [dataformat-xml#172]
     static class Company {
-        @JacksonXmlElementWrapper(localName="e")
+        @JacksonXmlElementWrapper(localName = "e")
         public List<Employee> employee = new ArrayList<Employee>();
     }
 
@@ -89,6 +95,8 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         _xmlMapper = new XmlMapper();
         _xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
     }
+
+    private static final String SYSTEM_DEFAULT_NEW_LINE = System.getProperty("line.separator");
 
     /*
     /**********************************************************
@@ -178,15 +186,15 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                +"<Company>\n"
-                +"  <e>\n"
-                +"    <employee>\n"
-                +"      <id>abc</id>\n"
-                +"      <type>FULL_TIME</type>\n"
-                +"    </employee>\n"
-                +"  </e>\n"
-                +"</Company>\n",
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
+                +"<Company>" + SYSTEM_DEFAULT_NEW_LINE
+                +"  <e>" + SYSTEM_DEFAULT_NEW_LINE
+                +"    <employee>" + SYSTEM_DEFAULT_NEW_LINE
+                +"      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
+                +"      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
+                +"    </employee>" + SYSTEM_DEFAULT_NEW_LINE
+                +"  </e>" + SYSTEM_DEFAULT_NEW_LINE
+                +"</Company>" + SYSTEM_DEFAULT_NEW_LINE,
                 xml);
     }
 
@@ -202,7 +210,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         xml = a2q(xml);
 
         // with indentation, should get newLines in prolog/epilog too
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
                 + "<Company>\n\rLF\n\r"
                 + "  <e>\n\rLF\n\r"
                 + "    <employee>\n\rLF\n\r"
@@ -210,7 +218,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 + "      <type>FULL_TIME</type>\n\rLF\n\r"
                 + "    </employee>\n\rLF\n\r"
                 + "  </e>\n\rLF\n\r"
-                + "</Company>\n",
+                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
             xml);
     }
 
@@ -226,15 +234,15 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         xml = a2q(xml);
 
         // with indentation, should get newLines in prolog/epilog too
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<Company>\n"
-                + "  <e>\n"
-                + "    <employee>\n"
-                + "      <id>abc</id>\n"
-                + "      <type>FULL_TIME</type>\n"
-                + "    </employee>\n"
-                + "  </e>\n"
-                + "</Company>\n",
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
+                + "<Company>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  <e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    <employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    </employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  </e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
             xml);
     }
 
@@ -249,15 +257,15 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<Company>\n"
-                + "  <e>\n"
-                + "    <employee>\n"
-                + "      <id>abc</id>\n"
-                + "      <type>FULL_TIME</type>\n"
-                + "    </employee>\n"
-                + "  </e>\n"
-                + "</Company>\n",
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
+                + "<Company>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  <e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    <employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    </employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  </e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
             xml);
     }
 }
