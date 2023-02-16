@@ -148,13 +148,11 @@ public class DefaultXmlPrettyPrinter
     public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
 
     /**
-     * Sets custom new-line
+     * Sets custom new-line.
      * @since 2.15
      */
     public DefaultXmlPrettyPrinter withCustomNewLine(String newLine) {
-        if (newLine != null) {
-            _newLine = newLine;
-        }
+        _newLine = newLine != null ? newLine : SYSTEM_DEFAULT_NEW_LINE;
         return this;
     }
 
