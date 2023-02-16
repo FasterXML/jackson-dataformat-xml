@@ -48,7 +48,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
 
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public String property;
-
+        
         public PojoFor123(String name) {
             this.name = name;
         }
