@@ -212,4 +212,10 @@ David F. Elliott (dfelliott@github)
   using default JDK XML implementation
  (2.14.0)
 
+Joo Hyuk Kim (JooHyukKim@github)
+
+* Contributed #560: Add `DefaultXmlPrettyPrinter.withCustomNewLine()` to configure linefeed
+  for XML pretty-printing
+ (2.15.0)
+
 
