@@ -11,19 +11,20 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import tools.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 
 public class XmlPrettyPrinterTest extends XmlTestBase
 {
     static class StringWrapperBean {
         public StringWrapper string;
-        
+
         public StringWrapperBean() { }
         public StringWrapperBean(String s) { string = new StringWrapper(s); }
     }
 
     static class IntWrapperBean {
         public IntWrapper wrapped;
-        
+
         public IntWrapperBean() { }
         public IntWrapperBean(int i) { wrapped = new IntWrapper(i); }
     }
@@ -46,11 +47,11 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         @JacksonXmlProperty(isAttribute = true)
         public String name;
 
-        @JsonInclude(JsonInclude.Include.NON_EMPTY) 
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         public String property;
         
         public PojoFor123(String name) {
-            this.name = name;       
+            this.name = name;
         }
     }
 
@@ -91,6 +92,8 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .build();
     }
+
+    private static final String SYSTEM_DEFAULT_NEW_LINE = System.getProperty("line.separator");
 
     /*
     /**********************************************************
@@ -179,16 +182,90 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);
-        // with indentation, should get linefeeds in prolog/epilog too
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                +"<Company>\n"
-                +"  <e>\n"
-                +"    <employee>\n"
-                +"      <id>abc</id>\n"
-                +"      <type>FULL_TIME</type>\n"
-                +"    </employee>\n"
-                +"  </e>\n"
-                +"</Company>\n",
+
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
+                +"<Company>" + SYSTEM_DEFAULT_NEW_LINE
+                +"  <e>" + SYSTEM_DEFAULT_NEW_LINE
+                +"    <employee>" + SYSTEM_DEFAULT_NEW_LINE
+                +"      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
+                +"      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
+                +"    </employee>" + SYSTEM_DEFAULT_NEW_LINE
+                +"  </e>" + SYSTEM_DEFAULT_NEW_LINE
+                +"</Company>" + SYSTEM_DEFAULT_NEW_LINE,
                 xml);
+    }
+
+    public void testNewLine_withCustomNewLine() throws Exception {
+        String customNewLine = "\n\rLF\n\r";
+        DefaultXmlPrettyPrinter customXmlPrettyPrinter = new DefaultXmlPrettyPrinter().withCustomNewLine(customNewLine);
+
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+
+        String xml = _xmlMapper.writer()
+            .with(customXmlPrettyPrinter)
+            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = a2q(xml);
+
+        // with indentation, should get newLines in prolog/epilog too
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + customNewLine
+                + "<Company>" + customNewLine
+                + "  <e>" + customNewLine
+                + "    <employee>" + customNewLine
+                + "      <id>abc</id>" + customNewLine
+                + "      <type>FULL_TIME</type>" + customNewLine
+                + "    </employee>" + customNewLine
+                + "  </e>" + customNewLine
+                + "</Company>" + customNewLine,
+            xml);
+    }
+
+    public void testNewLine_systemDefault() throws Exception {
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+
+        String xml = _xmlMapper.writer()
+            .with(new DefaultXmlPrettyPrinter())
+            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = a2q(xml);
+
+        // with indentation, should get newLines in prolog/epilog too
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
+                + "<Company>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  <e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    <employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    </employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  </e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
+            xml);
+    }
+
+    public void testNewLine_UseSystemDefaultLineSeperatorOnNullCustomNewLine() throws Exception {
+        Company root = new Company();
+        root.employee.add(new Employee("abc"));
+
+        String xml = _xmlMapper.writer()
+            .with(new DefaultXmlPrettyPrinter().withCustomNewLine(null))
+            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .writeValueAsString(root);
+        // unify possible apostrophes to quotes
+        xml = a2q(xml);
+
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
+                + "<Company>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  <e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    <employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
+                + "      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
+                + "    </employee>" + SYSTEM_DEFAULT_NEW_LINE
+                + "  </e>" + SYSTEM_DEFAULT_NEW_LINE
+                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
+            xml);
     }
 }

@@ -11,6 +11,10 @@ Project: jackson-dataformat-xml
  (reported by @MichalStehlikCz)
 #547: Parsing empty tags without default no-arguments constructor fails in 2.14
  (reported by @henrik242)
+#560: Add `DefaultXmlPrettyPrinter.withCustomNewLine()` to configure linefeed
+  for XML pretty-printing
+ (requested by @koalalam)
+ (contributed by Joo Hyuk K)
 
 2.14.2 (28-Jan-2023)
 
