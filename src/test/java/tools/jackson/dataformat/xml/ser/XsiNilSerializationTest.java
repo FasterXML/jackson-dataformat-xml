@@ -41,9 +41,8 @@ public class XsiNilSerializationTest extends XmlTestBase
         final String xml = MAPPER.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(new WrapperBean<>(null))
                 .trim();
-        assertEquals(
-"<WrapperBean>\n"
-+"  <value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n"
-+"</WrapperBean>", xml);
+        assertEquals("<WrapperBean>" + DEFAULT_NEW_LINE
+            + "  <value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>" + DEFAULT_NEW_LINE
+            + "</WrapperBean>", xml);
     }
 }
