@@ -82,7 +82,9 @@ public class Base64VariantWriteTest extends XmlTestBase
             r = r.with(b64v);
         }
         final String EXP = indent ?
-                "<BinaryValue>\n  <value>"+expEncoded+"</value>\n</BinaryValue>" :
+                "<BinaryValue>" + DEFAULT_NEW_LINE +
+                    "  <value>"+expEncoded+"</value>" + DEFAULT_NEW_LINE +
+                    "</BinaryValue>" :
                 "<BinaryValue><value>"+expEncoded+"</value></BinaryValue>";
         final String xml = w.writeValueAsString(new BinaryValue(BINARY_DATA)).trim();
 

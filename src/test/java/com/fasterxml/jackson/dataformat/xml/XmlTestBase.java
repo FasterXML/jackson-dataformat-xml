@@ -20,6 +20,14 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 public abstract class XmlTestBase
     extends TestCase
 {
+
+    protected static final String DEFAULT_NEW_LINE;
+
+    static {
+        String newLine = System.getProperty("line.separator");
+        DEFAULT_NEW_LINE = newLine == null ? "\n" : newLine;
+    }
+
     @JsonPropertyOrder({ "first", "last", "id" })
     protected static class NameBean {
         @JacksonXmlProperty(isAttribute=true)

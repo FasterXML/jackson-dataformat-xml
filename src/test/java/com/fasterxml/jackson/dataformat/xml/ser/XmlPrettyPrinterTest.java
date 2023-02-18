@@ -91,8 +91,6 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         _xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
     }
 
-    private static final String SYSTEM_DEFAULT_NEW_LINE = System.getProperty("line.separator");
-
     /*
     /**********************************************************
     /* Unit tests
@@ -159,16 +157,21 @@ public class XmlPrettyPrinterTest extends XmlTestBase
     public void testWithAttr() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrBean());
-        assertEquals("<AttrBean count=\"3\"/>\n", xml);
+        assertEquals("<AttrBean count=\"3\"/>" + DEFAULT_NEW_LINE, xml);
         String xml2 = _xmlMapper.writeValueAsString(new AttrBean2());
-        assertEquals("<AttrBean2 count=\"3\">\n  <value>14</value>\n</AttrBean2>\n", xml2);
+        assertEquals(
+            "<AttrBean2 count=\"3\">" + DEFAULT_NEW_LINE +
+            "  <value>14</value>" + DEFAULT_NEW_LINE +
+                "</AttrBean2>" + DEFAULT_NEW_LINE,
+            xml2);
     }
 
     public void testEmptyElem() throws Exception
     {
         PojoFor123 simple = new PojoFor123("foobar");
         String xml = _xmlMapper.writeValueAsString(simple);
-        assertEquals("<PojoFor123 name=\"foobar\"/>\n", xml);
+        assertEquals("<PojoFor123 name=\"foobar\"/>" + DEFAULT_NEW_LINE,
+            xml);
     }
 
     public void testMultiLevel172() throws Exception
@@ -181,15 +184,15 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
-                +"<Company>" + SYSTEM_DEFAULT_NEW_LINE
-                +"  <e>" + SYSTEM_DEFAULT_NEW_LINE
-                +"    <employee>" + SYSTEM_DEFAULT_NEW_LINE
-                +"      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
-                +"      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
-                +"    </employee>" + SYSTEM_DEFAULT_NEW_LINE
-                +"  </e>" + SYSTEM_DEFAULT_NEW_LINE
-                +"</Company>" + SYSTEM_DEFAULT_NEW_LINE,
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + DEFAULT_NEW_LINE
+                +"<Company>" + DEFAULT_NEW_LINE
+                +"  <e>" + DEFAULT_NEW_LINE
+                +"    <employee>" + DEFAULT_NEW_LINE
+                +"      <id>abc</id>" + DEFAULT_NEW_LINE
+                +"      <type>FULL_TIME</type>" + DEFAULT_NEW_LINE
+                +"    </employee>" + DEFAULT_NEW_LINE
+                +"  </e>" + DEFAULT_NEW_LINE
+                +"</Company>" + DEFAULT_NEW_LINE,
                 xml);
     }
 
@@ -232,15 +235,15 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         xml = a2q(xml);
 
         // with indentation, should get newLines in prolog/epilog too
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
-                + "<Company>" + SYSTEM_DEFAULT_NEW_LINE
-                + "  <e>" + SYSTEM_DEFAULT_NEW_LINE
-                + "    <employee>" + SYSTEM_DEFAULT_NEW_LINE
-                + "      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
-                + "      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
-                + "    </employee>" + SYSTEM_DEFAULT_NEW_LINE
-                + "  </e>" + SYSTEM_DEFAULT_NEW_LINE
-                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + DEFAULT_NEW_LINE
+                + "<Company>" + DEFAULT_NEW_LINE
+                + "  <e>" + DEFAULT_NEW_LINE
+                + "    <employee>" + DEFAULT_NEW_LINE
+                + "      <id>abc</id>" + DEFAULT_NEW_LINE
+                + "      <type>FULL_TIME</type>" + DEFAULT_NEW_LINE
+                + "    </employee>" + DEFAULT_NEW_LINE
+                + "  </e>" + DEFAULT_NEW_LINE
+                + "</Company>" + DEFAULT_NEW_LINE,
             xml);
     }
 
@@ -255,15 +258,15 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         // unify possible apostrophes to quotes
         xml = a2q(xml);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYSTEM_DEFAULT_NEW_LINE
-                + "<Company>" + SYSTEM_DEFAULT_NEW_LINE
-                + "  <e>" + SYSTEM_DEFAULT_NEW_LINE
-                + "    <employee>" + SYSTEM_DEFAULT_NEW_LINE
-                + "      <id>abc</id>" + SYSTEM_DEFAULT_NEW_LINE
-                + "      <type>FULL_TIME</type>" + SYSTEM_DEFAULT_NEW_LINE
-                + "    </employee>" + SYSTEM_DEFAULT_NEW_LINE
-                + "  </e>" + SYSTEM_DEFAULT_NEW_LINE
-                + "</Company>" + SYSTEM_DEFAULT_NEW_LINE,
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + DEFAULT_NEW_LINE
+                + "<Company>" + DEFAULT_NEW_LINE
+                + "  <e>" + DEFAULT_NEW_LINE
+                + "    <employee>" + DEFAULT_NEW_LINE
+                + "      <id>abc</id>" + DEFAULT_NEW_LINE
+                + "      <type>FULL_TIME</type>" + DEFAULT_NEW_LINE
+                + "    </employee>" + DEFAULT_NEW_LINE
+                + "  </e>" + DEFAULT_NEW_LINE
+                + "</Company>" + DEFAULT_NEW_LINE,
             xml);
     }
 }
