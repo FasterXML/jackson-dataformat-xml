@@ -16,22 +16,6 @@ import com.fasterxml.jackson.core.JsonParser;
 public class StaxUtil
 {
     /**
-     * Adapter method used when only IOExceptions are declared to be thrown, but
-     * a {@link XMLStreamException} was caught.
-     *<p>
-     * Note: dummy type variable is used for convenience, to allow caller to claim
-     * that this method returns result of any necessary type.
-     *
-     * @deprecated Since 2.9
-     */
-    @Deprecated
-    public static <T> T throwXmlAsIOException(XMLStreamException e) throws IOException
-    {
-        Throwable t = _unwrap(e);
-        throw new IOException(t);
-    }
-
-    /**
      * @since 2.9
      */
     public static <T> T throwAsParseException(XMLStreamException e,

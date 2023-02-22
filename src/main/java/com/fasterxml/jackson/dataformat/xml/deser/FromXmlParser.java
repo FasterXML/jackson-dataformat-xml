@@ -475,11 +475,6 @@ public class FromXmlParser
         _parsingContext.setNamesToWrap(namesToWrap);
     }
 
-    @Deprecated // since 2.12
-    public void addVirtualWrapping(Set<String> namesToWrap) {
-        addVirtualWrapping(namesToWrap, false);
-    }
-
     /*
     /**********************************************************
     /* JsonParser impl
