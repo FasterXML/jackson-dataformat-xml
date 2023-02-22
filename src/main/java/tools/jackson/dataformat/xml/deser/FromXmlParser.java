@@ -31,6 +31,7 @@ import tools.jackson.dataformat.xml.XmlNameProcessor;
  */
 public class FromXmlParser
     extends ParserMinimalBase
+    implements ElementWrappable // @since 2.15
 {
     /**
      * The default name placeholder for XML text segments is empty
@@ -352,25 +353,12 @@ public class FromXmlParser
 
     /*
     /**********************************************************************
-    /* Internal API
+    /* ElementWrappable implementation
     /**********************************************************************
      */
 
-    /**
-     * Method that may be called to indicate that specified names
-     * (only local parts retained currently: this may be changed in
-     * future) should be considered "auto-wrapping", meaning that
-     * they will be doubled to contain two opening elements, two
-     * matching closing elements. This is needed for supporting
-     * handling of so-called "unwrapped" array types, something
-     * XML mappings like JAXB often use.
-     *<p>
-     * NOTE: this method is considered part of internal implementation
-     * interface, and it is <b>NOT</b> guaranteed to remain unchanged
-     * between minor versions (it is however expected not to change in
-     * patch versions). So if you have to use it, be prepared for
-     * possible additional work.
-     */
+
+    @Override
     public void addVirtualWrapping(Set<String> namesToWrap0, boolean caseInsensitive)
     {
 //System.out.printf("addVirtualWrapping(%s) at '%s' [case-insensitive? %s]\n", namesToWrap0, _parsingContext.pathAsPointer(), caseInsensitive);
