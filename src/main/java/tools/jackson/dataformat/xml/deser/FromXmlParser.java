@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -40,10 +41,8 @@ public class FromXmlParser
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
 
     /**
-     * XML format has some peculiarities, indicated via new (2.12) capability
+     * XML format has some peculiarities, indicated via capability
      * system.
-     *
-     * @since 2.12
      */
     protected final static JacksonFeatureSet<StreamReadCapability> XML_READ_CAPABILITIES =
             DEFAULT_READ_CAPABILITIES
