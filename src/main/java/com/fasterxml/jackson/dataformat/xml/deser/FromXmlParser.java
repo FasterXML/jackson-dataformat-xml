@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -12,6 +13,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
+import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.io.NumberInput;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
@@ -630,7 +632,12 @@ public class FromXmlParser
                     }
                 }
                 // finally, need BigInteger
-                streamReadConstraints().validateIntegerLength(text.length());
+                try {
+                    streamReadConstraints().validateIntegerLength(text.length());
+                } catch (StreamConstraintsException e) {
+                    // Ugh. This method in API ought to expose IOException
+                    throw new UncheckedIOException(e);
+                }
                 _numberBigInt = NumberInput.parseBigInteger(
                         text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
                 _numTypesValid = NR_BIGINT;
