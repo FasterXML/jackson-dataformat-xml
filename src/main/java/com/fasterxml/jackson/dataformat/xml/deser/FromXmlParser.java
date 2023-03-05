@@ -686,9 +686,11 @@ public class FromXmlParser
             switch (t) {
             case START_OBJECT:
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                 break;
             case START_ARRAY:
                 _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                 break;
             case END_OBJECT:
             case END_ARRAY:
@@ -722,6 +724,7 @@ public class FromXmlParser
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.FIELD_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                 return (_currToken = JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
@@ -758,6 +761,7 @@ public class FromXmlParser
                         //    expose as empty Object, not null
                         _nextToken = JsonToken.END_OBJECT;
                         _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                        _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                         return (_currToken = JsonToken.START_OBJECT);
                     }
                     // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
@@ -778,6 +782,7 @@ public class FromXmlParser
                     _nextToken = JsonToken.FIELD_NAME;
                     _currText = _xmlTokens.getText();
                     _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                    _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                     return (_currToken = JsonToken.START_OBJECT);
                 }
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -808,6 +813,7 @@ public class FromXmlParser
                                 //    be done, by swallowing the token)
                                 _nextToken = JsonToken.END_OBJECT;
                                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                                 return (_currToken = JsonToken.START_OBJECT);
                             }
                         }
@@ -822,6 +828,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     // START_ELEMENT we just saw:
                     _xmlTokens.pushbackCurrentToken();
                     _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                    _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                 }
                 // [dataformat-xml#177]: empty text may also need to be skipped
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must
@@ -909,6 +916,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             if (_mayBeLeaf) {
                 _nextToken = JsonToken.FIELD_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                 _currToken = JsonToken.START_OBJECT;
                 return null;
             }
@@ -949,6 +957,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _nextToken = JsonToken.FIELD_NAME;
                 _currText = _xmlTokens.getText();
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
                 _currToken = JsonToken.START_OBJECT;
             } else {
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -987,14 +996,16 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
 
-    private void _updateState(JsonToken t)
+    private void _updateState(JsonToken t) throws IOException
     {
         switch (t) {
         case START_OBJECT:
             _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+            _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
             break;
         case START_ARRAY:
             _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+            _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
             break;
         case END_OBJECT:
         case END_ARRAY:
