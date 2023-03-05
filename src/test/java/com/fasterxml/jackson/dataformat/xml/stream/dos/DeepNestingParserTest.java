@@ -20,7 +20,7 @@ public class DeepNestingParserTest extends XmlTestBase {
             }
             fail("expected JsonParseException");
         } catch (JsonParseException e) {
-            assertEquals("Maximum Element Depth limit (1000) Exceeded", e.getMessage());
+            assertTrue(e.getMessage().contains("Maximum Element Depth limit (1000) Exceeded"));
         }
     }
 
