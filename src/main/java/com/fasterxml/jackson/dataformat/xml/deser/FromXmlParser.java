@@ -685,12 +685,10 @@ public class FromXmlParser
 
             switch (t) {
             case START_OBJECT:
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                createChildObjectContext(-1, -1);
                 break;
             case START_ARRAY:
-                _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
-                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                createChildArrayContext(-1, -1);
                 break;
             case END_OBJECT:
             case END_ARRAY:
@@ -723,8 +721,7 @@ public class FromXmlParser
             if (_mayBeLeaf) {
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.FIELD_NAME;
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                createChildObjectContext(-1, -1);
                 return (_currToken = JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
@@ -760,8 +757,7 @@ public class FromXmlParser
                         // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
                         //    expose as empty Object, not null
                         _nextToken = JsonToken.END_OBJECT;
-                        _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                        _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                        createChildObjectContext(-1, -1);
                         return (_currToken = JsonToken.START_OBJECT);
                     }
                     // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
@@ -781,8 +777,7 @@ public class FromXmlParser
                     _mayBeLeaf = false;
                     _nextToken = JsonToken.FIELD_NAME;
                     _currText = _xmlTokens.getText();
-                    _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                    _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                    createChildObjectContext(-1, -1);
                     return (_currToken = JsonToken.START_OBJECT);
                 }
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -812,8 +807,7 @@ public class FromXmlParser
                                 //    expose as empty Object, not null (or, worse, as used to
                                 //    be done, by swallowing the token)
                                 _nextToken = JsonToken.END_OBJECT;
-                                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                                createChildObjectContext(-1, -1);
                                 return (_currToken = JsonToken.START_OBJECT);
                             }
                         }
@@ -827,8 +821,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     // fall-through, except must create new context AND push back
                     // START_ELEMENT we just saw:
                     _xmlTokens.pushbackCurrentToken();
-                    _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                    _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                    createChildObjectContext(-1, -1);
                 }
                 // [dataformat-xml#177]: empty text may also need to be skipped
                 // but... [dataformat-xml#191]: looks like we can't short-cut, must
@@ -915,8 +908,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         while (token == XmlTokenStream.XML_START_ELEMENT) {
             if (_mayBeLeaf) {
                 _nextToken = JsonToken.FIELD_NAME;
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                createChildObjectContext(-1, -1);
                 _currToken = JsonToken.START_OBJECT;
                 return null;
             }
@@ -956,8 +948,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _mayBeLeaf = false;
                 _nextToken = JsonToken.FIELD_NAME;
                 _currText = _xmlTokens.getText();
-                _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+                createChildObjectContext(-1, -1);
                 _currToken = JsonToken.START_OBJECT;
             } else {
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
@@ -1000,12 +991,10 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     {
         switch (t) {
         case START_OBJECT:
-            _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-            _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+            createChildObjectContext(-1, -1);
             break;
         case START_ARRAY:
-            _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
-            _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+            createChildArrayContext(-1, -1);
             break;
         case END_OBJECT:
         case END_ARRAY:
@@ -1434,5 +1423,15 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         } catch (Exception e) {
             throw new JsonParseException(this, e.getMessage(), e);
         }
+    }
+
+    private void createChildArrayContext(final int lineNr, final int colNr) throws IOException {
+        _parsingContext = _parsingContext.createChildArrayContext(lineNr, colNr);
+        _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
+    }
+
+    private void createChildObjectContext(final int lineNr, final int colNr) throws IOException {
+        _parsingContext = _parsingContext.createChildObjectContext(lineNr, colNr);
+        _streamReadConstraints.validateNestingDepth(_parsingContext.getNestingDepth());
     }
 }
