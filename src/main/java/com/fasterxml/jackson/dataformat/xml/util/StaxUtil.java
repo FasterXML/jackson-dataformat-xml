@@ -126,9 +126,9 @@ public class StaxUtil
         // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
         try {
             return XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
-        } catch (FactoryConfigurationError e) {
+        } catch (FactoryConfigurationError|NoSuchMethodError e) {
             // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
-            return XMLInputFactory.newFactory();
+            return XMLInputFactory.newInstance();
         }
     }
 
@@ -139,9 +139,9 @@ public class StaxUtil
         // 05-Jul-2021, tatu: as per [dataformat-xml#483], specify ClassLoader
         try {
             return XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(), cl);
-        } catch (FactoryConfigurationError e) {
+        } catch (FactoryConfigurationError|NoSuchMethodError e) {
             // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
-            return XMLOutputFactory.newFactory();
+            return XMLOutputFactory.newInstance();
         }
     }
 
