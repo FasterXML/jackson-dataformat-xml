@@ -111,7 +111,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         XMLInputFactory xmlIn;
         try {
             xmlIn = XMLInputFactory.newFactory(XMLInputFactory.class.getName(), cl);
-        } catch (FactoryConfigurationError e) {
+        } catch (FactoryConfigurationError | NoSuchMethodError e) {
             // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
             xmlIn = XMLInputFactory.newFactory();
         }
@@ -138,7 +138,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         XMLOutputFactory xmlOut;
         try {
             xmlOut = XMLOutputFactory.newFactory(XMLOutputFactory.class.getName(), cl);
-        } catch (FactoryConfigurationError e) {
+        } catch (FactoryConfigurationError | NoSuchMethodError e) {
             // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
             xmlOut = XMLOutputFactory.newFactory();
         }

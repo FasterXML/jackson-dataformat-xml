@@ -218,4 +218,8 @@ Joo Hyuk Kim (JooHyukKim@github)
   for XML pretty-printing
  (2.15.0)
 
+PJ Fanning (pjfanning@github)
 
+* Contributed fix for #533: (Android) java.lang.NoClassDefFoundError: Failed resolution
+   of: Ljavax/xml/stream/XMLInputFactory
+ (2.15.0)

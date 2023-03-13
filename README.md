@@ -27,8 +27,7 @@ Specifically:
 | Artifact | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
-| Code coverage (2.13) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.13)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.13) |
-| CodeQ (LGTM.com) | [![LGTM alerts](https://img.shields.io/lgtm/alerts/g/FasterXML/jackson-dataformat-xml.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FasterXML/jackson-dataformat-xml/alerts/) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/FasterXML/jackson-dataformat-xml.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FasterXML/jackson-dataformat-xml/context:java) |
+| Code coverage (2.15) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.15) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
 
 ## Branches
@@ -36,9 +35,9 @@ Specifically:
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.14` is for developing the next minor 2.x version
+* `2.15` is for developing the next minor 2.x version
+* `2.14` is for backported fixes to include in 2.14.x patch versions
 * `2.13` is for backported fixes to include in 2.13.x patch versions
-* `2.12` is for backported fixes to include in 2.12.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
@@ -55,7 +54,7 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.13.0</version>
+  <version>2.14.2</version>
 </dependency>
 ```
 
@@ -68,7 +67,7 @@ You can do this by adding this in your `pom.xml`:
 <dependency>
   <groupId>com.fasterxml.woodstox</groupId>
   <artifactId>woodstox-core</artifactId>
-  <version>6.2.5</version>
+  <version>6.5.0</version>
 </dependency>
 ```
 
@@ -115,6 +114,10 @@ XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
 
 For configurable properties, you may want to check out
 [Configuring Woodstox XML parser](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
+
+As the well as the Woodstox properties specified above, you can also call [WstxInputFactory#getConfig()](https://javadoc.io/doc/com.fasterxml.woodstox/woodstox-core/latest/com/ctc/wstx/stax/WstxInputFactory.html#getConfig--)
+and modify the [ReaderConfig](https://javadoc.io/doc/com.fasterxml.woodstox/woodstox-core/latest/com/ctc/wstx/api/ReaderConfig.html).
+One useful setting is the [maxElementDepth](https://javadoc.io/static/com.fasterxml.woodstox/woodstox-core/6.5.0/com/ctc/wstx/api/ReaderConfig.html#setMaxElementDepth-int-).
 
 ## Android quirks
 
