@@ -6,6 +6,10 @@ Project: jackson-dataformat-xml
 
 2.15.0 (not yet released)
 
+#533: (Android) java.lang.NoClassDefFoundError: Failed resolution
+   of: Ljavax/xml/stream/XMLInputFactory
+ (reported by @clashcaddie)
+ (fix contributed by @pjfanning)
 #542: `XmlMapper` does not find no-argument record constructor for
   deserialization of empty XML
  (reported by @MichalStehlikCz)
