@@ -221,5 +221,11 @@ Joo Hyuk Kim (JooHyukKim@github)
 PJ Fanning (pjfanning@github)
 
 * Contributed fix for #533: (Android) java.lang.NoClassDefFoundError: Failed resolution
-   of: Ljavax/xml/stream/XMLInputFactory
+  of: Ljavax/xml/stream/XMLInputFactory
+ (2.15.0)
+
+Marco Belladelli (mbladel@github)
+
+* Contributed fix for #584: Deserialization of `null` String values in Arrays / `Collection`s
+  not working as expected
  (2.15.0)
