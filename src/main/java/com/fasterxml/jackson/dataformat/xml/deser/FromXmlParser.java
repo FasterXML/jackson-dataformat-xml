@@ -932,12 +932,11 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         switch (token) {
         case XmlTokenStream.XML_END_ELEMENT:
             if (_mayBeLeaf) {
-                // NOTE: this is different from nextToken() -- produce "", NOT null
                 _mayBeLeaf = false;
-                _currToken = JsonToken.VALUE_STRING;
+                _currToken = JsonToken.VALUE_NULL;
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _parsingContext.valueStarted();
-                return (_currText = "");
+                return (_currText = null);
             }
             _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
             _parsingContext = _parsingContext.getParent();
