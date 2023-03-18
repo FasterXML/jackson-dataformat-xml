@@ -933,6 +933,11 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         case XmlTokenStream.XML_END_ELEMENT:
             if (_mayBeLeaf) {
                 _mayBeLeaf = false;
+                // 18-Mar-2023, tatu: [dataformat-xml#584 / #585] in 2.14 and before
+                //    returned VALUE_STRING on assumption we never expose `null`s if
+                //    asked text value -- but that seems incorrect. Hoping this won't
+                //    break anything in 2.15+
+
                 _currToken = JsonToken.VALUE_NULL;
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _parsingContext.valueStarted();

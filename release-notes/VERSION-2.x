@@ -19,6 +19,9 @@ Project: jackson-dataformat-xml
   for XML pretty-printing
  (requested by @koalalam)
  (contributed by Joo Hyuk K)
+#584: Deserialization of `null` String values in Arrays / `Collection`s
+   not working as expected
+ (fix contributed by Marco B)
 
 2.14.2 (28-Jan-2023)
 
