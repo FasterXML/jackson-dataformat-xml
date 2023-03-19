@@ -20,6 +20,8 @@ import static org.junit.Assert.assertNull;
 public class StringListRoundtripTest {
 	private final static XmlMapper MAPPER = new XmlMapper();
 
+	private final static String[] TEST_DATA = new String[] {"", "test", null, "test2"};
+
 	@Test
 	public void testStringArray() throws Exception
 	{
@@ -41,10 +43,8 @@ public class StringListRoundtripTest {
 
 	private void stringArrayRoundtrip(boolean shouldBeNull) throws Exception
 	{
-		String[] array = new String[] {"", "test", null, "test2"};
-
 		// serialize to string
-		String xml = MAPPER.writeValueAsString(array);
+		String xml = MAPPER.writeValueAsString(TEST_DATA);
 		assertNotNull(xml);
 
 		// then bring it back
@@ -60,6 +60,61 @@ public class StringListRoundtripTest {
 			assertEquals("", result[2]);
 		}
 		assertEquals("test2", result[3]);
+	}
+
+	@Test
+	public void testStringArrayPojo() throws Exception
+	{
+		// default mode, should get back empty string
+		MAPPER.disable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.enable(PROCESS_XSI_NIL);
+		stringArrayPojoRoundtrip(false);
+
+		// xsi null enabled, should get back null
+		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.enable(PROCESS_XSI_NIL);
+		stringArrayPojoRoundtrip(true);
+
+		// xsi null write enabled but processing disabled, should get back empty string
+		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.disable(PROCESS_XSI_NIL);
+		stringArrayPojoRoundtrip(false);
+	}
+
+	private void stringArrayPojoRoundtrip(boolean shouldBeNull) throws Exception
+	{
+		ArrayPojo arrayPojo = new ArrayPojo();
+		arrayPojo.setArray(TEST_DATA);
+
+		// serialize to string
+		String xml = MAPPER.writeValueAsString(arrayPojo);
+		assertNotNull(xml);
+
+		// then bring it back
+		ArrayPojo result = MAPPER.readValue(xml, ArrayPojo.class);
+		assertEquals(4, result.array.length);
+		assertEquals("", result.array[0]);
+		assertEquals("test", result.array[1]);
+		if (shouldBeNull)
+		{
+			assertNull(result.array[2]);
+		} else
+		{
+			assertEquals("", result.array[2]);
+		}
+		assertEquals("test2", result.array[3]);
+	}
+
+	private static class ArrayPojo {
+		private String[] array;
+
+		public String[] getArray() {
+			return array;
+		}
+
+		public void setArray(String[] array) {
+			this.array = array;
+		}
 	}
 
 	@Test
@@ -83,7 +138,7 @@ public class StringListRoundtripTest {
 
 	private void stringListRoundtrip(boolean shouldBeNull) throws Exception
 	{
-		List<String> list = asList("", "test", null, "test2");
+		List<String> list = asList(TEST_DATA);
 
 		// serialize to string
 		String xml = MAPPER.writeValueAsString(list);
@@ -105,25 +160,80 @@ public class StringListRoundtripTest {
 	}
 
 	@Test
-	public void testStringMap() throws Exception
+	public void testStringListPojo() throws Exception
 	{
 		// default mode, should get back empty string
 		MAPPER.disable(WRITE_NULLS_AS_XSI_NIL);
 		MAPPER.enable(PROCESS_XSI_NIL);
-		stringMapRoundtrip(false);
+		stringListPojoRoundtrip(false);
 
 		// xsi null enabled, should get back null
 		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
 		MAPPER.enable(PROCESS_XSI_NIL);
-		stringMapRoundtrip(true);
+		stringListPojoRoundtrip(true);
 
 		// xsi null write enabled but processing disabled, should get back empty string
 		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
 		MAPPER.disable(PROCESS_XSI_NIL);
-		stringMapRoundtrip(false);
+		stringListPojoRoundtrip(false);
 	}
 
-	private void stringMapRoundtrip(boolean shouldBeNull) throws Exception
+	private void stringListPojoRoundtrip(boolean shouldBeNull) throws Exception
+	{
+		ListPojo listPojo =  new ListPojo();
+		listPojo.setList(asList(TEST_DATA));
+
+		// serialize to string
+		String xml = MAPPER.writeValueAsString(listPojo);
+		assertNotNull(xml);
+
+		// then bring it back
+		ListPojo result = MAPPER.readValue(xml, ListPojo.class);
+		assertEquals(4, result.list.size());
+		assertEquals("", result.list.get(0));
+		assertEquals("test", result.list.get(1));
+		if (shouldBeNull)
+		{
+			assertNull(result.list.get(2));
+		} else
+		{
+			assertEquals("", result.list.get(2));
+		}
+		assertEquals("test2", result.list.get(3));
+	}
+
+	private static class ListPojo {
+		private List<String> list;
+
+		public List<String> getList() {
+			return list;
+		}
+
+		public void setList(List<String> list) {
+			this.list = list;
+		}
+	}
+
+	@Test
+	public void testStringMapPojo() throws Exception
+	{
+		// default mode, should get back empty string
+		MAPPER.disable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.enable(PROCESS_XSI_NIL);
+		stringMapPojoRoundtrip(false);
+
+		// xsi null enabled, should get back null
+		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.enable(PROCESS_XSI_NIL);
+		stringMapPojoRoundtrip(true);
+
+		// xsi null write enabled but processing disabled, should get back empty string
+		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.disable(PROCESS_XSI_NIL);
+		stringMapPojoRoundtrip(false);
+	}
+
+	private void stringMapPojoRoundtrip(boolean shouldBeNull) throws Exception
 	{
 		Map<String, String> map = new HashMap<String, String>() {{
 			put("a", "");
@@ -132,7 +242,7 @@ public class StringListRoundtripTest {
 			put("d", "test2");
 		}};
 		MapPojo mapPojo = new MapPojo();
-		mapPojo.setMap( map );
+		mapPojo.setMap(map);
 
 		// serialize to string
 		String xml = MAPPER.writeValueAsString(mapPojo);
@@ -156,15 +266,85 @@ public class StringListRoundtripTest {
 	private static class MapPojo {
 		private Map<String, String> map;
 
-		public MapPojo() {
-		}
-
 		public Map<String, String> getMap() {
 			return map;
 		}
 
 		public void setMap(Map<String, String> map) {
 			this.map = map;
+		}
+	}
+
+	@Test
+	public void testStringPojo() throws Exception
+	{
+		// default mode, should get back empty string
+		MAPPER.disable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.enable(PROCESS_XSI_NIL);
+		stringPojoRoundtrip(false);
+
+		// xsi null enabled, should get back null
+		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.enable(PROCESS_XSI_NIL);
+		stringPojoRoundtrip(true);
+
+		// xsi null write enabled but processing disabled, should get back empty string
+		MAPPER.enable(WRITE_NULLS_AS_XSI_NIL);
+		MAPPER.disable(PROCESS_XSI_NIL);
+		stringPojoRoundtrip(false);
+	}
+
+	private void stringPojoRoundtrip(boolean shouldBeNull) throws Exception
+	{
+		StringPojo stringPojo = new StringPojo();
+		stringPojo.setNormalString("test");
+		stringPojo.setEmptyString("");
+		stringPojo.setNullString(null);
+
+		// serialize to string
+		String xml = MAPPER.writeValueAsString(stringPojo);
+		assertNotNull(xml);
+
+		// then bring it back
+		StringPojo result = MAPPER.readValue(xml, StringPojo.class);
+		assertEquals("test", result.normalString);
+		assertEquals("", result.emptyString);
+		if (shouldBeNull)
+		{
+			assertNull(result.nullString);
+		} else
+		{
+			assertEquals("", result.nullString);
+		}
+	}
+
+	private static class StringPojo {
+		private String normalString;
+		private String emptyString;
+		private String nullString;
+
+		public String getNormalString() {
+			return normalString;
+		}
+
+		public void setNormalString(String normalString) {
+			this.normalString = normalString;
+		}
+
+		public String getEmptyString() {
+			return emptyString;
+		}
+
+		public void setEmptyString(String emptyString) {
+			this.emptyString = emptyString;
+		}
+
+		public String getNullString() {
+			return nullString;
+		}
+
+		public void setNullString(String nullString) {
+			this.nullString = nullString;
 		}
 	}
 }
