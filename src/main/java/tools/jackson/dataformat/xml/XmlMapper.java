@@ -6,9 +6,7 @@ import java.io.IOException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.Nulls;
 
 import tools.jackson.core.*;
 import tools.jackson.core.type.TypeReference;
@@ -83,8 +81,10 @@ public class XmlMapper extends ObjectMapper
             //   to empty string -- this lets us induce `null` from empty tags firs
             // 08-Sep-2019, tatu: This causes [dataformat-xml#359] (follow-up for #354), but
             //    can not simply be removed.
-            _configOverrides.findOrCreateOverride(String.class)
-                .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+            // 19-Mar-2023, tatu: Nah. Let's not coerce to let `xsi:nil` works its magic
+
+            //_configOverrides.findOrCreateOverride(String.class)
+            //    .setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
 
             // 13-May-2020, tatu: [dataformat-xml#377] Need to ensure we will keep XML-specific
             //    Base64 default as "MIME" (not MIME-NO-LINEFEEDS), to preserve pre-2.12

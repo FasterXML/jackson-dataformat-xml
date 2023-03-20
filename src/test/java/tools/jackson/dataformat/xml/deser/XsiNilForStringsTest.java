@@ -13,11 +13,6 @@ public class XsiNilForStringsTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
-    // 04-Jan-2019, tatu: Due to default "Map Strings to Null values" coercion (see XmlMapper),
-    //    tests for `null` handling are not quite right for 3.x... ideally would probably
-    //    NOT use coercion, maybe, or (if possible) avoid doing that for `xsi:nil` induced
-    //    reliable one. But as of now not 100% clear how this could be done so comment out tests
-    
     // [dataformat-xml#378]
     public void testWithStringAsNull() throws Exception
     {
@@ -30,9 +25,7 @@ public class XsiNilForStringsTest extends XmlTestBase
 
         assertEquals("not null", bean.first);
 
-        // for 3.0:
-//        assertNull(bean.second);
-        assertEquals("", bean.second);
+        assertNull(bean.second);
     }
 
     // [dataformat-xml#378]
@@ -47,8 +40,6 @@ public class XsiNilForStringsTest extends XmlTestBase
         assertNotNull(bean);
         assertEquals("not null", bean.second);
 
-        // for 3.0:
-//      assertNull(bean.first);
-      assertEquals("", bean.first);
+      assertNull(bean.first);
     }
 }

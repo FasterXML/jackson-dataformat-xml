@@ -1,7 +1,6 @@
 package tools.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;

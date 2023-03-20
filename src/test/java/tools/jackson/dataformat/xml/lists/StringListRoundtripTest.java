@@ -264,11 +264,7 @@ public class StringListRoundtripTest {
 		_stringPojoRoundtrip(MAPPER_READ_NULLS, false);
 
 		// xsi null enabled, should get back null
-
-		// 19-Mar-2023, tatu: I think this fails due to [dataformat-xml#359]:
-		//   need to comment out for now
-
-//		_stringPojoRoundtrip(MAPPER_READ_WRITE_NULLS, true);
+		_stringPojoRoundtrip(MAPPER_READ_WRITE_NULLS, true);
 
 		// xsi null write enabled but processing disabled, should get back empty string
 		_stringPojoRoundtrip(MAPPER_WRITE_NULLS, false);
