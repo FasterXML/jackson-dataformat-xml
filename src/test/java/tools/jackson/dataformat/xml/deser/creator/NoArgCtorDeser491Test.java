@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.deser.creator;
 
 import com.fasterxml.jackson.annotation.*;
 
