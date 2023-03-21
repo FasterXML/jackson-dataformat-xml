@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.15.0-rc1 (18-Mar-2023)
 
+#286: Conflict between `@JsonIdentityInfo` and Unwrapped Lists
+ (reported by @rupert-madden-abbott)
 #533: (Android) java.lang.NoClassDefFoundError: Failed resolution
    of: Ljavax/xml/stream/XMLInputFactory
  (reported by @clashcaddie)
