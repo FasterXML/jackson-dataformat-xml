@@ -11,14 +11,14 @@ import com.fasterxml.jackson.databind.util.Annotations;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class JsonAppend508Test extends XmlTestBase
+public class JsonAppend578Test extends XmlTestBase
 {
-    // [dataformat-xml#508]: Duplication of virtual properties
+    // [dataformat-xml#578]: Duplication of virtual properties
     @JsonAppend(props = @JsonAppend.Prop(name = "virtual", value = MyVirtualPropertyWriter.class))
-    public static class Pojo508 {
+    public static class Pojo578 {
         private final String name;
 
-        public Pojo508(String name) {
+        public Pojo578(String name) {
             this.name = name;
         }
         public String getName() {
@@ -50,9 +50,9 @@ public class JsonAppend508Test extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
-    // [dataformat-xml#508]: Duplication of virtual properties
+    // [dataformat-xml#578]: Duplication of virtual properties
     public void testJsonAppend() throws Exception {
-        String xml = MAPPER.writeValueAsString(new Pojo508("foo"));
+        String xml = MAPPER.writeValueAsString(new Pojo578("foo"));
         assertEquals("<Pojo><name>foo</name><virtual>bar</virtual></Pojo>",xml);
     }
 }
