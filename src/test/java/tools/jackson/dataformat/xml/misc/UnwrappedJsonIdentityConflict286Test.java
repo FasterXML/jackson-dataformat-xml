@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.misc;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -10,7 +10,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 // for [dataformat-xml#286]: parser getting confused with unwrapped lists,
 // object id
-public class UnwrappedJsonIdentityConflictTest extends XmlTestBase
+public class UnwrappedJsonIdentityConflict286Test extends XmlTestBase
 {
     static class Town
     {
