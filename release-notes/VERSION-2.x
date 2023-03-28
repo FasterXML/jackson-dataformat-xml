@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.15.0-rc1 (18-Mar-2023)
+2.15.0-rc2 (28-Mar-2023)
 
 #286: Conflict between `@JsonIdentityInfo` and Unwrapped Lists
  (reported by @rupert-madden-abbott)
