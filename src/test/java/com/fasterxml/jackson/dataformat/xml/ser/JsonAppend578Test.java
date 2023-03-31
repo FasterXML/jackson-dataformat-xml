@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.ser;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
@@ -53,6 +53,6 @@ public class JsonAppend578Test extends XmlTestBase
     // [dataformat-xml#578]: Duplication of virtual properties
     public void testJsonAppend() throws Exception {
         String xml = MAPPER.writeValueAsString(new Pojo578("foo"));
-        assertEquals("<Pojo><name>foo</name><virtual>bar</virtual></Pojo>",xml);
+        assertEquals("<Pojo578><name>foo</name><virtual>bar</virtual></Pojo578>",xml);
     }
 }
