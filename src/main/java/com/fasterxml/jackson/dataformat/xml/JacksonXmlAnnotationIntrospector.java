@@ -1,12 +1,14 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.*;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
+import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -122,6 +124,19 @@ public class JacksonXmlAnnotationIntrospector
             return jprop.namespace();
         }
         return null;
+    }
+
+    /**
+     * Due to issue [dataformat-xml#578] need to suppress calls to this method
+     * to avoid duplicate virtual properties from being added. Not elegant
+     * but .. works.
+     *
+     * @since 2.15
+     */
+    @Override
+    public void findAndAddVirtualProperties(MapperConfig<?> config, AnnotatedClass ac,
+            List<BeanPropertyWriter> properties) {
+        return;
     }
 
     /*
