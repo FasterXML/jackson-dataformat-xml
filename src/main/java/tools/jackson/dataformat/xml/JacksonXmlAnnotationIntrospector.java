@@ -1,11 +1,14 @@
 package tools.jackson.dataformat.xml;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.*;
+import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -22,7 +25,6 @@ public class JacksonXmlAnnotationIntrospector
 {
     private static final long serialVersionUID = 1L;
 
-    // @since 2.11.1
     @SuppressWarnings("unchecked")
     private final static Class<? extends Annotation>[] ANNOTATIONS_TO_INFER_XML_PROP =
             (Class<? extends Annotation>[]) new Class<?>[] {
@@ -35,7 +37,6 @@ public class JacksonXmlAnnotationIntrospector
      */
     public final static boolean DEFAULT_USE_WRAPPER = true;
 
-    // non-final from 2.7 on, to allow mapper to change
     protected boolean _cfgDefaultUseWrapper;
 
     public JacksonXmlAnnotationIntrospector() {
@@ -122,6 +123,20 @@ public class JacksonXmlAnnotationIntrospector
         }
         return null;
     }
+
+    /* 30-Mar-2023, tatu: Although issue [dataformat-xml#578] requires override
+     *   in 2.x for this method, same problem does NOT affect 3.0.
+     *   This because we replace default AnnotationIntrospector, instead of
+     *   inserting/appending it. Hence we MUST NOT block access to underlying
+     *   method.
+     */
+    /*
+    @Override
+    public void findAndAddVirtualProperties(MapperConfig<?> config, AnnotatedClass ac,
+            List<BeanPropertyWriter> properties) {
+        return;
+    }
+    */
 
     /*
     /**********************************************************************
