@@ -4,12 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-Not yet released
-
-#578: `XmlMapper` serializes `@JsonAppend` property twice
- (reported by @stepince)
-
-2.15.0-rc2 (28-Mar-2023)
+2.15.0-rc3 (14-Apr-2023)
 
 #286: Conflict between `@JsonIdentityInfo` and Unwrapped Lists
  (reported by @rupert-madden-abbott)
@@ -26,6 +21,8 @@ Not yet released
   for XML pretty-printing
  (requested by @koalalam)
  (contributed by Joo Hyuk K)
+#578: `XmlMapper` serializes `@JsonAppend` property twice
+ (reported by @stepince)
 #584: Deserialization of `null` String values in Arrays / `Collection`s
    not working as expected
  (fix contributed by Marco B)
