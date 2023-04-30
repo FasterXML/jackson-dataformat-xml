@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -9,6 +11,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.*;
@@ -398,7 +401,7 @@ public class XmlMapper extends ObjectMapper
     /**
      * Method that can be used to serialize any Java value as
      * a byte array.
-
+     *
      * @param value value to write as XML bytes
      * @param encoding character encoding for the XML output
      * @return byte array representing the XML output
@@ -418,10 +421,36 @@ public class XmlMapper extends ObjectMapper
         }
     }
 
+    /**
+     * Method that can be used to serialize any Java value as
+     * XML output, written to File provided.
+     *
+     * @param resultFile
+     * @param value
+     * @param encoding
+     * @throws IOException
+     * @throws StreamWriteException
+     * @throws DatabindException
+     * @since 2.16
+     */
+    public void writeValue(File resultFile, Object value, String encoding)
+            throws IOException, StreamWriteException, DatabindException
+    {
+        _writeValueAndClose(createGenerator(resultFile, encoding), value);
+    }
+
     private JsonGenerator createGenerator(OutputStream out, String encoding) throws IOException {
         this._assertNotNull("out", out);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
         this._serializationConfig.initialize(g);
+        return g;
+    }
+
+    private JsonGenerator createGenerator(File outputFile, String encoding) throws IOException {
+        _assertNotNull("outputFile", outputFile);
+        JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(
+                new FileOutputStream(outputFile), encoding);
+        _serializationConfig.initialize(g);
         return g;
     }
 }
