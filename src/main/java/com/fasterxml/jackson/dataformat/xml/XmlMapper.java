@@ -439,6 +439,25 @@ public class XmlMapper extends ObjectMapper
         _writeValueAndClose(createGenerator(resultFile, encoding), value);
     }
 
+    /**
+     * Method that can be used to serialize any Java value as
+     * JSON output, using output stream provided (using encoding
+     * {@link JsonEncoding#UTF8}).
+     *<p>
+     * Note: method does not close the underlying stream explicitly
+     * here; however, {@link JsonFactory} this mapper uses may choose
+     * to close the stream depending on its settings (by default,
+     * it will try to close it when {@link JsonGenerator} we construct
+     * is closed).
+     *
+     * @since 2.16
+     */
+    public void writeValue(OutputStream out, Object value, String encoding)
+            throws IOException, StreamWriteException, DatabindException
+    {
+        _writeValueAndClose(createGenerator(out, encoding), value);
+    }
+
     private JsonGenerator createGenerator(OutputStream out, String encoding) throws IOException {
         this._assertNotNull("out", out);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
