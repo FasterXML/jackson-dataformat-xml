@@ -517,6 +517,22 @@ public class XmlFactory extends JsonFactory
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
+
+    /**
+     * @param out
+     * @param encoding
+     * @return
+     * @throws IOException
+     * @since 2.16
+     */
+    public ToXmlGenerator createGenerator(OutputStream out, String encoding) throws IOException
+    {
+        // false -> we won't manage the stream unless explicitly directed to
+        final IOContext ctxt = _createContext(_createContentReference(out), false);
+        return new ToXmlGenerator(ctxt,
+                _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, _createXmlWriter(ctxt, out, encoding), _nameProcessor, encoding);
+    }
     
     @Override
     public ToXmlGenerator createGenerator(Writer out) throws IOException
@@ -690,9 +706,14 @@ public class XmlFactory extends JsonFactory
 
     protected XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out) throws IOException
     {
+        return _createXmlWriter(ctxt, out, "UTF-8");
+    }
+
+    protected XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out, String encoding) throws IOException
+    {
         XMLStreamWriter sw;
         try {
-            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), "UTF-8");
+            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), encoding);
         } catch (Exception e) {
             throw new JsonGenerationException(e.getMessage(), e, null);
         }

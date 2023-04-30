@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -9,6 +10,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
@@ -391,5 +393,35 @@ public class XmlMapper extends ObjectMapper
         super.writeValue(g, value);
         // NOTE: above call should do flush(); and we should NOT close here.
         // Finally, 'g' has no buffers to release.
+    }
+
+    /**
+     * Method that can be used to serialize any Java value as
+     * a byte array.
+
+     * @param value value to write as XML bytes
+     * @param encoding character encoding for the XML output
+     * @return byte array representing the XML output
+     * @throws JsonProcessingException
+     * @since 2.16
+     */
+    public byte[] writeValueAsBytes(Object value, String encoding) throws JsonProcessingException {
+        try (ByteArrayBuilder bb = new ByteArrayBuilder(_jsonFactory._getBufferRecycler())) {
+            _writeValueAndClose(createGenerator(bb, encoding), value);
+            final byte[] result = bb.toByteArray();
+            bb.release();
+            return result;
+        } catch (JsonProcessingException e) { // to support [JACKSON-758]
+            throw e;
+        } catch (IOException e) { // shouldn't really happen, but is declared as possibility so:
+            throw JsonMappingException.fromUnexpectedIOE(e);
+        }
+    }
+
+    private JsonGenerator createGenerator(OutputStream out, String encoding) throws IOException {
+        this._assertNotNull("out", out);
+        JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
+        this._serializationConfig.initialize(g);
+        return g;
     }
 }
