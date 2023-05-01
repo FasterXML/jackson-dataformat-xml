@@ -1,6 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.stream.*;
 
@@ -537,7 +539,7 @@ public class XmlFactory extends JsonFactory
      * @throws IOException
      * @since 2.16
      */
-    public ToXmlGenerator createGenerator(OutputStream out, String encoding) throws IOException
+    public ToXmlGenerator createGenerator(OutputStream out, Charset encoding) throws IOException
     {
         // false -> we won't manage the stream unless explicitly directed to
         final IOContext ctxt = _createContext(_createContentReference(out), false);
@@ -718,14 +720,14 @@ public class XmlFactory extends JsonFactory
 
     protected XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out) throws IOException
     {
-        return _createXmlWriter(ctxt, out, "UTF-8");
+        return _createXmlWriter(ctxt, out, StandardCharsets.UTF_8);
     }
 
-    protected XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out, String encoding) throws IOException
+    protected final XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out, Charset encoding) throws IOException
     {
         XMLStreamWriter sw;
         try {
-            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), encoding);
+            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), encoding.name());
         } catch (Exception e) {
             throw new JsonGenerationException(e.getMessage(), e, null);
         }

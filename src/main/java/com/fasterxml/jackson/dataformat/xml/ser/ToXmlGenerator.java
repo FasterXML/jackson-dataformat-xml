@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -219,7 +220,7 @@ public class ToXmlGenerator
      *
      * @since 2.16
      */
-    protected final String _encoding;
+    protected final Charset _encoding;
 
     /*
     /**********************************************************
@@ -230,12 +231,12 @@ public class ToXmlGenerator
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
             ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor)
     {
-        this(ctxt, stdFeatures, xmlFeatures, codec, sw, nameProcessor, StandardCharsets.UTF_8.name());
+        this(ctxt, stdFeatures, xmlFeatures, codec, sw, nameProcessor, StandardCharsets.UTF_8);
     }
 
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
                           ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor,
-                          String encoding)
+                          Charset encoding)
     {
         super(stdFeatures, codec);
         _formatFeatures = xmlFeatures;
@@ -261,9 +262,9 @@ public class ToXmlGenerator
         _initialized = true;
         try {
             if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures)) {
-                _xmlWriter.writeStartDocument(_encoding, "1.1");
+                _xmlWriter.writeStartDocument(_encoding.name(), "1.1");
             } else if (Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-                _xmlWriter.writeStartDocument(_encoding, "1.0");
+                _xmlWriter.writeStartDocument(_encoding.name(), "1.0");
             } else {
                 return;
             }

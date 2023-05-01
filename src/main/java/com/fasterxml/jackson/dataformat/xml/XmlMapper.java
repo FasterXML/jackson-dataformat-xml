@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -408,7 +409,7 @@ public class XmlMapper extends ObjectMapper
      * @throws JsonProcessingException
      * @since 2.16
      */
-    public byte[] writeValueAsBytes(Object value, String encoding) throws JsonProcessingException {
+    public byte[] writeValueAsBytes(Object value, Charset encoding) throws JsonProcessingException {
         try (ByteArrayBuilder bb = new ByteArrayBuilder(_jsonFactory._getBufferRecycler())) {
             _writeValueAndClose(createGenerator(bb, encoding), value);
             final byte[] result = bb.toByteArray();
@@ -433,7 +434,7 @@ public class XmlMapper extends ObjectMapper
      * @throws DatabindException
      * @since 2.16
      */
-    public void writeValue(File resultFile, Object value, String encoding)
+    public void writeValue(File resultFile, Object value, Charset encoding)
             throws IOException, StreamWriteException, DatabindException
     {
         _writeValueAndClose(createGenerator(resultFile, encoding), value);
@@ -452,20 +453,20 @@ public class XmlMapper extends ObjectMapper
      *
      * @since 2.16
      */
-    public void writeValue(OutputStream out, Object value, String encoding)
+    public void writeValue(OutputStream out, Object value, Charset encoding)
             throws IOException, StreamWriteException, DatabindException
     {
         _writeValueAndClose(createGenerator(out, encoding), value);
     }
 
-    protected final JsonGenerator createGenerator(OutputStream out, String encoding) throws IOException {
+    protected final JsonGenerator createGenerator(OutputStream out, Charset encoding) throws IOException {
         this._assertNotNull("out", out);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
         this._serializationConfig.initialize(g);
         return g;
     }
 
-    protected final JsonGenerator createGenerator(File outputFile, String encoding) throws IOException {
+    protected final JsonGenerator createGenerator(File outputFile, Charset encoding) throws IOException {
         _assertNotNull("outputFile", outputFile);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(
                 new FileOutputStream(outputFile), encoding);
