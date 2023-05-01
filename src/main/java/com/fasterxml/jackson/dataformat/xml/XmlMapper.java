@@ -402,7 +402,7 @@ public class XmlMapper extends ObjectMapper
      * Method that can be used to serialize any Java value as
      * a byte array.
      *
-     * @param value value to write as XML bytes
+     * @param value value to serialize as XML bytes
      * @param encoding character encoding for the XML output
      * @return byte array representing the XML output
      * @throws JsonProcessingException
@@ -425,9 +425,9 @@ public class XmlMapper extends ObjectMapper
      * Method that can be used to serialize any Java value as
      * XML output, written to File provided.
      *
-     * @param resultFile
-     * @param value
-     * @param encoding
+     * @param resultFile the file to write to
+     * @param value the value to serialize
+     * @param encoding character encoding for the XML output
      * @throws IOException
      * @throws StreamWriteException
      * @throws DatabindException
@@ -458,14 +458,14 @@ public class XmlMapper extends ObjectMapper
         _writeValueAndClose(createGenerator(out, encoding), value);
     }
 
-    private JsonGenerator createGenerator(OutputStream out, String encoding) throws IOException {
+    protected final JsonGenerator createGenerator(OutputStream out, String encoding) throws IOException {
         this._assertNotNull("out", out);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
         this._serializationConfig.initialize(g);
         return g;
     }
 
-    private JsonGenerator createGenerator(File outputFile, String encoding) throws IOException {
+    protected final JsonGenerator createGenerator(File outputFile, String encoding) throws IOException {
         _assertNotNull("outputFile", outputFile);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(
                 new FileOutputStream(outputFile), encoding);

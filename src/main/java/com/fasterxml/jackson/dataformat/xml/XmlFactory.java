@@ -519,9 +519,21 @@ public class XmlFactory extends JsonFactory
     }
 
     /**
-     * @param out
-     * @param encoding
-     * @return
+     * Method for constructing a {@link ToXmlGenerator} for writing XML content
+     * using specified output stream.
+     * Encoding to use must be specified.
+     *<p>
+     * Underlying stream <b>is NOT owned</b> by the generator constructed,
+     * so that generator will NOT close the output stream when
+     * {@link ToXmlGenerator#close} is called (unless auto-closing
+     * feature,
+     * {@link com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}
+     * is enabled).
+     * Using application needs to close it explicitly if this is the case.
+     *
+     * @param out OutputStream to use for writing JSON content
+     * @param encoding Character encoding to use
+     * @return a {@link ToXmlGenerator} instance
      * @throws IOException
      * @since 2.16
      */
