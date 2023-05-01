@@ -137,7 +137,7 @@ public class NumberDeserWithXMLTest extends XmlTestBase
             fail("expected JsonMappingException");
         } catch (JsonMappingException jme) {
             assertTrue("unexpected exception message: " + jme.getMessage(),
-                    jme.getMessage().startsWith("Number length (1200) exceeds the maximum length (1000)"));
+                    jme.getMessage().startsWith("Number value length (1200) exceeds the maximum allowed"));
         }
     }
 
