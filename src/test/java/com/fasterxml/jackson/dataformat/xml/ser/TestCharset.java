@@ -12,7 +12,7 @@ public class TestCharset extends XmlTestBase
         public String 象形字;
     }
 
-    public void testBig5() throws IOException
+    public void testBig5Bytes() throws IOException
     {
         Charset big5 = Charset.forName("Big5");
         StringBean stringBean = new StringBean();
@@ -24,5 +24,17 @@ public class TestCharset extends XmlTestBase
         String expected =
                 "<?xml version='1.1' encoding='Big5'?><StringBean><象形字>pictogram</象形字></StringBean>";
         assertEquals(expected, xmlText);
+    }
+
+    public void testBig5RoundTrip() throws IOException
+    {
+        Charset big5 = Charset.forName("Big5");
+        StringBean stringBean = new StringBean();
+        stringBean.象形字 = "pictogram";
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
+        byte[] xml = xmlMapper.writeValueAsBytes(stringBean, big5);
+        StringBean stringBean1 = xmlMapper.readValue(xml, StringBean.class);
+        assertEquals(stringBean.象形字, stringBean1.象形字);
     }
 }

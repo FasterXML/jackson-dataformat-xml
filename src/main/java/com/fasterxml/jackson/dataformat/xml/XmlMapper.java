@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.core.io.DataOutputAsStream;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.*;
@@ -459,6 +461,12 @@ public class XmlMapper extends ObjectMapper
         _writeValueAndClose(createGenerator(out, encoding), value);
     }
 
+    public void writeValue(DataOutput out, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException
+    {
+        _writeValueAndClose(createGenerator(out, encoding), value);
+    }
+
     protected final JsonGenerator createGenerator(OutputStream out, Charset encoding) throws IOException {
         this._assertNotNull("out", out);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
@@ -471,6 +479,13 @@ public class XmlMapper extends ObjectMapper
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(
                 new FileOutputStream(outputFile), encoding);
         _serializationConfig.initialize(g);
+        return g;
+    }
+
+    protected final JsonGenerator createGenerator(DataOutput out, Charset encoding) throws IOException {
+        this._assertNotNull("out", out);
+        JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(new DataOutputAsStream(out), encoding);
+        this._serializationConfig.initialize(g);
         return g;
     }
 }
