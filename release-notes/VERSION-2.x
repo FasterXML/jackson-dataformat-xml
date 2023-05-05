@@ -27,6 +27,11 @@ Project: jackson-dataformat-xml
    not working as expected
  (fix contributed by Marco B)
 
+2.14.3 (05-May-2023)
+
+No changes since 2.14.2
+
+
 2.14.2 (28-Jan-2023)
 
 * Upgrade Woodstox to 6.5.0 for a fix to OSGi metadata
