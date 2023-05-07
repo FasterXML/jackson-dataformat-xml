@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import javax.xml.namespace.QName;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.*;
@@ -81,6 +82,10 @@ public class XmlBeanDeserializerModifier
     public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
             BeanDescription beanDesc, JsonDeserializer<?> deser0)
     {
+        if (beanDesc.getBeanClass() == QName.class) {
+            return new QNameDeserializer(deser0);
+        }
+		
         if (!(deser0 instanceof BeanDeserializerBase)) {
             return deser0;
         }
