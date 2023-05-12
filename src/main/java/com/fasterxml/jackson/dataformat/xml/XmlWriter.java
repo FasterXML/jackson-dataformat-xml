@@ -314,6 +314,10 @@ public final class XmlWriter extends ObjectWriter {
         return _objectWriter.writeValues(out);
     }
 
+    public SequenceWriter writeValues(File out, Charset charset) throws IOException {
+        return this._newSequenceWriter(false, this.createGenerator(out, charset), true);
+    }
+
     @Override
     public SequenceWriter writeValues(JsonGenerator g) throws IOException {
         return _objectWriter.writeValues(g);
@@ -329,14 +333,26 @@ public final class XmlWriter extends ObjectWriter {
         return _objectWriter.writeValues(out);
     }
 
+    public SequenceWriter writeValues(OutputStream out, Charset charset) throws IOException {
+        return this._newSequenceWriter(false, this.createGenerator(out, charset), true);
+    }
+
     @Override
     public SequenceWriter writeValues(DataOutput out) throws IOException {
         return _objectWriter.writeValues(out);
     }
 
+    public SequenceWriter writeValues(DataOutput out, Charset charset) throws IOException {
+        return this._newSequenceWriter(false, this.createGenerator(out, charset), true);
+    }
+
     @Override
     public SequenceWriter writeValuesAsArray(File out) throws IOException {
         return _objectWriter.writeValuesAsArray(out);
+    }
+
+    public SequenceWriter writeValuesAsArray(File out, Charset encoding) throws IOException {
+        return this._newSequenceWriter(true, createGenerator(out, encoding), true);
     }
 
     @Override
@@ -354,9 +370,17 @@ public final class XmlWriter extends ObjectWriter {
         return _objectWriter.writeValuesAsArray(out);
     }
 
+    public SequenceWriter writeValuesAsArray(OutputStream out, Charset encoding) throws IOException {
+        return this._newSequenceWriter(true, createGenerator(out, encoding), true);
+    }
+
     @Override
     public SequenceWriter writeValuesAsArray(DataOutput out) throws IOException {
         return _objectWriter.writeValuesAsArray(out);
+    }
+
+    public SequenceWriter writeValuesAsArray(DataOutput out, Charset encoding) throws IOException {
+        return this._newSequenceWriter(true, createGenerator(out, encoding), true);
     }
 
     @Override
