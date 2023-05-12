@@ -110,7 +110,7 @@ public class ListSerializationTest extends XmlTestBase
     // [dataformat-xml#148]
     public void testIteratorSerialization() throws Exception
     {
-        assertEquals("<Bean148><item>2</item><item>1</item><item>0</item></Bean148>",
+        assertEquals("<Bean148><list><item>2</item><item>1</item><item>0</item></list></Bean148>",
                 MAPPER.writeValueAsString(new Bean148()).trim());
     }
 }
