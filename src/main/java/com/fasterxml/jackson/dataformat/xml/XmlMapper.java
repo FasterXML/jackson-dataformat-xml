@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -14,16 +15,19 @@ import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.DataOutputAsStream;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
+import com.fasterxml.jackson.databind.cfg.ContextAttributes;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext;
@@ -313,7 +317,7 @@ public class XmlMapper extends ObjectMapper
     public XmlFactory getFactory() {
         return (XmlFactory) _jsonFactory;
     }
-    
+
     public ObjectMapper configure(ToXmlGenerator.Feature f, boolean state) {
         ((XmlFactory)_jsonFactory).configure(f, state);
         return this;
@@ -465,6 +469,102 @@ public class XmlMapper extends ObjectMapper
             throws IOException, StreamWriteException, DatabindException
     {
         _writeValueAndClose(createGenerator(out, encoding), value);
+    }
+
+    @Override
+    public ObjectWriter writer() {
+        return new XmlWriter(super.writer());
+    }
+
+    @Override
+    public ObjectWriter writer(SerializationFeature feature) {
+        return new XmlWriter(super.writer(feature));
+    }
+
+    @Override
+    public ObjectWriter writer(SerializationFeature first, SerializationFeature... other) {
+        return new XmlWriter(super.writer(first, other));
+    }
+
+    @Override
+    public ObjectWriter writer(DateFormat df) {
+        return new XmlWriter(super.writer(df));
+    }
+
+    @Override
+    public ObjectWriter writerWithView(Class<?> serializationView) {
+        return new XmlWriter(super.writerWithView(serializationView));
+    }
+
+    @Override
+    public ObjectWriter writerFor(Class<?> rootType) {
+        return new XmlWriter(super.writerFor(rootType));
+    }
+
+    @Override
+    public ObjectWriter writerFor(TypeReference<?> rootType) {
+        return new XmlWriter(super.writerFor(rootType));
+    }
+
+    @Override
+    public ObjectWriter writerFor(JavaType rootType) {
+        return new XmlWriter(super.writerFor(rootType));
+    }
+
+    @Override
+    public ObjectWriter writer(PrettyPrinter pp) {
+        return new XmlWriter(super.writer(pp));
+    }
+
+    @Override
+    public ObjectWriter writerWithDefaultPrettyPrinter() {
+        return new XmlWriter(super.writerWithDefaultPrettyPrinter());
+    }
+
+    @Override
+    public ObjectWriter writer(FilterProvider filterProvider) {
+        return new XmlWriter(super.writer(filterProvider));
+    }
+
+    @Override
+    public ObjectWriter writer(FormatSchema schema) {
+        return new XmlWriter(super.writer(schema));
+    }
+
+    @Override
+    public ObjectWriter writer(Base64Variant defaultBase64) {
+        return new XmlWriter(super.writer(defaultBase64));
+    }
+
+    @Override
+    public ObjectWriter writer(CharacterEscapes escapes) {
+        return new XmlWriter(super.writer(escapes));
+    }
+
+    @Override
+    public ObjectWriter writer(ContextAttributes attrs) {
+        return new XmlWriter(super.writer(attrs));
+    }
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public ObjectWriter writerWithType(Class<?> rootType) {
+        return new XmlWriter(super.writerWithType(rootType));
+    }
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public ObjectWriter writerWithType(TypeReference<?> rootType) {
+        return new XmlWriter(super.writerWithType(rootType));
+    }
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public ObjectWriter writerWithType(JavaType rootType) {
+        return new XmlWriter(super.writerWithType(rootType));
     }
 
     protected final JsonGenerator createGenerator(OutputStream out, Charset encoding) throws IOException {

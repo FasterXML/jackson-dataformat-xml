@@ -37,4 +37,16 @@ public class TestCharset extends XmlTestBase
         StringBean stringBean1 = xmlMapper.readValue(xml, StringBean.class);
         assertEquals(stringBean.象形字, stringBean1.象形字);
     }
+
+    public void testBig5ObjectWriter() throws IOException
+    {
+        Charset big5 = Charset.forName("Big5");
+        StringBean stringBean = new StringBean();
+        stringBean.象形字 = "pictogram";
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
+        byte[] xml = xmlMapper.writer().writeValueAsBytes(stringBean);
+        System.out.write(xml);
+        System.out.println();
+    }
 }
