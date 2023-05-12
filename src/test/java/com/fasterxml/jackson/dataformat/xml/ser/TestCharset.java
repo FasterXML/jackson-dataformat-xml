@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlWriter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -45,7 +46,8 @@ public class TestCharset extends XmlTestBase
         stringBean.象形字 = "pictogram";
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
-        byte[] xml = xmlMapper.writer().writeValueAsBytes(stringBean);
+        XmlWriter writer = (XmlWriter) xmlMapper.writer();
+        byte[] xml = writer.writeValueAsBytes(stringBean, big5);
         System.out.write(xml);
         System.out.println();
     }
