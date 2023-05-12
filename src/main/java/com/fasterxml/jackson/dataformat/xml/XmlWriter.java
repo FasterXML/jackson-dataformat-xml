@@ -3,7 +3,10 @@ package com.fasterxml.jackson.dataformat.xml;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.DataOutputAsStream;
+import com.fasterxml.jackson.core.io.SegmentedStringWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -21,9 +24,11 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import java.io.DataOutput;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.Locale;
 import java.util.Map;
@@ -419,9 +424,19 @@ public final class XmlWriter extends ObjectWriter {
         _objectWriter.writeValue(resultFile, value);
     }
 
+    public void writeValue(File resultFile, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException {
+        _writeValueAndClose(createGenerator(resultFile, encoding), value);
+    }
+
     @Override
     public void writeValue(OutputStream out, Object value) throws IOException, StreamWriteException, DatabindException {
         _objectWriter.writeValue(out, value);
+    }
+
+    public void writeValue(OutputStream out, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException {
+        _writeValueAndClose(createGenerator(out, encoding), value);
     }
 
     @Override
@@ -434,6 +449,11 @@ public final class XmlWriter extends ObjectWriter {
         _objectWriter.writeValue(out, value);
     }
 
+    public void writeValue(DataOutput out, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException {
+        _writeValueAndClose(createGenerator(out, encoding), value);
+    }
+
     @Override
     public String writeValueAsString(Object value) throws JsonProcessingException {
         return _objectWriter.writeValueAsString(value);
@@ -442,6 +462,33 @@ public final class XmlWriter extends ObjectWriter {
     @Override
     public byte[] writeValueAsBytes(Object value) throws JsonProcessingException {
         return _objectWriter.writeValueAsBytes(value);
+    }
+
+    /**
+     * Method that can be used to serialize any Java value as
+     * a byte array. Functionally equivalent to calling
+     * {@link #writeValue(Writer,Object)} with {@link java.io.ByteArrayOutputStream}
+     * and getting bytes, but more efficient.
+     *
+     * @param value value to serialize as XML bytes
+     * @param encoding character encoding for the XML output
+     * @return byte array representing the XML output
+     * @throws JsonProcessingException
+     */
+    public byte[] writeValueAsBytes(Object value, Charset encoding)
+            throws JsonProcessingException
+    {
+        // Although 'close()' is NOP, use auto-close to avoid lgtm complaints
+        try (ByteArrayBuilder bb = new ByteArrayBuilder(_generatorFactory._getBufferRecycler())) {
+            _writeValueAndClose(createGenerator(bb, encoding), value);
+            final byte[] result = bb.toByteArray();
+            bb.release();
+            return result;
+        } catch (JsonProcessingException e) { // to support [JACKSON-758]
+            throw e;
+        } catch (IOException e) { // shouldn't really happen, but is declared as possibility so:
+            throw JsonMappingException.fromUnexpectedIOE(e);
+        }
     }
 
     @Override
@@ -462,5 +509,22 @@ public final class XmlWriter extends ObjectWriter {
     @Override
     public boolean canSerialize(Class<?> type, AtomicReference<Throwable> cause) {
         return _objectWriter.canSerialize(type, cause);
+    }
+
+    private JsonGenerator createGenerator(OutputStream out, Charset charset) throws IOException {
+        _assertNotNull("out", out);
+        return _configureGenerator(((XmlFactory) _generatorFactory).createGenerator(out, charset));
+    }
+
+    private JsonGenerator createGenerator(DataOutput out, Charset charset) throws IOException {
+        _assertNotNull("out", out);
+        return _configureGenerator(((XmlFactory) _generatorFactory)
+                .createGenerator(new DataOutputAsStream(out), charset));
+    }
+
+    private JsonGenerator createGenerator(File out, Charset charset) throws IOException {
+        _assertNotNull("out", out);
+        return _configureGenerator(((XmlFactory) _generatorFactory)
+                .createGenerator(new FileOutputStream(out), charset));
     }
 }
