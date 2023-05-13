@@ -124,28 +124,5 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
                 "</elements></IteratorWrapper329>",
             OBJECT_MAPPER.writeValueAsString(wrapper));
     }
-    
-    /*
-    /**********************************************************
-    /* Stream tests, requires Jdk8Module
-    /**********************************************************
 
-    public void testStreamSerialization() throws JsonProcessingException {
-        String jsonStr = OBJECT_MAPPER.writeValueAsString(Stream.of("a", "b"));
-        assertEquals("<Head><item>a</item><item>b</item></Head>", jsonStr);
-    }
-
-    // [dataformat-xml#329] : Jackson ignores JacksonXmlElementWrapper on Stream
-    public void testStreamWrapperSerialization329() throws JsonProcessingException {
-        StreamWrapper329 wrapper = new StreamWrapper329();
-        wrapper.setData(Stream.of("a", "b"));
-
-        assertEquals(
-            "<StreamWrapper329><elements>" +
-                "<element>a</element>" +
-                "<element>b</element>" +
-                "</elements></StreamWrapper329>",
-            OBJECT_MAPPER.writeValueAsString(wrapper));
-    }
-    */
 }
