@@ -6,7 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-public class TypeUtil {
+public class TypeUtil
+{
     /**
      * Helper method used for figuring out if given raw type is a collection ("indexed") type;
      * in which case a wrapper element is typically added.
