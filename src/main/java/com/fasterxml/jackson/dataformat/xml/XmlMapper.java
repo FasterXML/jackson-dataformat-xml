@@ -567,6 +567,13 @@ public class XmlMapper extends ObjectMapper
         return new XmlWriter(super.writerWithType(rootType));
     }
 
+    public static XmlWriter toXmlWriter(final ObjectWriter objectWriter) {
+        if (objectWriter instanceof XmlWriter) {
+            return (XmlWriter) objectWriter;
+        }
+        return new XmlWriter(objectWriter);
+    }
+
     protected final JsonGenerator createGenerator(OutputStream out, Charset encoding) throws IOException {
         this._assertNotNull("out", out);
         JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
