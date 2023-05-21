@@ -60,7 +60,7 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
         }
     }
 
-    public void testCollectionSerialization() throws JsonProcessingException {
+    public void testCollectionSerialization() throws Exception {
         Collection<String> list = new ArrayList<>();
         list.add("a");
         list.add("b");
@@ -69,7 +69,7 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
             OBJECT_MAPPER.writeValueAsString(list));
     }
 
-    public void testListSerialization() throws JsonProcessingException {
+    public void testListSerialization() throws Exception {
         List<String> list = new ArrayList<>();
         list.add("a");
         list.add("b");
@@ -77,7 +77,7 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
             OBJECT_MAPPER.writeValueAsString(list));
     }
 
-    public void testListIteratorSerialization() throws JsonProcessingException {
+    public void testListIteratorSerialization() throws Exception {
         List<String> list = new ArrayList<>();
         list.add("a");
         list.add("b");
@@ -88,13 +88,13 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
     }
 
 
-    public void testStreamIteratorSerialization() throws JsonProcessingException {
+    public void testStreamIteratorSerialization() throws Exception {
         assertEquals("<Adapter><item>a</item><item>b</item></Adapter>",
             OBJECT_MAPPER.writeValueAsString(Stream.of("a", "b").iterator()));
     }
 
     // [dataformat-xml#329] : Jackson ignores JacksonXmlElementWrapper on Stream
-    public void testCollectionWrapperSerialization329() throws JsonProcessingException {
+    public void testCollectionWrapperSerialization329() throws Exception {
         Collection<String> collection = new ArrayList<>();
         collection.add("a");
         collection.add("b");
@@ -110,7 +110,7 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
     }
 
     // [dataformat-xml#329] : Jackson ignores JacksonXmlElementWrapper on Stream
-    public void testIteratorWrapperSerialization329() throws JsonProcessingException {
+    public void testIteratorWrapperSerialization329() throws Exception {
         Collection<String> collection = new ArrayList<>();
         collection.add("a");
         collection.add("b");
