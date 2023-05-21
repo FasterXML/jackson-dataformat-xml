@@ -1,6 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 // [dataformat-xml#302] : Unable to serialize top-level Java8 Stream
-public class Jdk8StreamSerialization302Test extends XmlTestBase {
+public class IterationType302Test extends XmlTestBase {
 
     final ObjectMapper OBJECT_MAPPER = new XmlMapper();
 
@@ -59,6 +59,36 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
             this.data = data;
         }
     }
+
+    // [dataformat-xml#148]
+    static class Bean148 {
+        @JsonProperty("item")
+        @JacksonXmlElementWrapper(localName = "list")
+        public Iterator<String> items() {
+            return new Iterator<String>() {
+                int item = 3;
+
+                @Override
+                public boolean hasNext() {
+                    return item > 0;
+                }
+
+                @Override
+                public String next() {
+                    item--;
+                    return Integer.toString(item);
+                }
+            };
+        }
+    }
+
+    
+    /*
+    /**********************************************************
+    /* Unit tests
+    /**********************************************************
+     */
+
 
     public void testCollectionSerialization() throws Exception {
         Collection<String> list = new ArrayList<>();
@@ -125,4 +155,9 @@ public class Jdk8StreamSerialization302Test extends XmlTestBase {
             OBJECT_MAPPER.writeValueAsString(wrapper));
     }
 
+    // [dataformat-xml#148]
+    public void testIteratorSerialization() throws Exception {
+        assertEquals("<Bean148><list><item>2</item><item>1</item><item>0</item></list></Bean148>",
+            OBJECT_MAPPER.writeValueAsString(new Bean148()).trim());
+    }
 }

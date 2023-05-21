@@ -46,29 +46,7 @@ public class ListSerializationTest extends XmlTestBase
             }
         }
     }
-
-    // [dataformat-xml#148]
-    static class Bean148 {
-        @JsonProperty("item")
-        @JacksonXmlElementWrapper(localName = "list")
-        public Iterator<String> items() {
-          return new Iterator<String>() {
-            int item = 3;
-
-            @Override
-            public boolean hasNext() {
-              return item > 0;
-            }
-
-            @Override
-            public String next() {
-              item--;
-              return Integer.toString(item);
-            }
-          };
-        }
-    }
-
+   
     /*
     /**********************************************************
     /* Unit tests
@@ -105,12 +83,5 @@ public class ListSerializationTest extends XmlTestBase
                 +"<strings><text>b</text></strings>"
                 +"<strings><text>c</text></strings>"
                 +"</stringList></StringListBean>", xml);
-    }
-
-    // [dataformat-xml#148]
-    public void testIteratorSerialization() throws Exception
-    {
-        assertEquals("<Bean148><list><item>2</item><item>1</item><item>0</item></list></Bean148>",
-                MAPPER.writeValueAsString(new Bean148()).trim());
     }
 }
