@@ -15,8 +15,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 // [dataformat-xml#302] : Unable to serialize top-level Java8 Stream
 public class IterationType302Test extends XmlTestBase
 {
-    private final ObjectMapper OBJECT_MAPPER = new XmlMapper();
-
     public static class StreamWrapper329 {
         private Stream<String> data;
 
@@ -81,13 +79,13 @@ public class IterationType302Test extends XmlTestBase
         }
     }
 
-    
     /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
+    private final ObjectMapper OBJECT_MAPPER = new XmlMapper();
 
     public void testCollectionSerialization() throws Exception {
         Collection<String> list = new ArrayList<>();
