@@ -6,7 +6,13 @@ Project: jackson-dataformat-xml
 
 2.16.0 (not yet released)
 
-No changes since 2.15
+#148: `@JacksonXmlElementWrapper` not respected when serializing
+  `Iterator`s / `Iterable`s
+ (fix contributed by Joo Hyuk K)
+#302: Unable to serialize top-level Java8 Stream
+ (fix contributed by Joo Hyuk K)
+#329: `@JacksonXmlElementWrapper` ignored on `Stream`
+ (fix contributed by Joo Hyuk K)
 
 2.15.1 (16-May-2023)
 
