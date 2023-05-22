@@ -1,5 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
+import java.util.*;
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -7,17 +10,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Stream;
-
 // [dataformat-xml#302] : Unable to serialize top-level Java8 Stream
-public class IterationType302Test extends XmlTestBase {
-
-    final ObjectMapper OBJECT_MAPPER = new XmlMapper();
-
+public class IterationType302Test extends XmlTestBase
+{
     public static class StreamWrapper329 {
         private Stream<String> data;
 
@@ -82,13 +77,13 @@ public class IterationType302Test extends XmlTestBase {
         }
     }
 
-    
     /*
     /**********************************************************
     /* Unit tests
     /**********************************************************
      */
 
+    private final ObjectMapper OBJECT_MAPPER = new XmlMapper();
 
     public void testCollectionSerialization() throws Exception {
         Collection<String> list = new ArrayList<>();
