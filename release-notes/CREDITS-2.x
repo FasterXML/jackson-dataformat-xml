@@ -217,6 +217,12 @@ Joo Hyuk Kim (JooHyukKim@github)
 * Contributed #560: Add `DefaultXmlPrettyPrinter.withCustomNewLine()` to configure linefeed
   for XML pretty-printing
  (2.15.0)
+* Fix for #148: `@JacksonXmlElementWrapper` not respected when serializing
+ (2.16.0)
+* Fix for #302: Unable to serialize top-level Java8 Stream
+ (2.16.0)
+* Fix for #329: `@JacksonXmlElementWrapper` ignored on `Stream`
+ (2.16.0)
 
 PJ Fanning (pjfanning@github)
 
