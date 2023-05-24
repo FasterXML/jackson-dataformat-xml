@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
-import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support
