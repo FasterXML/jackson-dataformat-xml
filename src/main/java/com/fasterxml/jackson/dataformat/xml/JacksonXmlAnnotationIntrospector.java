@@ -4,12 +4,16 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.*;
+import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
+import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
 /**
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support
@@ -225,6 +229,11 @@ public class JacksonXmlAnnotationIntrospector
         return new XmlTypeResolverBuilder();
     }
 
+    @Override
+    protected TypeResolverBuilder<?> _constructStdTypeResolverBuilder(MapperConfig<?> config, JsonTypeInfo.Value typeInfo, JavaType baseType) {
+        return new XmlTypeResolverBuilder(typeInfo);
+    }
+    
     /*
     /**********************************************************************
     /* Internal methods
