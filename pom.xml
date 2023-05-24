@@ -49,11 +49,18 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
+      
+<!--      <dependency>-->
+<!--          <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--          <artifactId>jackson-databind</artifactId>-->
+<!--      </dependency>-->
+      
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <scope>system</scope>
+    <systemPath>${project.basedir}/jackson-databind-2.16.0-local-build-2.jar</systemPath>
     </dependency>
-
     <!-- 20-Mar-2019, tatu: Stax-api been part of JDK since Java 6, so let's drop
         dependency as it causes issues with JDK9+ module info
       -->
