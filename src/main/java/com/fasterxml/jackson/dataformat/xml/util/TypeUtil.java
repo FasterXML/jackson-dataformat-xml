@@ -15,7 +15,7 @@ public class TypeUtil
     public static boolean isIndexedType(JavaType type)
     {
         Class<?> cls = type.getRawClass();
-        if (type.isContainerType() || canHandleLikeAnIterable(cls)) {
+        if (type.isContainerType() || type.isIterationType()) {
             // One special case; byte[] will be serialized as base64-encoded String, not real array, so:
             // (actually, ditto for char[]; thought to be a String)
             if (cls == byte[].class || cls == char[].class) {
@@ -30,20 +30,4 @@ public class TypeUtil
         }
         return false;
     }    
-
-    public static boolean isIndexedType(Class<?> cls)
-    {
-        return  (cls.isArray() && cls != byte[].class && cls != char[].class)
-            || Collection.class.isAssignableFrom(cls) || canHandleLikeAnIterable(cls);
-    }
-
-    /**
-     * See <a href="https://github.com/FasterXML/jackson-dataformat-xml/pull/597">related disccussions</a> 
-     * for detailed history.
-     * 
-     * @since 2.16
-     */
-    private static boolean canHandleLikeAnIterable(Class<?> cls) {
-        return Iterator.class.isAssignableFrom(cls) || Stream.class.isAssignableFrom(cls);
-    }
 }

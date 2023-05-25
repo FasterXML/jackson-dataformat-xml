@@ -96,7 +96,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
                 rootName = _rootNameLookup.findRootName(cls, _config);
             }
             _initWithRootName(xgen, rootName);
-            asArray = TypeUtil.isIndexedType(cls);
+            asArray = TypeUtil.isIndexedType(_config.constructType(cls));
             if (asArray) {
                 _startRootArray(xgen, rootName);
             }
@@ -155,7 +155,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             }
             _initWithRootName(xgen, rootName);
             asArray = (rootType == null)
-                    ? TypeUtil.isIndexedType(value.getClass())
+                    ? TypeUtil.isIndexedType(_config.constructType(value.getClass()))
                         : TypeUtil.isIndexedType(rootType);
             if (asArray) {
                 _startRootArray(xgen, rootName);
@@ -204,7 +204,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             }
             _initWithRootName(xgen, rootName);
             asArray = (rootType == null)
-                    ? TypeUtil.isIndexedType(value.getClass())
+                    ? TypeUtil.isIndexedType(_config.constructType(value.getClass()))
                     : TypeUtil.isIndexedType(rootType);
             if (asArray) {
                 _startRootArray(xgen, rootName);
