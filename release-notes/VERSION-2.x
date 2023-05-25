@@ -13,6 +13,8 @@ Project: jackson-dataformat-xml
  (fix contributed by Joo Hyuk K)
 #329: `@JacksonXmlElementWrapper` ignored on `Stream`
  (fix contributed by Joo Hyuk K)
+#599: Use `IterationType` in `TypeUtil`
+ (fix contributed by Joo Hyuk K)
 
 2.15.1 (16-May-2023)
 
