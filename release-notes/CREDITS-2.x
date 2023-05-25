@@ -223,6 +223,8 @@ Joo Hyuk Kim (JooHyukKim@github)
  (2.16.0)
 * Fix for #329: `@JacksonXmlElementWrapper` ignored on `Stream`
  (2.16.0)
+* ontributed #599: Use `IterationType` in `TypeUtil`
+ (2.16.0)
 
 PJ Fanning (pjfanning@github)
 
