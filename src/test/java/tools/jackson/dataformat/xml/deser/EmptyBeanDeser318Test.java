@@ -1,5 +1,6 @@
 package tools.jackson.dataformat.xml.deser;
 
+import tools.jackson.databind.ObjectReader;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -33,6 +34,11 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         String attr;
         @JacksonXmlText
         String value;
+    }
+
+    // [dataformat-xml#579]
+    static class Bean579 {
+        public String str;
     }
 
     /*
@@ -105,5 +111,47 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         assertEquals("id", value.id);
         assertEquals("test", value.nested.nested2.attr);
         assertEquals("Some text", value.nested.nested2.value);
+    }
+
+    // [dataformat-xml#579]
+    public void testEmptyRootElem579() throws Exception
+    {
+        Bean579 bean;
+
+        ObjectReader R = MAPPER.readerFor(Bean579.class);
+
+        // By default, no coercion of empty element
+        bean = R.readValue("<Content/>");
+        assertNotNull(bean);
+        assertNull(bean.str);
+
+        // So same as non-empty
+        bean = R.readValue("<Content></Content>");
+        assertNotNull(bean);
+        assertNull(bean.str);
+
+        // But enabling feature we can coerce POJO into null:
+
+        // 29-May-2023, tatu: Alas! Note that we CANNOT use ObjectReader because
+        //   FormatFeature (FromXmlParser.Feature) overrides ARE NOT APPLIED EARLY
+        //   ENOUGH to take effect. Instead we must configure XmlMapper
+        //
+        // ... EXCEPT that in 3.0 it works just fine
+       
+        R = R.with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
+
+        /*
+        R = mapperBuilder().enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .build()
+                .readerFor(Bean579.class);
+                */
+
+        bean = R.readValue("<Content/>");
+        assertNull(bean);
+
+        // which won't affect non-empty variant
+        bean = R.readValue("<Content></Content>");
+        assertNotNull(bean);
+        assertNull(bean.str);
     }
 }
