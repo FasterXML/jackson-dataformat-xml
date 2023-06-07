@@ -69,13 +69,6 @@ public class DefaultXmlPrettyPrinter
     // // // Config, other white space configuration
 
     /**
-     * By default we will add spaces around colons used to
-     * separate object fields and values.
-     * If disabled, will not use spaces around colon.
-     */
-    protected boolean _spacesInObjectEntries = true;
-
-    /**
      * By default, will try to set as System.getProperty("line.separator").
      * Can later set custom new line with withCustomNewLine method.
      * @since 2.15
@@ -129,7 +122,6 @@ public class DefaultXmlPrettyPrinter
     {
         _arrayIndenter = base._arrayIndenter;
         _objectIndenter = base._objectIndenter;
-        _spacesInObjectEntries = base._spacesInObjectEntries;
         _nesting = base._nesting;
         _newLine = base._newLine;
     }
@@ -143,8 +135,6 @@ public class DefaultXmlPrettyPrinter
     {
         _objectIndenter = (i == null) ? new NopIndenter() : i;
     }
-
-    public void spacesInObjectEntries(boolean b) { _spacesInObjectEntries = b; }
 
     /**
      * Sets custom new-line.
@@ -177,13 +167,13 @@ public class DefaultXmlPrettyPrinter
         // Not sure if this should ever be applicable; but if multiple roots were allowed, we'd use linefeed
         gen.writeRaw('\n');
     }
-    
+
     /*
     /**********************************************************************
     /* Array values
     /**********************************************************************
      */
-    
+
     @Override
     public void beforeArrayValues(JsonGenerator gen) {
         // never called for ToXmlGenerator
@@ -289,7 +279,7 @@ public class DefaultXmlPrettyPrinter
         }
         sw.writeEndElement();
     }
-    
+
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, String text, boolean isCData)
@@ -326,7 +316,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeEndElement();
         _justHadStartElement = false;
     }
-	
+
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
     		String nsURI, String localName, boolean value)
@@ -340,7 +330,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeEndElement();
         _justHadStartElement = false;
     }
-    
+
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
             String nsURI, String localName, int value)
@@ -396,7 +386,7 @@ public class DefaultXmlPrettyPrinter
         sw.writeEndElement();
         _justHadStartElement = false;
     }
-	
+
     @Override
     public void writeLeafElement(XMLStreamWriter2 sw,
             String nsURI, String localName, BigInteger value)
@@ -549,7 +539,7 @@ public class DefaultXmlPrettyPrinter
             }
             sw.writeRaw(SPACES, 0, level);
         }
-        
+
         @Override
         public void writeIndentation(JsonGenerator g, int level) throws JacksonException
         {
