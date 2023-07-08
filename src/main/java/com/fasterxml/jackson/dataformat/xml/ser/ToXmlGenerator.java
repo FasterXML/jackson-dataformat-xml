@@ -321,6 +321,11 @@ public class ToXmlGenerator
     /**********************************************************
      */
 
+    @Override
+    public StreamWriteConstraints streamWriteConstraints() {
+        return _ioContext.streamWriteConstraints();
+    }
+
     public ToXmlGenerator enable(Feature f) {
         _formatFeatures |= f.getMask();
         return this;
