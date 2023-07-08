@@ -5,6 +5,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 
 import tools.jackson.core.StreamReadConstraints;
+import tools.jackson.core.StreamWriteConstraints;
 import tools.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -76,6 +77,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     
     protected XmlFactoryBuilder() {
         super(StreamReadConstraints.defaults(),
+                StreamWriteConstraints.defaults(),
                 XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS,
                 XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS);
         _classLoaderForStax = null;
