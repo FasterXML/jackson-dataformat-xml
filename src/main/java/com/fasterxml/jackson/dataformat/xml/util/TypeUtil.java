@@ -2,10 +2,6 @@ package com.fasterxml.jackson.dataformat.xml.util;
 
 import com.fasterxml.jackson.databind.JavaType;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.stream.Stream;
-
 public class TypeUtil
 {
     /**
