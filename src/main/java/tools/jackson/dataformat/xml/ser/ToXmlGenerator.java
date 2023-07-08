@@ -135,14 +135,11 @@ public class ToXmlGenerator
     protected final XMLStreamWriter2 _xmlWriter;
 
     protected final XMLStreamWriter _originalXmlWriter;
-    
+
     /**
-     * Marker flag set if the underlying stream writer has to emulate
-     * Stax2 API: this is problematic if trying to use {@link #writeRaw} calls.
+     * We may need to use XML-specific indentation as well
      */
-    protected final boolean _stax2Emulation;
-    
-    protected final IOContext _ioContext;
+    protected final XmlPrettyPrinter _xmlPrettyPrinter;
 
     /**
      * Bit flag composed of bits that indicate which
@@ -152,9 +149,10 @@ public class ToXmlGenerator
     protected int _formatFeatures;
 
     /**
-     * We may need to use XML-specific indentation as well
+     * Marker flag set if the underlying stream writer has to emulate
+     * Stax2 API: this is problematic if trying to use {@link #writeRaw} calls.
      */
-    protected final XmlPrettyPrinter _xmlPrettyPrinter;
+    protected final boolean _stax2Emulation;
 
     /*
     /**********************************************************************
@@ -233,9 +231,8 @@ public class ToXmlGenerator
             int streamWriteFeatures, int xmlFeatures,
             XMLStreamWriter sw, XmlPrettyPrinter pp, XmlNameProcessor nameProcessor)
     {
-        super(writeCtxt, streamWriteFeatures);
+        super(writeCtxt, ioCtxt, streamWriteFeatures);
         _formatFeatures = xmlFeatures;
-        _ioContext = ioCtxt;
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
