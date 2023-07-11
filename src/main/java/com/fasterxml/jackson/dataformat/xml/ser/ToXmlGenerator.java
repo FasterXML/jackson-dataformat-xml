@@ -142,6 +142,11 @@ public class ToXmlGenerator
     protected final IOContext _ioContext;
 
     /**
+     * @since 2.16
+     */
+    protected final StreamWriteConstraints _streamWriteConstraints;
+
+    /**
      * Bit flag composed of bits that indicate which
      * {@link ToXmlGenerator.Feature}s
      * are enabled.
@@ -225,6 +230,7 @@ public class ToXmlGenerator
         super(stdFeatures, codec);
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
+        _streamWriteConstraints = ctxt.streamWriteConstraints();
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
@@ -323,7 +329,7 @@ public class ToXmlGenerator
 
     @Override
     public StreamWriteConstraints streamWriteConstraints() {
-        return _ioContext.streamWriteConstraints();
+        return _streamWriteConstraints;
     }
 
     public ToXmlGenerator enable(Feature f) {
