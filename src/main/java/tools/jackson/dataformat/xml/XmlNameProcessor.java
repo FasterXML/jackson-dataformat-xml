@@ -36,7 +36,6 @@ public interface XmlNameProcessor extends Serializable {
      */
     void encodeName(XmlName name);
 
-
     /**
      * Used during XML deserialization.
      * <p>
@@ -50,5 +49,4 @@ public interface XmlNameProcessor extends Serializable {
      * @param name The name to encode
      */
     void decodeName(XmlName name);
-
 }

@@ -535,6 +535,7 @@ public class ToXmlGenerator
     {
         _verifyValueWrite("start an array");
         _streamWriteContext = _streamWriteContext.createChildArrayContext(null);
+        streamWriteConstraints().validateNestingDepth(_streamWriteContext.getNestingDepth());
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartArray(this);
         } else {
@@ -589,6 +590,7 @@ public class ToXmlGenerator
     {
         _verifyValueWrite("start an object");
         _streamWriteContext = _streamWriteContext.createChildObjectContext(currValue);
+        streamWriteConstraints().validateNestingDepth(_streamWriteContext.getNestingDepth());
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartObject(this);
         } else {
