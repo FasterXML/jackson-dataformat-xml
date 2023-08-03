@@ -102,6 +102,7 @@ public class XmlFactory
             String nameForTextElem)
     {
         super(StreamReadConstraints.defaults(), StreamWriteConstraints.defaults(),
+                ErrorReportConfiguration.defaults(),
                 xpFeatures, xgFeatures);
         _nameProcessor = nameProcessor;
         _cfgNameForTextElement = nameForTextElem;

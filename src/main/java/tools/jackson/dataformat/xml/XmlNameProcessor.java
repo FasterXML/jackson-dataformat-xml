@@ -7,8 +7,7 @@ import java.io.Serializable;
  * containing invalid characters. Invalid characters in names can,
  * for instance, easily appear in map keys.
  * <p>
- * Processors should be set in the {@link XmlMapper#setXmlNameProcessor}
- * and/or the {@link XmlMapper.Builder#xmlNameProcessor} methods.
+ * Processors should be set by the {@link XmlFactoryBuilder#xmlNameProcessor} methods.
  * <p>
  * See {@link XmlNameProcessors} for default processors.
  *
