@@ -138,8 +138,6 @@ public class ToXmlGenerator
      * Stax2 API: this is problematic if trying to use {@link #writeRaw} calls.
      */
     protected final boolean _stax2Emulation;
-    
-    protected final IOContext _ioContext;
 
     /**
      * @since 2.16
@@ -227,9 +225,8 @@ public class ToXmlGenerator
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
             ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor)
     {
-        super(stdFeatures, codec);
+        super(stdFeatures, codec, ctxt);
         _formatFeatures = xmlFeatures;
-        _ioContext = ctxt;
         _streamWriteConstraints = ctxt.streamWriteConstraints();
         _originalXmlWriter = sw;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
@@ -1333,8 +1330,6 @@ public class ToXmlGenerator
     public void close() throws IOException
     {
         if (!isClosed()) {
-//        boolean wasClosed = _closed;
-            super.close();
 
             // First: let's see that we still have buffers...
             if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)) {
@@ -1370,7 +1365,7 @@ public class ToXmlGenerator
             } catch (XMLStreamException e) {
                 StaxUtil.throwAsGenerationException(e, this);
             }
-            _ioContext.close();
+            super.close();
         }
     }
 
