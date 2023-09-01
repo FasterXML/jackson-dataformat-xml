@@ -38,8 +38,8 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
   </properties>
 
   <dependencies>
-    <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation on
-         deploy time), Stax2 API.
+    <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation
+         on deploy time), Stax2 API.
       -->
     <dependency>
       <groupId>tools.jackson.core</groupId>
