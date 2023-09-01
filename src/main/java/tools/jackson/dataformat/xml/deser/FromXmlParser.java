@@ -168,8 +168,6 @@ public class FromXmlParser
      */
     protected boolean _closed;
 
-    protected final IOContext _ioContext;
-
     /*
     /**********************************************************************
     /* Parsing state
@@ -258,7 +256,6 @@ public class FromXmlParser
     {
         super(readCtxt, ioCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
-        _ioContext = ioCtxt;
         _streamReadContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ioCtxt.contentReference(),
                     _formatFeatures, nameProcessor);
