@@ -379,7 +379,7 @@ public class FromXmlParser
 
     /*
     /**********************************************************************
-    /* JsonParser impl
+    /* JsonParser impl, closing etc
     /**********************************************************************
      */
 
@@ -428,6 +428,24 @@ public class FromXmlParser
     @Override
     public boolean isClosed() { return _closed; }
 
+    @Override
+    protected void _closeInput() throws IOException { }
+
+    /**
+     * Method called to release internal buffers owned by the base
+     * parser.
+     */
+    @Override
+    protected void _releaseBuffers() {
+        // anything we can/must release? Underlying parser should do all of it, for now?
+    }
+
+    /*
+    /**********************************************************************
+    /* JsonParser impl, access to current state
+    /**********************************************************************
+     */
+    
     @Override public TokenStreamContext streamReadContext() { return _streamReadContext; }
     @Override public void assignCurrentValue(Object v) { _streamReadContext.assignCurrentValue(v); }
     @Override public Object currentValue() { return _streamReadContext.currentValue(); }
@@ -451,6 +469,12 @@ public class FromXmlParser
         return _xmlTokens.getCurrentLocation();
     }
 
+    /*
+    /**********************************************************************
+    /* JsonParser impl, traversal
+    /**********************************************************************
+     */
+    
     /**
      * Since xml representation can not really distinguish between array
      * and object starts (both are represented with elements), this method
@@ -1284,14 +1308,6 @@ _currText);
     /* Internal methods
     /**********************************************************************
      */
-
-    /**
-     * Method called to release internal buffers owned by the base
-     * parser.
-     */
-    protected void _releaseBuffers() {
-        // anything we can/must release? Underlying parser should do all of it, for now?
-    }
 
     protected ByteArrayBuilder _getByteArrayBuilder()
     {
