@@ -157,19 +157,6 @@ public class FromXmlParser
 
     /*
     /**********************************************************************
-    /* I/O state
-    /**********************************************************************
-     */
-
-    /**
-     * Flag that indicates whether parser is closed or not. Gets
-     * set when parser is either closed by explicit call
-     * ({@link #close}) or when end-of-input is reached.
-     */
-    protected boolean _closed;
-
-    /*
-    /**********************************************************************
     /* Parsing state
     /**********************************************************************
      */
@@ -197,8 +184,6 @@ public class FromXmlParser
      * String value as "anonymous" property/string pair. If so, code returns
      * START_OBJECT first, sets {@code _nextToken} to be {@code FIELD_NAME}
      * and sets this flag to indicate use of "anonymous" marker.
-     *
-     * @since 2.13
      */
     protected boolean _nextIsLeadingMixed;
 
@@ -405,36 +390,22 @@ public class FromXmlParser
         return name;
     }
 
+    // Basic `close()` from base class works fine
+    // public void close() throws JacksonException
+    
     @Override
-    public void close()
-    {
-        if (!_closed) {
-            _closed = true;
-            try {
-                if (_ioContext.isResourceManaged() || isEnabled(StreamReadFeature.AUTO_CLOSE_SOURCE)) {
-                    _xmlTokens.closeCompletely();
-                } else {
-                    _xmlTokens.close();
-                }
-            } catch (XMLStreamException e) {
-                StaxUtil.throwAsReadException(e, this);
-            } finally {
-                // Also, internal buffer(s) can now be released as well
-                _releaseBuffers();
+    protected void _closeInput() throws IOException {
+        try {
+            if (_ioContext.isResourceManaged() || isEnabled(StreamReadFeature.AUTO_CLOSE_SOURCE)) {
+                _xmlTokens.closeCompletely();
+            } else {
+                _xmlTokens.close();
             }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsReadException(e, this);
         }
     }
 
-    @Override
-    public boolean isClosed() { return _closed; }
-
-    @Override
-    protected void _closeInput() throws IOException { }
-
-    /**
-     * Method called to release internal buffers owned by the base
-     * parser.
-     */
     @Override
     protected void _releaseBuffers() {
         // anything we can/must release? Underlying parser should do all of it, for now?
