@@ -1380,11 +1380,8 @@ public class ToXmlGenerator
     }
 
     @Override
-    public void close() throws JacksonException
+    protected void _closeInput() throws JacksonException
     {
-//        boolean wasClosed = _closed;
-        super.close();
-
         // First: let's see that we still have buffers...
         if (isEnabled(StreamWriteFeature.AUTO_CLOSE_CONTENT)) {
             try {
