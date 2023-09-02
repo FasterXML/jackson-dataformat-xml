@@ -518,6 +518,7 @@ public class FromXmlParser
                 // Also, internal buffer(s) can now be released as well
                 _releaseBuffers();
             }
+            _ioContext.close();
         }
     }
 
