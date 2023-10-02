@@ -9,9 +9,11 @@ import javax.xml.stream.XMLStreamException;
 import com.fasterxml.jackson.core.*;
 
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.CacheProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.Impl;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 
@@ -45,6 +47,14 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     }
 
     /**
+     * @since 2.16
+     */
+    protected XmlSerializerProvider(XmlSerializerProvider src, CacheProvider cp) {
+        super(src, cp);
+        _rootNameLookup  = src._rootNameLookup;
+    }
+
+    /**
      * @since 2.8.9
      */
     protected XmlSerializerProvider(XmlSerializerProvider src) {
@@ -63,6 +73,11 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
     @Override
     public DefaultSerializerProvider copy() {
         return new XmlSerializerProvider(this);
+    }
+
+    @Override
+    public DefaultSerializerProvider withCaches(CacheProvider cacheProvider) {
+        return new XmlSerializerProvider(this, cacheProvider);
     }
 
     @Override
