@@ -12,9 +12,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import static org.junit.Assert.assertEquals;
 
+// For [dataformat-xml#509]
 public class UnexpectedNonWhitespaceText509Test {
 	@JsonPropertyOrder({ "key", "content" })
-	public static class Data {
+	static class Data {
 	    @JacksonXmlText
 		public String content;
 		@JacksonXmlProperty(isAttribute=true)
@@ -29,7 +30,7 @@ public class UnexpectedNonWhitespaceText509Test {
 		}
 	}
 
-	public static class MetaData {
+	static class MetaData {
 		protected List<Data> data;
 
 		public List<Data> getData() {
@@ -48,6 +49,8 @@ public class UnexpectedNonWhitespaceText509Test {
 			return Objects.toString(data);
 		}
 	}
+
+	private final XmlMapper XML_MAPPER = new XmlMapper();
 
 	@Test
 	public void testDeSerData() throws Exception {
@@ -70,6 +73,6 @@ public class UnexpectedNonWhitespaceText509Test {
 	}
 
 	private <T> T deSer(String xmlString, Class<T> clazz) throws Exception {
-	    return new XmlMapper().readerFor(clazz).readValue(xmlString);
+	    return XML_MAPPER.readerFor(clazz).readValue(xmlString);
 	}
 }
