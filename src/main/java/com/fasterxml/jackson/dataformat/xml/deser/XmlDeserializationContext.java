@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.cfg.CacheProvider;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
 import com.fasterxml.jackson.databind.deser.DeserializerCache;
 import com.fasterxml.jackson.databind.deser.DeserializerFactory;
@@ -31,7 +32,9 @@ public class XmlDeserializationContext
      * {@link DeserializerCache}, given factory.
      */
     public XmlDeserializationContext(DeserializerFactory df) {
-        super(df, null);
+        // 04-Sep-2023, tatu: Not ideal (wrt not going via CacheProvider) but
+        //     has to do for backwards compatibility:
+        super(df, new DeserializerCache());
     }
 
     private XmlDeserializationContext(XmlDeserializationContext src,
@@ -47,6 +50,11 @@ public class XmlDeserializationContext
 
     private XmlDeserializationContext(XmlDeserializationContext src, DeserializationConfig config) {
         super(src, config);
+    }
+
+    // @since 2.16
+    private XmlDeserializationContext(XmlDeserializationContext src, CacheProvider cp) {
+        super(src, cp);
     }
 
     @Override
@@ -69,6 +77,11 @@ public class XmlDeserializationContext
     @Override
     public DefaultDeserializationContext with(DeserializerFactory factory) {
         return new XmlDeserializationContext(this, factory);
+    }
+
+    @Override
+    public DefaultDeserializationContext withCaches(CacheProvider cp) {
+        return new XmlDeserializationContext(this, cp);
     }
 
     /*
