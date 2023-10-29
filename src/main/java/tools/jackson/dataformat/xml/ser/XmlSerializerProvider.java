@@ -7,7 +7,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import tools.jackson.core.*;
-import tools.jackson.core.exc.WrappedIOException;
+import tools.jackson.core.exc.JacksonIOException;
 import tools.jackson.databind.*;
 import tools.jackson.databind.cfg.GeneratorSettings;
 import tools.jackson.databind.jsontype.TypeSerializer;
@@ -301,7 +301,7 @@ public class XmlSerializerProvider extends SerializationContextExt
     protected JacksonException _wrapAsJacksonE(JsonGenerator g, Exception e)
     {
         if (e instanceof IOException) {
-            return WrappedIOException.construct((IOException) e);
+            return JacksonIOException.construct((IOException) e);
         }
         // 17-Jan-2021, tatu: Should we do something else here? Presumably
         //    this exception has map set up
