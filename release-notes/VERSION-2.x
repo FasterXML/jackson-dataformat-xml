@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.16.0-rc1 (20-Oct-2023)
+2.16.0-rc1 (15-Nov-2023)
 
 #148: `@JacksonXmlElementWrapper` not respected when serializing
   `Iterator`s / `Iterable`s
