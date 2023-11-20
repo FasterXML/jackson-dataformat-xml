@@ -28,6 +28,7 @@ Specifically:
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
 | Code coverage (2.15) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.15) |
+| OpenSSF Score | [![OpenSSF  Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/jackson-dataformat-xml/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
 
 ## Branches
@@ -51,6 +52,7 @@ All modules are licensed under [Apache License 2.0](http://www.apache.org/licens
 
 To use Jackson 2.x compatible version of this extension on Maven-based projects, use following dependency:
 
+Maven:
 ```xml
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -59,17 +61,32 @@ To use Jackson 2.x compatible version of this extension on Maven-based projects,
 </dependency>
 ```
 
+Gradle:
+```groovy
+dependencies {
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0'
+}
+```
+
 (or whatever version is most up-to-date at the moment)
 
 Also: you usually also want to make sure that XML library in use is [Woodstox](https://github.com/FasterXML/woodstox) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
 You can do this by adding this in your `pom.xml`:
 
+Maven:
 ```xml
 <dependency>
   <groupId>com.fasterxml.woodstox</groupId>
   <artifactId>woodstox-core</artifactId>
   <version>6.5.0</version>
 </dependency>
+```
+
+Gradle:
+```groovy
+dependencies {
+    implementation 'com.fasterxml.woodstox:woodstox-core:6.5.0'
+}
 ```
 
 # Usage

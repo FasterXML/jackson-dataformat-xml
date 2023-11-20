@@ -140,8 +140,11 @@ public class ToXmlGenerator
      * Stax2 API: this is problematic if trying to use {@link #writeRaw} calls.
      */
     protected final boolean _stax2Emulation;
-    
-    protected final IOContext _ioContext;
+
+    /**
+     * @since 2.16
+     */
+    protected final StreamWriteConstraints _streamWriteConstraints;
 
     /**
      * Bit flag composed of bits that indicate which
@@ -238,9 +241,9 @@ public class ToXmlGenerator
                           ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor,
                           Charset encoding)
     {
-        super(stdFeatures, codec);
+        super(stdFeatures, codec, ctxt);
         _formatFeatures = xmlFeatures;
-        _ioContext = ctxt;
+        _streamWriteConstraints = ctxt.streamWriteConstraints();
         _originalXmlWriter = sw;
         _encoding = encoding;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
@@ -337,6 +340,11 @@ public class ToXmlGenerator
     /* Extended API, configuration
     /**********************************************************
      */
+
+    @Override
+    public StreamWriteConstraints streamWriteConstraints() {
+        return _streamWriteConstraints;
+    }
 
     public ToXmlGenerator enable(Feature f) {
         _formatFeatures |= f.getMask();
@@ -553,6 +561,7 @@ public class ToXmlGenerator
     {
         _verifyValueWrite("start an array");
         _writeContext = _writeContext.createChildArrayContext();
+        streamWriteConstraints().validateNestingDepth(_writeContext.getNestingDepth());
         if (_cfgPrettyPrinter != null) {
             _cfgPrettyPrinter.writeStartArray(this);
         } else {
@@ -579,6 +588,7 @@ public class ToXmlGenerator
     {
         _verifyValueWrite("start an object");
         _writeContext = _writeContext.createChildObjectContext();
+        streamWriteConstraints().validateNestingDepth(_writeContext.getNestingDepth());
         if (_cfgPrettyPrinter != null) {
             _cfgPrettyPrinter.writeStartObject(this);
         } else {
@@ -1336,42 +1346,43 @@ public class ToXmlGenerator
     @Override
     public void close() throws IOException
     {
-//        boolean wasClosed = _closed;
-        super.close();
+        if (!isClosed()) {
 
-        // First: let's see that we still have buffers...
-        if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)) {
-            try {
-                while (true) {
-		    /* 28-May-2016, tatu: To work around incompatibility introduced by
-		     *     `jackson-core` 2.8 where return type of `getOutputContext()`
-		     *     changed, let's do direct access here.
-		     */
+            // First: let's see that we still have buffers...
+            if (isEnabled(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)) {
+                try {
+                    while (true) {
+                        /* 28-May-2016, tatu: To work around incompatibility introduced by
+                         *     `jackson-core` 2.8 where return type of `getOutputContext()`
+                         *     changed, let's do direct access here.
+                         */
 //                    JsonStreamContext ctxt = getOutputContext();
-		    JsonStreamContext ctxt = _writeContext;
-                    if (ctxt.inArray()) {
-                        writeEndArray();
-                    } else if (ctxt.inObject()) {
-                        writeEndObject();
-                    } else {
-                        break;
+                        JsonStreamContext ctxt = _writeContext;
+                        if (ctxt.inArray()) {
+                            writeEndArray();
+                        } else if (ctxt.inObject()) {
+                            writeEndObject();
+                        } else {
+                            break;
+                        }
                     }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    /* 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
+                     *   hit by this as a collateral problem in some cases. Yuck.
+                     */
+                    throw new JsonGenerationException(e, this);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
-                /* 29-Nov-2010, tatu: Stupid, stupid SJSXP doesn't do array checks, so we get
-                 *   hit by this as a collateral problem in some cases. Yuck.
-                 */
-                throw new JsonGenerationException(e, this);
             }
-        }
-        try {
-            if (_ioContext.isResourceManaged() || isEnabled(JsonGenerator.Feature.AUTO_CLOSE_TARGET)) {
-                _xmlWriter.closeCompletely();
-            } else {
-                _xmlWriter.close();
+            try {
+                if (_ioContext.isResourceManaged() || isEnabled(JsonGenerator.Feature.AUTO_CLOSE_TARGET)) {
+                    _xmlWriter.closeCompletely();
+                } else {
+                    _xmlWriter.close();
+                }
+            } catch (XMLStreamException e) {
+                StaxUtil.throwAsGenerationException(e, this);
             }
-        } catch (XMLStreamException e) {
-            StaxUtil.throwAsGenerationException(e, this);
+            super.close();
         }
     }
 
