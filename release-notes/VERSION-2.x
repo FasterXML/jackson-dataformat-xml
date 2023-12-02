@@ -4,6 +4,12 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.16.1 (not yet released)
+
+#616: Fix mismatch in `setNextIsUnwrapped(boolean)` in
+  `XmlBeanSerializerBase#serializeFieldsFiltered()`
+ (fix contributed by Motonori I)
+
 2.16.0 (15-Nov-2023)
 
 #148: `@JacksonXmlElementWrapper` not respected when serializing
