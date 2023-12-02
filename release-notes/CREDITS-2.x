@@ -237,3 +237,9 @@ Marco Belladelli (mbladel@github)
 * Contributed fix for #584: Deserialization of `null` String values in Arrays / `Collection`s
   not working as expected
  (2.15.0)
+
+Motonori IWAMURO (vmi@github)
+
+* Contributed fix for #616: Fix mismatch in `setNextIsUnwrapped(boolean)` in
+  `XmlBeanSerializerBase#serializeFieldsFiltered()`
+ (2.16.1)
