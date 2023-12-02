@@ -294,6 +294,11 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                         filter.serializeAsField(bean, xgen, provider, prop);
                     }
                 }
+                // Reset to avoid next value being written as unwrapped,
+                // for example when property is suppressed
+                if (i == textIndex) {
+                    xgen.setNextIsUnwrapped(false);
+                }
             }
             if (_anyGetterWriter != null) {
                 // For [#117]: not a clean fix, but with @JsonTypeInfo, we'll end up
