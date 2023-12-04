@@ -2,10 +2,13 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
+import java.nio.file.*;
 
 public class TestDeserialization extends XmlTestBase
 {
@@ -119,5 +122,20 @@ public class TestDeserialization extends XmlTestBase
         Line219 result = MAPPER.readValue(DOC, Line219.class);
         assertNotNull(result);
         assertEquals("138", result.amount);
+    }
+
+    public void testwithInvalidXml() throws Exception
+    {
+        try {
+            for (int i = 1; i <= 3; i++) {
+                String path = "src/test/java/com/fasterxml/jackson/dataformat/xml/deser/invalid_xml_" + i;
+                MAPPER.readTree(Files.readAllBytes(Paths.get(path)));
+             }
+        } catch (Exception e) {
+            // Should throw JsonParseException if provided input is invalid.
+            if (!(e instanceof JsonParseException)) {
+                throw e;
+            }
+        }
     }
 }

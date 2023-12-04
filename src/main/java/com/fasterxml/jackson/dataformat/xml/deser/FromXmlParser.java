@@ -714,7 +714,13 @@ public class FromXmlParser
             return t;
         }
 
-        int token = _nextToken();
+        int token;
+
+        try {
+            token = _nextToken();
+        } catch (IndexOutOfBoundsException e) {
+            throw new JsonParseException(this, "Invalid xml input", e);
+        }
         // Need to have a loop just because we may have to eat/convert
         // a start-element that indicates an array element.
         while (token == XmlTokenStream.XML_START_ELEMENT) {
