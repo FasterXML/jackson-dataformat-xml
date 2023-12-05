@@ -557,14 +557,14 @@ public class XmlTokenStream
         }
 
         CharSequence chars = null;
-        while (true) {
+        while (_xmlReader.hasNext()) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
-                return (chars == null) ? "" : chars.toString();
+                break;
 
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
-                return (chars == null) ? "" : chars.toString();
+                break;
 
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
@@ -586,6 +586,7 @@ public class XmlTokenStream
                 // any other type (proc instr, comment etc) is just ignored
             }
         }
+        return (chars == null) ? "" : chars.toString();
     }
 
     // Called to skip tokens until start/end tag (or end-of-document) found, but

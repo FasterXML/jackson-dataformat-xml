@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.util.VersionUtil;
-
+import com.fasterxml.jackson.databind.util.ClassUtil;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
@@ -661,7 +661,17 @@ public class XmlFactory extends JsonFactory
             if (_xmlInputFactory instanceof XMLInputFactory2) {
                 sr = _xmlInputFactory.createXMLStreamReader(new Stax2ByteArraySource(data, offset, len));
             } else {
-                sr = _xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(data, offset, len));
+                // 04-Dec-2023, tatu: As per [dataformat-xml#618], JDK's crappy in-built
+                //    Stax implementation barfs here. Hence:
+                try {
+                    sr = _xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(data, offset, len));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new JsonParseException(null,
+                            "Internal processing error by `XMLInputFactory` of type "
+                            +ClassUtil.classNameOf(_xmlInputFactory)+" when trying to create a parser ("
+                            +"consider using Woodstox instead): "
+                            +e.getMessage());
+                }
             }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, null);

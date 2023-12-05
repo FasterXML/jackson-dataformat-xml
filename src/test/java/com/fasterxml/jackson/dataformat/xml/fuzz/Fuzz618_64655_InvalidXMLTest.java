@@ -56,14 +56,18 @@ public class Fuzz618_64655_InvalidXMLTest extends XmlTestBase
     }
 
     public void testWithInvalidXml2() throws Exception {
-        _testWithInvalidXml(2, "Unexpected character 'a'");
+        _testWithInvalidXml(2, "Unexpected character 'a'", // Woodstox
+                "Internal processing error by `XMLInputFactory` of type " // SJSXP
+        );
     }
 
     public void testWithInvalidXml3() throws Exception {
-        _testWithInvalidXml(3, "Unexpected EOF; was expecting a close tag");
+        _testWithInvalidXml(3, "Unexpected EOF; was expecting a close tag", // Woodstox
+                "XML document structures must start and end" // SJSXP
+        );
     }
 
-    private void _testWithInvalidXml(int ix, String errorToMatch) throws Exception
+    private void _testWithInvalidXml(int ix, String... errorToMatch) throws Exception
     {
         try {
             String path = "src/test/java/com/fasterxml/jackson/dataformat/xml/deser/invalid_xml_" + ix;
