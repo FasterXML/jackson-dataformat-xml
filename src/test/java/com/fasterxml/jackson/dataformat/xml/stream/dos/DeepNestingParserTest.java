@@ -1,9 +1,10 @@
 package com.fasterxml.jackson.dataformat.xml.stream.dos;
 
 import com.ctc.wstx.stax.WstxInputFactory;
-import com.fasterxml.jackson.core.JsonParseException;
+
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
@@ -14,12 +15,9 @@ public class DeepNestingParserTest extends XmlTestBase {
         final XmlMapper xmlMapper = newMapper();
         final String XML = createDeepNestedDoc(1050);
         try (JsonParser p = xmlMapper.createParser(XML)) {
-            JsonToken jt;
-            while ((jt = p.nextToken()) != null) {
-
-            }
-            fail("expected JsonParseException");
-        } catch (JsonParseException e) {
+            while (p.nextToken() != null) { }
+            fail("expected StreamReadException");
+        } catch (StreamReadException e) {
             assertTrue(e.getMessage().contains("Maximum Element Depth limit (1000) Exceeded"));
         }
     }
@@ -31,10 +29,7 @@ public class DeepNestingParserTest extends XmlTestBase {
         final XmlMapper xmlMapper = new XmlMapper(wstxInputFactory);
         final String XML = createDeepNestedDoc(1050);
         try (JsonParser p = xmlMapper.createParser(XML)) {
-            JsonToken jt;
-            while ((jt = p.nextToken()) != null) {
-
-            }
+            while (p.nextToken() != null) { }
         }
     }
 

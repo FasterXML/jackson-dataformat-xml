@@ -473,7 +473,7 @@ public class FromXmlParser
      * the current event.
      */
     @Override
-    public String getCurrentName() throws IOException
+    public String currentName() throws IOException
     {
         // start markers require information from parent
         String name;
@@ -490,6 +490,12 @@ public class FromXmlParser
         return name;
     }
 
+    @Deprecated // since 2.17
+    @Override
+    public String getCurrentName() throws IOException {
+        return currentName();
+    }
+
     @Override
     public void overrideCurrentName(String name)
     {
@@ -500,7 +506,7 @@ public class FromXmlParser
         }
         ctxt.setCurrentName(name);
     }
-    
+
     @Override
     public void close() throws IOException
     {
@@ -536,7 +542,7 @@ public class FromXmlParser
      * that starts the current token.
      */
     @Override
-    public JsonLocation getTokenLocation() {
+    public JsonLocation currentTokenLocation() {
         return _xmlTokens.getTokenLocation();
     }
 
@@ -545,8 +551,20 @@ public class FromXmlParser
      * usually for error reporting purposes
      */
     @Override
-    public JsonLocation getCurrentLocation() {
+    public JsonLocation currentLocation() {
         return _xmlTokens.getCurrentLocation();
+    }
+
+    @Deprecated // since 2.17
+    @Override
+    public JsonLocation getCurrentLocation() {
+        return currentLocation();
+    }
+
+    @Deprecated // since 2.17
+    @Override
+    public JsonLocation getTokenLocation() {
+        return currentTokenLocation();
     }
 
     /**
@@ -659,7 +677,7 @@ public class FromXmlParser
             final String loc = (_parsingContext == null) ? "NULL" : String.valueOf(_parsingContext.pathAsPointer());
             switch (t) {
             case FIELD_NAME:
-                System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.FIELD_NAME '%s'\n", loc, _parsingContext.getCurrentName());
+                System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.FIELD_NAME '%s'\n", loc, _parsingContext.currentName());
                 break;
             case VALUE_STRING:
                 System.out.printf("FromXmlParser.nextToken() at '%s': JsonToken.VALUE_STRING '%s'\n", loc, getText());
@@ -880,7 +898,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     @Override
     public String nextFieldName() throws IOException {
         if (nextToken() == JsonToken.FIELD_NAME) {
-            return getCurrentName();
+            return currentName();
         }
         return null;
     }
@@ -1033,7 +1051,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
         }
         switch (_currToken) {
         case FIELD_NAME:
-            return getCurrentName();
+            return currentName();
         case VALUE_STRING:
             return _currText;
         default:
