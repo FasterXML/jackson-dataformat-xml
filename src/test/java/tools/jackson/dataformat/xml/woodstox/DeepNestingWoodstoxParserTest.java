@@ -1,21 +1,28 @@
-package tools.jackson.dataformat.xml.dos;
+package tools.jackson.dataformat.xml.woodstox;
+
+import com.ctc.wstx.stax.WstxInputFactory;
 
 import tools.jackson.core.JsonParser;
-import tools.jackson.core.exc.StreamReadException;
+
+import tools.jackson.dataformat.xml.XmlFactory;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 
-public class DeepNestingParserTest extends XmlTestBase {
-
-    public void testDeepDoc() throws Exception
+public class DeepNestingWoodstoxParserTest extends XmlTestBase
+{
+    // Try using Woodstox-specific settings above and beyond
+    // what Jackson-core would provide
+    public void testDeepDocWithWoodstoxLimits() throws Exception
     {
-        final XmlMapper xmlMapper = newMapper();
+        final WstxInputFactory wstxInputFactory = new WstxInputFactory();
+        wstxInputFactory.getConfig().setMaxElementDepth(2000);
+        XmlMapper xmlMapper = new XmlMapper(
+                XmlFactory.builder()
+                .xmlInputFactory(wstxInputFactory)
+                .build());
         final String XML = createDeepNestedDoc(1050);
         try (JsonParser p = xmlMapper.createParser(XML)) {
             while (p.nextToken() != null) { }
-            fail("expected StreamReadException");
-        } catch (StreamReadException e) {
-            assertTrue(e.getMessage().contains("Maximum Element Depth limit (1000) Exceeded"));
         }
     }
 

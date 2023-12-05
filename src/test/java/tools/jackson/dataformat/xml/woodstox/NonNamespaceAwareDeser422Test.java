@@ -1,10 +1,8 @@
-package tools.jackson.dataformat.xml.deser;
+package tools.jackson.dataformat.xml.woodstox;
 
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
-
-import com.ctc.wstx.stax.WstxInputFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -14,7 +12,9 @@ import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-// [dataformat-xml#422]
+// [dataformat-xml#422]: while setting itself is NOT Woodstox-specific,
+// many/most Stax implementations do not offer non-namespace-aware mode
+// so let's separate this into Woodstox-specific section
 public class NonNamespaceAwareDeser422Test extends XmlTestBase
 {
  // [dataformat-xml#422]
@@ -55,7 +55,7 @@ public class NonNamespaceAwareDeser422Test extends XmlTestBase
 
     public void testBigDocIssue422() throws Exception
     {
-        final XMLInputFactory xmlInputFactory = new WstxInputFactory();
+        final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
         xmlInputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
         final XmlMapper xmlMapper = XmlMapper.builder(XmlFactory.builder()
                 .xmlInputFactory(xmlInputFactory)
