@@ -293,7 +293,7 @@ public abstract class XmlTestBase
         throws IOException
     {
         assertEquals(expName, jp.getText());
-        assertEquals(expName, jp.getCurrentName());
+        assertEquals(expName, jp.currentName());
     }
 
     protected void verifyException(Throwable e, String... matches)

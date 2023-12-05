@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.cfg.CacheProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.Impl;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 
