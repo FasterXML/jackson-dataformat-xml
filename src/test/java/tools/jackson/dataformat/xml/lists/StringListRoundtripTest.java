@@ -18,34 +18,35 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 // [dataformat-xml#584]
-public class StringListRoundtripTest {
-	private final static String[] TEST_DATA = new String[] {"", "test", null, "test2"};
+public class StringListRoundtripTest
+{
+    private final static String[] TEST_DATA = new String[] {"", "test", null, "test2"};
 
-	private final static XmlMapper MAPPER_READ_WRITE_NULLS = XmlMapper.builder()
-             .enable(PROCESS_XSI_NIL)
-             .enable(WRITE_NULLS_AS_XSI_NIL)
-             .build();
-     private final static XmlMapper MAPPER_READ_NULLS = XmlMapper.builder()
-             .enable(PROCESS_XSI_NIL)
-             .disable(WRITE_NULLS_AS_XSI_NIL)
-             .build();
-     private final static XmlMapper MAPPER_WRITE_NULLS = XmlMapper.builder()
-             .disable(PROCESS_XSI_NIL)
-             .enable(WRITE_NULLS_AS_XSI_NIL)
-             .build();
+    private final static XmlMapper MAPPER_READ_WRITE_NULLS = XmlMapper.builder()
+            .enable(PROCESS_XSI_NIL)
+            .enable(WRITE_NULLS_AS_XSI_NIL)
+            .build();
+    private final static XmlMapper MAPPER_READ_NULLS = XmlMapper.builder()
+            .enable(PROCESS_XSI_NIL)
+            .disable(WRITE_NULLS_AS_XSI_NIL)
+            .build();
+    private final static XmlMapper MAPPER_WRITE_NULLS = XmlMapper.builder()
+            .disable(PROCESS_XSI_NIL)
+            .enable(WRITE_NULLS_AS_XSI_NIL)
+            .build();
 
-     @Test
-	public void testStringArray() throws Exception
-	{
-		// default mode, should get back empty string
-		_stringArrayRoundtrip(MAPPER_READ_NULLS, false);
+    @Test
+    public void testStringArray() throws Exception
+    {
+        // default mode, should get back empty string
+        _stringArrayRoundtrip(MAPPER_READ_NULLS, false);
 
-		// xsi null enabled, should get back null
-		_stringArrayRoundtrip(MAPPER_READ_WRITE_NULLS, true);
+        // xsi null enabled, should get back null
+        _stringArrayRoundtrip(MAPPER_READ_WRITE_NULLS, true);
 
-		// xsi null write enabled but processing disabled, should get back empty string
-		_stringArrayRoundtrip(MAPPER_WRITE_NULLS, false);
-	}
+        // xsi null write enabled but processing disabled, should get back empty string
+        _stringArrayRoundtrip(MAPPER_WRITE_NULLS, false);
+    }
 
 	private void _stringArrayRoundtrip(ObjectMapper mapper, boolean shouldBeNull) throws Exception
 	{
@@ -215,35 +216,34 @@ public class StringListRoundtripTest {
 		_stringMapPojoRoundtrip(MAPPER_WRITE_NULLS, false);
 	}
 
-	private void _stringMapPojoRoundtrip(ObjectMapper mapper, boolean shouldBeNull) throws Exception
-	{
-		Map<String, String> map = new HashMap<String, String>() {{
-			put("a", "");
-			put("b", "test");
-			put("c", null);
-			put("d", "test2");
-		}};
-		MapPojo mapPojo = new MapPojo();
-		mapPojo.setMap(map);
+    private void _stringMapPojoRoundtrip(ObjectMapper mapper, boolean shouldBeNull) throws Exception
+    {
+        @SuppressWarnings("serial")
+        Map<String, String> map = new HashMap<String, String>() {{
+            put("a", "");
+            put("b", "test");
+            put("c", null);
+            put("d", "test2");
+        }};
+        MapPojo mapPojo = new MapPojo();
+        mapPojo.setMap(map);
 
-		// serialize to string
-		String xml = mapper.writeValueAsString(mapPojo);
-		assertNotNull(xml);
+        // serialize to string
+        String xml = mapper.writeValueAsString(mapPojo);
+        assertNotNull(xml);
 
-		// then bring it back
-		MapPojo result = mapper.readValue(xml, MapPojo.class);
-		assertEquals(4, result.map.size());
-		assertEquals("", result.map.get("a"));
-		assertEquals("test", result.map.get("b"));
-		if (shouldBeNull)
-		{
-			assertNull(result.map.get("c"));
-		} else
-		{
-			assertEquals("", result.map.get("c"));
-		}
-		assertEquals("test2", result.map.get("d"));
-	}
+        // then bring it back
+        MapPojo result = mapper.readValue(xml, MapPojo.class);
+        assertEquals(4, result.map.size());
+        assertEquals("", result.map.get("a"));
+        assertEquals("test", result.map.get("b"));
+        if (shouldBeNull) {
+            assertNull(result.map.get("c"));
+        } else {
+            assertEquals("", result.map.get("c"));
+        }
+        assertEquals("test2", result.map.get("d"));
+    }
 
 	static class MapPojo {
 		Map<String, String> map;
