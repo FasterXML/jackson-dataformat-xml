@@ -3,7 +3,6 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CacheProvider;
@@ -98,19 +97,13 @@ public class XmlDeserializationContext
     {
         // 18-Sep-2021, tatu: Complicated mess; with 2.12, had [dataformat-xml#374]
         //    to disable handling. With 2.13, via [dataformat-xml#485] undid this change
-        try {
-            if (_config.useRootWrapping()) {
-                return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
-            }
-            if (valueToUpdate == null) {
-                return deser.deserialize(p, this);
-            }
-            return deser.deserialize(p, this, valueToUpdate);
-        } catch (IndexOutOfBoundsException e) {
-            // If value is invalid without end character, the deserialize will
-            //     read pass the array bound and throws IndexOutOfBoundException
-            throw new JsonParseException(p, "Invalid value with missing JsonToken.END_OBJECT.", e);
+        if (_config.useRootWrapping()) {
+            return _unwrapAndDeserialize(p, valueType, deser, valueToUpdate);
         }
+        if (valueToUpdate == null) {
+            return deser.deserialize(p, this);
+        }
+        return deser.deserialize(p, this, valueToUpdate);
     }
 
     // To support case where XML element has attributes as well as CDATA, need

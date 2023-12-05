@@ -665,8 +665,6 @@ public class XmlFactory extends JsonFactory
             }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsParseException(e, null);
-        } catch (IndexOutOfBoundsException e) {
-            throw new JsonParseException(null, "Invalid input data.", e);
         }
         sr = _initializeXmlReader(sr);
         FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,

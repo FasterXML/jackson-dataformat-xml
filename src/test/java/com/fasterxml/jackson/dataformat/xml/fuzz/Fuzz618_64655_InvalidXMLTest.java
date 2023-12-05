@@ -2,7 +2,8 @@ package com.fasterxml.jackson.dataformat.xml.fuzz;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -50,92 +51,25 @@ public class Fuzz618_64655_InvalidXMLTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
-    /**
-     * Unit test to ensure that we can successfully also round trip
-     * example Bean used in Jackson tutorial
-     */
-    public void testRoundTripWithJacksonExample() throws Exception
-    {
-        FiveMinuteUser user = new FiveMinuteUser("Joe", "Sixpack",
-                true, FiveMinuteUser.Gender.MALE, new byte[] { 1, 2, 3 , 4, 5 });
-        String xml = MAPPER.writeValueAsString(user);
-        FiveMinuteUser result = MAPPER.readValue(xml, FiveMinuteUser.class);
-        assertEquals(user, result);
+    public void testWithInvalidXml1() throws Exception {
+        _testWithInvalidXml(1, "Unexpected end of input");
     }
 
-    public void testFromAttribute() throws Exception
-    {
-        AttributeBean bean = MAPPER.readValue("<AttributeBean attr=\"abc\"></AttributeBean>", AttributeBean.class);
-        assertNotNull(bean);
-        assertEquals("abc", bean.text);
+    public void testWithInvalidXml2() throws Exception {
+        _testWithInvalidXml(2, "Unexpected character 'a'");
     }
 
-    // // Tests for [dataformat-xml#64]
-
-    public void testOptionalAttr() throws Exception
-    {
-        Optional ob = MAPPER.readValue("<Optional type='work'>123-456-7890</Optional>",
-                Optional.class);
-        assertNotNull(ob);
-        assertEquals("123-456-7890", ob.number);
-        assertEquals("work", ob.type);
+    public void testWithInvalidXml3() throws Exception {
+        _testWithInvalidXml(3, "Unexpected EOF; was expecting a close tag");
     }
 
-    // 03-Jul-2020, tatu: Due to change on deserialization of root-level scalars,
-    //    this test that passed on 2.11 is no longer valid (it wasn't even before
-    //    wrt compatibility of serialization)
-    /*
-    public void testMissingOptionalAttr() throws Exception
-    {
-        Optional ob = MAPPER.readValue("<Optional>123-456-7890</Optional>",
-                Optional.class);
-        assertNotNull(ob);
-        assertEquals("123-456-7890", ob.number);
-        assertEquals("NOT SET", ob.type);
-    }
-    */
-
-    // [dataformat-xml#219]
-    public void testWithAttribute219Worker() throws Exception
-    {
-        final String DOC =
-"<worker>\n" + 
-"  <developer>test1</developer>\n" + 
-"  <tester grade='senior'>test2</tester>\n" + 
-"  <manager>test3</manager>\n" + 
-"</worker>"
-                ;
-        Worker219 result = MAPPER.readValue(DOC, Worker219.class);
-        assertNotNull(result);
-        assertEquals("test3", result.manager);
-    }
-
-    // [dataformat-xml#219]
-    public void testWithAttribute219Line() throws Exception
-    {
-        final String DOC =
-"<line>\n" + 
-"    <code type='ABC'>qsd</code>\n" + 
-"    <amount>138</amount>\n" + 
-"</line>"
-                ;
-        Line219 result = MAPPER.readValue(DOC, Line219.class);
-        assertNotNull(result);
-        assertEquals("138", result.amount);
-    }
-
-    public void testWithInvalidXml() throws Exception
+    private void _testWithInvalidXml(int ix, String errorToMatch) throws Exception
     {
         try {
-            for (int i = 1; i <= 3; i++) {
-                String path = "src/test/java/com/fasterxml/jackson/dataformat/xml/deser/invalid_xml_" + i;
-                MAPPER.readTree(Files.readAllBytes(Paths.get(path)));
-             }
-        } catch (Exception e) {
-            // Should throw JsonParseException if provided input is invalid.
-            if (!(e instanceof JsonParseException)) {
-                throw e;
-            }
+            String path = "src/test/java/com/fasterxml/jackson/dataformat/xml/deser/invalid_xml_" + ix;
+            MAPPER.readTree(Files.readAllBytes(Paths.get(path)));
+        } catch (StreamReadException e) {
+            verifyException(e, errorToMatch);
         }
     }
 }
