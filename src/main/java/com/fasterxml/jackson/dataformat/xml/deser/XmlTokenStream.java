@@ -557,14 +557,15 @@ public class XmlTokenStream
         }
 
         CharSequence chars = null;
+        main_loop:
         while (_xmlReader.hasNext()) {
             switch (_xmlReader.next()) {
             case XMLStreamConstants.START_ELEMENT:
-                break;
+                break main_loop;
 
             case XMLStreamConstants.END_ELEMENT:
             case XMLStreamConstants.END_DOCUMENT:
-                break;
+                break main_loop;
 
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
