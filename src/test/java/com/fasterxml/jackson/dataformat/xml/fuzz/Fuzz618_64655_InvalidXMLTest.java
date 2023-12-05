@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.deser;
+package com.fasterxml.jackson.dataformat.xml.fuzz;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import java.nio.file.*;
 
-public class TestDeserialization extends XmlTestBase
+public class Fuzz618_64655_InvalidXMLTest extends XmlTestBase
 {
     static class AttributeBean
     {
@@ -124,7 +124,7 @@ public class TestDeserialization extends XmlTestBase
         assertEquals("138", result.amount);
     }
 
-    public void testwithInvalidXml() throws Exception
+    public void testWithInvalidXml() throws Exception
     {
         try {
             for (int i = 1; i <= 3; i++) {
