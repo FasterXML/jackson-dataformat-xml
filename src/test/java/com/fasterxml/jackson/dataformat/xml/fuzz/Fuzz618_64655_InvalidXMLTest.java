@@ -52,7 +52,9 @@ public class Fuzz618_64655_InvalidXMLTest extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     public void testWithInvalidXml1() throws Exception {
-        _testWithInvalidXml(1, "Unexpected end of input");
+        _testWithInvalidXml(1, "Unexpected end of input", // Woodstox
+                "Internal processing error by `XMLStreamReader` of type" // SJSXP
+        );
     }
 
     public void testWithInvalidXml2() throws Exception {

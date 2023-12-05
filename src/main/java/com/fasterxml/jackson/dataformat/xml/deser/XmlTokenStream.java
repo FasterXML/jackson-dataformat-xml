@@ -5,13 +5,14 @@ import java.io.IOException;
 import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
-import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.io.ContentReference;
+
+import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
+import com.fasterxml.jackson.dataformat.xml.util.Stax2JacksonReaderAdapter;
 
 /**
  * Simple helper class used on top of STAX {@link XMLStreamReader} to further
@@ -168,7 +169,8 @@ public class XmlTokenStream
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
-        _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
+        // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
+        _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
     }
 
