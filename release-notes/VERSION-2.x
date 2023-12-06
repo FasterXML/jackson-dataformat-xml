@@ -6,7 +6,9 @@ Project: jackson-dataformat-xml
 
 2.17.0 (not yet released)
 
--
+#618: `ArrayIndexOutOfBoundsException` thrown for invalid ending XML string
+  when using JDK default Stax XML parser
+ (reported by Arthur C)
 
 2.16.1 (not yet released)
 

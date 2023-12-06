@@ -7,12 +7,12 @@ import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
-import org.codehaus.stax2.ri.Stax2ReaderAdapter;
 
 import tools.jackson.core.JsonLocation;
 import tools.jackson.core.io.ContentReference;
 
 import tools.jackson.dataformat.xml.XmlNameProcessor;
+import tools.jackson.dataformat.xml.util.Stax2JacksonReaderAdapter;
 
 /**
  * Simple helper class used on top of STAX {@link XMLStreamReader} to further
@@ -169,7 +169,8 @@ public class XmlTokenStream
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
-        _xmlReader = Stax2ReaderAdapter.wrapIfNecessary(xmlReader);
+        // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
+        _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
     }
 
@@ -550,10 +551,11 @@ public class XmlTokenStream
         }
 
         CharSequence chars = null;
-        while (true) {
+        main_loop:
+        while (_xmlReader.hasNext()) {
             switch (_xmlReader.next()) {
                 case XMLStreamConstants.START_ELEMENT:
-                    return chars == null ? "" : chars.toString();
+                    break main_loop;
 
                 case XMLStreamConstants.END_ELEMENT:
                 case XMLStreamConstants.END_DOCUMENT:
@@ -572,22 +574,23 @@ public class XmlTokenStream
                 case XMLStreamConstants.CHARACTERS:
                 case XMLStreamConstants.CDATA:
                     // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
-                {
-                    String str = _getText(_xmlReader);
-                    if (chars == null) {
-                        chars = str;
-                    } else  {
-                        if (chars instanceof String) {
-                            chars = new StringBuilder(chars);
+                    {
+                        String str = _getText(_xmlReader);
+                        if (chars == null) {
+                            chars = str;
+                        } else  {
+                            if (chars instanceof String) {
+                                chars = new StringBuilder(chars);
+                            }
+                            ((StringBuilder)chars).append(str);
                         }
-                        ((StringBuilder)chars).append(str);
                     }
-                }
                 break;
                 default:
                     // any other type (proc instr, comment etc) is just ignored
             }
         }
+        return (chars == null) ? "" : chars.toString();
     }
 
     // Called to skip tokens until start/end tag (or end-of-document) found, but
