@@ -238,8 +238,14 @@ Marco Belladelli (mbladel@github)
   not working as expected
  (2.15.0)
 
-Motonori IWAMURO (vmi@github)
+Motonori IWAMURO (@vmi)
 
 * Contributed fix for #616: Fix mismatch in `setNextIsUnwrapped(boolean)` in
   `XmlBeanSerializerBase#serializeFieldsFiltered()`
  (2.16.1)
+
+Arthur Chan (@arthurscchan)
+
+* Reported, contributed fix for #618: `ArrayIndexOutOfBoundsException` thrown for invalid
+  ending XML string when using JDK default Stax XML parser
+ (2.17.0)
