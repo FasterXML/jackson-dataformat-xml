@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.16.1 (not yet released)
+2.16.1 (24-Dec-2023)
 
 #616: Fix mismatch in `setNextIsUnwrapped(boolean)` in
   `XmlBeanSerializerBase#serializeFieldsFiltered()`
