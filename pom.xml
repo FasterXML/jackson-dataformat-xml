@@ -58,7 +58,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <version>4.2.1</version>
+      <version>4.2.2</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
@@ -73,7 +73,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.5.1</version>
+      <version>6.6.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
