@@ -9,6 +9,8 @@ Project: jackson-dataformat-xml
 #618: `ArrayIndexOutOfBoundsException` thrown for invalid ending XML string
   when using JDK default Stax XML parser
  (reported by Arthur C)
+#631: Add `XmlMapper.createGenerator(XMLStreamWriter)` and
+  `XmlMapper.createParser(XMLStreamReader)` overloads
 * Upgrade Woodstox to 6.6.0 (latest at the time)
 
 2.16.1 (24-Dec-2023)
