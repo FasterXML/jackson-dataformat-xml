@@ -1,6 +1,12 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import java.io.DataOutput;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -8,14 +14,20 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
+import com.fasterxml.jackson.core.io.DataOutputAsStream;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
+import com.fasterxml.jackson.databind.cfg.ContextAttributes;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext;
@@ -305,7 +317,7 @@ public class XmlMapper extends ObjectMapper
     public XmlFactory getFactory() {
         return (XmlFactory) _jsonFactory;
     }
-    
+
     public ObjectMapper configure(ToXmlGenerator.Feature f, boolean state) {
         ((XmlFactory)_jsonFactory).configure(f, state);
         return this;
@@ -411,5 +423,196 @@ public class XmlMapper extends ObjectMapper
         super.writeValue(g, value);
         // NOTE: above call should do flush(); and we should NOT close here.
         // Finally, 'g' has no buffers to release.
+    }
+
+    /**
+     * Method that can be used to serialize any Java value as
+     * a byte array.
+     *
+     * @param value value to serialize as XML bytes
+     * @param encoding character encoding for the XML output
+     * @return byte array representing the XML output
+     * @throws JsonProcessingException
+     * @since 2.16
+     */
+    public byte[] writeValueAsBytes(Object value, Charset encoding) throws JsonProcessingException {
+        try (ByteArrayBuilder bb = new ByteArrayBuilder(_jsonFactory._getBufferRecycler())) {
+            _writeValueAndClose(createGenerator(bb, encoding), value);
+            final byte[] result = bb.toByteArray();
+            bb.release();
+            return result;
+        } catch (JsonProcessingException e) { // to support [JACKSON-758]
+            throw e;
+        } catch (IOException e) { // shouldn't really happen, but is declared as possibility so:
+            throw JsonMappingException.fromUnexpectedIOE(e);
+        }
+    }
+
+    /**
+     * Method that can be used to serialize any Java value as
+     * XML output, written to File provided.
+     *
+     * @param resultFile the file to write to
+     * @param value the value to serialize
+     * @param encoding character encoding for the XML output
+     * @throws IOException
+     * @throws StreamWriteException
+     * @throws DatabindException
+     * @since 2.16
+     */
+    public void writeValue(File resultFile, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException
+    {
+        _writeValueAndClose(createGenerator(resultFile, encoding), value);
+    }
+
+    /**
+     * Method that can be used to serialize any Java value as
+     * JSON output, using output stream provided (using encoding
+     * {@link JsonEncoding#UTF8}).
+     *<p>
+     * Note: method does not close the underlying stream explicitly
+     * here; however, {@link JsonFactory} this mapper uses may choose
+     * to close the stream depending on its settings (by default,
+     * it will try to close it when {@link JsonGenerator} we construct
+     * is closed).
+     *
+     * @since 2.16
+     */
+    public void writeValue(OutputStream out, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException
+    {
+        _writeValueAndClose(createGenerator(out, encoding), value);
+    }
+
+    public void writeValue(DataOutput out, Object value, Charset encoding)
+            throws IOException, StreamWriteException, DatabindException
+    {
+        _writeValueAndClose(createGenerator(out, encoding), value);
+    }
+
+    @Override
+    public ObjectWriter writer() {
+        return new XmlWriter(super.writer());
+    }
+
+    @Override
+    public ObjectWriter writer(SerializationFeature feature) {
+        return new XmlWriter(super.writer(feature));
+    }
+
+    @Override
+    public ObjectWriter writer(SerializationFeature first, SerializationFeature... other) {
+        return new XmlWriter(super.writer(first, other));
+    }
+
+    @Override
+    public ObjectWriter writer(DateFormat df) {
+        return new XmlWriter(super.writer(df));
+    }
+
+    @Override
+    public ObjectWriter writerWithView(Class<?> serializationView) {
+        return new XmlWriter(super.writerWithView(serializationView));
+    }
+
+    @Override
+    public ObjectWriter writerFor(Class<?> rootType) {
+        return new XmlWriter(super.writerFor(rootType));
+    }
+
+    @Override
+    public ObjectWriter writerFor(TypeReference<?> rootType) {
+        return new XmlWriter(super.writerFor(rootType));
+    }
+
+    @Override
+    public ObjectWriter writerFor(JavaType rootType) {
+        return new XmlWriter(super.writerFor(rootType));
+    }
+
+    @Override
+    public ObjectWriter writer(PrettyPrinter pp) {
+        return new XmlWriter(super.writer(pp));
+    }
+
+    @Override
+    public ObjectWriter writerWithDefaultPrettyPrinter() {
+        return new XmlWriter(super.writerWithDefaultPrettyPrinter());
+    }
+
+    @Override
+    public ObjectWriter writer(FilterProvider filterProvider) {
+        return new XmlWriter(super.writer(filterProvider));
+    }
+
+    @Override
+    public ObjectWriter writer(FormatSchema schema) {
+        return new XmlWriter(super.writer(schema));
+    }
+
+    @Override
+    public ObjectWriter writer(Base64Variant defaultBase64) {
+        return new XmlWriter(super.writer(defaultBase64));
+    }
+
+    @Override
+    public ObjectWriter writer(CharacterEscapes escapes) {
+        return new XmlWriter(super.writer(escapes));
+    }
+
+    @Override
+    public ObjectWriter writer(ContextAttributes attrs) {
+        return new XmlWriter(super.writer(attrs));
+    }
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public ObjectWriter writerWithType(Class<?> rootType) {
+        return new XmlWriter(super.writerWithType(rootType));
+    }
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public ObjectWriter writerWithType(TypeReference<?> rootType) {
+        return new XmlWriter(super.writerWithType(rootType));
+    }
+
+    /** @deprecated */
+    @Override
+    @Deprecated
+    public ObjectWriter writerWithType(JavaType rootType) {
+        return new XmlWriter(super.writerWithType(rootType));
+    }
+
+    public static XmlWriter toXmlWriter(final ObjectWriter objectWriter) {
+        if (objectWriter instanceof XmlWriter) {
+            return (XmlWriter) objectWriter;
+        }
+        return new XmlWriter(objectWriter);
+    }
+
+    protected final JsonGenerator createGenerator(OutputStream out, Charset encoding) throws IOException {
+        this._assertNotNull("out", out);
+        JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(out, encoding);
+        this._serializationConfig.initialize(g);
+        return g;
+    }
+
+    protected final JsonGenerator createGenerator(File outputFile, Charset encoding) throws IOException {
+        _assertNotNull("outputFile", outputFile);
+        JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(
+                new FileOutputStream(outputFile), encoding);
+        _serializationConfig.initialize(g);
+        return g;
+    }
+
+    protected final JsonGenerator createGenerator(DataOutput out, Charset encoding) throws IOException {
+        this._assertNotNull("out", out);
+        JsonGenerator g = ((XmlFactory) _jsonFactory).createGenerator(new DataOutputAsStream(out), encoding);
+        this._serializationConfig.initialize(g);
+        return g;
     }
 }

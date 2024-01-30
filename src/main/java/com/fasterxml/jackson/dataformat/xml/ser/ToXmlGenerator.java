@@ -3,6 +3,8 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import javax.xml.XMLConstants;
@@ -216,6 +218,13 @@ public class ToXmlGenerator
      */
     protected XmlNameProcessor.XmlName _nameToEncode = new XmlNameProcessor.XmlName();
 
+    /**
+     * The character encoding for the XML output
+     *
+     * @since 2.16
+     */
+    protected final Charset _encoding;
+
     /*
     /**********************************************************
     /* Life-cycle
@@ -225,15 +234,23 @@ public class ToXmlGenerator
     public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
             ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor)
     {
+        this(ctxt, stdFeatures, xmlFeatures, codec, sw, nameProcessor, StandardCharsets.UTF_8);
+    }
+
+    public ToXmlGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures,
+                          ObjectCodec codec, XMLStreamWriter sw, XmlNameProcessor nameProcessor,
+                          Charset encoding)
+    {
         super(stdFeatures, codec, ctxt);
         _formatFeatures = xmlFeatures;
         _streamWriteConstraints = ctxt.streamWriteConstraints();
         _originalXmlWriter = sw;
+        _encoding = encoding;
         _xmlWriter = Stax2WriterAdapter.wrapIfNecessary(sw);
         _stax2Emulation = (_xmlWriter != sw);
         _nameProcessor = nameProcessor;
         _xmlPrettyPrinter = (_cfgPrettyPrinter instanceof XmlPrettyPrinter) ?
-        		(XmlPrettyPrinter) _cfgPrettyPrinter : null;
+                (XmlPrettyPrinter) _cfgPrettyPrinter : null;
     }
 
     /**
@@ -248,9 +265,9 @@ public class ToXmlGenerator
         _initialized = true;
         try {
             if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures)) {
-                _xmlWriter.writeStartDocument("UTF-8", "1.1");
+                _xmlWriter.writeStartDocument(_encoding.name(), "1.1");
             } else if (Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-                _xmlWriter.writeStartDocument("UTF-8", "1.0");
+                _xmlWriter.writeStartDocument(_encoding.name(), "1.0");
             } else {
                 return;
             }

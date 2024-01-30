@@ -1,6 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.stream.*;
 
@@ -517,6 +519,34 @@ public class XmlFactory extends JsonFactory
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
+
+    /**
+     * Method for constructing a {@link ToXmlGenerator} for writing XML content
+     * using specified output stream.
+     * Encoding to use must be specified.
+     *<p>
+     * Underlying stream <b>is NOT owned</b> by the generator constructed,
+     * so that generator will NOT close the output stream when
+     * {@link ToXmlGenerator#close} is called (unless auto-closing
+     * feature,
+     * {@link com.fasterxml.jackson.core.JsonGenerator.Feature#AUTO_CLOSE_TARGET}
+     * is enabled).
+     * Using application needs to close it explicitly if this is the case.
+     *
+     * @param out OutputStream to use for writing JSON content
+     * @param encoding Character encoding to use
+     * @return a {@link ToXmlGenerator} instance
+     * @throws IOException
+     * @since 2.16
+     */
+    public ToXmlGenerator createGenerator(OutputStream out, Charset encoding) throws IOException
+    {
+        // false -> we won't manage the stream unless explicitly directed to
+        final IOContext ctxt = _createContext(_createContentReference(out), false);
+        return new ToXmlGenerator(ctxt,
+                _generatorFeatures, _xmlGeneratorFeatures,
+                _objectCodec, _createXmlWriter(ctxt, out, encoding), _nameProcessor, encoding);
+    }
     
     @Override
     public ToXmlGenerator createGenerator(Writer out) throws IOException
@@ -700,9 +730,14 @@ public class XmlFactory extends JsonFactory
 
     protected XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out) throws IOException
     {
+        return _createXmlWriter(ctxt, out, StandardCharsets.UTF_8);
+    }
+
+    protected final XMLStreamWriter _createXmlWriter(IOContext ctxt, OutputStream out, Charset encoding) throws IOException
+    {
         XMLStreamWriter sw;
         try {
-            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), "UTF-8");
+            sw = _xmlOutputFactory.createXMLStreamWriter(_decorate(ctxt, out), encoding.name());
         } catch (Exception e) {
             throw new JsonGenerationException(e.getMessage(), e, null);
         }
