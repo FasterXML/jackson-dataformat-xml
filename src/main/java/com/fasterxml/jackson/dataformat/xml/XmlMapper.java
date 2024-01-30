@@ -268,7 +268,7 @@ public class XmlMapper extends ObjectMapper
      */
     @Deprecated
     protected void setXMLTextElementName(String name) {
-        ((XmlFactory) _jsonFactory).setXMLTextElementName(name);
+        getFactory().setXMLTextElementName(name);
     }
 
     /**
@@ -292,7 +292,7 @@ public class XmlMapper extends ObjectMapper
      * @since 2.14
      */
     public void setXmlNameProcessor(XmlNameProcessor processor) {
-        ((XmlFactory)_jsonFactory).setXmlNameProcessor(processor);
+        getFactory().setXmlNameProcessor(processor);
     }
 
     /*
@@ -343,6 +343,26 @@ public class XmlMapper extends ObjectMapper
      */
 
     /**
+     * Overloaded variant that allows constructing {@link FromXmlParser}
+     * for given Stax {@link XMLStreamReader}.
+     *
+     * @since 2.17
+     */
+    public FromXmlParser createParser(XMLStreamReader r) throws IOException {
+        return getFactory().createParser(r);
+    }
+
+    /**
+     * Overloaded variant that allows constructing {@link ToXmlGenerator}
+     * for given Stax {@link XMLStreamWriter}.
+     *
+     * @since 2.17
+     */
+    public ToXmlGenerator createGenerator(XMLStreamWriter w) throws IOException {
+        return getFactory().createGenerator(w);
+    }
+
+    /**
      * Method for reading a single XML value from given XML-specific input
      * source; useful for incremental data-binding, combining traversal using
      * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
@@ -374,7 +394,7 @@ public class XmlMapper extends ObjectMapper
     @SuppressWarnings("resource")
     public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException
     {
-        FromXmlParser p = getFactory().createParser(r);
+        FromXmlParser p = createParser(r);
         return super.readValue(p,  valueType);
     } 
 
@@ -385,9 +405,9 @@ public class XmlMapper extends ObjectMapper
      * 
      * @since 2.4
      */
-    public void writeValue(XMLStreamWriter w0, Object value) throws IOException {
+    public void writeValue(XMLStreamWriter w, Object value) throws IOException {
         @SuppressWarnings("resource")
-        ToXmlGenerator g = getFactory().createGenerator(w0);
+        ToXmlGenerator g = createGenerator(w);
         super.writeValue(g, value);
         // NOTE: above call should do flush(); and we should NOT close here.
         // Finally, 'g' has no buffers to release.
