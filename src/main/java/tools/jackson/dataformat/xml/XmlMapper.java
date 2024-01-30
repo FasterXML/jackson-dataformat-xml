@@ -428,6 +428,24 @@ public class XmlMapper extends ObjectMapper
      */
 
     /**
+     * Overloaded variant that allows constructing {@link FromXmlParser}
+     * for given Stax {@link XMLStreamReader}.
+     */
+    public FromXmlParser createParser(XMLStreamReader r) throws IOException {
+        DeserializationContext ctxt = _deserializationContext();
+        return tokenStreamFactory().createParser(ctxt, r);
+    }
+
+    /**
+     * Overloaded variant that allows constructing {@link ToXmlGenerator}
+     * for given Stax {@link XMLStreamWriter}.
+     */
+    public ToXmlGenerator createGenerator(XMLStreamWriter w) throws IOException {
+        SerializationContextExt prov = _serializerProvider(serializationConfig());
+        return tokenStreamFactory().createGenerator(prov, w);
+    }
+
+    /**
      * Method for reading a single XML value from given XML-specific input
      * source; useful for incremental data-binding, combining traversal using
      * basic Stax {@link XMLStreamReader} with data-binding by Jackson.
@@ -453,9 +471,7 @@ public class XmlMapper extends ObjectMapper
     @SuppressWarnings("resource")
     public <T> T readValue(XMLStreamReader r, JavaType valueType) throws IOException
     {
-        DeserializationContext ctxt = _deserializationContext();
-        FromXmlParser p = tokenStreamFactory().createParser(ctxt, r);
-        return super.readValue(p, valueType);
+        return super.readValue(createParser(r), valueType);
     } 
 
     /**
@@ -464,14 +480,13 @@ public class XmlMapper extends ObjectMapper
      * a time.
      */
     @SuppressWarnings("resource")
-    public void writeValue(XMLStreamWriter w0, Object value) throws IOException
+    public void writeValue(XMLStreamWriter w, Object value) throws IOException
     {
         // 04-Oct-2017, tatu: Unfortunately can not simply delegate to super-class implementation
         //   because we need the context first...
-        
-        SerializationConfig config = serializationConfig();
-        SerializationContextExt prov = _serializerProvider(config);
-        ToXmlGenerator g = tokenStreamFactory().createGenerator(prov, w0);
+
+        ToXmlGenerator g = createGenerator(w);
+        final SerializationConfig config = serializationConfig();
 
         if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {
             _writeCloseableValue(g, value, config);

@@ -3,6 +3,8 @@ package tools.jackson.dataformat.xml.incr;
 import java.io.*;
 import javax.xml.stream.*;
 
+import tools.jackson.core.JsonParser;
+
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 
@@ -42,5 +44,28 @@ public class PartialReadTest extends XmlTestBase
         assertEquals("root", sr.getLocalName());
         
         sr.close();
+    }
+
+    // @since 2.17
+    public void testReadUsingXMLStreamReader() throws Exception
+    {
+        final String DOC = "<Point><x>1</x><y>2</y></Point>";
+
+        XMLInputFactory staxF = MAPPER.tokenStreamFactory().getXMLInputFactory();
+
+        // First read using XmlMapper convenience method
+        XMLStreamReader sr = staxF.createXMLStreamReader(new StringReader(DOC));
+        Point p = MAPPER.readValue(sr, Point.class);
+        assertEquals(1, p.x);
+        assertEquals(2, p.y);
+        sr.close();
+
+        // Then read using XmlFactory parser factory method
+        sr = staxF.createXMLStreamReader(new StringReader(DOC));
+        try (JsonParser jp = MAPPER.createParser(sr)) {
+            p = MAPPER.readValue(jp, Point.class);
+            assertEquals(1, p.x);
+            assertEquals(2, p.y);
+        }
     }
 }
