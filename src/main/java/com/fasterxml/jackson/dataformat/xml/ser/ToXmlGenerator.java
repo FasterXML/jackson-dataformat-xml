@@ -93,6 +93,19 @@ public class ToXmlGenerator
          * @since 2.13
          */
         UNWRAP_ROOT_OBJECT_NODE(false),
+
+        /**
+         * Feature that enables automatic conversion of logical property
+         * name {@code "xsi:type"} into matching XML name where "type"
+         * is the local name and "xsi" prefix is bound to URI
+         * {@link XMLConstants#W3C_XML_SCHEMA_INSTANCE_NS_URI},
+         * and output is indicated to be done as XML Attribute.
+         * This is mostly desirable for Polymorphic handling where it is difficult
+         * to specify XML Namespace for type identifier
+         *
+         * @since 2.17
+         */
+        AUTO_DETECT_XSI_TYPE(false),
         ;
 
         final boolean _defaultState;
@@ -247,19 +260,25 @@ public class ToXmlGenerator
         }
         _initialized = true;
         try {
+            boolean xmlDeclWritten;
             if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures)) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.1");
+                xmlDeclWritten = true;
             } else if (Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.0");
+                xmlDeclWritten = true;
             } else {
-                return;
+                xmlDeclWritten = false;
             }
             // as per [dataformat-xml#172], try adding indentation
-            if (_xmlPrettyPrinter != null) {
+            if (xmlDeclWritten && (_xmlPrettyPrinter != null)) {
                 // ... but only if it is likely to succeed:
                 if (!_stax2Emulation) {
                     _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
                 }
+            }
+            if (Feature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
+                _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             }
         } catch (XMLStreamException e) {
             StaxUtil.throwAsGenerationException(e, this);
@@ -487,10 +506,12 @@ public class ToXmlGenerator
     /* JsonGenerator method overrides
     /**********************************************************
      */
-    
-    /* Most overrides in this section are just to make methods final,
-     * to allow better inlining...
-     */
+
+    @Override
+    public void writeFieldName(SerializableString name) throws IOException
+    {
+        writeFieldName(name.getValue());
+    }
 
     @Override
     public final void writeFieldName(String name) throws IOException
@@ -498,12 +519,22 @@ public class ToXmlGenerator
         if (_writeContext.writeFieldName(name) == JsonWriteContext.STATUS_EXPECT_VALUE) {
             _reportError("Can not write a field name, expecting a value");
         }
-        // Should this ever get called?
-        String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-        _nameToEncode.namespace = ns;
-        _nameToEncode.localPart = name;
-        _nameProcessor.encodeName(_nameToEncode);
-        setNextName(new QName(_nameToEncode.namespace, _nameToEncode.localPart));
+
+        String ns;
+        // 30-Jan-2024, tatu: Surprise!
+        if (Feature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)
+                && "xsi:type".equals(name)) {
+            setNextName(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    "type", "xsi"));
+            setNextIsAttribute(true);
+        } else {
+            // Should this ever get called?
+            ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
+            _nameToEncode.namespace = ns;
+            _nameToEncode.localPart = name;
+            _nameProcessor.encodeName(_nameToEncode);
+            setNextName(new QName(_nameToEncode.namespace, _nameToEncode.localPart));
+        }
     }
 
     @Override
@@ -519,7 +550,7 @@ public class ToXmlGenerator
     //    handling...
     //
     //    See [dataformat-xml#4] for more context.
-    
+
     /*
     // @since 2.9
     public WritableTypeId writeTypePrefix(WritableTypeId typeIdDef) throws IOException
@@ -639,12 +670,6 @@ public class ToXmlGenerator
     /* Output method implementations, textual
     /**********************************************************
      */
-
-    @Override
-    public void writeFieldName(SerializableString name) throws IOException
-    {
-        writeFieldName(name.getValue());
-    }
 
     @Override
     public void writeString(String text) throws IOException
