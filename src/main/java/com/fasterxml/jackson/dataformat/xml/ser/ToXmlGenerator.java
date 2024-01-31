@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
+import com.fasterxml.jackson.core.type.WritableTypeId;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -550,8 +551,9 @@ public class ToXmlGenerator
     //
     //    See [dataformat-xml#4] for more context.
 
+    // 30-Jan-2024, tatu: With 2.17 we may want to revisit this.
     /*
-    // @since 2.9
+    @Override
     public WritableTypeId writeTypePrefix(WritableTypeId typeIdDef) throws IOException
     {
         // 03-Aug-2017, tatu: Due to XML oddities, we do need to massage things
