@@ -138,6 +138,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlClassNameIdResolver
         extends ClassNameIdResolver
     {
+        private static final long serialVersionUID = 3L;
+
         public XmlClassNameIdResolver(JavaType baseType, PolymorphicTypeValidator ptv)
         {
             super(baseType, ptv);
@@ -158,6 +160,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlMinimalClassNameIdResolver
         extends MinimalClassNameIdResolver
     {
+        private static final long serialVersionUID = 3L;
+
         public XmlMinimalClassNameIdResolver(JavaType baseType, PolymorphicTypeValidator ptv)
         {
             super(baseType, ptv);
