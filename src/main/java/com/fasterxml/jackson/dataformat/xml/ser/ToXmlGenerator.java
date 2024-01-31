@@ -508,8 +508,7 @@ public class ToXmlGenerator
      */
 
     @Override
-    public void writeFieldName(SerializableString name) throws IOException
-    {
+    public void writeFieldName(SerializableString name) throws IOException {
         writeFieldName(name.getValue());
     }
 
