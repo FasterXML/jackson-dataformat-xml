@@ -21,6 +21,10 @@ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
  * Custom specialization of {@link StdTypeResolverBuilder}; needed so that
  * type id property name can be modified as necessary to make it legal
  * XML element or attribute name.
+ *<p>
+ * NOTE: Since 2.17, property name cleansing only applied to default
+ * names (like {@code "@class"} and {@code "@type"}) but not to explicitly
+ * specified ones (where caller presumably knows what to do).
  */
 public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
 {
@@ -32,33 +36,21 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     }
 
     @Override
-    public StdTypeResolverBuilder init(JsonTypeInfo.Id idType, TypeIdResolver idRes)
-    {
-        super.init(idType, idRes);
-        if (_typeProperty != null) {
-            _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
+    protected String _propName(String propName, JsonTypeInfo.Id idType) {
+        // 30-Jan-2024, tatu: Before 2.17 we used to indiscriminately cleanse
+        //   property name always; with 2.17+ only default ones
+        if (propName == null || propName.isEmpty()) {
+            propName = StaxUtil.sanitizeXmlTypeName(idType.getDefaultPropertyName());
+        } else {
+            // ... alas, there's... a "feature" (read: bug) in `JsonTypeInfo.Value` construction
+            // which will automatically apply default property name if no explicit property
+            // name specific. This means we don't really know if default is being used.
+            // But let's assume that if "propName.equals(defaultPropName)" this is the case.
+            if (propName.equals(idType.getDefaultPropertyName())) {
+                propName = StaxUtil.sanitizeXmlTypeName(propName);
+            }
         }
-        return this;
-    }
-
-    @Override
-    public StdTypeResolverBuilder init(JsonTypeInfo.Value settings, TypeIdResolver idRes) {
-        super.init(settings, idRes);
-        if (_typeProperty != null) {
-            _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
-        }
-        return this;
-    }
-
-    @Override
-    public StdTypeResolverBuilder typeProperty(String typeIdPropName)
-    {
-        // ok to have null/empty; will restore to use defaults
-        if (typeIdPropName == null || typeIdPropName.length() == 0) {
-            typeIdPropName = _idType.getDefaultPropertyName();
-        }
-        _typeProperty = StaxUtil.sanitizeXmlTypeName(typeIdPropName);
-        return this;
+        return propName;
     }
 
     @Override
