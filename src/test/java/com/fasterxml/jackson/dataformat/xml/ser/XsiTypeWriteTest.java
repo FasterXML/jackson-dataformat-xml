@@ -46,14 +46,17 @@ public class XsiTypeWriteTest extends XmlTestBase
 
     public void testXsiTypeAsTypeIdWriteDisabled() throws Exception
     {
-        assertEquals("<Poly><xsi_type>abc</xsi_type><value>42</value></Poly>",
-                NO_XSI_MAPPER.writeValueAsString(new PolyBean()));
+        // not legal XML but with explicitly specified name is what caller wants
+        // (note: not 100% sure how xsi:type is written as attribute)
+        assertEquals(
+                a2q("<Poly xsi:type='PolyBean'><value>42</value></Poly>"),
+                a2q(NO_XSI_MAPPER.writeValueAsString(new PolyBean())));
     }
 
     public void testXsiTypeAsTypeIdWriteEnabled() throws Exception
     {
         assertEquals(
-                a2q("<Poly xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='abc'>"
+                a2q("<Poly xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='PolyBean'>"
                         +"<value>42</value></Poly>"),
                 a2q(XSI_ENABLED_MAPPER.writeValueAsString(new PolyBean())));
     }
