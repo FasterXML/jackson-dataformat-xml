@@ -34,7 +34,6 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     @Override
     public StdTypeResolverBuilder init(JsonTypeInfo.Id idType, TypeIdResolver idRes)
     {
-
         super.init(idType, idRes);
         if (_typeProperty != null) {
             _typeProperty = StaxUtil.sanitizeXmlTypeName(_typeProperty);
@@ -89,7 +88,6 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     /**********************************************************************
      */
 
-
     /**
      * Helper method for encoding regular Java class name in form that
      * can be used as XML element name.
@@ -138,6 +136,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlClassNameIdResolver
         extends ClassNameIdResolver
     {
+        private static final long serialVersionUID = 2L;
+
         public XmlClassNameIdResolver(JavaType baseType, TypeFactory typeFactory,
                 PolymorphicTypeValidator ptv)
         {
@@ -159,6 +159,8 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     protected static class XmlMinimalClassNameIdResolver
         extends MinimalClassNameIdResolver
     {
+        private static final long serialVersionUID = 2L;
+
         public XmlMinimalClassNameIdResolver(JavaType baseType, TypeFactory typeFactory,
                 PolymorphicTypeValidator ptv)
         {

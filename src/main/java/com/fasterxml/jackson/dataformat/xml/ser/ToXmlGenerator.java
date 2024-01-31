@@ -247,15 +247,18 @@ public class ToXmlGenerator
         }
         _initialized = true;
         try {
+            boolean xmlDeclWritten;
             if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures)) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.1");
+                xmlDeclWritten = true;
             } else if (Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
                 _xmlWriter.writeStartDocument("UTF-8", "1.0");
+                xmlDeclWritten = true;
             } else {
-                return;
+                xmlDeclWritten = false;
             }
             // as per [dataformat-xml#172], try adding indentation
-            if (_xmlPrettyPrinter != null) {
+            if (xmlDeclWritten && (_xmlPrettyPrinter != null)) {
                 // ... but only if it is likely to succeed:
                 if (!_stax2Emulation) {
                     _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
@@ -487,10 +490,11 @@ public class ToXmlGenerator
     /* JsonGenerator method overrides
     /**********************************************************
      */
-    
-    /* Most overrides in this section are just to make methods final,
-     * to allow better inlining...
-     */
+
+    @Override
+    public void writeFieldName(SerializableString name) throws IOException {
+        writeFieldName(name.getValue());
+    }
 
     @Override
     public final void writeFieldName(String name) throws IOException
@@ -639,12 +643,6 @@ public class ToXmlGenerator
     /* Output method implementations, textual
     /**********************************************************
      */
-
-    @Override
-    public void writeFieldName(SerializableString name) throws IOException
-    {
-        writeFieldName(name.getValue());
-    }
 
     @Override
     public void writeString(String text) throws IOException
