@@ -6,6 +6,9 @@ Project: jackson-dataformat-xml
 
 2.17.0 (not yet released)
 
+#324: Support use of `xsi:type` for polymorphic serialization
+  (`ToXmlGenerator.Feature.AUTO_DETECT_XSI_TYPE`)
+ (requested by @philipzhaoTS)
 #618: `ArrayIndexOutOfBoundsException` thrown for invalid ending XML string
   when using JDK default Stax XML parser
  (reported by Arthur C)
