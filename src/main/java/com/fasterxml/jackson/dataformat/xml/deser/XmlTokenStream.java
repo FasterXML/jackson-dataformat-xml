@@ -75,6 +75,9 @@ public class XmlTokenStream
 
     protected boolean _cfgProcessXsiNil;
 
+    // @since 2.17
+    protected boolean _cfgProcessXsiType;
+
     protected XmlNameProcessor _nameProcessor;
 
     /*
@@ -169,6 +172,7 @@ public class XmlTokenStream
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
+        _cfgProcessXsiType = FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures);
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
@@ -247,6 +251,7 @@ public class XmlTokenStream
     protected void setFormatFeatures(int f) {
         _formatFeatures = f;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(f);
+        _cfgProcessXsiType = FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE.enabledIn(f);
     }
 
     /*
@@ -517,7 +522,6 @@ public class XmlTokenStream
             return (_currentState = XML_END);
         case XML_END:
             return XML_END;
-//            throw new IllegalStateException("No more XML tokens available (end of input)");
         }
         // Ok: must be END_ELEMENT; see what tag we get (or end)
         switch (_skipAndCollectTextUntilTag()) {
@@ -712,6 +716,15 @@ public class XmlTokenStream
      * @since 2.14
      */
     protected void _decodeElementName(String namespaceURI, String localName) {
+        // 31-Jan-2024, tatu: [dataformat-xml#634] Need to convert 'xsi:type'?
+        //    (not 100% sure if needed for elements but let's do for now)
+        if (_cfgProcessXsiType) {
+            if (localName.equals("type") && XSI_NAMESPACE.equals(namespaceURI)) {
+                _localName = "xsi:type";
+                _namespaceURI = ""; // or could leave as it was?
+                return;
+            }
+        }
         _nameToDecode.namespace = namespaceURI;
         _nameToDecode.localPart = localName;
         _nameProcessor.decodeName(_nameToDecode);
@@ -723,6 +736,14 @@ public class XmlTokenStream
      * @since 2.14
      */
     protected void _decodeAttributeName(String namespaceURI, String localName) {
+        // 31-Jan-2024, tatu: [dataformat-xml#634] Need to convert 'xsi:type'?
+        if (_cfgProcessXsiType) {
+            if (localName.equals("type") && XSI_NAMESPACE.equals(namespaceURI)) {
+                _localName = "xsi:type";
+                _namespaceURI = ""; // or could leave as it was?
+                return;
+            }
+        }
         _nameToDecode.namespace = namespaceURI;
         _nameToDecode.localPart = localName;
         _nameProcessor.decodeName(_nameToDecode);
