@@ -14,6 +14,8 @@ Project: jackson-dataformat-xml
  (reported by Arthur C)
 #631: Add `XmlMapper.createGenerator(XMLStreamWriter)` and
   `XmlMapper.createParser(XMLStreamReader)` overloads
+#634: Support use of xsi:type for polymorphic deserialization
+  (FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE)
 * Upgrade Woodstox to 6.6.0 (latest at the time)
 
 2.16.1 (24-Dec-2023)

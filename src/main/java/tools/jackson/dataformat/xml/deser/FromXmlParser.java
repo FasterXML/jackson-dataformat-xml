@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -55,6 +56,20 @@ public class FromXmlParser
      */
     public enum Feature implements FormatFeature
     {
+        /**
+         * Feature that enables automatic conversion of incoming "xsi:type"
+         * (where "type"  is the local name and "xsi" prefix is bound to URI
+         * {@link XMLConstants#W3C_XML_SCHEMA_INSTANCE_NS_URI}),
+         * into Jackson simple Property Name of {@code "xsi:type"}.
+         * This is usually needed to read content written using
+         * matching {@code ToXmlGenerator.Feature#AUTO_DETECT_XSI_TYPE} feature,
+         * usually used for Polymorphic handling where it is difficult
+         * to specify proper XML Namespace for type identifier.
+         *
+         * @since 2.17
+         */
+        AUTO_DETECT_XSI_TYPE(false),
+
         /**
          * Feature that indicates whether empty XML elements
          * (both empty tags like {@code <tag />} and {@code <tag></tag>}
