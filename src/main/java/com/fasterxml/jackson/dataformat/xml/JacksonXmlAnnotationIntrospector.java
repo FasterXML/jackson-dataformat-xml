@@ -132,7 +132,7 @@ public class JacksonXmlAnnotationIntrospector
             return ns2;
         }
         if (ns2 == null) {
-            return ns2;
+            return ns1;
         }
         if (ns1.isEmpty()) {
             return ns2;
