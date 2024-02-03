@@ -117,16 +117,27 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public String findNamespace(MapperConfig<?> config, Annotated ann)
     {
-        JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
-        if (prop != null) {
-            return prop.namespace();
+        String ns1 = null;
+        JacksonXmlProperty xmlProp = _findAnnotation(ann, JacksonXmlProperty.class);
+        if (xmlProp != null) {
+            ns1 = xmlProp.namespace();
         }
         // 14-Nov-2020, tatu: 2.12 adds namespace for this too
         JsonProperty jprop = _findAnnotation(ann, JsonProperty.class);
+        String ns2 = null;
         if (jprop != null) {
-            return jprop.namespace();
+            ns2 = jprop.namespace();
         }
-        return null;
+        if (ns1 == null) {
+            return ns2;
+        }
+        if (ns2 == null) {
+            return ns1;
+        }
+        if (ns1.isEmpty()) {
+            return ns2;
+        }
+        return ns1;
     }
 
     /**
