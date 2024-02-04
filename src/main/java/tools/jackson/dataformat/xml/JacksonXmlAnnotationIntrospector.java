@@ -191,31 +191,27 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public PropertyName findNameForSerialization(MapperConfig<?> config, Annotated a)
     {
-        PropertyName name = _findXmlName(a);
-        if (name == null) {
-            name = super.findNameForSerialization(config, a);
-            if (name == null) {
-                if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
-                    return PropertyName.USE_DEFAULT;
-                }
+        PropertyName pn = PropertyName.merge(_findXmlName(a),
+                super.findNameForSerialization(config, a));
+        if (pn == null) {
+            if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
+                return PropertyName.USE_DEFAULT;
             }
         }
-        return name;
+        return pn;
     }
 
     @Override
     public PropertyName findNameForDeserialization(MapperConfig<?> config, Annotated a)
     {
-        PropertyName name = _findXmlName(a);
-        if (name == null) {
-            name = super.findNameForDeserialization(config, a);
-            if (name == null) {
-                if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
-                    return PropertyName.USE_DEFAULT;
-                }
+        PropertyName pn = PropertyName.merge(_findXmlName(a),
+                super.findNameForDeserialization(config, a));
+        if (pn == null) {
+            if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
+                return PropertyName.USE_DEFAULT;
             }
         }
-        return name;
+        return pn;
     }
 
     /*
