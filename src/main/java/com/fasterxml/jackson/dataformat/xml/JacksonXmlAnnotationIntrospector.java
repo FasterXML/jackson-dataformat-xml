@@ -197,33 +197,29 @@ public class JacksonXmlAnnotationIntrospector
     @Override
     public PropertyName findNameForSerialization(Annotated a)
     {
-        PropertyName name = _findXmlName(a);
-        if (name == null) {
-            name = super.findNameForSerialization(a);
-            if (name == null) {
-                if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
-                    return PropertyName.USE_DEFAULT;
-                }
+        PropertyName pn = PropertyName.merge(_findXmlName(a),
+                super.findNameForSerialization(a));
+        if (pn == null) {
+            if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
+                return PropertyName.USE_DEFAULT;
             }
         }
-        return name;
+        return pn;
     }
 
     @Override
     public PropertyName findNameForDeserialization(Annotated a)
     {
-        PropertyName name = _findXmlName(a);
-        if (name == null) {
-            name = super.findNameForDeserialization(a);
-            if (name == null) {
-                if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
-                    return PropertyName.USE_DEFAULT;
-                }
+        PropertyName pn = PropertyName.merge(_findXmlName(a),
+                super.findNameForDeserialization(a));
+        if (pn == null) {
+            if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
+                return PropertyName.USE_DEFAULT;
             }
         }
-        return name;
+        return pn;
     }
-    
+
     /*
     /**********************************************************************
     /* Overrides for non-public helper methods
