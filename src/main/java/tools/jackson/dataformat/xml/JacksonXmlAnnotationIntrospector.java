@@ -1,14 +1,12 @@
 package tools.jackson.dataformat.xml;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.*;
-import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -164,7 +162,7 @@ public class JacksonXmlAnnotationIntrospector
         }
         return null;
     }
-    
+
     @Override
     public Boolean isOutputAsText(MapperConfig<?> config, Annotated ann)
     {
