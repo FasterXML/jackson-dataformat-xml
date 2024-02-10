@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedParameter;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 // copied form [jackson-databind]
 public class ImplicitParamsForCreatorTest
@@ -33,7 +34,9 @@ public class ImplicitParamsForCreatorTest
 
         // annotation should NOT be needed with 2.6 any more (except for single-arg case)
         //@com.fasterxml.jackson.annotation.JsonCreator
-        public XY(int x, int y) {
+        public XY(int x,
+                @JacksonXmlProperty(isAttribute=true)
+                int y) {
             this.x = x;
             this.y = y;
         }
