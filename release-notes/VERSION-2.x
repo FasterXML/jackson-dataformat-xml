@@ -38,6 +38,7 @@ Project: jackson-dataformat-xml
 #599: Use `IterationType` in `TypeUtil`
  (fix contributed by Joo Hyuk K)
 
+2.15.4 (15-Feb-2024)
 2.15.3 (12-Oct-2023)
 2.15.2 (30-May-2023)
 2.15.1 (16-May-2023)
