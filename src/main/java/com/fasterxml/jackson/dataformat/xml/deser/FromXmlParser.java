@@ -87,6 +87,19 @@ public class FromXmlParser
         EMPTY_ELEMENT_AS_NULL(false),
 
         /**
+         * Feature that indicates whether XML Empty elements (ones where there are
+         * no separate start and end tags, but just one tag that ends with "/&gt;")
+         * are exposed as {@link JsonToken#START_ARRAY} {@link JsonToken#END_ARRAY}) or not. If they are not
+         * returned as `[]` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
+         * tokens with textual value of "" (empty String).
+         *<p>
+         * Default setting is {@code false}
+         *
+         * @since 2.9
+         */
+        EMPTY_ELEMENT_AS_EMPTY_ARRAY(false),
+
+        /**
          * Feature that indicates whether XML Schema Instance attribute
          * {@code xsi:nil} will be processed automatically -- to indicate {@code null}
          * values -- or not.

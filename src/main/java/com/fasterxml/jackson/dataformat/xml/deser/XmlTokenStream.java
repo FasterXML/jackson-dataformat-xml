@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.core.JsonToken;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 
@@ -549,6 +550,7 @@ public class XmlTokenStream
 
     /**
      * @return Collected text, if any, EXCEPT that if {@code FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL}
+     *    OR {@code FromXmlParser.Feature.EMPTY_ELEMENT_AS_EMPTY_ARRAY}
      *    AND empty element, returns {@code null}
      */
     private final String _collectUntilTag() throws XMLStreamException
@@ -558,6 +560,9 @@ public class XmlTokenStream
             _xmlReader.next();
             if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                 return null;
+            }
+            if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_EMPTY_ARRAY.enabledIn(_formatFeatures)) {
+                return JsonToken.START_ARRAY.asString() + JsonToken.END_ARRAY.asString();
             }
             return "";
         }
