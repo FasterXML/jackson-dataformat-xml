@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.xml.XMLConstants;
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.core.JsonToken;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 
@@ -121,6 +120,8 @@ public class XmlTokenStream
      */
     protected String _textValue;
 
+    protected String _valueForEmptyElement;
+
     /**
      * Marker flag set if caller wants to "push back" current token so
      * that next call to {@link #next()} should simply be given what was
@@ -170,6 +171,12 @@ public class XmlTokenStream
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, XmlNameProcessor nameProcessor)
     {
+        this(xmlReader, sourceRef, formatFeatures, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE, nameProcessor);
+    }
+
+    public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
+            int formatFeatures, String valueForEmptyElement, XmlNameProcessor nameProcessor)
+    {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
@@ -177,6 +184,7 @@ public class XmlTokenStream
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
+        _valueForEmptyElement = valueForEmptyElement;
     }
 
     /**
@@ -561,10 +569,7 @@ public class XmlTokenStream
             if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                 return null;
             }
-            if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_EMPTY_ARRAY.enabledIn(_formatFeatures)) {
-                return JsonToken.START_ARRAY.asString() + JsonToken.END_ARRAY.asString();
-            }
-            return "";
+            return _valueForEmptyElement;
         }
 
         CharSequence chars = null;

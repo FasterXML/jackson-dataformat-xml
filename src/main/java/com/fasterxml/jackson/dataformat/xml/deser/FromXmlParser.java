@@ -40,6 +40,8 @@ public class FromXmlParser
      */
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
 
+    public final static String DEFAULT_EMPTY_ELEMENT_VALUE = "";
+
     /**
      * XML format has some peculiarities, indicated via new (2.12) capability
      * system.
@@ -85,19 +87,6 @@ public class FromXmlParser
          * @since 2.9
          */
         EMPTY_ELEMENT_AS_NULL(false),
-
-        /**
-         * Feature that indicates whether XML Empty elements (ones where there are
-         * no separate start and end tags, but just one tag that ends with "/&gt;")
-         * are exposed as {@link JsonToken#START_ARRAY} {@link JsonToken#END_ARRAY}) or not. If they are not
-         * returned as `[]` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
-         * tokens with textual value of "" (empty String).
-         *<p>
-         * Default setting is {@code false}
-         *
-         * @since 2.9
-         */
-        EMPTY_ELEMENT_AS_EMPTY_ARRAY(false),
 
         /**
          * Feature that indicates whether XML Schema Instance attribute
@@ -171,6 +160,8 @@ public class FromXmlParser
      * @since 2.1
      */
     protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
+
+    protected String _cfgValueForEmptyElement = DEFAULT_EMPTY_ELEMENT_VALUE;
 
     /*
     /**********************************************************
@@ -289,17 +280,25 @@ public class FromXmlParser
      */
 
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-             ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
+                         ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
+            throws IOException
+    {
+        this(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE);
+    }
+
+    public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
+             ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor, String valueForEmptyElement)
         throws IOException
     {
         super(genericParserFeatures);
+        _cfgValueForEmptyElement = valueForEmptyElement;
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _streamReadConstraints = ctxt.streamReadConstraints();
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
-                    _formatFeatures, tagProcessor);
+                    _formatFeatures, _cfgValueForEmptyElement, tagProcessor);
 
         final int firstToken;
         try {
@@ -356,6 +355,13 @@ public class FromXmlParser
      */
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
+    }
+
+    /**
+     * @since 2.17
+     */
+    public void setEmptyElementValue(String value) {
+        _cfgValueForEmptyElement = value;
     }
 
     /*

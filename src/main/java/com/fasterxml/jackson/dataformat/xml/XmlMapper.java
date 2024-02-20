@@ -104,6 +104,11 @@ public class XmlMapper extends ObjectMapper
             return this;
         }
 
+        public Builder valueForEmptyElement(String value) {
+            _mapper.setValueForEmptyElement(value);
+            return this;
+        }
+
         public Builder defaultUseWrapper(boolean state) {
             _mapper.setDefaultUseWrapper(state);
             return this;
@@ -269,6 +274,10 @@ public class XmlMapper extends ObjectMapper
     @Deprecated
     protected void setXMLTextElementName(String name) {
         getFactory().setXMLTextElementName(name);
+    }
+
+    protected void setValueForEmptyElement(String value) {
+        getFactory().setEmptyElementValue(value);
     }
 
     /**

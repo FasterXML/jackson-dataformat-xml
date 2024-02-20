@@ -97,7 +97,7 @@ public class EmptyStringValueTest extends XmlTestBase
 
         // but can be changed
         XmlMapper mapper2 = XmlMapper.builder()
-                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_EMPTY_ARRAY)
+                .valueForEmptyElement("[]")
                 .build();
         name = mapper2.readValue(XML, Name.class);
         assertNotNull(name);
