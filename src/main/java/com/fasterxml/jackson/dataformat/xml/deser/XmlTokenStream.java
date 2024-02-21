@@ -120,7 +120,7 @@ public class XmlTokenStream
      */
     protected String _textValue;
 
-    protected String _valueForEmptyElement;
+    protected final String _valueForEmptyElement;
 
     /**
      * Marker flag set if caller wants to "push back" current token so
@@ -558,7 +558,6 @@ public class XmlTokenStream
 
     /**
      * @return Collected text, if any, EXCEPT that if {@code FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL}
-     *    OR {@code FromXmlParser.Feature.EMPTY_ELEMENT_AS_EMPTY_ARRAY}
      *    AND empty element, returns {@code null}
      */
     private final String _collectUntilTag() throws XMLStreamException

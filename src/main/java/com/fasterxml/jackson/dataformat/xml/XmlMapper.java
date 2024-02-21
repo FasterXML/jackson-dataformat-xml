@@ -104,6 +104,15 @@ public class XmlMapper extends ObjectMapper
             return this;
         }
 
+        /**
+         *
+         * Set a default value in case of an empty element (empty XML tag)
+         *<p>
+         * In case of an empty XML tag (like `<no-content/>`) the serialized value
+         * is set to `String value`. If not specified, the default value is empty String.
+         *
+         * @since 2.17
+         */
         public Builder valueForEmptyElement(String value) {
             _mapper.setValueForEmptyElement(value);
             return this;

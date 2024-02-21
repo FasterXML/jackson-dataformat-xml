@@ -55,7 +55,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     protected String _nameForTextElement;
 
     /**
-     * Set a default value in case of empty an empty element (empty XML tag)
+     * Set a default value in case of an empty element (empty XML tag)
      *<p>
      * Value used for pseudo-property used for returning empty XML tag.
      * Defaults to empty String, but may be changed.

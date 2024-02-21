@@ -40,6 +40,10 @@ public class FromXmlParser
      */
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
 
+    /**
+     * The default value placeholder for XML empty tag is an empty
+     * String ("").
+     */
     public final static String DEFAULT_EMPTY_ELEMENT_VALUE = "";
 
     /**
@@ -286,6 +290,9 @@ public class FromXmlParser
         this(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE);
     }
 
+    /**
+     * @since 2.17
+     */
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
              ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor, String valueForEmptyElement)
         throws IOException
