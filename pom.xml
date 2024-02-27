@@ -13,7 +13,7 @@
   </parent>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.17.0-rc1</version>
+  <version>2.17.0-SNAPSHOT</version>
   <name>Jackson-dataformat-XML</name>
   <packaging>jar</packaging>
   <description>Data format extension for Jackson to offer
@@ -24,7 +24,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <connection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</connection>
     <developerConnection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</developerConnection>
     <url>http://github.com/FasterXML/jackson-dataformat-xml</url>    
-    <tag>jackson-dataformat-xml-2.17.0-rc1</tag>
+    <tag>HEAD</tag>
   </scm>
   <properties>
     <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
@@ -34,7 +34,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <!-- And presumably import too? -->
 
     <!-- for Reproducible Builds -->
-    <project.build.outputTimestamp>2024-02-27T02:19:40Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-27T02:19:55Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
