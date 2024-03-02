@@ -866,6 +866,19 @@ public class FromXmlParser
                     //   expose "XmlText" as separate property
                     token = _nextToken();
 
+                    // Handle JSON object
+                    if (currentValue() == null && _xmlTokens._emptyElement) {
+                        if ("[]".equals(_currText)) {
+                            _nextToken = JsonToken.END_ARRAY;
+                            _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+                            return (_currToken = JsonToken.START_ARRAY);
+                        } else if ("{}".equals(_currText)) {
+                            _nextToken = JsonToken.END_OBJECT;
+                            _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                            return (_currToken = JsonToken.START_OBJECT);
+                        }
+                    }
+
                     if (token == XmlTokenStream.XML_END_ELEMENT) {
                         if (_parsingContext.inArray()) {
                             if (XmlTokenStream._allWs(_currText)) {

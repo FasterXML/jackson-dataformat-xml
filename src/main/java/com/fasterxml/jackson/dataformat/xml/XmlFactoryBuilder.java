@@ -59,6 +59,10 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
      *<p>
      * Value used for pseudo-property used for returning empty XML tag.
      * Defaults to empty String, but may be changed.
+     *
+     * In case of deserialization/serialization to JSON via JsonNode
+     * and _valueForEmptyElement is equals to [] or {}, the JSON will be serialized
+     * with actual empty json array or object instead of text value ("[]" or "{}")
      */
     protected String _valueForEmptyElement = FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE;
 
