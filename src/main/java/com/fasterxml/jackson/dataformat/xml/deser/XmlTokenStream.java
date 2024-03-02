@@ -168,12 +168,17 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
+    @Deprecated // since 2.17
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, XmlNameProcessor nameProcessor)
     {
-        this(xmlReader, sourceRef, formatFeatures, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE, nameProcessor);
+        this(xmlReader, sourceRef, formatFeatures, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE,
+                nameProcessor);
     }
 
+    /**
+     * @since 2.17
+     */
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, String valueForEmptyElement, XmlNameProcessor nameProcessor)
     {

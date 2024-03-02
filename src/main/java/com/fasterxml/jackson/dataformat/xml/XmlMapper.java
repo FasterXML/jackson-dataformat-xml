@@ -285,6 +285,11 @@ public class XmlMapper extends ObjectMapper
         getFactory().setXMLTextElementName(name);
     }
 
+    // Needed by Builder itself in 2.x, but should not be called by users hence:
+    /**
+     * @deprecated Since 2.17 use {@link Builder#valueForEmptyElement(String)} instead
+     */
+    @Deprecated
     protected void setValueForEmptyElement(String value) {
         getFactory().setEmptyElementValue(value);
     }

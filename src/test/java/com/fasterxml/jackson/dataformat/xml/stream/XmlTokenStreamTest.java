@@ -181,7 +181,8 @@ public class XmlTokenStreamTest extends XmlTestBase
         XMLStreamReader sr = XML_FACTORY.getXMLInputFactory().createXMLStreamReader(new StringReader(doc));
         // must point to START_ELEMENT, so:
         sr.nextTag();
-        XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags, XmlNameProcessors.newPassthroughProcessor());
+        XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags,
+                "", XmlNameProcessors.newPassthroughProcessor());
         stream.initialize();
         return stream;
     }

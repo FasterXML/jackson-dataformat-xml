@@ -66,6 +66,9 @@ public class XmlFactory extends JsonFactory
 
     protected String _cfgNameForTextElement;
 
+    /**
+     * @since 2.17
+     */
     protected String _cfgValueForEmptyElement;
 
     protected XmlNameProcessor _nameProcessor;
@@ -112,6 +115,9 @@ public class XmlFactory extends JsonFactory
         this(oc, xpFeatures, xgFeatures, xmlIn, xmlOut, nameForTextElem, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE, XmlNameProcessors.newPassthroughProcessor());
     }
 
+    /**
+     * @since 2.17
+     */
     public XmlFactory(ObjectCodec oc, int xpFeatures, int xgFeatures,
                       XMLInputFactory xmlIn, XMLOutputFactory xmlOut,
                       String nameForTextElem, String valueForEmptyElement) {
@@ -248,8 +254,8 @@ public class XmlFactory extends JsonFactory
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
-	return new XmlFactory(_objectCodec, _xmlParserFeatures, _xmlGeneratorFeatures,
-			      inf, outf, _cfgNameForTextElement, _cfgValueForEmptyElement);
+        return new XmlFactory(_objectCodec, _xmlParserFeatures, _xmlGeneratorFeatures,
+                inf, outf, _cfgNameForTextElement, _cfgValueForEmptyElement);
     }
 
     /**

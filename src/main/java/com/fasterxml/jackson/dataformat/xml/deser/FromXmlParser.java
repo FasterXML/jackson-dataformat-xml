@@ -165,7 +165,14 @@ public class FromXmlParser
      */
     protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
 
-    protected String _cfgValueForEmptyElement = DEFAULT_EMPTY_ELEMENT_VALUE;
+    /**
+     * When an empty element (like {@code <tag/>}) is encountered, this
+     * textual value reported in the token stream: default is empty
+     * String, but may be configured for any other String value.
+     *
+     * @since 2.17
+     */
+    protected final String _cfgValueForEmptyElement;
 
     /*
     /**********************************************************
@@ -283,18 +290,24 @@ public class FromXmlParser
     /**********************************************************
      */
 
+    /**
+     * @deprecated Since 2.17
+     */
+    @Deprecated
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-                         ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
-            throws IOException
+            ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
+        throws IOException
     {
-        this(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE);
+        this(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor,
+                FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE);
     }
 
     /**
      * @since 2.17
      */
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-             ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor, String valueForEmptyElement)
+            ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor,
+            String valueForEmptyElement)
         throws IOException
     {
         super(genericParserFeatures);
@@ -362,13 +375,6 @@ public class FromXmlParser
      */
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
-    }
-
-    /**
-     * @since 2.17
-     */
-    public void setEmptyElementValue(String value) {
-        _cfgValueForEmptyElement = value;
     }
 
     /*
