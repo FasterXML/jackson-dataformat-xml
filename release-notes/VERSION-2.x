@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.17.0 (not yet released)
+2.17.0-rc1 (26-Feb-2024)
 
 #324: Support use of `xsi:type` for polymorphic serialization
   (`ToXmlGenerator.Feature.AUTO_DETECT_XSI_TYPE`)
@@ -18,7 +18,7 @@ Project: jackson-dataformat-xml
   (FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE)
 #637: `JacksonXmlAnnotationIntrospector.findNamespace()` should
   properly merge namespace information
-* Upgrade Woodstox to 6.6.0 (latest at the time)
+* Upgrade Woodstox to 6.6.1 (latest at the time)
 
 2.16.1 (24-Dec-2023)
 
