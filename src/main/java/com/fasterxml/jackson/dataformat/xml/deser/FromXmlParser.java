@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.JsonParser.NumberTypeFP;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.io.IOContext;
@@ -1172,6 +1173,15 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             return NumberType.LONG;
         }
         return NumberType.BIG_INTEGER;
+    }
+
+    /**
+     * XML has no notion of natural/native floating-point type (has to be
+     * provided externally via Schema or so), so need to ensure we indicate that.
+     */
+    @Override // added in 2.17
+    public NumberTypeFP getNumberTypeFP() throws IOException {
+        return NumberTypeFP.UNKNOWN;
     }
 
     @Override
