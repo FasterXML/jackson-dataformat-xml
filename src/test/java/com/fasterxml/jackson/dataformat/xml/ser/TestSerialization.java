@@ -31,6 +31,22 @@ public class TestSerialization extends XmlTestBase
         public int attr = 42;
     }
 
+    static class Floats
+    {
+        public float elem;
+
+        @JacksonXmlProperty(isAttribute=true, localName="attr")
+        public float attr;
+    }
+
+    static class Doubles
+    {
+        public double elem;
+
+        @JacksonXmlProperty(isAttribute=true, localName="attr")
+        public double attr;
+    }
+
     static class WrapperBean<T>
     {
         public T value;
@@ -175,4 +191,62 @@ public class TestSerialization extends XmlTestBase
         System.out.println("JAXB -> "+sw);
     }
     */
+
+    public void testFloatInfinity() throws IOException
+    {
+        Floats infinite = new Floats();
+        infinite.attr = Float.POSITIVE_INFINITY;
+        infinite.elem = Float.NEGATIVE_INFINITY;
+
+        Floats finite = new Floats();
+        finite.attr = 42.5f;
+        finite.elem = 1337.875f;
+
+        checkFloatInfinity(infinite, false, "<Floats attr=\"Infinity\"><elem>-Infinity</elem></Floats>");
+        checkFloatInfinity(finite, false, "<Floats attr=\"42.5\"><elem>1337.875</elem></Floats>");
+        checkFloatInfinity(infinite, true, "<Floats attr=\"INF\"><elem>-INF</elem></Floats>");
+        checkFloatInfinity(finite, true, "<Floats attr=\"42.5\"><elem>1337.875</elem></Floats>");
+    }
+
+    private void checkFloatInfinity(Floats original, boolean xmlSchemaConforming, String expectedXml) throws IOException
+    {
+        _xmlMapper.configure(ToXmlGenerator.Feature.XML_SCHEMA_CONFORMING_FLOATS, xmlSchemaConforming);
+
+        String xml = _xmlMapper.writeValueAsString(original);
+        xml = removeSjsxpNamespace(xml);
+        assertEquals(expectedXml, xml);
+
+        Floats deserialized = _xmlMapper.readValue(xml, Floats.class);
+        assertEquals(original.attr, deserialized.attr);
+        assertEquals(original.elem, deserialized.elem);
+    }
+
+    public void testDoubleInfinity() throws IOException
+    {
+        Doubles infinite = new Doubles();
+        infinite.attr = Double.POSITIVE_INFINITY;
+        infinite.elem = Double.NEGATIVE_INFINITY;
+
+        Doubles finite = new Doubles();
+        finite.attr = 42.5d;
+        finite.elem = 1337.875d;
+
+        checkDoubleInfinity(infinite, false, "<Doubles attr=\"Infinity\"><elem>-Infinity</elem></Doubles>");
+        checkDoubleInfinity(finite, false, "<Doubles attr=\"42.5\"><elem>1337.875</elem></Doubles>");
+        checkDoubleInfinity(infinite, true, "<Doubles attr=\"INF\"><elem>-INF</elem></Doubles>");
+        checkDoubleInfinity(finite, true, "<Doubles attr=\"42.5\"><elem>1337.875</elem></Doubles>");
+    }
+
+    private void checkDoubleInfinity(Doubles original, boolean xmlSchemaConforming, String expectedXml) throws IOException
+    {
+        _xmlMapper.configure(ToXmlGenerator.Feature.XML_SCHEMA_CONFORMING_FLOATS, xmlSchemaConforming);
+
+        String xml = _xmlMapper.writeValueAsString(original);
+        xml = removeSjsxpNamespace(xml);
+        assertEquals(expectedXml, xml);
+
+        Doubles deserialized = _xmlMapper.readValue(xml, Doubles.class);
+        assertEquals(original.attr, deserialized.attr);
+        assertEquals(original.elem, deserialized.elem);
+    }
 }
