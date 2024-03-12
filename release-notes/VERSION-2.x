@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.17.0-rc1 (26-Feb-2024)
+2.17.0 (12-Mar-2024)
 
 #324: Support use of `xsi:type` for polymorphic serialization
   (`ToXmlGenerator.Feature.AUTO_DETECT_XSI_TYPE`)
