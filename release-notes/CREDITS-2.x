@@ -249,3 +249,9 @@ Arthur Chan (@arthurscchan)
 * Reported, contributed fix for #618: `ArrayIndexOutOfBoundsException` thrown for invalid
   ending XML string when using JDK default Stax XML parser
  (2.17.0)
+
+Alex H (@ahcodedthat)
+
+* Contribtued #643: XML serialization of floating-point infinity is incompatible
+  with JAXB and XML Schema
+ (2.17.0)

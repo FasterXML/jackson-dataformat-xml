@@ -18,6 +18,9 @@ Project: jackson-dataformat-xml
   (FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE)
 #637: `JacksonXmlAnnotationIntrospector.findNamespace()` should
   properly merge namespace information
+#643: XML serialization of floating-point infinity is incompatible
+  with JAXB and XML Schema
+ (contributed by Alex H)
 * Upgrade Woodstox to 6.6.1 (latest at the time)
 
 2.16.1 (24-Dec-2023)

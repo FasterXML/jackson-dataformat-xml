@@ -1,9 +1,9 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.io.*;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
@@ -97,14 +97,14 @@ public class TestSerialization extends XmlTestBase
 
     private final XmlMapper _xmlMapper = new XmlMapper();
 
-    public void testSimpleAttribute() throws IOException
+    public void testSimpleAttribute() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttributeBean());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<AttributeBean attr=\"something\"/>", xml);
     }
 
-    public void testSimpleNsElem() throws IOException
+    public void testSimpleNsElem() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NsElemBean());
         xml = removeSjsxpNamespace(xml);
@@ -112,7 +112,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
     }
 
-    public void testSimpleNsElemWithJsonProp() throws IOException
+    public void testSimpleNsElemWithJsonProp() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NsElemBean2());
         xml = removeSjsxpNamespace(xml);
@@ -120,14 +120,14 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean2><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean2>", xml);
     }
     
-    public void testSimpleAttrAndElem() throws IOException
+    public void testSimpleAttrAndElem() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrAndElem());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
-    public void testMap() throws IOException
+    public void testMap() throws Exception
     {
         // First, map in a general wrapper
         LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>();
@@ -152,7 +152,7 @@ public class TestSerialization extends XmlTestBase
                 xml);
     }
 
-    public void testNakedMap() throws IOException
+    public void testNakedMap() throws Exception
     {
         CustomMap input = new CustomMap();        
         input.put("a", 123);
@@ -168,14 +168,14 @@ public class TestSerialization extends XmlTestBase
         assertEquals(Integer.valueOf(456), result.get("b"));
     }
 
-    public void testCDataString() throws IOException
+    public void testCDataString() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new CDataStringBean());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<CDataStringBean><value><![CDATA[<some<data\"]]></value></CDataStringBean>", xml);
     }
 
-    public void testCDataStringArray() throws IOException
+    public void testCDataStringArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new CDataStringArrayBean());
         xml = removeSjsxpNamespace(xml);
@@ -192,7 +192,7 @@ public class TestSerialization extends XmlTestBase
     }
     */
 
-    public void testFloatInfinity() throws IOException
+    public void testFloatInfinity() throws Exception
     {
         Floats infinite = new Floats();
         infinite.attr = Float.POSITIVE_INFINITY;
@@ -208,9 +208,9 @@ public class TestSerialization extends XmlTestBase
         checkFloatInfinity(finite, true, "<Floats attr=\"42.5\"><elem>1337.875</elem></Floats>");
     }
 
-    private void checkFloatInfinity(Floats original, boolean xmlSchemaConforming, String expectedXml) throws IOException
+    private void checkFloatInfinity(Floats original, boolean xmlSchemaConforming, String expectedXml) throws Exception
     {
-        _xmlMapper.configure(ToXmlGenerator.Feature.XML_SCHEMA_CONFORMING_FLOATS, xmlSchemaConforming);
+        _xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS, xmlSchemaConforming);
 
         String xml = _xmlMapper.writeValueAsString(original);
         xml = removeSjsxpNamespace(xml);
@@ -221,7 +221,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals(original.elem, deserialized.elem);
     }
 
-    public void testDoubleInfinity() throws IOException
+    public void testDoubleInfinity() throws Exception
     {
         Doubles infinite = new Doubles();
         infinite.attr = Double.POSITIVE_INFINITY;
@@ -237,9 +237,9 @@ public class TestSerialization extends XmlTestBase
         checkDoubleInfinity(finite, true, "<Doubles attr=\"42.5\"><elem>1337.875</elem></Doubles>");
     }
 
-    private void checkDoubleInfinity(Doubles original, boolean xmlSchemaConforming, String expectedXml) throws IOException
+    private void checkDoubleInfinity(Doubles original, boolean xmlSchemaConforming, String expectedXml) throws Exception
     {
-        _xmlMapper.configure(ToXmlGenerator.Feature.XML_SCHEMA_CONFORMING_FLOATS, xmlSchemaConforming);
+        _xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS, xmlSchemaConforming);
 
         String xml = _xmlMapper.writeValueAsString(original);
         xml = removeSjsxpNamespace(xml);

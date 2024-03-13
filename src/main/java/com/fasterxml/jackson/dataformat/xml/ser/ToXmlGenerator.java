@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
-import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
 
@@ -130,11 +129,14 @@ public class ToXmlGenerator
          * <a href="https://www.w3.org/TR/xmlschema-2/#double"><code>double</code></a>).
          *<p>
          * When deserializing, Jackson always understands both representations,
-         * so there is no corresponding {@link FromXmlParser.Feature}.
+         * so there is no corresponding
+         * {@link com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.Feature}.
          *<p>
          * Feature is disabled by default for backwards compatibility.
+         *
+         * @since 2.17
          */
-        XML_SCHEMA_CONFORMING_FLOATS(false),
+        WRITE_XML_SCHEMA_CONFORMING_FLOATS(false),
         ;
 
         final boolean _defaultState;
@@ -1203,7 +1205,7 @@ public class ToXmlGenerator
     @Override
     public void writeNumber(double d) throws IOException
     {
-        if (Double.isInfinite(d) && isEnabled(Feature.XML_SCHEMA_CONFORMING_FLOATS)) {
+        if (Double.isInfinite(d) && isEnabled(Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)) {
             writeNumber(d > 0d ? "INF" : "-INF");
             return;
         }
@@ -1236,7 +1238,7 @@ public class ToXmlGenerator
     @Override
     public void writeNumber(float f) throws IOException
     {
-        if (Float.isInfinite(f) && isEnabled(Feature.XML_SCHEMA_CONFORMING_FLOATS)) {
+        if (Float.isInfinite(f) && isEnabled(Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)) {
             writeNumber(f > 0f ? "INF" : "-INF");
             return;
         }
