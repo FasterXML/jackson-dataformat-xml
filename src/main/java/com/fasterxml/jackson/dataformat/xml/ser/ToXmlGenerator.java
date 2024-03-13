@@ -106,6 +106,37 @@ public class ToXmlGenerator
          * @since 2.17
          */
         AUTO_DETECT_XSI_TYPE(false),
+
+        /**
+         * Feature that determines how floating-point infinity values are
+         * serialized.
+         *<p>
+         * By default, {@link Float#POSITIVE_INFINITY} and
+         * {@link Double#POSITIVE_INFINITY} are serialized as {@code Infinity},
+         * and {@link Float#NEGATIVE_INFINITY} and
+         * {@link Double#NEGATIVE_INFINITY} are serialized as
+         * {@code -Infinity}. This is the representation that Java normally
+         * uses for these values (see {@link Float#toString(float)} and
+         * {@link Double#toString(double)}), but JAXB and other XML
+         * Schema-conforming readers won't understand it.
+         *<p>
+         * With this feature enabled, these values are instead serialized as
+         * {@code INF} and {@code -INF}, respectively. This is the
+         * representation that XML Schema and JAXB use (see the XML Schema
+         * primitive types
+         * <a href="https://www.w3.org/TR/xmlschema-2/#float"><code>float</code></a>
+         * and
+         * <a href="https://www.w3.org/TR/xmlschema-2/#double"><code>double</code></a>).
+         *<p>
+         * When deserializing, Jackson always understands both representations,
+         * so there is no corresponding
+         * {@link com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.Feature}.
+         *<p>
+         * Feature is disabled by default for backwards compatibility.
+         *
+         * @since 2.17
+         */
+        WRITE_XML_SCHEMA_CONFORMING_FLOATS(false),
         ;
 
         final boolean _defaultState;
@@ -1174,6 +1205,11 @@ public class ToXmlGenerator
     @Override
     public void writeNumber(double d) throws IOException
     {
+        if (Double.isInfinite(d) && isEnabled(Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)) {
+            writeNumber(d > 0d ? "INF" : "-INF");
+            return;
+        }
+
         _verifyValueWrite("write number");
         if (_nextName == null) {
             handleMissingName();
@@ -1202,6 +1238,11 @@ public class ToXmlGenerator
     @Override
     public void writeNumber(float f) throws IOException
     {
+        if (Float.isInfinite(f) && isEnabled(Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)) {
+            writeNumber(f > 0f ? "INF" : "-INF");
+            return;
+        }
+
         _verifyValueWrite("write number");
         if (_nextName == null) {
             handleMissingName();
