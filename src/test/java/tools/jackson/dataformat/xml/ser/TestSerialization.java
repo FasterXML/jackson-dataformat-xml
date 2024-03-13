@@ -1,10 +1,10 @@
 package tools.jackson.dataformat.xml.ser;
 
-import java.io.*;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import tools.jackson.databind.ObjectWriter;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlCData;
@@ -30,6 +30,22 @@ public class TestSerialization extends XmlTestBase
         
         @JacksonXmlProperty(isAttribute=true, localName="id")
         public int attr = 42;
+    }
+
+    static class Floats
+    {
+        public float elem;
+
+        @JacksonXmlProperty(isAttribute=true, localName="attr")
+        public float attr;
+    }
+
+    static class Doubles
+    {
+        public double elem;
+
+        @JacksonXmlProperty(isAttribute=true, localName="attr")
+        public double attr;
     }
 
     static class WrapperBean<T>
@@ -72,6 +88,7 @@ public class TestSerialization extends XmlTestBase
         public String[] value = {"<some<data\"", "abc"};
     }
 
+    @SuppressWarnings("serial")
     static class CustomMap extends LinkedHashMap<String, Integer> { }
 
     /*
@@ -82,14 +99,14 @@ public class TestSerialization extends XmlTestBase
 
     private final XmlMapper _xmlMapper = new XmlMapper();
 
-    public void testSimpleAttribute() throws IOException
+    public void testSimpleAttribute() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttributeBean());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<AttributeBean attr=\"something\"/>", xml);
     }
 
-    public void testSimpleNsElem() throws IOException
+    public void testSimpleNsElem() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NsElemBean());
         xml = removeSjsxpNamespace(xml);
@@ -97,7 +114,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
     }
 
-    public void testSimpleNsElemWithJsonProp() throws IOException
+    public void testSimpleNsElemWithJsonProp() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NsElemBean2());
         xml = removeSjsxpNamespace(xml);
@@ -105,14 +122,14 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean2><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean2>", xml);
     }
     
-    public void testSimpleAttrAndElem() throws IOException
+    public void testSimpleAttrAndElem() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrAndElem());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
-    public void testMap() throws IOException
+    public void testMap() throws Exception
     {
         // First, map in a general wrapper
         LinkedHashMap<String,Integer> map = new LinkedHashMap<String,Integer>();
@@ -137,7 +154,7 @@ public class TestSerialization extends XmlTestBase
                 xml);
     }
 
-    public void testNakedMap() throws IOException
+    public void testNakedMap() throws Exception
     {
         CustomMap input = new CustomMap();        
         input.put("a", 123);
@@ -153,14 +170,14 @@ public class TestSerialization extends XmlTestBase
         assertEquals(Integer.valueOf(456), result.get("b"));
     }
 
-    public void testCDataString() throws IOException
+    public void testCDataString() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new CDataStringBean());
         xml = removeSjsxpNamespace(xml);
         assertEquals("<CDataStringBean><value><![CDATA[<some<data\"]]></value></CDataStringBean>", xml);
     }
 
-    public void testCDataStringArray() throws IOException
+    public void testCDataStringArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new CDataStringArrayBean());
         xml = removeSjsxpNamespace(xml);
@@ -176,4 +193,66 @@ public class TestSerialization extends XmlTestBase
         System.out.println("JAXB -> "+sw);
     }
     */
+
+    public void testFloatInfinity() throws Exception
+    {
+        Floats infinite = new Floats();
+        infinite.attr = Float.POSITIVE_INFINITY;
+        infinite.elem = Float.NEGATIVE_INFINITY;
+
+        Floats finite = new Floats();
+        finite.attr = 42.5f;
+        finite.elem = 1337.875f;
+
+        checkFloatInfinity(infinite, false, "<Floats attr=\"Infinity\"><elem>-Infinity</elem></Floats>");
+        checkFloatInfinity(finite, false, "<Floats attr=\"42.5\"><elem>1337.875</elem></Floats>");
+        checkFloatInfinity(infinite, true, "<Floats attr=\"INF\"><elem>-INF</elem></Floats>");
+        checkFloatInfinity(finite, true, "<Floats attr=\"42.5\"><elem>1337.875</elem></Floats>");
+    }
+
+    private void checkFloatInfinity(Floats original, boolean xmlSchemaConforming, String expectedXml) throws Exception
+    {
+        ObjectWriter w = _xmlMapper.writer();
+        w = xmlSchemaConforming ? w.with(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                : w.without(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
+
+        String xml = w.writeValueAsString(original);
+        xml = removeSjsxpNamespace(xml);
+        assertEquals(expectedXml, xml);
+
+        Floats deserialized = _xmlMapper.readValue(xml, Floats.class);
+        assertEquals(original.attr, deserialized.attr);
+        assertEquals(original.elem, deserialized.elem);
+    }
+
+    public void testDoubleInfinity() throws Exception
+    {
+        Doubles infinite = new Doubles();
+        infinite.attr = Double.POSITIVE_INFINITY;
+        infinite.elem = Double.NEGATIVE_INFINITY;
+
+        Doubles finite = new Doubles();
+        finite.attr = 42.5d;
+        finite.elem = 1337.875d;
+
+        checkDoubleInfinity(infinite, false, "<Doubles attr=\"Infinity\"><elem>-Infinity</elem></Doubles>");
+        checkDoubleInfinity(finite, false, "<Doubles attr=\"42.5\"><elem>1337.875</elem></Doubles>");
+        checkDoubleInfinity(infinite, true, "<Doubles attr=\"INF\"><elem>-INF</elem></Doubles>");
+        checkDoubleInfinity(finite, true, "<Doubles attr=\"42.5\"><elem>1337.875</elem></Doubles>");
+    }
+
+    private void checkDoubleInfinity(Doubles original, boolean xmlSchemaConforming, String expectedXml) throws Exception
+    {
+        ObjectWriter w = _xmlMapper.writer();
+        w = xmlSchemaConforming ? w.with(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                : w.without(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
+
+        String xml = w.writeValueAsString(original);
+        xml = removeSjsxpNamespace(xml);
+        assertEquals(expectedXml, xml);
+
+        Doubles deserialized = _xmlMapper.readValue(xml, Doubles.class);
+        assertEquals(original.attr, deserialized.attr);
+        assertEquals(original.elem, deserialized.elem);
+    }
 }
