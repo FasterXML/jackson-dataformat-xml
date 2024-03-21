@@ -120,6 +120,13 @@ public class XmlTokenStream
      */
     protected String _textValue;
 
+    protected final String _valueForEmptyElement;
+
+    /**
+     * true if the current tag is empty
+     */
+    protected boolean _emptyElement;
+
     /**
      * Marker flag set if caller wants to "push back" current token so
      * that next call to {@link #next()} should simply be given what was
@@ -166,8 +173,19 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
+    @Deprecated // since 2.17
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, XmlNameProcessor nameProcessor)
+    {
+        this(xmlReader, sourceRef, formatFeatures, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE,
+                nameProcessor);
+    }
+
+    /**
+     * @since 2.17
+     */
+    public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
+            int formatFeatures, String valueForEmptyElement, XmlNameProcessor nameProcessor)
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
@@ -176,6 +194,8 @@ public class XmlTokenStream
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
+        _valueForEmptyElement = valueForEmptyElement;
+        _emptyElement = false;
     }
 
     /**
@@ -555,13 +575,15 @@ public class XmlTokenStream
     {
         // 21-Jun-2017, tatu: Whether exposed as `null` or "" is now configurable...
         if (_xmlReader.isEmptyElement()) {
+            _emptyElement = true;
             _xmlReader.next();
             if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                 return null;
             }
-            return "";
+            return _valueForEmptyElement;
         }
 
+        _emptyElement = false;
         CharSequence chars = null;
         main_loop:
         while (_xmlReader.hasNext()) {

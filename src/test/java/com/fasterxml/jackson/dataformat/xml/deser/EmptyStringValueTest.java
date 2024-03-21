@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -83,6 +85,62 @@ public class EmptyStringValueTest extends XmlTestBase
         assertNotNull(name);
         assertNull(name.first);
         assertEquals("", name.last);
+    }
+
+    public void testEmptyElementEmptyArray() throws Exception
+    {
+        final String XML = "<name><first/><last></last></name>";
+
+        // Default settings (since 2.12): empty element does NOT become `null`:
+        Name name = MAPPER.readValue(XML, Name.class);
+        assertNotNull(name);
+        assertEquals("", name.first);
+        assertEquals("", name.last);
+
+        // but can be changed
+        XmlMapper mapper2 = XmlMapper.builder()
+                .valueForEmptyElement("[]")
+                .build();
+        name = mapper2.readValue(XML, Name.class);
+        assertNotNull(name);
+        assertEquals("[]", name.first);
+        assertEquals("", name.last);
+    }
+
+    public void testEmptyElementFromXmlToJsonArray() throws Exception
+    {
+        final String xml = "<name><first/><last>[]</last></name>";
+
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .valueForEmptyElement("[]")
+                .build();
+        JsonNode jsonNode = xmlMapper.readValue(xml, JsonNode.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(jsonNode);
+
+        // first is an empty tag, and is expected to be serialized
+        // as an empty json array, last is not empty, and is serialized as text value
+        String expectedJson = "{\"first\":[],\"last\":\"[]\"}";
+        assertEquals(expectedJson, json);
+    }
+
+    public void testEmptyElementFromXmlToJsonObject() throws Exception
+    {
+        final String xml = "<name><first/><last>{}</last></name>";
+
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .valueForEmptyElement("{}")
+                .build();
+        JsonNode jsonNode = xmlMapper.readValue(xml, JsonNode.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(jsonNode);
+
+        // first is an empty tag, and is expected to be serialized
+        // as an empty json object, last is not empty, and is serialized as text value
+        String expectedJson = "{\"first\":{},\"last\":\"{}\"}";
+        assertEquals(expectedJson, json);
     }
 
     public void testEmptyStringElement() throws Exception
