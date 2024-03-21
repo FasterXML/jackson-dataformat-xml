@@ -4,6 +4,10 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.18.0 (not yet released)
+
+No changes since 2.17
+
 2.17.0 (12-Mar-2024)
 
 #324: Support use of `xsi:type` for polymorphic serialization
