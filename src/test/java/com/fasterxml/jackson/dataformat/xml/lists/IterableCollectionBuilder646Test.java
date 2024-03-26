@@ -10,14 +10,15 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class IterableCollectionBuilder646Test extends XmlTestBase {
-
+// [dataformat-xml#646]
+public class IterableCollectionBuilder646Test extends XmlTestBase
+{
 	@JsonDeserialize(builder = Parent.Builder.class)
 	@JacksonXmlRootElement(localName = "parent")
 	static class Parent {
 		private final List<Child> children;
 
-		private Parent(List<Child> children) {
+		Parent(List<Child> children) {
 			this.children = children;
 		}
 
@@ -83,6 +84,5 @@ public class IterableCollectionBuilder646Test extends XmlTestBase {
 		assertNotNull(parent);
 		assertNotNull(parent.getChildren());
 		assertEquals(1, parent.getChildren().size());
-
 	}
 }
