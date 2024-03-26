@@ -252,6 +252,12 @@ Arthur Chan (@arthurscchan)
 
 Alex H (@ahcodedthat)
 
-* Contribtued #643: XML serialization of floating-point infinity is incompatible
+* Contributed #643: XML serialization of floating-point infinity is incompatible
   with JAXB and XML Schema
  (2.17.0)
+
+Bas Passon (@bpasson)
+
+* Reported, contributed fix for #646: Deserializing fails when using builder classes
+  with `Iterable` Collection setters
+ (2.17.1)
