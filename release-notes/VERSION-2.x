@@ -6,7 +6,8 @@ Project: jackson-dataformat-xml
 
 2.18.0 (not yet released)
 
-No changes since 2.17
+- Remove unnecessary synchronization around `LRUMap` in `XmlRootNameLookup`
+ (contributed by @pjfanning)
 
 2.17.1 (not yet released)
 
