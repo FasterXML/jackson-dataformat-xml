@@ -54,17 +54,12 @@ public class XmlRootNameLookup
     public QName findRootName(Class<?> rootType, MapperConfig<?> config)
     {
         ClassKey key = new ClassKey(rootType);
-        QName name;
-        synchronized (_rootNames) {
-            name = _rootNames.get(key);
-        }
+        QName name = _rootNames.get(key);
         if (name != null) {
             return name;
         }
         name = _findRootName(config, rootType);
-        synchronized (_rootNames) {
-            _rootNames.put(key, name);
-        }
+        _rootNames.put(key, name);
         return name;
     }
 
