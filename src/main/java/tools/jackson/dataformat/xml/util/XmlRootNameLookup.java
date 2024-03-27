@@ -26,9 +26,6 @@ public class XmlRootNameLookup
     /**
      * For efficient operation, let's try to minimize number of times we
      * need to introspect root element name to use.
-     *<p>
-     * Note: changed to <code>transient</code> for 2.3; no point in serializing such
-     * state
      */
     protected final transient SimpleLookupCache<ClassKey,QName> _rootNames;
 
@@ -54,17 +51,12 @@ public class XmlRootNameLookup
     public QName findRootName(DatabindContext ctxt, Class<?> rootType)
     {
         ClassKey key = new ClassKey(rootType);
-        QName name;
-        synchronized (_rootNames) {
-            name = _rootNames.get(key);
-        }
+        QName name = _rootNames.get(key);
         if (name != null) {
             return name;
         }
         name = _findRootName(ctxt, rootType);
-        synchronized (_rootNames) {
-            _rootNames.put(key, name);
-        }
+        _rootNames.put(key, name);
         return name;
     }
 
