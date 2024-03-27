@@ -12,6 +12,7 @@ No changes since 2.17
 
 #646: Deserializing fails when using builder classes with `Iterable` Collection setters
  (fix contributed by Bas P)
+* Upgrade Woodstox to 6.6.2 (dependency fixes)
 
 2.17.0 (12-Mar-2024)
 
