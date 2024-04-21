@@ -100,6 +100,13 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       </exclusions> 
     </dependency>
 
+    <!-- 20-Apr-2024, tatu: JUnit4 no longer from jackson-base, so: -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!--  Jakarta XMLBind (nee javax/jaxb( annotation introspector is needed BUT ONLY
           for tests (starting 2.13: previously compile/runtime)
        -->
