@@ -9,7 +9,7 @@ Project: jackson-dataformat-xml
 - Remove unnecessary synchronization around `LRUMap` in `XmlRootNameLookup`
  (contributed by @pjfanning)
 
-2.17.1 (not yet released)
+2.17.1 (04-May-2024)
 
 #646: Deserializing fails when using builder classes with `Iterable` Collection setters
  (fix contributed by Bas P)
