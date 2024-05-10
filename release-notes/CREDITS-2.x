@@ -243,3 +243,11 @@ Motonori IWAMURO (vmi@github)
 * Contributed fix for #616: Fix mismatch in `setNextIsUnwrapped(boolean)` in
   `XmlBeanSerializerBase#serializeFieldsFiltered()`
  (2.16.1)
+
+ Dennis Cornwell (@cornwe19)
+
+* Reported #509: Exception when parsing `List`s of mixed content (since 2.13.0)
+
+Christopher R. Wicks (@wickstopher)
+
+* Contributed fix for #509: Exception when parsing `List`s of mixed content (since 2.13.0)

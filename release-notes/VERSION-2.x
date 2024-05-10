@@ -4,6 +4,12 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+2.16.3 (not yet released)
+
+#509: Exception when parsing `List`s of mixed content (since 2.13.0)
+ (reported by Dennis C)
+ (fix contributed by Christopher R. W)
+
 2.16.2 (09-Mar-2024)
 
 No changes since 2.16.1
