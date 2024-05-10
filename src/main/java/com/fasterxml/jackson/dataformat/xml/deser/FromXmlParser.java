@@ -845,11 +845,19 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                         token = _nextToken();
                         continue;
                     }
-                    // [dataformat-xml#509] 2.13 introduced a defect in which an Exception was thrown here, breaking
+                    // 29-Mar-2021, tatu: This seems like an error condition...
+                    //   How should we indicate it? As of 2.13, report as unexpected state
+                    /*
+                    throw _constructError(
+"Unexpected non-whitespace text ('"+_currText+"') in Array context: should not occur (or should be handled)"
+);
+                    */
+                    
+                    // [dataformat-xml#509] 2.13 introduced a defect in which an Exception was thrown above, breaking
                     // parsing of mixed content arrays (https://github.com/FasterXML/jackson-dataformat-xml/issues/509).
                     // This exception case was removed to enable continued support of that functionality, but more
                     // robust state handling may be in order.
-                    // See comment https://github.com/FasterXML/jackson-dataformat-xml/pull/604#issuecomment-1770080319
+                    // See comment https://github.com/FasterXML/jackson-dataformat-xml/pull/604
                 }
 
                 // If not a leaf (or otherwise ignorable), need to transform into property...
