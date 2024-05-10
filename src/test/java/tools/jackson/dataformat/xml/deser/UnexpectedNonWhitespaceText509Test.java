@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
@@ -7,6 +7,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
@@ -31,6 +32,8 @@ public class UnexpectedNonWhitespaceText509Test {
 	}
 
 	static class MetaData {
+		@JacksonXmlElementWrapper(useWrapping = false)
+		@JacksonXmlProperty(localName = "data")
 		protected List<Data> data;
 
 		public List<Data> getData() {
