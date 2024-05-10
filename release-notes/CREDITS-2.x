@@ -244,6 +244,16 @@ Motonori IWAMURO (@vmi)
   `XmlBeanSerializerBase#serializeFieldsFiltered()`
  (2.16.1)
 
+Dennis Cornwell (@cornwe19)
+
+* Reported #509: Exception when parsing `List`s of mixed content (since 2.13.0)
+ (2.16.3)
+
+Christopher R. Wicks (@wickstopher)
+
+* Contributed fix for #509: Exception when parsing `List`s of mixed content (since 2.13.0)
+ (2.16.3)
+
 Arthur Chan (@arthurscchan)
 
 * Reported, contributed fix for #618: `ArrayIndexOutOfBoundsException` thrown for invalid
