@@ -42,7 +42,7 @@ are active maintenance branches in which much of development happens:
 * `2.15` is for backported fixes to include in 2.15.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
-All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
+All released versions have matching git tags (`jackson-dataformat-xml-2.17.1`).
 
 ## License
 
