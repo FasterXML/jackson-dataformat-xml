@@ -27,7 +27,7 @@ Specifically:
 | Artifact | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
-| Code coverage (2.15) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.15) |
+| Code coverage (2.18) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.18) |
 | OpenSSF Score | [![OpenSSF  Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/jackson-dataformat-xml/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
 
