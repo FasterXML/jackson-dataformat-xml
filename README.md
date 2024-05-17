@@ -36,10 +36,10 @@ Specifically:
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.16` is for developing the next minor 2.x version
+* `2.18` is for developing the next minor 2.x version
+* `2.17` is for backported fixes to include in 2.17.x patch versions
+* `2.16` is for backported fixes to include in 2.16.x patch versions
 * `2.15` is for backported fixes to include in 2.15.x patch versions
-* `2.14` is for backported fixes to include in 2.14.x patch versions
-* `2.13` is for backported fixes to include in 2.13.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
@@ -57,14 +57,14 @@ Maven:
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.15.0</version>
+  <version>2.17.1</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
 dependencies {
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.1'
 }
 ```
 
