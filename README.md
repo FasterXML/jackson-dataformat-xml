@@ -6,7 +6,7 @@ reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
 Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
 with "Code-first" approach (no support is added for "Schema-first" approach).
 Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb);
-this module provides low-level abstractions (`JsonParser`, `JsonGenerator`, `JsonFactory`) as well as small number of higher level
+this module provides low-level abstractions (`JsonParser`, `JsonGenerator`, `JsonFactory`) as well as a small number of higher level
 overrides needed to make data-binding work.
 
 It is worth noting, however, that the goal is NOT to be full JAXB clone; or to be a
@@ -16,8 +16,8 @@ Specifically:
 
 * While XML serialization should ideally be similar to JAXB output, deviations are not automatically considered flaws (there are reasons for some differences)
 * What should be guaranteed is that any XML written using this module must be readable using module as well ("read what I wrote"): that is, we do aim for full round-trip support
-* From above: there are XML constructs that module will not be able to handle; including some cases JAXB (and other Java XML libraries) supports
-* This module also support constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
+* From above: there are XML constructs that this module will not be able to handle; including some cases JAXB (and other Java XML libraries) support
+* This module also supports constructs and use cases JAXB does not handle: specifically, rich type and object id support of Jackson are supported.
 
 ## Status
 
@@ -27,7 +27,7 @@ Specifically:
 | Artifact | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
-| Code coverage (2.15) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.15) |
+| Code coverage (2.18) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.18) |
 | OpenSSF Score | [![OpenSSF  Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/jackson-dataformat-xml/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
 
@@ -36,13 +36,13 @@ Specifically:
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.16` is for developing the next minor 2.x version
+* `2.18` is for developing the next minor 2.x version
+* `2.17` is for backported fixes to include in 2.17.x patch versions
+* `2.16` is for backported fixes to include in 2.16.x patch versions
 * `2.15` is for backported fixes to include in 2.15.x patch versions
-* `2.14` is for backported fixes to include in 2.14.x patch versions
-* `2.13` is for backported fixes to include in 2.13.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
-All released versions have matching git tags (`jackson-dataformats-text-2.9.4`).
+All released versions have matching git tags (`jackson-dataformat-xml-2.17.1`).
 
 ## License
 
@@ -57,20 +57,20 @@ Maven:
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.15.0</version>
+  <version>2.17.1</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
 dependencies {
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.1'
 }
 ```
 
 (or whatever version is most up-to-date at the moment)
 
-Also: you usually also want to make sure that XML library in use is [Woodstox](https://github.com/FasterXML/woodstox) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
+Also: you usually also want to make sure the XML library in use is [Woodstox](https://github.com/FasterXML/woodstox) since it is not only faster than Stax implementation JDK provides, but also works better and avoids some known issues like adding unnecessary namespace prefixes.
 You can do this by adding this in your `pom.xml`:
 
 Maven:
@@ -91,9 +91,9 @@ dependencies {
 
 # Usage
 
-Although module implements low-level (`JsonFactory` / `JsonParser` / `JsonGenerator`) abstractions,
-most usage is through data-binding level. This because a small number of work-arounds have been added
-at data-binding level, to work around XML peculiarities: that is, stream of `JsonToken`s that parser
+Although this module implements low-level (`JsonFactory` / `JsonParser` / `JsonGenerator`) abstractions,
+most usage is through data-binding level. This is because a small number of work-arounds have been added
+at data-binding level, to work around XML peculiarities: that is, the stream of `JsonToken`s that the parser
 produces has idiosyncracies that need special handling.
 
 Usually you either create `XmlMapper` simply by:
@@ -102,7 +102,7 @@ Usually you either create `XmlMapper` simply by:
 XmlMapper mapper = new XmlMapper();
 ```
 
-but in case you need to configure settings, you will want to use Builder (added in
+but in case you need to configure settings, you will want to use the Builder (added in
 Jackson 2.10) style construction:
 
 ```java
@@ -145,7 +145,7 @@ For more on the issues, see:
 * https://stackoverflow.com/questions/31360025/using-jackson-dataformat-xml-on-android
 * https://www.docx4java.org/blog/2012/05/jaxb-can-be-made-to-run-on-android/
 
-Note that as per articles linked to it MAY be possible to use the module on Android, but it unfortunately requires
+Note that as per above articles it MAY be possible to use the module on Android, but it unfortunately requires
 various work-arounds and development team can not do much to alleviate these issues.
 Suggestions for improvements would be welcome; discussions on
 [Jackson users list](https://groups.google.com/forum/#!forum/jackson-user) encouraged.
@@ -241,7 +241,7 @@ sr.close();
 
 ## Additional annotations
 
-In addition to standard [Jackson annotations](https://github.com/FasterXML/jackson-annotations) and optional JAXB (`javax.xml.bind.annotation`), this project also adds couple of its own annotations for convenience, to support XML-specific details:
+In addition to standard [Jackson annotations](https://github.com/FasterXML/jackson-annotations) and optional JAXB (`javax.xml.bind.annotation`), this project also adds a couple of its own annotations for convenience, to support XML-specific details:
 
  * `@JacksonXmlElementWrapper` allows specifying XML element to use for wrapping `List` and `Map` properties
  * `@JacksonXmlProperty` allows specifying XML namespace and local name for a property; as well as whether property is to be written as an XML element or attribute.
@@ -249,7 +249,7 @@ In addition to standard [Jackson annotations](https://github.com/FasterXML/jacks
  * `@JacksonXmlText` allows specifying that value of one property is to be serialized as "unwrapped" text, and not in an element.
  * `@JacksonXmlCData` allows specifying that the value of a property is to be serialized within a CData tag.
 
-for longer description, check out [XML module annotations](https://github.com/FasterXML/jackson-dataformat-xml/wiki/Jackson-XML-annotations).
+for a longer description, check out [XML module annotations](https://github.com/FasterXML/jackson-dataformat-xml/wiki/Jackson-XML-annotations).
 
 ## Known Limitations
 
@@ -269,7 +269,7 @@ Currently, following limitations exist beyond general Jackson (JSON) limitations
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
     * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
     * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
-* Polymorphic Type Handling works, but only some of inclusion mechanisms are supported (`WRAPPER_ARRAY`, for example is not supported due to problems wrt mapping of XML, Arrays)
+* Polymorphic Type Handling works, but only some inclusion mechanisms are supported (`WRAPPER_ARRAY`, for example is not supported due to problems with reference to mapping of XML, Arrays)
     * JAXB-style "compact" Type Id where property name is replaced with Type Id is not supported.
 * Mixed Content (elements and text in same element) is not supported in databinding: child content must be either text OR element(s) (attributes are fine)
 * While XML namespaces are recognized, and produced on serialization, namespace URIs are NOT verified when deserializing: only local names are matched
