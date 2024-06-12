@@ -2,14 +2,10 @@ package tools.jackson.dataformat.xml.deser;
 
 import java.math.BigDecimal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.core.StreamReadConstraints;
-import tools.jackson.databind.DatabindException;
+import tools.jackson.core.exc.StreamConstraintsException;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.xml.XmlFactory;
 import tools.jackson.dataformat.xml.XmlMapper;
@@ -135,9 +131,9 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         try {
             MAPPER.readValue(DOC, NestedBigDecimalHolder2784.class);
             fail("expected DatabindException");
-        } catch (DatabindException jme) {
-            assertTrue("unexpected exception message: " + jme.getMessage(),
-                    jme.getMessage().startsWith("Number value length (1200) exceeds the maximum allowed"));
+        } catch (StreamConstraintsException e) {
+            assertTrue("unexpected exception message: " + e.getMessage(),
+                    e.getMessage().startsWith("Number value length (1200) exceeds the maximum allowed"));
         }
     }
 
