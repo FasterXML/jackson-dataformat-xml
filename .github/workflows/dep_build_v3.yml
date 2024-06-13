@@ -1,7 +1,7 @@
-name: Re-build on jackson-databind push
+name: Re-build on jackson-databind v3 push
 on:
   repository_dispatch:
-    types: [jackson-databind-pushed]
+    types: [jackson-databind-pushed-v3]
   # just for testing
   workflow_dispatch:
 
@@ -11,16 +11,17 @@ permissions:
 jobs:
   build:
     # Do we want wide matrix build? For now, limited
-    runs-on: ${{ matrix.os }}
+    runs-on: 'ubuntu-22.04'
     strategy:
       fail-fast: false
       matrix:
         java_version: ['8', '17', '21']
-        os: ['ubuntu-22.04']
     env:
       JAVA_OPTS: "-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
     steps:
-    - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+    - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      with:
+        ref: master
     - name: Set up JDK
       uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
       with:
