@@ -13,7 +13,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.core.JsonParser.NumberTypeFP;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.io.IOContext;
@@ -184,11 +183,6 @@ public class FromXmlParser
     protected final IOContext _ioContext;
 
     /**
-     * @since 2.15
-     */
-    protected final StreamReadConstraints _streamReadConstraints;
-
-    /**
      * Flag that indicates whether parser is closed or not. Gets
      * set when parser is either closed by explicit call
      * ({@link #close}) or when end-of-input is reached.
@@ -280,10 +274,9 @@ public class FromXmlParser
              ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
         throws IOException
     {
-        super(genericParserFeatures);
+        super(genericParserFeatures, ctxt.streamReadConstraints());
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
-        _streamReadConstraints = ctxt.streamReadConstraints();
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
@@ -403,11 +396,6 @@ public class FromXmlParser
             disable(f);
         }
         return this;
-    }
-
-    @Override
-    public StreamReadConstraints streamReadConstraints() {
-        return _streamReadConstraints;
     }
 
     /*
