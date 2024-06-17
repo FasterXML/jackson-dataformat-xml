@@ -57,8 +57,10 @@ public class ElementWrapperTest extends XmlTestBase
 
         String xml = jaxbMapper.writer().writeValueAsString(person);
         
-        String expected = "<Individual><name>Jay</name>"
-                + "<offspring><kid><name>Junior</name><offspring/></kid></offspring></Individual>";
+        String expected = "<Individual>"
+                +"<offspring><kid><offspring/>"
+                +"<name>Junior</name></kid></offspring>"
+                +"<name>Jay</name></Individual>";
         assertEquals(expected, xml);
     }
 
