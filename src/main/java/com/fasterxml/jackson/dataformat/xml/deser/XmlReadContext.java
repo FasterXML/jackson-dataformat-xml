@@ -78,6 +78,7 @@ public final class XmlReadContext
         _currentName = null;
         _currentValue = null;
         _namesToWrap = null;
+        // _nestingDepth fine as is, same level for reuse
     }
 
     @Override

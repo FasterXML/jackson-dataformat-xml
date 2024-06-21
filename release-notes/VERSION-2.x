@@ -8,6 +8,12 @@ Project: jackson-dataformat-xml
 
 No changes since 2.17
 
+2.17.2 (not yet released)
+
+#657: Nesting depth in `XmlReadContext` is not incremented/decremented on
+  JsonToken.START_OBJECT/JsonToken.END_OBJECT
+ (reported by @AlexUg)
+
 2.17.1 (04-May-2024)
 
 #646: Deserializing fails when using builder classes with `Iterable` Collection setters
