@@ -54,11 +54,13 @@ public final class XmlReadContext
     /**********************************************************************
      */
 
-    public XmlReadContext(int type, XmlReadContext parent, int lineNr, int colNr)
+    public XmlReadContext(int type, XmlReadContext parent, int nestingDepth,
+            int lineNr, int colNr)
     {
         super();
         _type = type;
         _parent = parent;
+        _nestingDepth = nestingDepth;
         _lineNr = lineNr;
         _columnNr = colNr;
         _index = -1;
@@ -73,6 +75,7 @@ public final class XmlReadContext
         _currentName = null;
         _currentValue = null;
         _namesToWrap = null;
+        // _nestingDepth is fine since reused instance at same nesting level
     }
 
     @Override
@@ -92,7 +95,7 @@ public final class XmlReadContext
      */
 
     public static XmlReadContext createRootContext(int lineNr, int colNr) {
-        return new XmlReadContext(TYPE_ROOT, null, lineNr, colNr);
+        return new XmlReadContext(TYPE_ROOT, null, 0, lineNr, colNr);
     }
 
     public final XmlReadContext createChildArrayContext(int lineNr, int colNr)
@@ -100,7 +103,8 @@ public final class XmlReadContext
         ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(TYPE_ARRAY, this, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(TYPE_ARRAY, this, _nestingDepth+1,
+                    lineNr, colNr);
             return ctxt;
         }
         ctxt.reset(TYPE_ARRAY, lineNr, colNr);
@@ -112,7 +116,8 @@ public final class XmlReadContext
         ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(TYPE_OBJECT, this, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(TYPE_OBJECT, this, _nestingDepth+1,
+                    lineNr, colNr);
             return ctxt;
         }
         ctxt.reset(TYPE_OBJECT, lineNr, colNr);
