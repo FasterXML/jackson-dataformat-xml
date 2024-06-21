@@ -30,13 +30,19 @@ public class XmlParserTest extends XmlTestBase
         // -> "{\"leaf\":\"abc\"}"
 
         try (JsonParser p = _xmlMapper.createParser(XML)) {
+            assertEquals(0, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertEquals(1, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.FIELD_NAME, p.nextToken());
             assertEquals("leaf", p.currentName());
+            assertEquals(1, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("abc", p.getText());
+            assertEquals(1, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
+            assertEquals(0, p.getParsingContext().getNestingDepth());
             assertNull(p.nextToken());
+            assertEquals(0, p.getParsingContext().getNestingDepth());
         }
     }
 
