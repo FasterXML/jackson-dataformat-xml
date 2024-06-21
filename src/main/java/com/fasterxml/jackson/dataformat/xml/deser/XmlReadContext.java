@@ -58,7 +58,11 @@ public final class XmlReadContext
     /**********************************************************************
      */
 
-    public XmlReadContext(XmlReadContext parent, int type, int lineNr, int colNr)
+    /**
+     * @since 2.18
+     */
+    public XmlReadContext(XmlReadContext parent, int nestingDepth,
+            int type, int lineNr, int colNr)
     {
         super();
         _type = type;
@@ -66,7 +70,17 @@ public final class XmlReadContext
         _lineNr = lineNr;
         _columnNr = colNr;
         _index = -1;
-        _nestingDepth = parent == null ? 0 : parent._nestingDepth + 1;
+        _nestingDepth = nestingDepth;
+    }
+
+    /**
+     * @deprecated Since 2.18
+     */
+    @Deprecated // since 2.18
+    public XmlReadContext(XmlReadContext parent, int type, int lineNr, int colNr)
+    {
+        this(parent, (parent == null) ? 0 : parent._nestingDepth + 1,
+                type, lineNr, colNr);
     }
 
     protected final void reset(int type, int lineNr, int colNr)
@@ -98,11 +112,11 @@ public final class XmlReadContext
      */
 
     public static XmlReadContext createRootContext(int lineNr, int colNr) {
-        return new XmlReadContext(null, TYPE_ROOT, lineNr, colNr);
+        return new XmlReadContext(null, 0, TYPE_ROOT, lineNr, colNr);
     }
 
     public static XmlReadContext createRootContext() {
-        return new XmlReadContext(null, TYPE_ROOT, 1, 0);
+        return new XmlReadContext(null, 0, TYPE_ROOT, 1, 0);
     }
     
     public final XmlReadContext createChildArrayContext(int lineNr, int colNr)
@@ -110,7 +124,7 @@ public final class XmlReadContext
         ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(this, TYPE_ARRAY, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(this, _nestingDepth+1, TYPE_ARRAY, lineNr, colNr);
             return ctxt;
         }
         ctxt.reset(TYPE_ARRAY, lineNr, colNr);
