@@ -73,7 +73,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>6.6.2</version>
+      <version>7.0.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
