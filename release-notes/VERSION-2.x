@@ -8,6 +8,7 @@ Project: jackson-dataformat-xml
 
 - Remove unnecessary synchronization around `LRUMap` in `XmlRootNameLookup`
  (contributed by @pjfanning)
+- Upgrade Woodstox to 7.0.0 (dependency fixes)
 
 2.17.2 (not yet released)
 
