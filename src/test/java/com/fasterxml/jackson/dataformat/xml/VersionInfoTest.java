@@ -2,7 +2,6 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.Versioned;
-import com.fasterxml.jackson.core.json.PackageVersion;
 
 public class VersionInfoTest extends XmlTestBase
 {
