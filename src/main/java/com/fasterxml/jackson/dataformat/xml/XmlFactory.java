@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.xml.stream.*;
 
+import com.fasterxml.jackson.core.json.PackageVersion;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.io.Stax2ByteArraySource;
 import org.codehaus.stax2.io.Stax2CharArraySource;

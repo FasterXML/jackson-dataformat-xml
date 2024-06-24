@@ -18,10 +18,10 @@ import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.io.NumberInput;
+import com.fasterxml.jackson.core.json.PackageVersion;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 
-import com.fasterxml.jackson.dataformat.xml.PackageVersion;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlNameProcessor;
 import com.fasterxml.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
