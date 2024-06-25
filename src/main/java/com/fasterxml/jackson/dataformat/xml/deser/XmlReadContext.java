@@ -66,6 +66,7 @@ public final class XmlReadContext
         _lineNr = lineNr;
         _columnNr = colNr;
         _index = -1;
+        _nestingDepth = parent == null ? 0 : parent._nestingDepth + 1;
     }
 
     protected final void reset(int type, int lineNr, int colNr)
@@ -77,6 +78,7 @@ public final class XmlReadContext
         _currentName = null;
         _currentValue = null;
         _namesToWrap = null;
+        // _nestingDepth fine as is, same level for reuse
     }
 
     @Override
