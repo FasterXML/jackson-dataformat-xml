@@ -574,16 +574,22 @@ public class FromXmlParser
     /**
      * Since xml representation can not really distinguish between array
      * and object starts (both are represented with elements), this method
-     * is overridden and taken to mean that expecation is that the current
+     * is overridden and taken to mean that expectation is that the current
      * start element is to mean 'start array', instead of default of
      * 'start object'.
+     *
+     * @throws UncheckedIOException if underlying {@link StreamReadConstraints} constraint fails
      */
     @Override
     public boolean isExpectedStartArrayToken()
     {
         JsonToken t = _currToken;
         if (t == JsonToken.START_OBJECT) {
-            _currToken = JsonToken.START_ARRAY;
+            try {
+                _updateToken(JsonToken.START_ARRAY);
+            } catch (StreamConstraintsException e) {
+                throw new UncheckedIOException(e);
+            }
             // Ok: must replace current context with array as well
             _parsingContext.convertToArray();
 //System.out.println(" FromXmlParser.isExpectedArrayStart(): OBJ->Array");
@@ -607,6 +613,8 @@ public class FromXmlParser
      * scalar types (numbers, booleans) -- they are all just Character Data,
      * without schema -- we can try to infer type from intent here.
      * The main benefit is avoiding checks for coercion.
+     *
+     * @throws UncheckedIOException if underlying {@link StreamReadConstraints} constraint fails
      */
     @Override
     public boolean isExpectedNumberIntToken()
@@ -615,57 +623,57 @@ public class FromXmlParser
         if (t == JsonToken.VALUE_STRING) {
             final String text = _currText.trim();
             final int len = _isIntNumber(text);
-            if (len > 0) {
-                if (len <= 9) {
-                    _numberInt = NumberInput.parseInt(text);
-                    _numTypesValid = NR_INT;
-                    _currToken = JsonToken.VALUE_NUMBER_INT;
-                    return true;
-                }
-                if (len <= 18) { // definitely in long range
-                    long l = NumberInput.parseLong(text);
-                    if (len == 10) {
-                        int asInt = (int) l;
-                        long l2 = (long) asInt;
-                        if (l == l2) {
-                            _numberInt = asInt;
-                            _numTypesValid = NR_INT;
-                            _currToken = JsonToken.VALUE_NUMBER_INT;
+            try {
+                if (len > 0) {
+                    if (len <= 9) {
+                        _numberInt = NumberInput.parseInt(text);
+                        _numTypesValid = NR_INT;
+                        _updateToken(JsonToken.VALUE_NUMBER_INT);
+                        return true;
+                    }
+                    if (len <= 18) { // definitely in long range
+                        long l = NumberInput.parseLong(text);
+                        if (len == 10) {
+                            int asInt = (int) l;
+                            long l2 = (long) asInt;
+                            if (l == l2) {
+                                _numberInt = asInt;
+                                _numTypesValid = NR_INT;
+                                _updateToken(JsonToken.VALUE_NUMBER_INT);
+                                return true;
+                            }
+                        }
+                        _numberLong = l;
+                        _numTypesValid = NR_LONG;
+                        _updateToken(JsonToken.VALUE_NUMBER_INT);
+                        return true;
+                    }
+                    // Might still fit within `long`
+                    if (len == 19) {
+                        final boolean stillLong;
+                        if (text.charAt(0) == '-') {
+                            stillLong = NumberInput.inLongRange(text.substring(1), true);
+                        } else {
+                            stillLong = NumberInput.inLongRange(text, false);
+                        }
+                        if (stillLong) {
+                            _numberLong = NumberInput.parseLong(text);
+                            _numTypesValid = NR_LONG;
+                            _updateToken(JsonToken.VALUE_NUMBER_INT);
                             return true;
                         }
                     }
-                    _numberLong = l;
-                    _numTypesValid = NR_LONG;
-                    _currToken = JsonToken.VALUE_NUMBER_INT;
+                    // finally, need BigInteger
+                    streamReadConstraints().validateIntegerLength(text.length());
+                    _numberBigInt = NumberInput.parseBigInteger(
+                        text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
+                    _numTypesValid = NR_BIGINT;
+                    _updateToken(JsonToken.VALUE_NUMBER_INT);
                     return true;
                 }
-                // Might still fit within `long`
-                if (len == 19) {
-                    final boolean stillLong;
-                    if (text.charAt(0) == '-') {
-                        stillLong = NumberInput.inLongRange(text.substring(1), true);
-                    } else {
-                        stillLong = NumberInput.inLongRange(text, false);
-                    }
-                    if (stillLong) {
-                        _numberLong = NumberInput.parseLong(text);
-                        _numTypesValid = NR_LONG;
-                        _currToken = JsonToken.VALUE_NUMBER_INT;
-                        return true;
-                    }
-                }
-                // finally, need BigInteger
-                try {
-                    streamReadConstraints().validateIntegerLength(text.length());
-                } catch (StreamConstraintsException e) {
-                    // Ugh. This method in API ought to expose IOException
-                    throw new UncheckedIOException(e);
-                }
-                _numberBigInt = NumberInput.parseBigInteger(
-                        text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
-                _numTypesValid = NR_BIGINT;
-                _currToken = JsonToken.VALUE_NUMBER_INT;
-                return true;
+            } catch (StreamConstraintsException e) {
+                // Ugh. This method in API ought to expose IOException
+                throw new UncheckedIOException(e);
             }
         }
         return (t == JsonToken.VALUE_NUMBER_INT);
@@ -702,8 +710,7 @@ public class FromXmlParser
         _numTypesValid = NR_UNKNOWN;
 //System.out.println("FromXmlParser.nextToken0: _nextToken = "+_nextToken);
         if (_nextToken != null) {
-            JsonToken t = _nextToken;
-            _currToken = t;
+            final JsonToken t = _updateToken(_nextToken);
             _nextToken = null;
 
             switch (t) {
@@ -745,7 +752,7 @@ public class FromXmlParser
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.FIELD_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                return (_currToken = JsonToken.START_OBJECT);
+                return _updateToken(JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
                 // Yup: in array, so this element could be verified; but it won't be
@@ -766,7 +773,7 @@ public class FromXmlParser
             _mayBeLeaf = true;
             // Ok: in array context we need to skip reporting field names.
             // But what's the best way to find next token?
-            return (_currToken = JsonToken.FIELD_NAME);
+            return _updateToken(JsonToken.FIELD_NAME);
         }
 
         // Ok; beyond start element, what do we get?
@@ -781,16 +788,16 @@ public class FromXmlParser
                         //    expose as empty Object, not null
                         _nextToken = JsonToken.END_OBJECT;
                         _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                        return (_currToken = JsonToken.START_OBJECT);
+                        return _updateToken(JsonToken.START_OBJECT);
                     }
                     // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
                     if (_currToken != JsonToken.VALUE_NULL) {
                         // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                         _parsingContext.valueStarted();
-                        return (_currToken = JsonToken.VALUE_NULL);
+                        return _updateToken(JsonToken.VALUE_NULL);
                     }
                 }
-                _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
+                _updateToken(_parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT);
                 _parsingContext = _parsingContext.getParent();
                 return _currToken;
 
@@ -801,15 +808,15 @@ public class FromXmlParser
                     _nextToken = JsonToken.FIELD_NAME;
                     _currText = _xmlTokens.getText();
                     _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                    return (_currToken = JsonToken.START_OBJECT);
+                    return _updateToken(JsonToken.START_OBJECT);
                 }
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
-                return (_currToken = JsonToken.FIELD_NAME);
+                return _updateToken(JsonToken.FIELD_NAME);
             case XmlTokenStream.XML_ATTRIBUTE_VALUE:
                 _currText = _xmlTokens.getText();
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _parsingContext.valueStarted();
-                return (_currToken = JsonToken.VALUE_STRING);
+                return _updateToken(JsonToken.VALUE_STRING);
             case XmlTokenStream.XML_TEXT:
                 _currText = _xmlTokens.getText();
                 if (_mayBeLeaf) {
@@ -831,10 +838,10 @@ public class FromXmlParser
                                 //    be done, by swallowing the token)
                                 _nextToken = JsonToken.END_OBJECT;
                                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                                return (_currToken = JsonToken.START_OBJECT);
+                                return _updateToken(JsonToken.START_OBJECT);
                             }
                         }
-                        return (_currToken = JsonToken.VALUE_STRING);
+                        return _updateToken(JsonToken.VALUE_STRING);
                     }
                     if (token != XmlTokenStream.XML_START_ELEMENT) {
                         throw new JsonParseException(this, String.format(
@@ -856,7 +863,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                         //    along is not enough.
                         _nextIsLeadingMixed = true;
                         _nextToken = JsonToken.FIELD_NAME;
-                        return (_currToken = JsonToken.START_OBJECT);
+                        return _updateToken(JsonToken.START_OBJECT);
                     } else if (XmlTokenStream._allWs(_currText)) {
                         token = _nextToken();
                         continue;
@@ -885,9 +892,9 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 // If not a leaf (or otherwise ignorable), need to transform into property...
                 _parsingContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
-                return (_currToken = JsonToken.FIELD_NAME);
+                return _updateToken(JsonToken.FIELD_NAME);
             case XmlTokenStream.XML_END:
-                return (_currToken = null);
+                return _updateToken(null);
             default:
                 return _internalErrorUnknownToken(token);
             }
@@ -919,8 +926,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     {
         _binaryValue = null;
         if (_nextToken != null) {
-            JsonToken t = _nextToken;
-            _currToken = t;
+            final JsonToken t = _updateToken(_nextToken);
             _nextToken = null;
 
             // expected case; yes, got a String
@@ -940,7 +946,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             if (_mayBeLeaf) {
                 _nextToken = JsonToken.FIELD_NAME;
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                _currToken = JsonToken.START_OBJECT;
+                _updateToken(JsonToken.START_OBJECT);
                 return null;
             }
             if (_parsingContext.inArray()) {
@@ -955,7 +961,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _xmlTokens.repeatStartElement();
             }
             _mayBeLeaf = true;
-            _currToken = JsonToken.FIELD_NAME;
+            _updateToken(JsonToken.FIELD_NAME);
             return null;
         }
 
@@ -969,12 +975,12 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 //    asked text value -- but that seems incorrect. Hoping this won't
                 //    break anything in 2.15+
 
-                _currToken = JsonToken.VALUE_NULL;
+                _updateToken(JsonToken.VALUE_NULL);
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _parsingContext.valueStarted();
                 return (_currText = null);
             }
-            _currToken = _parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
+            _updateToken(_parsingContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT);
             _parsingContext = _parsingContext.getParent();
             break;
         case XmlTokenStream.XML_ATTRIBUTE_NAME:
@@ -984,14 +990,14 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _nextToken = JsonToken.FIELD_NAME;
                 _currText = _xmlTokens.getText();
                 _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
-                _currToken = JsonToken.START_OBJECT;
+                _updateToken(JsonToken.START_OBJECT);
             } else {
                 _parsingContext.setCurrentName(_xmlTokens.getLocalName());
-                _currToken = JsonToken.FIELD_NAME;
+                _updateToken(JsonToken.FIELD_NAME);
             }
             break;
         case XmlTokenStream.XML_ATTRIBUTE_VALUE:
-            _currToken = JsonToken.VALUE_STRING;
+            _updateToken(JsonToken.VALUE_STRING);
             // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
             _parsingContext.valueStarted();
             return (_currText = _xmlTokens.getText());
@@ -1005,16 +1011,16 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 // for otherwise empty List/array
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _parsingContext.valueStarted();
-                _currToken = JsonToken.VALUE_STRING;
+                _updateToken(JsonToken.VALUE_STRING);
                 return _currText;
             }
             // If not a leaf, need to transform into property...
             _parsingContext.setCurrentName(_cfgNameForTextElement);
             _nextToken = JsonToken.VALUE_STRING;
-            _currToken = JsonToken.FIELD_NAME;
+            _updateToken(JsonToken.FIELD_NAME);
             break;
         case XmlTokenStream.XML_END:
-            _currToken = null;
+            _updateTokenToNull();
         default:
             return _internalErrorUnknownToken(token);
         }
