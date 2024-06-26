@@ -32,7 +32,7 @@ import tools.jackson.dataformat.xml.XmlNameProcessor;
  */
 public class FromXmlParser
     extends ParserMinimalBase
-    implements ElementWrappable // @since 2.15
+    implements ElementWrappable
 {
     /**
      * The default name placeholder for XML text segments is empty
@@ -464,7 +464,7 @@ public class FromXmlParser
     /**
      * Since xml representation can not really distinguish between array
      * and object starts (both are represented with elements), this method
-     * is overridden and taken to mean that expecation is that the current
+     * is overridden and taken to mean that expectation is that the current
      * start element is to mean 'start array', instead of default of
      * 'start object'.
      */
@@ -473,7 +473,7 @@ public class FromXmlParser
     {
         JsonToken t = _currToken;
         if (t == JsonToken.START_OBJECT) {
-            _currToken = JsonToken.START_ARRAY;
+            _updateToken(JsonToken.START_ARRAY);
             // Ok: must replace current context with array as well
             _streamReadContext.convertToArray();
 //System.out.println(" FromXmlParser.isExpectedArrayStart(): OBJ->Array");
@@ -505,11 +505,12 @@ public class FromXmlParser
         if (t == JsonToken.VALUE_STRING) {
             final String text = _currText.trim();
             final int len = _isIntNumber(text);
+
             if (len > 0) {
                 if (len <= 9) {
                     _numberInt = NumberInput.parseInt(text);
                     _numTypesValid = NR_INT;
-                    _currToken = JsonToken.VALUE_NUMBER_INT;
+                    _updateToken(JsonToken.VALUE_NUMBER_INT);
                     return true;
                 }
                 if (len <= 18) { // definitely in long range
@@ -520,13 +521,13 @@ public class FromXmlParser
                         if (l == l2) {
                             _numberInt = asInt;
                             _numTypesValid = NR_INT;
-                            _currToken = JsonToken.VALUE_NUMBER_INT;
+                            _updateToken(JsonToken.VALUE_NUMBER_INT);
                             return true;
                         }
                     }
                     _numberLong = l;
                     _numTypesValid = NR_LONG;
-                    _currToken = JsonToken.VALUE_NUMBER_INT;
+                    _updateToken(JsonToken.VALUE_NUMBER_INT);
                     return true;
                 }
                 // Might still fit within `long`
@@ -549,7 +550,7 @@ public class FromXmlParser
                 _numberBigInt = NumberInput.parseBigInteger(
                         text, isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
                 _numTypesValid = NR_BIGINT;
-                _currToken = JsonToken.VALUE_NUMBER_INT;
+                _updateToken(JsonToken.VALUE_NUMBER_INT);
                 return true;
             }
         }
@@ -587,8 +588,7 @@ public class FromXmlParser
         _numTypesValid = NR_UNKNOWN;
 //System.out.println("FromXmlParser.nextToken0: _nextToken = "+_nextToken);
         if (_nextToken != null) {
-            JsonToken t = _nextToken;
-            _currToken = t;
+            final JsonToken t = _updateToken(_nextToken);
             _nextToken = null;
 
             switch (t) {
@@ -630,7 +630,7 @@ public class FromXmlParser
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.PROPERTY_NAME;
                 _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-                return (_currToken = JsonToken.START_OBJECT);
+                return _updateToken(JsonToken.START_OBJECT);
             }
             if (_streamReadContext.inArray()) {
                 // Yup: in array, so this element could be verified; but it won't be
@@ -651,7 +651,7 @@ public class FromXmlParser
             _mayBeLeaf = true;
             // Ok: in array context we need to skip reporting property names.
             // But what's the best way to find next token?
-            return (_currToken = JsonToken.PROPERTY_NAME);
+            return _updateToken(JsonToken.PROPERTY_NAME);
         }
 
         // Ok; beyond start element, what do we get?
@@ -666,16 +666,16 @@ public class FromXmlParser
                         //    expose as empty Object, not null
                         _nextToken = JsonToken.END_OBJECT;
                         _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-                        return (_currToken = JsonToken.START_OBJECT);
+                        return _updateToken(JsonToken.START_OBJECT);
                     }
                     // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
                     if (_currToken != JsonToken.VALUE_NULL) {
                         // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                         _streamReadContext.valueStarted();
-                        return (_currToken = JsonToken.VALUE_NULL);
+                        return _updateToken(JsonToken.VALUE_NULL);
                     }
                 }
-                _currToken = _streamReadContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
+                _updateToken(_streamReadContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT);
                 _streamReadContext = _streamReadContext.getParent();
                 return _currToken;
 
@@ -686,15 +686,15 @@ public class FromXmlParser
                     _nextToken = JsonToken.PROPERTY_NAME;
                     _currText = _xmlTokens.getText();
                     _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-                    return (_currToken = JsonToken.START_OBJECT);
+                    return _updateToken(JsonToken.START_OBJECT);
                 }
                 _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
-                return (_currToken = JsonToken.PROPERTY_NAME);
+                return _updateToken(JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_ATTRIBUTE_VALUE:
                 _currText = _xmlTokens.getText();
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _streamReadContext.valueStarted();
-                return (_currToken = JsonToken.VALUE_STRING);
+                return _updateToken(JsonToken.VALUE_STRING);
             case XmlTokenStream.XML_TEXT:
                 _currText = _xmlTokens.getText();
                 if (_mayBeLeaf) {
@@ -716,10 +716,10 @@ public class FromXmlParser
                                 //    be done, by swallowing the token)
                                 _nextToken = JsonToken.END_OBJECT;
                                 _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-                                return (_currToken = JsonToken.START_OBJECT);
+                                return _updateToken(JsonToken.START_OBJECT);
                             }
                         }
-                        return (_currToken = JsonToken.VALUE_STRING);
+                        return _updateToken(JsonToken.VALUE_STRING);
                     }
                     if (token != XmlTokenStream.XML_START_ELEMENT) {
                         throw _constructReadException(String.format(
@@ -741,7 +741,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                         //    along is not enough.
                         _nextIsLeadingMixed = true;
                         _nextToken = JsonToken.PROPERTY_NAME;
-                        return (_currToken = JsonToken.START_OBJECT);
+                        return _updateToken(JsonToken.START_OBJECT);
                     } else if (XmlTokenStream._allWs(_currText)) {
                         token = _nextToken();
                         continue;
@@ -771,9 +771,9 @@ _currText);
                 // If not a leaf (or otherwise ignorable), need to transform into property...
                 _streamReadContext.setCurrentName(_cfgNameForTextElement);
                 _nextToken = JsonToken.VALUE_STRING;
-                return (_currToken = JsonToken.PROPERTY_NAME);
+                return _updateToken(JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_END:
-                return (_currToken = null);
+                return _updateToken(null);
             default:
                 return _internalErrorUnknownToken(token);
             }
@@ -805,8 +805,7 @@ _currText);
     {
         _binaryValue = null;
         if (_nextToken != null) {
-            JsonToken t = _nextToken;
-            _currToken = t;
+            final JsonToken t = _updateToken(_nextToken);
             _nextToken = null;
 
             // expected case; yes, got a String
@@ -826,7 +825,7 @@ _currText);
             if (_mayBeLeaf) {
                 _nextToken = JsonToken.PROPERTY_NAME;
                 _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-                _currToken = JsonToken.START_OBJECT;
+                _updateToken(JsonToken.START_OBJECT);
                 return null;
             }
             if (_streamReadContext.inArray()) {
@@ -841,7 +840,7 @@ _currText);
                 _xmlTokens.repeatStartElement();
             }
             _mayBeLeaf = true;
-            _currToken = JsonToken.PROPERTY_NAME;
+            _updateToken(JsonToken.PROPERTY_NAME);
             return null;
         }
 
@@ -855,13 +854,13 @@ _currText);
                 //    asked text value -- but that seems incorrect. Hoping this won't
                 //    break anything in 2.15+
 
-                _currToken = JsonToken.VALUE_NULL;
+                _updateToken(JsonToken.VALUE_NULL);
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _streamReadContext.valueStarted();
                 return (_currText = null);
             }
-            _currToken = _streamReadContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT;
-            _streamReadContext = _streamReadContext.getParent();
+           _updateToken(_streamReadContext.inArray() ? JsonToken.END_ARRAY : JsonToken.END_OBJECT);
+           _streamReadContext = _streamReadContext.getParent();
             break;
         case XmlTokenStream.XML_ATTRIBUTE_NAME:
             // If there was a chance of leaf node, no more...
@@ -870,14 +869,14 @@ _currText);
                 _nextToken = JsonToken.PROPERTY_NAME;
                 _currText = _xmlTokens.getText();
                 _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-                _currToken = JsonToken.START_OBJECT;
+                _updateToken(JsonToken.START_OBJECT);
             } else {
                 _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
-                _currToken = JsonToken.PROPERTY_NAME;
+                _updateToken(JsonToken.PROPERTY_NAME);
             }
             break;
         case XmlTokenStream.XML_ATTRIBUTE_VALUE:
-            _currToken = JsonToken.VALUE_STRING;
+            _updateToken(JsonToken.VALUE_STRING);
             // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
             _streamReadContext.valueStarted();
             return (_currText = _xmlTokens.getText());
@@ -891,16 +890,16 @@ _currText);
                 // for otherwise empty List/array
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
                 _streamReadContext.valueStarted();
-                _currToken = JsonToken.VALUE_STRING;
+                _updateToken(JsonToken.VALUE_STRING);
                 return _currText;
             }
             // If not a leaf, need to transform into property...
             _streamReadContext.setCurrentName(_cfgNameForTextElement);
             _nextToken = JsonToken.VALUE_STRING;
-            _currToken = JsonToken.PROPERTY_NAME;
+            _updateToken(JsonToken.PROPERTY_NAME);
             break;
         case XmlTokenStream.XML_END:
-            _currToken = null;
+            _updateTokenToNull();
         default:
             return _internalErrorUnknownToken(token);
         }
