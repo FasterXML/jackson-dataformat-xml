@@ -773,7 +773,7 @@ _currText);
                 _nextToken = JsonToken.VALUE_STRING;
                 return _updateToken(JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_END:
-                return _updateToken(null);
+                return _updateTokenToNull();
             default:
                 return _internalErrorUnknownToken(token);
             }
