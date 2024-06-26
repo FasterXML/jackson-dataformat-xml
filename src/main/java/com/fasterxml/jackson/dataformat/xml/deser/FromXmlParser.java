@@ -894,7 +894,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                 _nextToken = JsonToken.VALUE_STRING;
                 return _updateToken(JsonToken.FIELD_NAME);
             case XmlTokenStream.XML_END:
-                return _updateToken(null);
+                return _updateTokenToNull();
             default:
                 return _internalErrorUnknownToken(token);
             }
