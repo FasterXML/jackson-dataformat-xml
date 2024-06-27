@@ -12,6 +12,7 @@ public class TokenCountTest extends XmlTestBase {
     public void testTokenCount10() throws Exception
     {
         final XmlFactory factory = new XmlFactory();
+        // token count is only checked when maxTokenCount is set
         factory.setStreamReadConstraints(StreamReadConstraints.builder()
             .maxTokenCount(1000)
             .build());
@@ -26,6 +27,7 @@ public class TokenCountTest extends XmlTestBase {
     public void testTokenCount100() throws Exception
     {
         final XmlFactory factory = new XmlFactory();
+        // token count is only checked when maxTokenCount is set
         factory.setStreamReadConstraints(StreamReadConstraints.builder()
             .maxTokenCount(1000)
             .build());
