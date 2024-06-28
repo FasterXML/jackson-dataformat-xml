@@ -7,18 +7,23 @@ import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class TokenCountTest extends XmlTestBase {
+public class TokenCountTest extends XmlTestBase
+{
+    final XmlMapper XML_MAPPER;
+    {
+        final XmlFactory factory = XmlFactory.builder()
+                // token count is only checked when maxTokenCount is set
+                .streamReadConstraints(StreamReadConstraints.builder()
+                        .maxTokenCount(1000)
+                        .build())
+                .build();
+        XML_MAPPER = mapperBuilder(factory).build();
+    }
 
     public void testTokenCount10() throws Exception
     {
-        final XmlFactory factory = new XmlFactory();
-        // token count is only checked when maxTokenCount is set
-        factory.setStreamReadConstraints(StreamReadConstraints.builder()
-            .maxTokenCount(1000)
-            .build());
-        final XmlMapper xmlMapper = mapperBuilder(factory).build();
         final String XML = createDeepNestedDoc(10);
-        try (JsonParser p = xmlMapper.createParser(XML)) {
+        try (JsonParser p = XML_MAPPER.createParser(XML)) {
             while (p.nextToken() != null) { }
             assertEquals(31, p.currentTokenCount());
         }
@@ -26,14 +31,8 @@ public class TokenCountTest extends XmlTestBase {
 
     public void testTokenCount100() throws Exception
     {
-        final XmlFactory factory = new XmlFactory();
-        // token count is only checked when maxTokenCount is set
-        factory.setStreamReadConstraints(StreamReadConstraints.builder()
-            .maxTokenCount(1000)
-            .build());
-        final XmlMapper xmlMapper = mapperBuilder(factory).build();
         final String XML = createDeepNestedDoc(100);
-        try (JsonParser p = xmlMapper.createParser(XML)) {
+        try (JsonParser p = XML_MAPPER.createParser(XML)) {
             while (p.nextToken() != null) { }
             assertEquals(301, p.currentTokenCount());
         }
@@ -41,13 +40,8 @@ public class TokenCountTest extends XmlTestBase {
 
     public void testDeepDoc() throws Exception
     {
-        final XmlFactory factory = new XmlFactory();
-        factory.setStreamReadConstraints(StreamReadConstraints.builder()
-            .maxTokenCount(1000)
-            .build());
-        final XmlMapper xmlMapper = mapperBuilder(factory).build();
         final String XML = createDeepNestedDoc(1000);
-        try (JsonParser p = xmlMapper.createParser(XML)) {
+        try (JsonParser p = XML_MAPPER.createParser(XML)) {
             while (p.nextToken() != null) { }
             fail("expected StreamReadException");
         } catch (StreamConstraintsException e) {
