@@ -10,7 +10,7 @@ Project: jackson-dataformat-xml
  (contributed by @pjfanning)
 - Upgrade Woodstox to 7.0.0 (dependency fixes)
 
-2.17.2 (not yet released)
+2.17.2 (05-Jul-2024)
 
 #657: Nesting depth in `XmlReadContext` is not incremented/decremented on
   JsonToken.START_OBJECT/JsonToken.END_OBJECT
