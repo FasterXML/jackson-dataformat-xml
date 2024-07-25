@@ -93,7 +93,9 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
 
         // but not without
         try {
-            MAPPER.readValue(DOC, BaseResponse.class);
+            MAPPER.readerFor(BaseResponse.class)
+                    .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .readValue(DOC);
             fail("Should not pass");
         } catch (UnrecognizedPropertyException e) {
             verifyException(e, "ErrorCode");

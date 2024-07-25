@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.exc.MismatchedInputException;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
@@ -136,7 +137,9 @@ public class TextValueTest extends XmlTestBase
         final String XML = "<JAXBStyle>foo</JAXBStyle>";
         // first: verify that without change, POJO would not match:
         try {
-            MAPPER.readValue(XML, JAXBStyle.class);
+            MAPPER.readerFor(JAXBStyle.class)
+                    .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .readValue(XML);
             fail("Should have failed");
         } catch (MismatchedInputException e) {
 //            verifyException(e, "Cannot construct instance of");
