@@ -273,7 +273,9 @@ public class BuilderSimpleTest extends XmlTestBase
         Object o = null;
 
         try {
-            o = MAPPER.readValue(doc, ValueClassXY.class);
+            o = MAPPER.readerFor(ValueClassXY.class)
+                    .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .readValue(doc);
             fail("Should not pass");
         } catch (UnrecognizedPropertyException e) {
             assertEquals("z", e.getPropertyName());
