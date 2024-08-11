@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.core.JsonParser.NumberTypeFP;
 import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.io.IOContext;
@@ -912,9 +913,17 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     }
                     // 29-Mar-2021, tatu: This seems like an error condition...
                     //   How should we indicate it? As of 2.13, report as unexpected state
+                    /*
                     throw _constructError(
-"Unexpected non-whitespace text ('"+_currText+"' in Array context: should not occur (or should be handled)"
+"Unexpected non-whitespace text ('"+_currText+"') in Array context: should not occur (or should be handled)"
 );
+                    */
+                    
+                    // [dataformat-xml#509] 2.13 introduced a defect in which an Exception was thrown above, breaking
+                    // parsing of mixed content arrays (https://github.com/FasterXML/jackson-dataformat-xml/issues/509).
+                    // This exception case was removed to enable continued support of that functionality, but more
+                    // robust state handling may be in order.
+                    // See comment https://github.com/FasterXML/jackson-dataformat-xml/pull/604
                 }
 
                 // If not a leaf (or otherwise ignorable), need to transform into property...
@@ -1204,6 +1213,15 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             return NumberType.LONG;
         }
         return NumberType.BIG_INTEGER;
+    }
+
+    /**
+     * XML has no notion of natural/native floating-point type (has to be
+     * provided externally via Schema or so), so need to ensure we indicate that.
+     */
+    @Override // added in 2.17
+    public NumberTypeFP getNumberTypeFP() throws IOException {
+        return NumberTypeFP.UNKNOWN;
     }
 
     @Override

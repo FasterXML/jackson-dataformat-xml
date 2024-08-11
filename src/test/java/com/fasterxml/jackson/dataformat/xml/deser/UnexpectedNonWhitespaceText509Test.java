@@ -1,12 +1,12 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
@@ -31,6 +31,8 @@ public class UnexpectedNonWhitespaceText509Test {
 	}
 
 	static class MetaData {
+		@JacksonXmlElementWrapper(useWrapping = false)
+		@JacksonXmlProperty(localName = "data")
 		protected List<Data> data;
 
 		public List<Data> getData() {
