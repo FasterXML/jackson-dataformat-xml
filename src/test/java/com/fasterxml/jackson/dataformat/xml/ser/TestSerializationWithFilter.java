@@ -2,6 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
@@ -42,14 +43,16 @@ public class TestSerializationWithFilter extends XmlTestBase
             {
                 if (include(writer) && writer.getName().equals("a")) {
                     int a = ((Item) pojo).a;
-                    if (a <= 0)
+                    if (a <= 0){
                         return;
+                    }
                 }
                 super.serializeAsField(pojo, jgen, provider, writer);
             }
         };
         FilterProvider filterProvider = new SimpleFilterProvider().addFilter("filter", filter);
         xmlMapper.setFilterProvider(filterProvider);
+        xmlMapper.enable(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
         String act = xmlMapper.writeValueAsString(bean);
         assertEquals(exp, act);
     }
