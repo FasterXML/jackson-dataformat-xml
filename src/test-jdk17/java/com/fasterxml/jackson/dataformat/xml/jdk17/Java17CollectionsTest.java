@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.records;
+package com.fasterxml.jackson.dataformat.xml.jdk17;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
-public class SampleTest extends XmlTestBase
+public class Java17CollectionsTest extends XmlTestBase
 {
 
     private final XmlMapper _xmlMapper = new XmlMapper();
