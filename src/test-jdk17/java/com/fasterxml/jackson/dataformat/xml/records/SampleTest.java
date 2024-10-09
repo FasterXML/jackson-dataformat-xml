@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.databind.records;
+package com.fasterxml.jackson.dataformat.xml.records;
 
 import java.util.List;
 import java.util.stream.Collectors;
