@@ -18,7 +18,7 @@ public class SampleTest extends XmlTestBase
         List<String> input = Stream.of("a", "b", "c").collect(Collectors.toList());
 
         String ser = _xmlMapper.writeValueAsString(input);
-        assertEquals("<ArrayList><item></item><item>b</item><item>c</item></ArrayList>", ser);
+        assertEquals("<ArrayList><item>a</item><item>b</item><item>c</item></ArrayList>", ser);
 
         List<?> deser = _xmlMapper.readValue(ser, List.class);
         assertEquals(input, deser);
