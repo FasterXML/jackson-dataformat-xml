@@ -70,7 +70,7 @@ public class XmlWrapperClass517Test
                 "<Request>" +
                     "<messages>" +
                         "<message>" +
-                            "<text>Hello, World!</text>" +
+                            "<text>given text</text>" +
                         "</message>" +
                     "</messages>" +
                 "</Request>";
