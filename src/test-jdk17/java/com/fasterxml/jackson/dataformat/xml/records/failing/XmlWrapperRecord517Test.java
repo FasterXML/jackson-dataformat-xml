@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.records;
+package com.fasterxml.jackson.dataformat.xml.records.failing;
 
 import java.util.List;
 
