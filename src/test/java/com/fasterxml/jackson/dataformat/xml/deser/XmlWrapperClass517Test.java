@@ -1,5 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,8 +29,8 @@ public class XmlWrapperClass517Test
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Request request)) return false;
-            return Objects.equals(messages, request.messages);
+            if (!(o instanceof Request)) return false;
+            return Objects.equals(messages, ((Request)o).messages);
         }
 
         @Override
@@ -65,21 +66,37 @@ public class XmlWrapperClass517Test
 
     private final ObjectMapper mapper = newMapper();
 
+    private final String expectedXML =
+                "<Request>" +
+                    "<messages>" +
+                        "<message>" +
+                            "<text>Hello, World!</text>" +
+                        "</message>" +
+                    "</messages>" +
+                "</Request>";
+
     @Test
     public void testShouldSerialize() throws Exception {
-        var givenRequest = new Request(List.of(new Message("given text")));
-        var actualXml = mapper.writeValueAsString(givenRequest);
-        assertEquals(
-                "<Request><messages><message><text>given text</text></message></messages></Request>",
-                actualXml
-        );
+        Request givenRequest = _createRequest("given text");
+
+        String  actualXml = mapper.writeValueAsString(givenRequest);
+
+        assertEquals(expectedXML, actualXml);
     }
 
     @Test
     public void testShouldDeserialize() throws Exception {
-        var givenXml = "<Request><messages><message><text>given text</text></message></messages></Request>";
-        var actualRequest = mapper.readValue(givenXml, Request.class);
-        assertEquals(new Request(List.of(new Message("given text"))), actualRequest);
+        Request expected = _createRequest("given text");
+
+        Request actualRequest = mapper.readValue(expectedXML, Request.class);
+
+        assertEquals(expected, actualRequest);
+    }
+
+    private Request _createRequest(String givenText) {
+        List<Message> messages = new ArrayList<>();
+        messages.add(new Message(givenText));
+        return new Request(messages);
     }
 
 }

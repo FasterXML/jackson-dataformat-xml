@@ -33,7 +33,7 @@ public class XmlWrapperRecord517Test
         }
     }
 
-    private String expectedXML =
+    private final String expectedXML =
                 "<Request>" +
                     "<messages>" +
                         "<message>" +
