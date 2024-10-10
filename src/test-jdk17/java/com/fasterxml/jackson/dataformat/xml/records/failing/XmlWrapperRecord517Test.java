@@ -11,7 +11,8 @@ import org.junit.Test;
 // [databind#517] XML wrapper doesn't work with java records
 // Equivalent to on in jdk17/.../deser/XmlWrapperRecord517Test.java
 public class XmlWrapperRecord517Test
-        extends XmlTestBase {
+        extends XmlTestBase
+{
 
     public record Request(
             @JacksonXmlElementWrapper(localName = "messages")
