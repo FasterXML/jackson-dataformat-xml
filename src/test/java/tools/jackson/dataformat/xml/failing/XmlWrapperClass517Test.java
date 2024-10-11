@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.deser;
+package tools.jackson.dataformat.xml.failing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 // [databind#517] XML wrapper doesn't work with java records
 // Equivalent to on in jdk17/.../records/XmlWrapperRecord517Test.java
+//
+// NOTE: works on 2.x (2.18 and above); fails on 3.0 for some reason
 public class XmlWrapperClass517Test
     extends XmlTestBase
 {
