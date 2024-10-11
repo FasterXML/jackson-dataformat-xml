@@ -2,11 +2,11 @@ package com.fasterxml.jackson.dataformat.xml.records.failing;
 
 import java.util.List;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
-import org.junit.Test;
 
 // [databind#517] XML wrapper doesn't work with java records
 // Equivalent to on in jdk17/.../deser/XmlWrapperRecord517Test.java
