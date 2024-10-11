@@ -9,7 +9,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 
 public class Java17CollectionsTest extends XmlTestBase
 {
-
     private final XmlMapper _xmlMapper = new XmlMapper();
 
     public void testStreamOf()
