@@ -177,7 +177,6 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
           <version>${version.plugin.surefire}</version>
           <configuration>
             <excludes>
-              <exclude>com/fasterxml/jackson/dataformat/xml/failing/*.java</exclude>
               <exclude>**/failing/**/*.java</exclude>
             </excludes>
             <includes>
