@@ -120,6 +120,8 @@ public class XmlTokenStream
      */
     protected String _textValue;
 
+    protected final String _valueForEmptyElement;
+
     /**
      * Marker flag set if caller wants to "push back" current token so
      * that next call to {@link #next()} should simply be given what was
@@ -166,8 +168,19 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
+    @Deprecated // since 2.17
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, XmlNameProcessor nameProcessor)
+    {
+        this(xmlReader, sourceRef, formatFeatures, FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE,
+                nameProcessor);
+    }
+
+    /**
+     * @since 2.17
+     */
+    public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
+            int formatFeatures, String valueForEmptyElement, XmlNameProcessor nameProcessor)
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
@@ -176,6 +189,7 @@ public class XmlTokenStream
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
+        _valueForEmptyElement = valueForEmptyElement;
     }
 
     /**
@@ -559,7 +573,7 @@ public class XmlTokenStream
             if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                 return null;
             }
-            return "";
+            return _valueForEmptyElement;
         }
 
         CharSequence chars = null;
