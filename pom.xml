@@ -89,10 +89,11 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <!-- 18-Apr-2023, tatu: For 2.15, 6.5.1 for more OSGi fixes -->
     <!-- 17-Jan-2024, tatu: For 2.17, 6.6.1 (latest) -->
     <!-- 21-Jun-2024, tatu: For 2.18, 7.0.0 (Java 8) -->
+    <!-- 22-Oct-2024, tatu: For 2.19, 7.1.0 (latest) -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>7.0.0</version>
+      <version>7.1.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
