@@ -6,7 +6,7 @@ Project: jackson-dataformat-xml
 
 2.19.0 (not yet released)
 
--
+- Upgrade Woodstox to 7.1.0
 
 2.18.0 (26-Sep-2024)
 
