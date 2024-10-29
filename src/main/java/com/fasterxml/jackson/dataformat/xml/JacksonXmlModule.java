@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
@@ -39,13 +39,22 @@ public class JacksonXmlModule
     /**
      * Name used for pseudo-property used for returning XML Text value (which does
      * not have actual element name to use). Defaults to empty String, but
-     * may be changed for interoperability reasons: JAXB, for example, uses
+     * may be changed for inter-operability reasons: JAXB, for example, uses
      * "value" as name.
      * 
      * @since 2.1
      */
     protected String _cfgNameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
-    
+
+    /**
+     * Optional override for {@link SerializerFactory}
+     * used by {@link XmlMapper}. Needed to allow proper override and configurability
+     * using custom {@SerializerFactory} implementations.
+     * 
+     * @since 2.18.2
+     */
+    protected SerializerFactory _serializerFactoryOverride;
+
     /*
     /**********************************************************************
     /* Life-cycle: construction
@@ -118,6 +127,29 @@ public class JacksonXmlModule
      */
     public void setXMLTextElementName(String name) {
         _cfgNameForTextElement = name;
+    }
+
+    /**
+     * Method to use for overriding default {@link SerializerFactory} used
+     *
+     * @since 2.18.2
+     */
+    public JacksonXmlModule overrideSerializerFactory(SerializerFactory factory) {
+        _serializerFactoryOverride = factory;
+        return this;
+    }
+
+    /*
+    /**********************************************************************
+    /* Accessors
+    /**********************************************************************
+     */
+
+    /**
+     * @since 2.18.2
+     */
+    public SerializerFactory serializerFactoryOverride() {
+        return _serializerFactoryOverride;
     }
     
     /*
