@@ -8,6 +8,10 @@ Project: jackson-dataformat-xml
 
 - Upgrade Woodstox to 7.1.0
 
+2.18.1 (28-Oct-2024)
+
+No changes since 2.18.0
+
 2.18.0 (26-Sep-2024)
 
 - Remove unnecessary synchronization around `LRUMap` in `XmlRootNameLookup`
