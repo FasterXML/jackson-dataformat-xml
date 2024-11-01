@@ -27,7 +27,7 @@ Specifically:
 | Artifact | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
 | Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
-| Code coverage (2.18) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.15)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.18) |
+| Code coverage (2.19) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.19)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.19) |
 | OpenSSF Score | [![OpenSSF  Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/jackson-dataformat-xml/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
 
@@ -36,10 +36,9 @@ Specifically:
 `master` branch is for developing the next major Jackson version -- 3.0 -- but there
 are active maintenance branches in which much of development happens:
 
-* `2.18` is for developing the next minor 2.x version
+* `2.19` is for developing the next minor 2.x version
+* `2.18` is for backported fixes to include in 2.18.x patch versions
 * `2.17` is for backported fixes to include in 2.17.x patch versions
-* `2.16` is for backported fixes to include in 2.16.x patch versions
-* `2.15` is for backported fixes to include in 2.15.x patch versions
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformat-xml-2.17.1`).
@@ -57,14 +56,14 @@ Maven:
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.17.1</version>
+  <version>2.18.1</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
 dependencies {
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1'
 }
 ```
 
