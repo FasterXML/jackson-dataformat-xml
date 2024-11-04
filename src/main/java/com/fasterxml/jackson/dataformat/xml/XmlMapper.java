@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.type.LogicalType;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlDeserializationContext;
@@ -166,6 +167,11 @@ public class XmlMapper extends ObjectMapper
         _xmlModule = module;
         // but all the rest is done via Module interface!
         if (module != null) {
+            // [dataformat-xml#678]: need special handling for SerializerFactory override
+            SerializerFactory sfOverride = module.serializerFactoryOverride();
+            if (sfOverride != null) {
+                 setSerializerFactory(sfOverride);
+            }
             registerModule(module);
         }
         // 19-May-2015, tatu: Must ensure we use XML-specific indenter
