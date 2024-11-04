@@ -8,6 +8,11 @@ Project: jackson-dataformat-xml
 
 - Upgrade Woodstox to 7.1.0
 
+2.18.2 (not yet released)
+
+#678: XML module not registered correctly when setting a custom `SerializerFactory`
+ (reported by @SimonCockx)
+
 2.18.1 (28-Oct-2024)
 
 No changes since 2.18.0
