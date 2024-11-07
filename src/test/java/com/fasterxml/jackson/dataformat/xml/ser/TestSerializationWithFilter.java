@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 public class TestSerializationWithFilter extends XmlTestBase
 {
     @JsonFilter("filter")
+    @JsonPropertyOrder({ "b", "c" })
     static class Item
     {
         @JacksonXmlText
