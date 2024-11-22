@@ -55,6 +55,14 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     protected String _nameForTextElement;
 
     /**
+     * Set a default value in case of an empty element (empty XML tag)
+     *<p>
+     * Value used for pseudo-property used for returning empty XML tag.
+     * Defaults to empty String, but may be changed.
+     */
+    protected String _valueForEmptyElement = FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE;
+
+    /**
      * Optional {@link ClassLoader} to use for constructing
      * {@link XMLInputFactory} and {@kink XMLOutputFactory} instances if
      * not explicitly specified by caller. If not specified, will
@@ -91,6 +99,7 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
         _xmlInputFactory = base._xmlInputFactory;
         _xmlOutputFactory = base._xmlOutputFactory;
         _nameForTextElement = base._cfgNameForTextElement;
+        _valueForEmptyElement = base._cfgValueForEmptyElement;
         _nameProcessor = base._nameProcessor;
         _classLoaderForStax = null;
     }
@@ -101,6 +110,8 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
     public int formatGeneratorFeaturesMask() { return _formatGeneratorFeatures; }
 
     public String nameForTextElement() { return _nameForTextElement; }
+
+    public String valueForEmptyElement() { return _valueForEmptyElement; }
 
     public XMLInputFactory xmlInputFactory() {
         if (_xmlInputFactory == null) {
@@ -210,6 +221,11 @@ public class XmlFactoryBuilder extends TSFBuilder<XmlFactory, XmlFactoryBuilder>
 
     public XmlFactoryBuilder nameForTextElement(String name) {
         _nameForTextElement = name;
+        return _this();
+    }
+
+    public XmlFactoryBuilder valueForEmptyElement(String value) {
+        _valueForEmptyElement = value;
         return _this();
     }
 
