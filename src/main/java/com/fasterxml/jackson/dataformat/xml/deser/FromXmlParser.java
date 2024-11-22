@@ -42,6 +42,12 @@ public class FromXmlParser
     public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
 
     /**
+     * The default value placeholder for XML empty tag is an empty
+     * String ("").
+     */
+    public final static String DEFAULT_EMPTY_ELEMENT_VALUE = "";
+
+    /**
      * XML format has some peculiarities, indicated via new (2.12) capability
      * system.
      *
@@ -160,6 +166,15 @@ public class FromXmlParser
      */
     protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
 
+    /**
+     * When an empty element (like {@code <tag/>}) is encountered, this
+     * textual value reported in the token stream: default is empty
+     * String, but may be configured for any other String value.
+     *
+     * @since 2.17
+     */
+    protected final String _cfgValueForEmptyElement;
+
     /*
     /**********************************************************
     /* Configuration
@@ -276,18 +291,35 @@ public class FromXmlParser
     /**********************************************************
      */
 
+    /**
+     * @deprecated Since 2.17
+     */
+    @Deprecated
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-             ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
+            ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
+        throws IOException
+    {
+        this(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor,
+                FromXmlParser.DEFAULT_EMPTY_ELEMENT_VALUE);
+    }
+
+    /**
+     * @since 2.17
+     */
+    public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
+            ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor,
+            String valueForEmptyElement)
         throws IOException
     {
         super(genericParserFeatures);
+        _cfgValueForEmptyElement = valueForEmptyElement;
         _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _streamReadConstraints = ctxt.streamReadConstraints();
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
-                    _formatFeatures, tagProcessor);
+                    _formatFeatures, _cfgValueForEmptyElement, tagProcessor);
 
         final int firstToken;
         try {
@@ -834,6 +866,19 @@ public class FromXmlParser
                     //   get START_ELEMENT for "mixed content" case; if so, need to change to
                     //   expose "XmlText" as separate property
                     token = _nextToken();
+
+                    // Handle JSON object
+                    if (currentValue() == null && _xmlTokens._emptyElement) {
+                        if ("[]".equals(_currText)) {
+                            _nextToken = JsonToken.END_ARRAY;
+                            _parsingContext = _parsingContext.createChildArrayContext(-1, -1);
+                            return (_currToken = JsonToken.START_ARRAY);
+                        } else if ("{}".equals(_currText)) {
+                            _nextToken = JsonToken.END_OBJECT;
+                            _parsingContext = _parsingContext.createChildObjectContext(-1, -1);
+                            return (_currToken = JsonToken.START_OBJECT);
+                        }
+                    }
 
                     if (token == XmlTokenStream.XML_END_ELEMENT) {
                         if (_parsingContext.inArray()) {
