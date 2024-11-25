@@ -1,5 +1,8 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import com.fasterxml.jackson.dataformat.xml.*;
 
 public class EnumDeserTest extends XmlTestBase
@@ -12,6 +15,29 @@ public class EnumDeserTest extends XmlTestBase
 
         public EnumBean() { }
         public EnumBean(TestEnum v) { value = v; }
+    }
+
+    // [dataformat-xml#682]
+    static enum Country682 {
+        ITALY("Italy"),
+        NETHERLANDS("Netherlands");
+
+        @JsonValue
+        final String value;
+
+        Country682(String value) {
+            this.value = value;
+        }
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        public static Country682 fromValue(String value) {
+            for (Country682 b : Country682.values()) {
+                if (b.value.equals(value)) {
+                    return b;
+                }
+            }
+            throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        }
     }
 
     /*
@@ -38,4 +64,12 @@ public class EnumDeserTest extends XmlTestBase
         assertNotNull(result);
         assertEquals(TestEnum.B, result);
     }
+
+    // [dataformat-xml#682]
+    public void testEnumDeser682() throws Exception {
+        String xml = MAPPER.writeValueAsString(Country682.ITALY);
+        assertEquals("<Country682>Italy</Country682>", xml);
+        
+        assertEquals(Country682.ITALY, MAPPER.readValue(xml, Country682.class));
+    }    
 }
