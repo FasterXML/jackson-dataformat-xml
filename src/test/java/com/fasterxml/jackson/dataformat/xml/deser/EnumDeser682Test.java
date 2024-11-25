@@ -11,20 +11,11 @@ public class EnumDeser682Test extends XmlTestBase
         ITALY("Italy"),
         NETHERLANDS("Netherlands");
 
-        private String value;
+        @JsonValue
+        final String value;
 
         Country(String value) {
             this.value = value;
-        }
-
-        @JsonValue
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(value);
         }
 
         @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
