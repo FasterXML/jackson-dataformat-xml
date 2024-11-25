@@ -12,6 +12,9 @@ Project: jackson-dataformat-xml
 
 #678: XML module not registered correctly when setting a custom `SerializerFactory`
  (reported by @SimonCockx)
+#682: `MismatchedInputException` encountered while deserializing XML to an Enum type
+  using a factory method
+ (reported by @WannabeSoftwareEngineer)
 
 2.18.1 (28-Oct-2024)
 
