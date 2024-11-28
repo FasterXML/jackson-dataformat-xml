@@ -21,7 +21,7 @@ public class XmlWrapperClass517Test
         @JacksonXmlProperty(localName = "message")
         private final List<Message> messages;
 
-        private Request() { this.messages = null; }
+        Request() { this.messages = null; }
         public Request(List<Message> messages) { this.messages = messages; }
 
         public List<Message> getMessages() { return messages; }
@@ -44,7 +44,7 @@ public class XmlWrapperClass517Test
 
         private final String text;
 
-        private Message() { this.text = null; }
+        Message() { this.text = null; }
         public Message(String text) { this.text = text; }
 
         public String getText() { return text; }
