@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.18.2 (not yet released)
+2.18.2 (27-Nov-2024)
 
 #678: XML module not registered correctly when setting a custom `SerializerFactory`
  (reported by @SimonCockx)
