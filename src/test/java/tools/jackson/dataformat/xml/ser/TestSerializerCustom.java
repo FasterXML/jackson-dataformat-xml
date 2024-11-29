@@ -55,7 +55,7 @@ public class TestSerializerCustom extends XmlTestBase
         }
 
         @Override
-        public void serialize(Item value, JsonGenerator g, SerializerProvider provider) {
+        public void serialize(Item value, JsonGenerator g, SerializationContext ctxt) {
           g.writeStartObject();
           g.writePOJOProperty("obj", value.obj);
           g.writeStringProperty("name", value.name);

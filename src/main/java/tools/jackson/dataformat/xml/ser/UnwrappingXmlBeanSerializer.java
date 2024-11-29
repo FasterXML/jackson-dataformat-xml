@@ -127,17 +127,17 @@ public class UnwrappingXmlBeanSerializer extends XmlBeanSerializerBase
      * {@link BeanPropertyWriter} instances.
      */
     @Override
-    public final void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
+    public final void serialize(Object bean, JsonGenerator g, SerializationContext ctxt)
         throws JacksonException
     {
         if (_objectIdWriter != null) {
-            _serializeWithObjectId(bean, jgen, provider, false);
+            _serializeWithObjectId(bean, g, ctxt, false);
             return;
         }
         if (_propertyFilterId != null) {
-            _serializePropertiesFiltered(bean, jgen, provider, _propertyFilterId);
+            _serializePropertiesFiltered(bean, g, ctxt, _propertyFilterId);
         } else {
-            _serializeProperties(bean, jgen, provider);
+            _serializeProperties(bean, g, ctxt);
         }
     }
 

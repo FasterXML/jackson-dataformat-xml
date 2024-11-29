@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import tools.jackson.core.JsonGenerator;
 
-import tools.jackson.databind.SerializerProvider;
+import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ser.FilterProvider;
 import tools.jackson.databind.ser.PropertyFilter;
 import tools.jackson.databind.ser.PropertyWriter;
@@ -41,8 +41,8 @@ public class TestSerializationWithFilter extends XmlTestBase
 
         PropertyFilter filter = new SimpleBeanPropertyFilter() {
             @Override
-            public void serializeAsProperty(Object pojo, JsonGenerator jgen,
-                    SerializerProvider provider, PropertyWriter writer)
+            public void serializeAsProperty(Object pojo, JsonGenerator g,
+                    SerializationContext ctxt, PropertyWriter writer)
                 throws Exception
             {
                 if (include(writer) && writer.getName().equals("a")) {
@@ -50,7 +50,7 @@ public class TestSerializationWithFilter extends XmlTestBase
                     if (a <= 0)
                         return;
                 }
-                super.serializeAsProperty(pojo, jgen, provider, writer);
+                super.serializeAsProperty(pojo, g, ctxt, writer);
             }
         };
         FilterProvider filterProvider = new SimpleFilterProvider().addFilter("filter", filter);

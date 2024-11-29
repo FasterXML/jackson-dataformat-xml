@@ -38,7 +38,7 @@ public class JsonAppend578Test extends XmlTestBase
         }
 
         @Override
-        protected Object value(Object bean, JsonGenerator g, SerializerProvider prov) {
+        protected Object value(Object bean, JsonGenerator g, SerializationContext ctxt) {
             return "bar";
         }
 
