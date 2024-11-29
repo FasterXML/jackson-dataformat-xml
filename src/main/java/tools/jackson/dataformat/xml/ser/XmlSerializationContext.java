@@ -22,14 +22,14 @@ import tools.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
  * We need to override some parts of
- * {@link tools.jackson.databind.SerializerProvider}
+ * {@link tools.jackson.databind.SerializationContext}
  * implementation to handle oddities of XML output, like "extra" root element.
  */
-public class XmlSerializerProvider extends SerializationContextExt
+public class XmlSerializationContext extends SerializationContextExt
 {
     protected final XmlRootNameLookup _rootNameLookup;
 
-    public XmlSerializerProvider(TokenStreamFactory streamFactory,
+    public XmlSerializationContext(TokenStreamFactory streamFactory,
             SerializationConfig config, GeneratorSettings genSettings,
             SerializerFactory f, SerializerCache cache,
             XmlRootNameLookup rootLookup)
@@ -182,7 +182,7 @@ public class XmlSerializerProvider extends SerializationContextExt
                 _startRootArray(xgen, rootName);
             }
         }
-        // 21-May-2020: See comments in `jackson-databind/DefaultSerializerProvider`
+        // 21-May-2020: See comments in `jackson-databind/DefaultSerializationContext`
         if (valueSer == null) {
             if ((rootType != null) && rootType.isContainerType()) {
                 valueSer = handleRootContextualization(findValueSerializer(rootType));

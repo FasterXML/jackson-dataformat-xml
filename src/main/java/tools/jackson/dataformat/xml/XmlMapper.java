@@ -375,7 +375,7 @@ public class XmlMapper extends ObjectMapper
         /*
         // Need to override serializer provider (due to root name handling);
         // deserializer provider fine as is
-        super(xmlFactory, new XmlSerializerProvider(xmlFactory, new XmlRootNameLookup()), null);
+        super(xmlFactory, new XmlSerializationContext(xmlFactory, new XmlRootNameLookup()), null);
         _xmlModule = module;
         // but all the rest is done via Module interface!
         if (module != null) {
@@ -441,7 +441,7 @@ public class XmlMapper extends ObjectMapper
      * for given Stax {@link XMLStreamWriter}.
      */
     public ToXmlGenerator createGenerator(XMLStreamWriter w) throws IOException {
-        SerializationContextExt prov = _serializerProvider(serializationConfig());
+        SerializationContextExt prov = _serializationContext(serializationConfig());
         return tokenStreamFactory().createGenerator(prov, w);
     }
 
@@ -491,7 +491,7 @@ public class XmlMapper extends ObjectMapper
         if (config.isEnabled(SerializationFeature.CLOSE_CLOSEABLE) && (value instanceof Closeable)) {
             _writeCloseableValue(g, value, config);
         } else {
-            _serializerProvider(config).serializeValue(g, value);
+            _serializationContext(config).serializeValue(g, value);
             if (config.isEnabled(SerializationFeature.FLUSH_AFTER_WRITE_VALUE)) {
                 g.flush();
             }

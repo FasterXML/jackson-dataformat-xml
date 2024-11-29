@@ -11,7 +11,7 @@ import tools.jackson.databind.ser.SerializerFactory;
 import tools.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
- * Factory implementation we need to provide custom {@link SerializerProvider}
+ * Factory implementation we need to provide custom {@link SerializationContext}
  * variants.
  *
  * @since 3.0
@@ -49,7 +49,7 @@ public class XmlSerializationContexts extends SerializationContexts
     @Override
     public SerializationContextExt createContext(SerializationConfig config,
             GeneratorSettings genSettings) {
-        return new XmlSerializerProvider(_streamFactory,
+        return new XmlSerializationContext(_streamFactory,
                 config, genSettings, _serializerFactory, _cache,
                 _rootNameLookup);
     }

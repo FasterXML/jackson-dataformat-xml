@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import tools.jackson.core.*;
 
 import tools.jackson.databind.DatabindException;
-import tools.jackson.databind.SerializerProvider;
+import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.jsontype.TypeSerializer;
 import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.databind.ser.PropertyFilter;
@@ -163,17 +163,17 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
      * elements.
      */
     @Override
-    protected void _serializeProperties(Object bean, JsonGenerator gen0, SerializerProvider provider)
+    protected void _serializeProperties(Object bean, JsonGenerator gen0, SerializationContext ctxt)
         throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super._serializeProperties(bean, gen0, provider);
+            super._serializeProperties(bean, gen0, ctxt);
             return;
         }
         final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         final BeanPropertyWriter[] props;
-        if (_filteredProps != null && provider.getActiveView() != null) {
+        if (_filteredProps != null && ctxt.getActiveView() != null) {
             props = _filteredProps;
         } else {
             props = _props;
@@ -205,10 +205,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        prop.serializeAsProperty(bean, xgen, provider);
+                        prop.serializeAsProperty(bean, xgen, ctxt);
                         xgen.setNextIsCData(false);
                     } else {
-                        prop.serializeAsProperty(bean, xgen, provider);
+                        prop.serializeAsProperty(bean, xgen, ctxt);
                     }
                 }
                 // Reset to avoid next value being written as unwrapped, 
@@ -221,11 +221,11 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 // For [#117]: not a clean fix, but with @JsonTypeInfo, we'll end up
                 // with accidental attributes otherwise
                 xgen.setNextIsAttribute(false);
-                _anyGetterWriter.getAndSerialize(bean, xgen, provider);
+                _anyGetterWriter.getAndSerialize(bean, xgen, ctxt);
             }
         } catch (Exception e) {
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            wrapAndThrow(provider, e, bean, name);
+            wrapAndThrow(ctxt, e, bean, name);
         } catch (StackOverflowError e) { // Bit tricky, can't do more calls as stack is full; so:
             final String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             throw DatabindException.from(gen0, "Infinite recursion (StackOverflowError)")
@@ -235,27 +235,27 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
 
     @Override
     protected void _serializePropertiesFiltered(Object bean, JsonGenerator gen0,
-            SerializerProvider provider, Object filterId)
+            SerializationContext ctxt, Object filterId)
         throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
         if (!(gen0 instanceof ToXmlGenerator)) {
-            super._serializePropertiesFiltered(bean, gen0, provider, filterId);
+            super._serializePropertiesFiltered(bean, gen0, ctxt, filterId);
             return;
         }
         
         final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         
         final BeanPropertyWriter[] props;
-        if (_filteredProps != null && provider.getActiveView() != null) {
+        if (_filteredProps != null && ctxt.getActiveView() != null) {
             props = _filteredProps;
         } else {
             props = _props;
         }
-        final PropertyFilter filter = findPropertyFilter(provider, _propertyFilterId, bean);
+        final PropertyFilter filter = findPropertyFilter(ctxt, _propertyFilterId, bean);
         // better also allow missing filter actually..
         if (filter == null) {
-            _serializeProperties(bean, gen0, provider);
+            _serializeProperties(bean, gen0, ctxt);
             return;
         }
 
@@ -285,10 +285,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        filter.serializeAsProperty(bean, xgen, provider, prop);
+                        filter.serializeAsProperty(bean, xgen, ctxt, prop);
                         xgen.setNextIsCData(false);
                     } else {
-                        filter.serializeAsProperty(bean, xgen, provider, prop);
+                        filter.serializeAsProperty(bean, xgen, ctxt, prop);
                     }
                 }
                 // Reset to avoid next value being written as unwrapped,
@@ -302,11 +302,11 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 // with accidental attributes otherwise
                 xgen.setNextIsAttribute(false);
                 // 24-Jul-2019, tatu: Fixed for [dataformat-xml#351]
-                _anyGetterWriter.getAndFilter(bean, xgen, provider, filter);
+                _anyGetterWriter.getAndFilter(bean, xgen, ctxt, filter);
             }
         } catch (Exception e) {
             String name = (i == props.length) ? "[anySetter]" : props[i].getName();
-            wrapAndThrow(provider, e, bean, name);
+            wrapAndThrow(ctxt, e, bean, name);
         } catch (StackOverflowError e) {
             final String name = (i == props.length) ? "[anySetter]" : props[i].getName();
             throw DatabindException.from(gen0, "Infinite recursion (StackOverflowError)", e)
@@ -315,12 +315,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     @Override
-    public void serializeWithType(Object bean, JsonGenerator gen, SerializerProvider provider,
+    public void serializeWithType(Object bean, JsonGenerator gen, SerializationContext ctxt,
             TypeSerializer typeSer)
         throws JacksonException
     {
         if (_objectIdWriter != null) {
-            _serializeWithObjectId(bean, gen, provider, typeSer);
+            _serializeWithObjectId(bean, gen, ctxt, typeSer);
             return;
         }
         // Ok: let's serialize type id as attribute, but if (and only if!)
@@ -328,17 +328,17 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
             ToXmlGenerator xgen = (ToXmlGenerator)gen;
             xgen.setNextIsAttribute(true);
-            super.serializeWithType(bean, gen, provider, typeSer);
+            super.serializeWithType(bean, gen, ctxt, typeSer);
             if (_attributeCount == 0) { // if no attributes, need to reset
                 xgen.setNextIsAttribute(false);
             }
         } else {
-            super.serializeWithType(bean, gen, provider, typeSer);
+            super.serializeWithType(bean, gen, ctxt, typeSer);
         }
     }
     
     @Override
-    protected void _serializeObjectId(Object bean, JsonGenerator gen, SerializerProvider provider,
+    protected void _serializeObjectId(Object bean, JsonGenerator gen, SerializationContext ctxt,
             TypeSerializer typeSer, WritableObjectId objectId)
         throws JacksonException
     {
@@ -346,12 +346,12 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
             ToXmlGenerator xgen = (ToXmlGenerator)gen;
             xgen.setNextIsAttribute(true);
-            super._serializeObjectId(bean, gen, provider, typeSer, objectId);
+            super._serializeObjectId(bean, gen, ctxt, typeSer, objectId);
             if (_attributeCount == 0) { // if no attributes, need to reset
                 xgen.setNextIsAttribute(false);
             }
         } else {
-            super._serializeObjectId(bean, gen, provider, typeSer, objectId);
+            super._serializeObjectId(bean, gen, ctxt, typeSer, objectId);
         }
     }
 

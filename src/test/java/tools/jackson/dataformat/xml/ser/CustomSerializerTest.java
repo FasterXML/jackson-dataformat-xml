@@ -1,7 +1,7 @@
 package tools.jackson.dataformat.xml.ser;
 
 import tools.jackson.core.JsonGenerator;
-import tools.jackson.databind.SerializerProvider;
+import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.ser.std.StdScalarSerializer;
 import tools.jackson.dataformat.xml.XmlMapper;
@@ -14,9 +14,9 @@ public class CustomSerializerTest extends XmlTestBase
         public CustomSerializer() { super(String.class); }
         
         @Override
-        public void serialize(String value, JsonGenerator jgen,
-                SerializerProvider provider) {
-            jgen.writeString("custom:"+value);
+        public void serialize(String value, JsonGenerator g,
+                SerializationContext provider) {
+            g.writeString("custom:"+value);
         }
     }
     

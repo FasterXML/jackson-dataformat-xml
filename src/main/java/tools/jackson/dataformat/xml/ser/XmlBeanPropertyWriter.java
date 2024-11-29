@@ -76,7 +76,7 @@ public class XmlBeanPropertyWriter
      * and as necessary.
      */
     @Override
-    public void serializeAsProperty(Object bean, JsonGenerator g, SerializerProvider prov)
+    public void serializeAsProperty(Object bean, JsonGenerator g, SerializationContext ctxt)
         throws Exception
     {
         Object value = get(bean);
@@ -113,13 +113,13 @@ public class XmlBeanPropertyWriter
             PropertySerializerMap map = _dynamicSerializers;
             ser = map.serializerFor(cls);
             if (ser == null) {
-                ser = _findAndAddDynamic(map, cls, prov);
+                ser = _findAndAddDynamic(map, cls, ctxt);
             }
         }
         // and then see if we must suppress certain values (default, empty)
         if (_suppressableValue != null) {
             if (MARKER_FOR_EMPTY == _suppressableValue) {
-                if (ser.isEmpty(prov, value)) {
+                if (ser.isEmpty(ctxt, value)) {
                     return;
                 }
             } else if (_suppressableValue.equals(value)) {
@@ -129,7 +129,7 @@ public class XmlBeanPropertyWriter
         // For non-nulls: simple check for direct cycles
         if (value == bean) {
             // NOTE: method signature here change 2.3->2.4
-            if (_handleSelfReference(bean, g, prov, ser)) {
+            if (_handleSelfReference(bean, g, ctxt, ser)) {
                 return;
             }
         }
@@ -142,9 +142,9 @@ public class XmlBeanPropertyWriter
         }
         g.writeName(_name);
         if (_typeSerializer == null) {
-            ser.serialize(value, g, prov);
+            ser.serialize(value, g, ctxt);
         } else {
-            ser.serializeWithType(value, g, prov, _typeSerializer);
+            ser.serializeWithType(value, g, ctxt, _typeSerializer);
         }
         if (xmlGen != null) {
             xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);

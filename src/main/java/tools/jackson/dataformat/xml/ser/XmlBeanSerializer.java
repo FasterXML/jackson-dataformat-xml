@@ -6,7 +6,7 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 
 import tools.jackson.databind.ValueSerializer;
-import tools.jackson.databind.SerializerProvider;
+import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.databind.ser.BeanSerializer;
 import tools.jackson.databind.ser.bean.BeanAsArraySerializer;
@@ -116,18 +116,18 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
      * {@link BeanPropertyWriter} instances.
      */
     @Override
-    public void serialize(Object bean, JsonGenerator g, SerializerProvider provider)
+    public void serialize(Object bean, JsonGenerator g, SerializationContext ctxt)
         throws JacksonException
     {
         if (_objectIdWriter != null) {
-            _serializeWithObjectId(bean, g, provider, true);
+            _serializeWithObjectId(bean, g, ctxt, true);
             return;
         }
         g.writeStartObject();
         if (_propertyFilterId != null) {
-            _serializePropertiesFiltered(bean, g, provider, _propertyFilterId);
+            _serializePropertiesFiltered(bean, g, ctxt, _propertyFilterId);
         } else {
-            _serializeProperties(bean, g, provider);
+            _serializeProperties(bean, g, ctxt);
         }
         g.writeEndObject();
     }
