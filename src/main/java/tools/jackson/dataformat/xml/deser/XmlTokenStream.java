@@ -8,7 +8,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 
-import tools.jackson.core.JsonLocation;
+import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.io.ContentReference;
 
 import tools.jackson.dataformat.xml.XmlNameProcessor;
@@ -286,7 +286,7 @@ public class XmlTokenStream
     }
 
     private String _loc() {
-        JsonLocation loc = getCurrentLocation();
+        TokenStreamLocation loc = currentLocation();
         return String.format("[line: %d, column: %d]", loc.getLineNr(), loc.getColumnNr());
     }
     */
@@ -346,11 +346,11 @@ public class XmlTokenStream
         _xmlReader.close();
     }
 
-    public JsonLocation getCurrentLocation() {
+    public TokenStreamLocation getCurrentLocation() {
         return _extractLocation(_xmlReader.getLocationInfo().getCurrentLocation());
     }
 
-    public JsonLocation getTokenLocation() {
+    public TokenStreamLocation getTokenLocation() {
         return _extractLocation(_xmlReader.getLocationInfo().getStartLocation());
     }
 
@@ -820,12 +820,12 @@ public class XmlTokenStream
         return (_currentState = XML_END_ELEMENT);
     }
 
-    private JsonLocation _extractLocation(XMLStreamLocation2 location)
+    private TokenStreamLocation _extractLocation(XMLStreamLocation2 location)
     {
         if (location == null) { // just for impls that might pass null...
-            return new JsonLocation(_sourceReference, -1, -1, -1);
+            return new TokenStreamLocation(_sourceReference, -1, -1, -1);
         }
-        return new JsonLocation(_sourceReference,
+        return new TokenStreamLocation(_sourceReference,
                 location.getCharacterOffset(),
                 location.getLineNumber(),
                 location.getColumnNumber());

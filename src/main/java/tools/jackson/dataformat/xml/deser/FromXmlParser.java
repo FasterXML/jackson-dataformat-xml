@@ -348,7 +348,7 @@ public class FromXmlParser
      * that starts the current token.
      */
     @Override
-    public JsonLocation currentTokenLocation() {
+    public TokenStreamLocation currentTokenLocation() {
         return _xmlTokens.getTokenLocation();
     }
 
@@ -357,7 +357,7 @@ public class FromXmlParser
      * usually for error reporting purposes
      */
     @Override
-    public JsonLocation currentLocation() {
+    public TokenStreamLocation currentLocation() {
         return _xmlTokens.getCurrentLocation();
     }
 

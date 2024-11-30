@@ -143,11 +143,11 @@ public final class XmlReadContext
      *   start marker was found
      */
     @Override
-    public final JsonLocation startLocation(ContentReference srcRef) {
+    public final TokenStreamLocation startLocation(ContentReference srcRef) {
         // We don't keep track of offsets at this level (only reader does)
         long totalChars = -1L;
 
-        return new JsonLocation(srcRef, totalChars, _lineNr, _columnNr);
+        return new TokenStreamLocation(srcRef, totalChars, _lineNr, _columnNr);
     }
 
     /*
