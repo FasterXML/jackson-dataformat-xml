@@ -10,8 +10,8 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
 
-import static tools.jackson.dataformat.xml.deser.FromXmlParser.Feature.PROCESS_XSI_NIL;
-import static tools.jackson.dataformat.xml.ser.ToXmlGenerator.Feature.WRITE_NULLS_AS_XSI_NIL;
+import static tools.jackson.dataformat.xml.XmlReadFeature.PROCESS_XSI_NIL;
+import static tools.jackson.dataformat.xml.XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

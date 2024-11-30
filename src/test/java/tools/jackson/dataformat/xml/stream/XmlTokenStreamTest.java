@@ -7,8 +7,8 @@ import javax.xml.stream.*;
 import tools.jackson.core.io.ContentReference;
 import tools.jackson.dataformat.xml.XmlFactory;
 import tools.jackson.dataformat.xml.XmlNameProcessors;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.XmlTestBase;
-import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.deser.XmlTokenStream;
 
 // NOTE: test changed a lot between 2.13 and 2.14:
@@ -46,11 +46,11 @@ public class XmlTokenStreamTest extends XmlTestBase
     public void _testRootAttributes(boolean emptyAsNull) throws Exception
     {
         String XML = "<root id='x' />";
-        int f = FromXmlParser.Feature.collectDefaults();
+        int f = XmlReadFeature.collectDefaults();
         if (emptyAsNull) {
-            f |= FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
+            f |= XmlReadFeature.EMPTY_ELEMENT_AS_NULL.getMask();
         } else {
-            f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
+            f &= ~XmlReadFeature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
         XmlTokenStream tokens = _tokensFor(XML, f);
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
@@ -76,11 +76,11 @@ public class XmlTokenStreamTest extends XmlTestBase
     private void _testEmptyTags(boolean emptyAsNull) throws Exception
     {
         String XML = "<root><leaf /></root>";
-        int f = FromXmlParser.Feature.collectDefaults();
+        int f = XmlReadFeature.collectDefaults();
         if (emptyAsNull) {
-            f |= FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
+            f |= XmlReadFeature.EMPTY_ELEMENT_AS_NULL.getMask();
         } else {
-            f &= ~FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.getMask();
+            f &= ~XmlReadFeature.EMPTY_ELEMENT_AS_NULL.getMask();
         }
         XmlTokenStream tokens = _tokensFor(XML, f);
         assertEquals(XmlTokenStream.XML_START_ELEMENT, tokens.getCurrentToken());
@@ -171,7 +171,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     }
 
     private XmlTokenStream _tokensFor(String doc) throws Exception {
-        return _tokensFor(doc, FromXmlParser.Feature.collectDefaults());
+        return _tokensFor(doc, XmlReadFeature.collectDefaults());
     }
 
     private XmlTokenStream _tokensFor(String doc, int flags) throws Exception

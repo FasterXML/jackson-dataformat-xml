@@ -43,13 +43,13 @@ public class XmlFactory
      * Bitfield (set of flags) of all parser features that are enabled
      * by default.
      */
-    final static int DEFAULT_XML_PARSER_FEATURE_FLAGS = FromXmlParser.Feature.collectDefaults();
+    final static int DEFAULT_XML_PARSER_FEATURE_FLAGS = XmlReadFeature.collectDefaults();
 
     /**
      * Bitfield (set of flags) of all generator features that are enabled
      * by default.
      */
-    final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = ToXmlGenerator.Feature.collectDefaults();
+    final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = XmlWriteFeature.collectDefaults();
 
     /*
     /**********************************************************************
@@ -301,13 +301,13 @@ public class XmlFactory
     }
 
     @Override
-    public Class<FromXmlParser.Feature> getFormatReadFeatureType() {
-        return FromXmlParser.Feature.class;
+    public Class<XmlReadFeature> getFormatReadFeatureType() {
+        return XmlReadFeature.class;
     }
 
     @Override
-    public Class<ToXmlGenerator.Feature> getFormatWriteFeatureType() {
-        return ToXmlGenerator.Feature.class;
+    public Class<XmlWriteFeature> getFormatWriteFeatureType() {
+        return XmlWriteFeature.class;
     }
 
     @Override

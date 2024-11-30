@@ -16,6 +16,7 @@ import tools.jackson.databind.ser.SerializerFactory;
 import tools.jackson.databind.ser.SerializationContextExt;
 import tools.jackson.databind.ser.SerializerCache;
 import tools.jackson.databind.util.TokenBuffer;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.util.StaxUtil;
 import tools.jackson.dataformat.xml.util.TypeUtil;
 import tools.jackson.dataformat.xml.util.XmlRootNameLookup;
@@ -262,7 +263,7 @@ public class XmlSerializationContext extends SerializationContextExt
 
     protected boolean _shouldUnwrapObjectNode(ToXmlGenerator xgen, Object value)
     {
-        return xgen.isEnabled(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE)
+        return xgen.isEnabled(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
                 && (value instanceof ObjectNode)
                 && (((ObjectNode) value).size() == 1);
     }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -80,7 +81,7 @@ public class EmptyStringValueTest extends XmlTestBase
 
         // but can be changed
         XmlMapper mapper2 = mapperBuilder()
-                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .enable(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
                 .withConfigOverride(String.class,
                         o -> o.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.SET)))
             .build();

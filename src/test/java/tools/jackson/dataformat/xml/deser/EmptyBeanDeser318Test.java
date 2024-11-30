@@ -2,6 +2,7 @@ package tools.jackson.dataformat.xml.deser;
 
 import tools.jackson.databind.ObjectReader;
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
@@ -138,7 +139,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         //
         // ... EXCEPT that in 3.0 it works just fine
        
-        R = R.with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL);
+        R = R.with(XmlReadFeature.EMPTY_ELEMENT_AS_NULL);
 
         /*
         R = mapperBuilder().enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)

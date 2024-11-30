@@ -7,7 +7,7 @@ import tools.jackson.databind.ObjectWriter;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.dataformat.xml.XmlTestBase;
-import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 
 public class JsonNodeSerUnwrapped441Test extends XmlTestBase
 {
@@ -22,9 +22,9 @@ public class JsonNodeSerUnwrapped441Test extends XmlTestBase
     private final ObjectMapper XML_MAPPER = newMapper();
 
     private final ObjectWriter XML_WRITER_WRAP = XML_MAPPER.writer()
-            .without(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE);
+            .without(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE);
     private final ObjectWriter XML_WRITER_UNWRAP = XML_MAPPER.writer()
-            .with(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE);
+            .with(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE);
 
     // [dataformat-xml#441]: before changes, work-around should be fine
     public void testOlderWorkaround() throws Exception

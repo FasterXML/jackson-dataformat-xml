@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 
 public class TestSerializationManual extends XmlTestBase
 {
@@ -25,7 +26,7 @@ public class TestSerializationManual extends XmlTestBase
     public void testIssue54() throws Exception
     {
         XmlMapper xmlMapper = XmlMapper.builder()
-                .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .enable(XmlWriteFeature.WRITE_XML_DECLARATION)
                 .build();
         StringWriter sw = new StringWriter();
         ToXmlGenerator generator = (ToXmlGenerator) xmlMapper.createGenerator(sw);

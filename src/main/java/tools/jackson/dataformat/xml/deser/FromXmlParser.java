@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -25,6 +24,7 @@ import tools.jackson.dataformat.xml.util.StaxUtil;
 
 import tools.jackson.dataformat.xml.PackageVersion;
 import tools.jackson.dataformat.xml.XmlNameProcessor;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 
 /**
  * {@link JsonParser} implementation that exposes XML structure as
@@ -52,100 +52,6 @@ public class FromXmlParser
             ;
 
     /**
-     * Enumeration that defines all togglable features for XML parsers.
-     */
-    public enum Feature implements FormatFeature
-    {
-        /**
-         * Feature that enables automatic conversion of incoming "xsi:type"
-         * (where "type"  is the local name and "xsi" prefix is bound to URI
-         * {@link XMLConstants#W3C_XML_SCHEMA_INSTANCE_NS_URI}),
-         * into Jackson simple Property Name of {@code "xsi:type"}.
-         * This is usually needed to read content written using
-         * matching {@code ToXmlGenerator.Feature#AUTO_DETECT_XSI_TYPE} feature,
-         * usually used for Polymorphic handling where it is difficult
-         * to specify proper XML Namespace for type identifier.
-         *
-         * @since 2.17
-         */
-        AUTO_DETECT_XSI_TYPE(false),
-
-        /**
-         * Feature that indicates whether empty XML elements
-         * (both empty tags like {@code <tag />} and {@code <tag></tag>}
-         * (with no intervening cdata)
-         * are exposed as {@link JsonToken#VALUE_NULL}) or not.
-         * If they are not
-         * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
-         * tokens with textual value of "" (empty String).
-         *<p>
-         * NOTE: in Jackson 2.x, only "true" empty tags were affected, not split ones. With 3.x
-         * both cases handled uniformly.
-         *<p>
-         * Default setting is {@code false}.
-         */
-        EMPTY_ELEMENT_AS_NULL(false),
-
-        /**
-         * Feature that indicates whether XML Schema Instance attribute
-         * {@code xsi:nil} will be processed automatically -- to indicate {@code null}
-         * values -- or not.
-         * If enabled, {@code xsi:nil} attribute on any XML element will mark such
-         * elements as "null values" and any other attributes or child elements they
-         * might have to be ignored. If disabled this attribute will be exposed like
-         * any other attribute.
-         *<p>
-         * Default setting is {@code true} since processing was enabled in 2.12.
-         *
-         * @since 2.13
-         */
-        PROCESS_XSI_NIL(true),
-
-        // 16-Nov-2020, tatu: would have been nice to add in 2.12 but is not
-        //    trivial to implement... so leaving out for now
-
-        /*
-         * Feature that indicates whether reading operation should check that
-         * the root element's name matches what is expected by read operation:
-         * if enabled and name does not match, an exception will be thrown;
-         * if disabled, no checking is done (any element name will do).
-         *<p>
-         * Default setting is {@code true} for backwards compatibility.
-         *
-         * @since 2.12
-        ENFORCE_VALID_ROOT_NAME(false)
-         */
-        ;
-
-        final boolean _defaultState;
-        final int _mask;
-        
-        /**
-         * Method that calculates bit set (flags) of all features that
-         * are enabled by default.
-         */
-        public static int collectDefaults()
-        {
-            int flags = 0;
-            for (Feature f : values()) {
-                if (f.enabledByDefault()) {
-                    flags |= f.getMask();
-                }
-            }
-            return flags;
-        }
-        
-        private Feature(boolean defaultState) {
-            _defaultState = defaultState;
-            _mask = (1 << ordinal());
-        }
-
-        @Override public boolean enabledByDefault() { return _defaultState; }
-        @Override public int getMask() { return _mask; }
-        @Override public boolean enabledIn(int flags) { return (flags & getMask()) != 0; }
-    }
-
-    /**
      * In cases where a start element has both attributes and non-empty textual
      * value, we have to create a bogus property; we will use this as
      * the property name.
@@ -165,7 +71,7 @@ public class FromXmlParser
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link FromXmlParser.Feature}s
+     * {@link XmlReadFeature}s
      * are enabled.
      */
     protected int _formatFeatures;

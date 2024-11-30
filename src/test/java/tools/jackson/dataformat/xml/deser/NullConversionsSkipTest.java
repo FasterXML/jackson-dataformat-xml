@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import tools.jackson.databind.*;
 
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.XmlTestBase;
 
 // for [databind#1402]; configurable null handling, specifically with SKIP
@@ -47,7 +48,7 @@ public class NullConversionsSkipTest extends XmlTestBase
      */
 
     private final XmlMapper NULL_EXPOSING_MAPPER = mapperBuilder()
-            .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+            .enable(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
             .build();
 
     public void testSkipNullField1() throws Exception
@@ -102,7 +103,7 @@ public class NullConversionsSkipTest extends XmlTestBase
         assertNull(result.value);
 
         ObjectMapper mapper = mapperBuilder()
-                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .enable(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
                 .withConfigOverride(String.class,
                         o -> o.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.SKIP)))
                 .build();

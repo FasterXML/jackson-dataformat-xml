@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 
 // [dataformat-xml#324]
 public class XsiTypeWriteTest extends XmlTestBase
@@ -25,11 +26,11 @@ public class XsiTypeWriteTest extends XmlTestBase
     }
 
     private final XmlMapper NO_XSI_MAPPER = XmlMapper.builder()
-            .configure(ToXmlGenerator.Feature.AUTO_DETECT_XSI_TYPE, false)
+            .configure(XmlWriteFeature.AUTO_DETECT_XSI_TYPE, false)
             .build();
 
     private final XmlMapper XSI_ENABLED_MAPPER = XmlMapper.builder()
-            .configure(ToXmlGenerator.Feature.AUTO_DETECT_XSI_TYPE, true)
+            .configure(XmlWriteFeature.AUTO_DETECT_XSI_TYPE, true)
             .build();
 
     public void testExplicitXsiTypeWriteDisabled() throws Exception
