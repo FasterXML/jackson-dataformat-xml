@@ -181,21 +181,21 @@ public class XmlMapper extends ObjectMapper
         /******************************************************************
          */
 
-        public Builder enable(FromXmlParser.Feature... features) {
-            for (FromXmlParser.Feature f : features) {
+        public Builder enable(XmlReadFeature... features) {
+            for (XmlReadFeature f : features) {
                 _formatReadFeatures |= f.getMask();
             }
             return this;
         }
 
-        public Builder disable(FromXmlParser.Feature... features) {
-            for (FromXmlParser.Feature f : features) {
+        public Builder disable(XmlReadFeature... features) {
+            for (XmlReadFeature f : features) {
                 _formatReadFeatures &= ~f.getMask();
             }
             return this;
         }
 
-        public Builder configure(FromXmlParser.Feature feature, boolean state)
+        public Builder configure(XmlReadFeature feature, boolean state)
         {
             if (state) {
                 _formatReadFeatures |= feature.getMask();
@@ -205,21 +205,21 @@ public class XmlMapper extends ObjectMapper
             return this;
         }
 
-        public Builder enable(ToXmlGenerator.Feature... features) {
-            for (ToXmlGenerator.Feature f : features) {
+        public Builder enable(XmlWriteFeature... features) {
+            for (XmlWriteFeature f : features) {
                 _formatWriteFeatures |= f.getMask();
             }
             return this;
         }
 
-        public Builder disable(ToXmlGenerator.Feature... features) {
-            for (ToXmlGenerator.Feature f : features) {
+        public Builder disable(XmlWriteFeature... features) {
+            for (XmlWriteFeature f : features) {
                 _formatWriteFeatures &= ~f.getMask();
             }
             return this;
         }
 
-        public Builder configure(ToXmlGenerator.Feature feature, boolean state)
+        public Builder configure(XmlWriteFeature feature, boolean state)
         {
             if (state) {
                 _formatWriteFeatures |= feature.getMask();

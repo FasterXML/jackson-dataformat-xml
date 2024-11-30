@@ -12,6 +12,7 @@ import tools.jackson.core.JsonLocation;
 import tools.jackson.core.io.ContentReference;
 
 import tools.jackson.dataformat.xml.XmlNameProcessor;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.util.Stax2JacksonReaderAdapter;
 
 /**
@@ -68,7 +69,7 @@ public class XmlTokenStream
 
     /**
      * Bit flag composed of bits that indicate which
-     * {@link FromXmlParser.Feature}s
+     * {@link XmlReadFeature}s
      * are enabled.
      */
     protected final int _formatFeatures;
@@ -170,8 +171,8 @@ public class XmlTokenStream
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
-        _cfgProcessXsiNil = FromXmlParser.Feature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
-        _cfgProcessXsiType = FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures);
+        _cfgProcessXsiNil = XmlReadFeature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
+        _cfgProcessXsiType = XmlReadFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures);
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
@@ -198,7 +199,7 @@ public class XmlTokenStream
         //    as of 2.14: otherwise we have lots of issues with empty POJOs,
         //    Lists, Maps
         if (_xmlReader.isEmptyElement()
-            && FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)
+            && XmlReadFeature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)
             && !_xsiNilFound
             && _attributeCount < 1) {
             // 06-Sep-2022, tatu: In fact the only special case of null conversion
@@ -546,7 +547,7 @@ public class XmlTokenStream
         // 21-Jun-2017, tatu: Whether exposed as `null` or "" is now configurable...
         if (_xmlReader.isEmptyElement()) {
             _xmlReader.next();
-            if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
+            if (XmlReadFeature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                 return null;
             }
             return "";
@@ -565,7 +566,7 @@ public class XmlTokenStream
                     //    as `null`, as long as we default `String` null handling to coerce that to
                     //    "empty"
                     if (chars == null) {
-                        if (FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
+                        if (XmlReadFeature.EMPTY_ELEMENT_AS_NULL.enabledIn(_formatFeatures)) {
                             return null;
                         }
                         return "";

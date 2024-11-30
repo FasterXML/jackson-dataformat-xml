@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
-import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 public class EmptyListDeserTest extends XmlTestBase
 {
@@ -110,7 +109,7 @@ public class EmptyListDeserTest extends XmlTestBase
     public void testEmptyListAsNull435() throws Exception
     {
         XmlMapper mapper = mapperBuilder()
-                .enable(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+                .enable(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
                 .build();
         List<Config> result = mapper.readValue("<ArrayList/>",
                 new TypeReference<List<Config>>() {

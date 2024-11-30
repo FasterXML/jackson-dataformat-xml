@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tools.jackson.databind.ObjectWriter;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -213,8 +214,8 @@ public class TestSerialization extends XmlTestBase
     private void checkFloatInfinity(Floats original, boolean xmlSchemaConforming, String expectedXml) throws Exception
     {
         ObjectWriter w = _xmlMapper.writer();
-        w = xmlSchemaConforming ? w.with(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
-                : w.without(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
+        w = xmlSchemaConforming ? w.with(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                : w.without(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
 
         String xml = w.writeValueAsString(original);
         xml = removeSjsxpNamespace(xml);
@@ -244,8 +245,8 @@ public class TestSerialization extends XmlTestBase
     private void checkDoubleInfinity(Doubles original, boolean xmlSchemaConforming, String expectedXml) throws Exception
     {
         ObjectWriter w = _xmlMapper.writer();
-        w = xmlSchemaConforming ? w.with(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
-                : w.without(ToXmlGenerator.Feature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
+        w = xmlSchemaConforming ? w.with(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                : w.without(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
 
         String xml = w.writeValueAsString(original);
         xml = removeSjsxpNamespace(xml);

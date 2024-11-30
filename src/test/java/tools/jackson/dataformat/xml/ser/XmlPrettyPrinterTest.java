@@ -9,6 +9,7 @@ import tools.jackson.databind.SerializationFeature;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -181,7 +182,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         Company root = new Company();
         root.employee.add(new Employee("abc"));
         String xml = _xmlMapper.writer()
-                .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .with(XmlWriteFeature.WRITE_XML_DECLARATION)
                 .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);
@@ -207,7 +208,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
 
         String xml = _xmlMapper.writer()
             .with(customXmlPrettyPrinter)
-            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .with(XmlWriteFeature.WRITE_XML_DECLARATION)
             .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);
@@ -231,7 +232,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
 
         String xml = _xmlMapper.writer()
             .with(new DefaultXmlPrettyPrinter())
-            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .with(XmlWriteFeature.WRITE_XML_DECLARATION)
             .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);
@@ -255,7 +256,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
 
         String xml = _xmlMapper.writer()
             .with(new DefaultXmlPrettyPrinter().withCustomNewLine(null))
-            .with(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .with(XmlWriteFeature.WRITE_XML_DECLARATION)
             .writeValueAsString(root);
         // unify possible apostrophes to quotes
         xml = a2q(xml);

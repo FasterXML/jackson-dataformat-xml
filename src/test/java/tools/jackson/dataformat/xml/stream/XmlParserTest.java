@@ -10,6 +10,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectReader;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
@@ -53,7 +54,7 @@ public class XmlParserTest extends XmlTestBase
         final String XML = "<root><leaf /></root>";
 
         // -> "{"leaf":null}"
-        try (JsonParser p = _xmlMapper.reader().with(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+        try (JsonParser p = _xmlMapper.reader().with(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
                 .createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
@@ -64,7 +65,7 @@ public class XmlParserTest extends XmlTestBase
         }
 
         // -> "{"leaf":""}"
-        try (JsonParser p = _xmlMapper.reader().without(FromXmlParser.Feature.EMPTY_ELEMENT_AS_NULL)
+        try (JsonParser p = _xmlMapper.reader().without(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
                 .createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());

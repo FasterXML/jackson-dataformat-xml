@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 
 // [dataformat-xml#360]
 public class XsiNilSerializationTest extends XmlTestBase
@@ -17,7 +18,7 @@ public class XsiNilSerializationTest extends XmlTestBase
     }
 
     private final XmlMapper MAPPER = XmlMapper.builder()
-            .configure(ToXmlGenerator.Feature.WRITE_NULLS_AS_XSI_NIL, true)
+            .configure(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL, true)
             .build();
     
     // [dataformat-xml#360]

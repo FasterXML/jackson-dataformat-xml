@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.*;
 
-import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
-
 public class MapperCopyTest extends XmlTestBase
 {
     @JsonRootName("AnnotatedName")
@@ -20,7 +18,7 @@ public class MapperCopyTest extends XmlTestBase
     {
         XmlMapper mapper1 = mapperBuilder()
                 .nameForTextElement("foo")
-                .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+                .enable(XmlWriteFeature.WRITE_XML_DECLARATION)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build();
 

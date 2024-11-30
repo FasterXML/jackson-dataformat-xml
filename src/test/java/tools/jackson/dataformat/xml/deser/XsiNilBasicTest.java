@@ -4,6 +4,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectReader;
 
 import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlReadFeature;
 import tools.jackson.dataformat.xml.XmlTestBase;
 
 public class XsiNilBasicTest extends XmlTestBase
@@ -126,7 +127,7 @@ public class XsiNilBasicTest extends XmlTestBase
         assertEquals(a2q("{'x':null}"), r.readValue(DOC).toString());
 
         assertEquals(a2q("{'x':{'nil':'true'}}"),
-                r.without(FromXmlParser.Feature.PROCESS_XSI_NIL)
+                r.without(XmlReadFeature.PROCESS_XSI_NIL)
                     .readValue(DOC).toString());
     }
 
@@ -142,7 +143,7 @@ public class XsiNilBasicTest extends XmlTestBase
 
         // 07-Jul-2021, tatu: Alas! 2.x sets format feature flags too late to
         //   affect root element. But 3.0 works correctly! yay
-        ObjectReader noXsiNilReader = r.without(FromXmlParser.Feature.PROCESS_XSI_NIL);
+        ObjectReader noXsiNilReader = r.without(XmlReadFeature.PROCESS_XSI_NIL);
         assertEquals(a2q("{'nil':'true'}"),
                 noXsiNilReader.readValue(DOC).toString());
     }
