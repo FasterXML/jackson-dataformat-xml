@@ -27,6 +27,10 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <tag>HEAD</tag>
   </scm>
   <properties>
+    <!-- [databind#4820]: Java 17 baseline -->
+    <javac.src.version>17</javac.src.version>
+    <javac.target.version>17</javac.target.version>
+
     <packageVersion.dir>tools/jackson/dataformat/xml</packageVersion.dir>
     <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
