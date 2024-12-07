@@ -7,8 +7,10 @@ import tools.jackson.dataformat.xml.XmlTestBase;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+// For [dataformat-xml#27]
 public class ConflictingGetters27Test extends XmlTestBase
 {
+    // [dataformat-xml#27]
     @JsonRootName("output")
     static class Bean {
         public BeanInfo[] beanInfo;
@@ -43,10 +45,11 @@ public class ConflictingGetters27Test extends XmlTestBase
 
     /*
     /**********************************************************************
-    /* Unit tests
+    /* Test methods
     /**********************************************************************
      */
 
+    // [dataformat-xml#27]
     public void testIssue27() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
