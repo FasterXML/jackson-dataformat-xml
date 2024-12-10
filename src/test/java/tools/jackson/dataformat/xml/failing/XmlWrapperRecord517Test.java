@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.records.failing;
+package tools.jackson.dataformat.xml.failing;
 
 import java.util.List;
 
