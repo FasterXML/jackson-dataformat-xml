@@ -272,7 +272,7 @@ public class XmlSerializationContext extends SerializationContextExt
             ValueSerializer<Object> ser) throws JacksonException
     {
         ObjectNode root = (ObjectNode) value;
-        Map.Entry<String, JsonNode> entry = root.fields().next();
+        Map.Entry<String, JsonNode> entry = root.properties().iterator().next();
         final JsonNode newRoot = entry.getValue();
 
         // No namespace associated with JsonNode:
