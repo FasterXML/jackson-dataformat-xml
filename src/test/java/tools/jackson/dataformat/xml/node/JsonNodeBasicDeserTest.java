@@ -17,7 +17,7 @@ public class JsonNodeBasicDeserTest extends XmlTestBase
         JsonNode root = XML_MAPPER.readTree("<root attr='123' />");
         assertTrue(root.isObject());
         assertEquals(1, root.size());
-        assertEquals("123", root.get("attr").textValue());
+        assertEquals("123", root.get("attr").stringValue());
     }
 
     // [dataformat-xml#403]: Allow sequences
@@ -29,8 +29,8 @@ public class JsonNodeBasicDeserTest extends XmlTestBase
         assertEquals(JsonNodeType.ARRAY, arr.getNodeType());
         assertTrue(arr.isArray());
         assertEquals(2, arr.size());
-        assertEquals("a", root.at("/value/0").asText());
-        assertEquals("b", root.at("/value/1").asText());
+        assertEquals("a", root.at("/value/0").asString());
+        assertEquals("b", root.at("/value/1").asString());
     }
 
     // [dataformat-xml#405]: support mixed content
