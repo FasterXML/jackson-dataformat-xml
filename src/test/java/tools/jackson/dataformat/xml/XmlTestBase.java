@@ -273,10 +273,10 @@ public abstract class XmlTestBase
     protected String getAndVerifyText(JsonParser jp)
     {
         // Ok, let's verify other accessors
-        int actLen = jp.getTextLength();
-        char[] ch = jp.getTextCharacters();
-        String str2 = new String(ch, jp.getTextOffset(), actLen);
-        String str = jp.getText();
+        int actLen = jp.getStringLength();
+        char[] ch = jp.getStringCharacters();
+        String str2 = new String(ch, jp.getStringOffset(), actLen);
+        String str = jp.getString();
 
         if (str.length() !=  actLen) {
             fail("Internal problem (jp.token == "+jp.currentToken()+"): jp.getText().length() ['"+str+"'] == "+str.length()+"; jp.getTextLength() == "+actLen);
@@ -288,7 +288,7 @@ public abstract class XmlTestBase
 
     protected void verifyFieldName(JsonParser p, String expName)
     {
-        assertEquals(expName, p.getText());
+        assertEquals(expName, p.getString());
         assertEquals(expName, p.currentName());
     }
 

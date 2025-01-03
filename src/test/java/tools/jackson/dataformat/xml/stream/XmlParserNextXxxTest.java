@@ -24,16 +24,16 @@ public class XmlParserNextXxxTest extends XmlTestBase
         assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <max>
         assertEquals("max", xp.currentName());
 
-        assertEquals("7", xp.nextTextValue());
+        assertEquals("7", xp.nextStringValue());
 
         assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // <offset>
         assertEquals("offset", xp.currentName());
 
-        assertEquals("offset", xp.getText());
+        assertEquals("offset", xp.getString());
 
-        assertEquals("9", xp.nextTextValue());
+        assertEquals("9", xp.nextStringValue());
 
-        assertEquals("9", xp.getText());
+        assertEquals("9", xp.getString());
 
         assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </data>
         xp.close();

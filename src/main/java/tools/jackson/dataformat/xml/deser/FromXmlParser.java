@@ -707,7 +707,7 @@ _currText);
      * String collections.
      */
     @Override
-    public String nextTextValue() throws JacksonException
+    public String nextStringValue() throws JacksonException
     {
         _binaryValue = null;
         if (_nextToken != null) {
@@ -840,7 +840,7 @@ _currText);
      */
 
     @Override
-    public String getText() throws JacksonException
+    public String getString() throws JacksonException
     {
         if (_currToken == null) {
             return null;
@@ -856,19 +856,19 @@ _currText);
     }
 
     @Override
-    public char[] getTextCharacters() throws JacksonException {
-        String text = getText();
+    public char[] getStringCharacters() throws JacksonException {
+        String text = getString();
         return (text == null)  ? null : text.toCharArray();
     }
 
     @Override
-    public int getTextLength() throws JacksonException {
-        String text = getText();
+    public int getStringLength() throws JacksonException {
+        String text = getString();
         return (text == null)  ? 0 : text.length();
     }
 
     @Override
-    public int getTextOffset() throws JacksonException {
+    public int getStringOffset() throws JacksonException {
         return 0;
     }
 
@@ -877,14 +877,14 @@ _currText);
      * we must coalesce things it cannot really be exposed.
      */
     @Override
-    public boolean hasTextCharacters() {
+    public boolean hasStringCharacters() {
         return false;
     }
 
     @Override
-    public int getText(Writer writer) throws JacksonException
+    public int getString(Writer writer) throws JacksonException
     {
-        String str = getText();
+        String str = getString();
         if (str == null) {
             return 0;
         }
@@ -931,7 +931,7 @@ _currText);
     protected byte[] _decodeBase64(Base64Variant b64variant) throws JacksonException
     {
         ByteArrayBuilder builder = _getByteArrayBuilder();
-        final String str = getText();
+        final String str = getString();
         _decodeBase64(str, builder, b64variant);
         return builder.toByteArray();
     }
@@ -1088,7 +1088,7 @@ _currText);
             // Let's verify it's lossless conversion by simple roundtrip
             int result = (int) _numberLong;
             if (((long) result) != _numberLong) {
-                _reportError("Numeric value ("+getText()+") out of range of int");
+                _reportError("Numeric value ("+getString()+") out of range of int");
             }
             _numberInt = result;
         } else if ((_numTypesValid & NR_BIGINT) != 0) {

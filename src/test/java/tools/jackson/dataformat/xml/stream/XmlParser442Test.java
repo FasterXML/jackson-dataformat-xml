@@ -40,12 +40,12 @@ public class XmlParser442Test extends XmlTestBase
             assertEquals("", xp.currentName());
 
             assertToken(JsonToken.VALUE_STRING, xp.nextToken());
-            assertEquals("text", xp.getText().trim());
+            assertEquals("text", xp.getString().trim());
 
             assertToken(JsonToken.PROPERTY_NAME, xp.nextToken());
             assertEquals("leaf", xp.currentName());
             assertToken(JsonToken.VALUE_STRING, xp.nextToken());
-            assertEquals("stuff", xp.getText().trim());
+            assertEquals("stuff", xp.getString().trim());
             
             assertToken(JsonToken.END_OBJECT, xp.nextToken());
             assertToken(JsonToken.END_OBJECT, xp.nextToken());

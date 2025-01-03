@@ -69,7 +69,7 @@ public class XmlDeserializationContext
             JsonToken t = p.nextToken();
             if (t == JsonToken.VALUE_STRING) {
                 if (propName.equals("")) {
-                    text = p.getText();
+                    text = p.getString();
                 }
             } else {
                 p.skipChildren();
