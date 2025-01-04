@@ -2,10 +2,7 @@ package tools.jackson.dataformat.xml.lists;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import tools.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
 import tools.jackson.dataformat.xml.XmlMapper;

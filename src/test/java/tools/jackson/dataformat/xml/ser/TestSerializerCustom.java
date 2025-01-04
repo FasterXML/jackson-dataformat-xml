@@ -44,8 +44,8 @@ public class TestSerializerCustom extends XmlTestBase
           if (foo == null) {
               throw new IllegalStateException("missing foo property");
           }
-          return new Item(json.path("name").asText(),
-                  new Foo(foo.path("name").asText()));
+          return new Item(json.path("name").asString(),
+                  new Foo(foo.path("name").asString()));
         }
     }
 
