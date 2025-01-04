@@ -35,9 +35,15 @@ public class XmlParserTest extends XmlTestBase
             assertEquals(1, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.FIELD_NAME, p.nextToken());
             assertEquals("leaf", p.currentName());
+            assertEquals("leaf", p.getText());
+            assertEquals("leaf", p.getValueAsString());
+            assertEquals("leaf", p.getValueAsString("x"));
             assertEquals(1, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("abc", p.getText());
+            assertEquals("abc", p.getText());
+            assertEquals("abc", p.getValueAsString());
+            assertEquals("abc", p.getValueAsString("x"));
             assertEquals(1, p.getParsingContext().getNestingDepth());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertEquals(0, p.getParsingContext().getNestingDepth());
