@@ -43,7 +43,9 @@ public class EmptyWithScalarsTest extends XmlTestBase
         public Boolean B = Boolean.TRUE;
     }
 
-    private final XmlMapper MAPPER = newMapper();
+    private final XmlMapper MAPPER = mapperBuilder()
+            .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .build();
 
     /*
     /**********************************************************************
