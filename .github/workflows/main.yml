@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: ['17', '21' ]
+        java_version: ['17', '21', '23' ]
         include:
           - java_version: '17'
             release_build: 'R'

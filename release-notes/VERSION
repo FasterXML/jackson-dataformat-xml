@@ -12,5 +12,6 @@ Version: 3.x (for earlier see VERSION-2.x)
 #540: Rename "com.fasterxml.jackson" -> "tools.jackson"
 #687: JSTEP-8: rename `FromXmlParser.Feature` as `XmlReadFeature`,
   `ToXmlGenerator.Feature` as `XmlWriteFeature`
+#701: Change 3.0 to use `module-info.java` directly, remove use of Moditect
 - Add `XmlMapper.shared()`
 - Minimum Java baseline: Java 17
