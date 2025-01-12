@@ -65,8 +65,8 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <version>4.2.2</version>
       <exclusions>
         <exclusion>
-	  <groupId>javax.xml.stream</groupId>
-	  <artifactId>stax-api</artifactId>
+          <groupId>javax.xml.stream</groupId>
+	     <artifactId>stax-api</artifactId>
         </exclusion>
       </exclusions> 
     </dependency>
@@ -90,6 +90,22 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- 11-Jan-2025, joohyukkim: JSTEP-10, part 1, migrate to JUnit5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -185,11 +201,6 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
             </includes>
           </configuration>
         </plugin>
-      <!-- 20-Mar-2019, tatu: use Moditect for JDK9+ module info inclusion -->
-      <plugin>
-	<groupId>org.moditect</groupId>
-	<artifactId>moditect-maven-plugin</artifactId>
-      </plugin>
       <!-- 05-Jul-2020, tatu: Add gradle module metadata -->
       <plugin>
         <groupId>de.jjohannes</groupId>
