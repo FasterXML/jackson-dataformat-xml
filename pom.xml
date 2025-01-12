@@ -66,7 +66,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <exclusions>
         <exclusion>
           <groupId>javax.xml.stream</groupId>
-	     <artifactId>stax-api</artifactId>
+          <artifactId>stax-api</artifactId>
         </exclusion>
       </exclusions> 
     </dependency>
