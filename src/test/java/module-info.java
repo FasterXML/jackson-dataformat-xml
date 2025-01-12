@@ -10,10 +10,14 @@ module tools.jackson.dataformat.xml
     requires tools.jackson.core;
     requires tools.jackson.databind;
 
-    // Then test library dependencies
+    // Then test dependencies
     requires junit;
-    requires org.junit.jupiter.api;
-    requires org.junit.jupiter.params;
+    //requires org.junit.jupiter.api;
+    //requires org.junit.jupiter.params;
+
+    requires com.ctc.wstx; // woodstox
+    requires jakarta.xml.bind; // Jakarta-binding
+    requires tools.jackson.module.jakarta.xmlbind;
     
     // Then exports same as main artifact
 

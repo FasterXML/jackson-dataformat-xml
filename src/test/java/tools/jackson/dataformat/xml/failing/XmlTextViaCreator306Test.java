@@ -1,8 +1,7 @@
 package tools.jackson.dataformat.xml.failing;
 
-import java.beans.ConstructorProperties;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.dataformat.xml.XmlMapper;
@@ -37,8 +36,8 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         @JacksonXmlText
         String el;
 
-        @ConstructorProperties({"attr", "el"})
-        Child(String attr, String el) {
+        @JsonCreator
+        Child(@JsonProperty("attr") String attr, @JsonProperty("el") String el) {
             this.attr = attr;
             this.el = el;
         }
@@ -49,8 +48,8 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         @JacksonXmlProperty(localName = "CHILD")
         final ChildWithoutConstructor child;
 
-        @ConstructorProperties({"child"})
-        public RootWithoutConstructor(ChildWithoutConstructor child) {
+        @JsonCreator
+        public RootWithoutConstructor(@JsonProperty("child") ChildWithoutConstructor child) {
             this.child = child;
         }
 
