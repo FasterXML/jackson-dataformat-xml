@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.ser.dos;
+package tools.jackson.dataformat.xml.dos;
 
 import java.util.ArrayList;
 import java.util.List;

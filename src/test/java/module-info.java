@@ -19,16 +19,21 @@ module tools.jackson.dataformat.xml
     requires jakarta.xml.bind; // Jakarta-binding
     requires tools.jackson.module.jakarta.xmlbind;
     
-    // Then exports same as main artifact
+    // Then same exports as main artifact, but as "opens"
 
-    exports tools.jackson.dataformat.xml;
-    exports tools.jackson.dataformat.xml.annotation;
-    exports tools.jackson.dataformat.xml.deser;
-    exports tools.jackson.dataformat.xml.ser;
-    exports tools.jackson.dataformat.xml.util;
+    opens tools.jackson.dataformat.xml;
+    opens tools.jackson.dataformat.xml.annotation;
+    opens tools.jackson.dataformat.xml.deser;
+    opens tools.jackson.dataformat.xml.ser;
+    opens tools.jackson.dataformat.xml.util;
 
-    provides tools.jackson.core.TokenStreamFactory with
-        tools.jackson.dataformat.xml.XmlFactory;
-    provides tools.jackson.databind.ObjectMapper with
-        tools.jackson.dataformat.xml.XmlMapper;
+    // And then additional "opens" access for tests not in packages of main
+
+    opens tools.jackson.dataformat.xml.adapters;
+    opens tools.jackson.dataformat.xml.dos;
+    opens tools.jackson.dataformat.xml.fuzz;
+    opens tools.jackson.dataformat.xml.jaxb;
+    opens tools.jackson.dataformat.xml.lists;
+    opens tools.jackson.dataformat.xml.node;
+    opens tools.jackson.dataformat.xml.vld;
 }
