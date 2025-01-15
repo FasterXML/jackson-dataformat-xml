@@ -1,15 +1,21 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.*;
 
-public class ListRoundtripTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class ListRoundtripTest extends XmlTestUtil
 {
     @JsonRootName("parents")
     public static class Parents {
@@ -90,6 +96,7 @@ public class ListRoundtripTest extends XmlTestBase
 //        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
     }
     
+    @Test
     public void testParentListRoundtrip() throws Exception
     {
         Parents root = new Parents();
@@ -120,6 +127,7 @@ public class ListRoundtripTest extends XmlTestBase
         assertEquals("2", prop2.value);
     }
 
+    @Test
     public void testListWithAttrOnlyValues() throws Exception
     {
         PointContainer obj = new PointContainer();
@@ -144,6 +152,7 @@ public class ListRoundtripTest extends XmlTestBase
 
     // // [Issue#64]
     
+    @Test
     public void testOptionals() throws Exception
     {
         Optionals ob = MAPPER.readValue("<MultiOptional><optional type='work'>123-456-7890</optional></MultiOptional>",
@@ -158,6 +167,7 @@ public class ListRoundtripTest extends XmlTestBase
     }
 
     /*// comment out for release
+    @Test
     public void testOptionalsWithMissingType() throws Exception
     {
 //        Optionals ob = MAPPER.readValue("<MultiOptional><optional type='work'>123-456-7890</optional></MultiOptional>",

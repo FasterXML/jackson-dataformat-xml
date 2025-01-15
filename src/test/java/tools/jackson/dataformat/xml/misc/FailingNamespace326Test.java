@@ -4,6 +4,8 @@ import java.io.StringWriter;
 
 import javax.xml.stream.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.ctc.wstx.stax.WstxInputFactory;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
@@ -12,8 +14,10 @@ import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // for [dataformat-xml#326]
-public class FailingNamespace326Test extends XmlTestBase
+public class FailingNamespace326Test extends XmlTestUtil
 {
     @JacksonXmlRootElement(localName = "new")
     static class Bean {
@@ -48,6 +52,7 @@ public class FailingNamespace326Test extends XmlTestBase
         }
     }
 
+    @Test
     public void testIssue326() throws Exception {
         XMLOutputFactory xmlOutputFactory = new WstxOutputFactory();
         

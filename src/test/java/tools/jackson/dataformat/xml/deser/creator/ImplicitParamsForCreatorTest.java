@@ -12,10 +12,11 @@ import tools.jackson.databind.introspect.AnnotatedMember;
 import tools.jackson.databind.introspect.AnnotatedParameter;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // copied form [jackson-databind]
 public class ImplicitParamsForCreatorTest

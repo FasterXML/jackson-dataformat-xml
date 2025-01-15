@@ -8,9 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UntypedListSerialization8Test extends XmlTestUtil
 {

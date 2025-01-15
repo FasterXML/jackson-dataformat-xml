@@ -1,21 +1,17 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import static java.util.Arrays.asList;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.xml.XmlMapper;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static tools.jackson.dataformat.xml.XmlReadFeature.PROCESS_XSI_NIL;
 import static tools.jackson.dataformat.xml.XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 // [dataformat-xml#584]
 public class StringListRoundtripTest

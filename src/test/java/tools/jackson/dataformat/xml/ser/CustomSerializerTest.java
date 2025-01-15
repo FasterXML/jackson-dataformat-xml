@@ -1,13 +1,19 @@
 package tools.jackson.dataformat.xml.ser;
 
 import tools.jackson.core.JsonGenerator;
+
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.module.SimpleModule;
+
 import tools.jackson.databind.ser.std.StdScalarSerializer;
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-public class CustomSerializerTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+public class CustomSerializerTest extends XmlTestUtil
 {
     static class CustomSerializer extends StdScalarSerializer<String>
     {
@@ -19,8 +25,9 @@ public class CustomSerializerTest extends XmlTestBase
             g.writeString("custom:"+value);
         }
     }
-    
+
     // for [dataformat-xml#41]
+    @Test
     public void testCustomSerializer()
     {
         SimpleModule module = new SimpleModule();

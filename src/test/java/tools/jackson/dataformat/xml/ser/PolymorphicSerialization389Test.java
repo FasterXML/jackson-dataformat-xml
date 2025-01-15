@@ -1,14 +1,16 @@
 package tools.jackson.dataformat.xml.ser;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class PolymorphicSerialization389Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class PolymorphicSerialization389Test extends XmlTestUtil
 {
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
     @JsonSubTypes({
@@ -38,6 +40,7 @@ public class PolymorphicSerialization389Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#389]
+    @Test
     public void testIssue389() throws Exception
     {
         ConcreteModel concreteModel = new ConcreteModel();

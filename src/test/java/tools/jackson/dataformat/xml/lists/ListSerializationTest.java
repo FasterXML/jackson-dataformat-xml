@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class ListSerializationTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class ListSerializationTest extends XmlTestUtil
 {
     /*
     /**********************************************************
@@ -53,6 +57,7 @@ public class ListSerializationTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
  
+    @Test
     public void testSimpleWrappedList() throws IOException
     {
         String xml = MAPPER.writeValueAsString(new ListBean(1, 2, 3));
@@ -71,6 +76,7 @@ public class ListSerializationTest extends XmlTestBase
                 xml);
     }
 
+    @Test
     public void testStringList() throws IOException
     {
         StringListBean list = new StringListBean("a", "b", "c");

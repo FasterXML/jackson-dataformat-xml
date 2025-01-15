@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.exc.StreamReadException;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
 // [dataformat-xml#618]: Issues found by OSS-Fuzz (64655 etc)
 public class Fuzz618_64655_InvalidXMLTest extends XmlTestUtil

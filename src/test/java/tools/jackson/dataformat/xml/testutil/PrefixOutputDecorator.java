@@ -1,9 +1,6 @@
 package tools.jackson.dataformat.xml.testutil;
 
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 
 import tools.jackson.core.io.IOContext;
 import tools.jackson.core.io.OutputDecorator;

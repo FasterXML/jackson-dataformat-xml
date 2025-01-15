@@ -7,9 +7,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import tools.jackson.dataformat.xml.*;
-import tools.jackson.dataformat.xml.XmlWriteFeature;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // [dataformat-xml#634]
 public class XsiTypeReadTest extends XmlTestUtil

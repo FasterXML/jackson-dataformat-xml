@@ -1,16 +1,21 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // Failing unit test(s) wrt [Issue#64]
-public class Issue101UnwrappedListAttributesTest extends XmlTestBase
+public class Issue101UnwrappedListAttributesTest extends XmlTestUtil
 {
     // For [dataformat-xml#101]
     @JsonRootName("root")    
@@ -47,6 +52,7 @@ public class Issue101UnwrappedListAttributesTest extends XmlTestBase
     private final XmlMapper MAPPER = new XmlMapper();
 
     // [dataformat-xml#101]
+    @Test
     public void testWithTwoAttributes() throws Exception
     {
         final String EXP = "<root>"

@@ -2,16 +2,21 @@ package tools.jackson.dataformat.xml.misc;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.exc.MismatchedInputException;
+
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.*;
 
-public class TextValueTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TextValueTest extends XmlTestUtil
 {
     static class Simple
     {
@@ -98,6 +103,7 @@ public class TextValueTest extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
     
+    @Test
     public void testSerializeAsText() throws IOException
     {
         String xml = MAPPER.writeValueAsString(new Simple());
@@ -107,6 +113,7 @@ public class TextValueTest extends XmlTestBase
         assertEquals("<Simple a=\"13\">something</Simple>" + DEFAULT_NEW_LINE, xml);
     }
 
+    @Test
     public void testDeserializeAsText() throws IOException
     {
         Simple result = MAPPER.readValue("<Simple a='99'>else</Simple>", Simple.class);
@@ -114,6 +121,7 @@ public class TextValueTest extends XmlTestBase
         assertEquals("else", result.text);
     }
     
+    @Test
     public void testIssue24() throws Exception
     {
         final String TEXT = "+/null/this is a long string";
@@ -132,6 +140,7 @@ public class TextValueTest extends XmlTestBase
     }
 
     // for [dataformat-xml#36]
+    @Test
     public void testAlternateTextElementName() throws IOException
     {
         final String XML = "<JAXBStyle>foo</JAXBStyle>";
@@ -153,6 +162,7 @@ public class TextValueTest extends XmlTestBase
     }
 
     // [dataformat-xml#66], implicit property from "XmlText"
+    @Test
     public void testIssue66() throws Exception
     {
         XmlMapper mapper = XmlMapper.builder()
@@ -171,6 +181,7 @@ public class TextValueTest extends XmlTestBase
     }
 
     // [dataformat-xml#72]
+    @Test
     public void testTextOnlyPojo() throws Exception
     {
         XmlMapper mapper = xmlMapper(true);

@@ -2,14 +2,18 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-
 import javax.xml.namespace.QName;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
 
-public class TestSerializationManual extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class TestSerializationManual extends XmlTestUtil
 {
     public static class Value {
         public int num;
@@ -23,6 +27,7 @@ public class TestSerializationManual extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testIssue54() throws Exception
     {
         XmlMapper xmlMapper = XmlMapper.builder()

@@ -9,9 +9,11 @@ import tools.jackson.core.StreamWriteConstraints;
 
 import tools.jackson.databind.DatabindException;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Simple unit tests to verify that we fail gracefully if you attempt to serialize

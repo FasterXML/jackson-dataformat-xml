@@ -2,12 +2,16 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 // [dataformat-xml#360]
-public class XsiNilSerializationTest extends XmlTestBase
+public class XsiNilSerializationTest extends XmlTestUtil
 {
     static class WrapperBean<T>
     {
@@ -22,6 +26,7 @@ public class XsiNilSerializationTest extends XmlTestBase
             .build();
     
     // [dataformat-xml#360]
+    @Test
     public void testNilPropertyNoIndent() throws IOException
     {
         assertEquals("<WrapperBean><value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/></WrapperBean>",
@@ -29,6 +34,7 @@ public class XsiNilSerializationTest extends XmlTestBase
     }
 
     // [dataformat-xml#360]
+    @Test
     public void testNilPropertyRoot() throws IOException
     {
         // Not sure root element name defined but... "<null>" is what it is :)
@@ -37,6 +43,7 @@ public class XsiNilSerializationTest extends XmlTestBase
     }
 
     // [dataformat-xml#432]
+    @Test
     public void testNilPropertyWithIndent() throws IOException
     {
         final String xml = MAPPER.writerWithDefaultPrettyPrinter()

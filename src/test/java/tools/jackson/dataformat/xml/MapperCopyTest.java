@@ -2,11 +2,15 @@ package tools.jackson.dataformat.xml;
 
 import java.io.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.*;
 
-public class MapperCopyTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MapperCopyTest extends XmlTestUtil
 {
     @JsonRootName("AnnotatedName")
     static class Pojo282
@@ -14,6 +18,7 @@ public class MapperCopyTest extends XmlTestBase
         public int a = 3;
     }
 
+    @Test
     public void testMapperCopy()
     {
         XmlMapper mapper1 = mapperBuilder()
@@ -41,12 +46,13 @@ public class MapperCopyTest extends XmlTestBase
         SerializationConfig sc2 = mapper2.serializationConfig();
         assertNotSame(sc1, sc2);
         assertEquals(
-            "serialization features did not get copied",
             sc1.getSerializationFeatures(),
-            sc2.getSerializationFeatures()
+            sc2.getSerializationFeatures(),
+            "serialization features did not get copied"
         );
     }
 
+    @Test
     public void testMapperSerialization() throws Exception
     {
         XmlMapper mapper1 = mapperBuilder()
@@ -67,6 +73,7 @@ public class MapperCopyTest extends XmlTestBase
     }
 
     // [dataformat-xml#282]
+    @Test
     public void testCopyWith() throws Exception
     {
         XmlMapper xmlMapper = newMapper();

@@ -1,10 +1,14 @@
 package tools.jackson.dataformat.xml.stream;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.core.*;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
-public class XmlParserNextXxxTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class XmlParserNextXxxTest extends XmlTestUtil
 {
     /*
     /**********************************************************
@@ -13,6 +17,7 @@ public class XmlParserNextXxxTest extends XmlTestBase
      */
 
     // [dataformat-xml#204]
+    @Test
     public void testXmlAttributesWithNextTextValue() throws Exception
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";

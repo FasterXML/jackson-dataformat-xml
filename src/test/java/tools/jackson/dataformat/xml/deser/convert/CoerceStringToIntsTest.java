@@ -9,9 +9,10 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.cfg.CoercionAction;
 import tools.jackson.databind.cfg.CoercionInputShape;
 import tools.jackson.databind.type.LogicalType;
-import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // 2020-12-18, tatu: Modified from "jackson-databind" version: XML
 //  backend MUST NOT prevent coercion from String since XML has no

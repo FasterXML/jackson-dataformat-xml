@@ -1,8 +1,6 @@
 package tools.jackson.dataformat.xml.deser;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,9 +8,11 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
-import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class UntypedObjectDeserTest extends XmlTestUtil
 {

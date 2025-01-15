@@ -1,17 +1,16 @@
 package tools.jackson.dataformat.xml.incr;
 
-import java.io.*;
-
+import java.io.StringWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.junit.jupiter.api.Test;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IncrementalWritingTest extends XmlTestUtil
 {

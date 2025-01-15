@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // For [dataformat-xml#509]
 public class UnexpectedNonWhitespaceText509Test {

@@ -11,7 +11,9 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 import tools.jackson.databind.exc.UnrecognizedPropertyException;
 import tools.jackson.databind.introspect.NopAnnotationIntrospector;
-import tools.jackson.dataformat.xml.*;
+
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,11 +1,12 @@
 package tools.jackson.dataformat.xml;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"content", "images"})
-class MediaItem
+public class MediaItem
 {
     public enum Player { JAVA, FLASH;  }
     public enum Size { SMALL, LARGE; }

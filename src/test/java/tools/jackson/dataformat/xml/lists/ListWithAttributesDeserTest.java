@@ -1,16 +1,20 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.*;
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
 
-public class ListWithAttributesDeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class ListWithAttributesDeserTest extends XmlTestUtil
 {
     // [dataformat-xml#43]
     static class Name {
@@ -131,6 +135,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
             .build();
 
     // [dataformat-xml#43]
+    @Test
     public void testIssue43() throws Exception
     {
         String xmlData = "<roomName><names>"
@@ -143,6 +148,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#99]: allow skipping unknown properties
+    @Test
     public void testListWithAttributes() throws Exception
     {
         String source = "<Root>"
@@ -157,6 +163,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#108]: unwrapped lists, more than one entry, id attributes
+    @Test
     public void testIdsFromAttributes() throws Exception {
         Foo foo = new Foo();
         Bar bar1 = new Bar();
@@ -172,6 +179,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
         assertEquals(foo.secondBar.get(0).id, fooRead.secondBar.get(0).id);
     }
 
+    @Test
     public void testIssue301WithAttr() throws Exception {
         final String XML =
                 "<PARENT>" +
@@ -187,6 +195,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#314]
+    @Test
     public void testDeser314Order1() throws Exception
     {
         String content = ""
@@ -201,6 +210,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
         assertNotNull(result);
     }
 
+    @Test
     public void testDeser314Order2() throws Exception
     {
         String content = ""
@@ -215,6 +225,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
         assertNotNull(result);
     }
 
+    @Test
     public void testDeser314Address() throws Exception
     {
         String content = ""
@@ -228,6 +239,7 @@ public class ListWithAttributesDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#390]
+    @Test
     public void testDeser390() throws Exception
     {
         String XML = "<many>\n"

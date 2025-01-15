@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.xml.bind.annotation.*;
-
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.*;
@@ -13,7 +12,8 @@ import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JAXBObjectId170Test extends XmlTestUtil
 {

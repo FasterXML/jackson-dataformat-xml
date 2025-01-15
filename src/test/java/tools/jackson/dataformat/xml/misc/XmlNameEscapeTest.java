@@ -1,18 +1,17 @@
 package tools.jackson.dataformat.xml.misc;
 
-import tools.jackson.dataformat.xml.XmlFactory;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlNameProcessor;
-import tools.jackson.dataformat.xml.XmlNameProcessors;
-import tools.jackson.dataformat.xml.XmlTestBase;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Test;
+
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // For [dataformat-xml#531]
-public class XmlNameEscapeTest extends XmlTestBase
+public class XmlNameEscapeTest extends XmlTestUtil
 {
     public static class DTO {
         public Map<String, String> badMap = new HashMap<>();
@@ -38,6 +37,7 @@ public class XmlNameEscapeTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testGoodMapKeys() throws Exception {
         DTO dto = new DTO();
 
@@ -53,6 +53,7 @@ public class XmlNameEscapeTest extends XmlTestBase
         assertEquals(dto, reversed);
     }
 
+    @Test
     public void testBase64() throws Exception {
         DTO dto = new DTO();
 
@@ -69,6 +70,7 @@ public class XmlNameEscapeTest extends XmlTestBase
         assertEquals(dto, reversed);
     }
 
+    @Test
     public void testAlwaysOnBase64() throws Exception {
         DTO dto = new DTO();
 
@@ -85,6 +87,7 @@ public class XmlNameEscapeTest extends XmlTestBase
         assertEquals(dto, reversed);
     }
 
+    @Test
     public void testReplace() throws Exception {
         DTO dto = new DTO();
 
@@ -105,6 +108,7 @@ public class XmlNameEscapeTest extends XmlTestBase
         public int $someVar$ = 5;
     }
 
+    @Test
     public void testBadVarName() throws Exception {
         BadVarNameDTO dto = new BadVarNameDTO();
 

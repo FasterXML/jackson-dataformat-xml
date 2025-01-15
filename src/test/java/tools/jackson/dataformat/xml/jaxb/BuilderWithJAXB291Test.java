@@ -11,9 +11,11 @@ import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
+
 import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // Test for [dataformat-xml#291]: works via field, not constructor
 // (name mismatch to fix in test case)

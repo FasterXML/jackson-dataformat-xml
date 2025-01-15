@@ -9,7 +9,8 @@ import tools.jackson.databind.*;
 
 import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 // for [databind#1402]; configurable null handling, specifically with SKIP
 public class NullConversionsSkipTest extends XmlTestUtil

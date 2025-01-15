@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // for:
 //

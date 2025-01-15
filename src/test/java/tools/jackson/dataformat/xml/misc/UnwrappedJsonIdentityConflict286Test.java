@@ -1,16 +1,21 @@
 package tools.jackson.dataformat.xml.misc;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // for [dataformat-xml#286]: parser getting confused with unwrapped lists,
 // object id
-public class UnwrappedJsonIdentityConflict286Test extends XmlTestBase
+public class UnwrappedJsonIdentityConflict286Test extends XmlTestUtil
 {
     static class Town
     {
@@ -41,6 +46,7 @@ public class UnwrappedJsonIdentityConflict286Test extends XmlTestBase
         public String name;
     }
 
+    @Test
     public void testCaseInsensitiveComplex() throws Exception
     {
 

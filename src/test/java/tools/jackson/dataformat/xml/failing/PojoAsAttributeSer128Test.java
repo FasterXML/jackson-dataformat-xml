@@ -5,10 +5,11 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // [dataformat-xml#128]: Should ignore "as-attribute" setting for POJO
 public class PojoAsAttributeSer128Test extends XmlTestUtil

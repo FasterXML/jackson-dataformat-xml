@@ -1,14 +1,21 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class ListDeser393Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class ListDeser393Test extends XmlTestUtil
 {
     @JsonRootName("prices")
     static class Prices393 {
@@ -60,6 +67,7 @@ public class ListDeser393Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#393]
+    @Test
     public void testDeser393() throws Exception
     {
         String content =

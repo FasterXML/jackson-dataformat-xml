@@ -1,8 +1,10 @@
 package tools.jackson.dataformat.xml.failing;
 
 import java.io.UnsupportedEncodingException;
-import java.net.*;
-import java.util.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,7 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // 30-Jun-2020, tatu: This is deferred and possibly won't be fixed
 //   at all. But leaving failing test here just in case future brings

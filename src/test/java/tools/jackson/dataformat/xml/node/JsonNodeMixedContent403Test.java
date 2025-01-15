@@ -1,16 +1,21 @@
 package tools.jackson.dataformat.xml.node;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-public class JsonNodeMixedContent403Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class JsonNodeMixedContent403Test extends XmlTestUtil
 {
     final private ObjectMapper XML_MAPPER = newMapper();
 
     final private ObjectMapper JSON_MAPPER = new JsonMapper();
 
+    @Test
     public void testMixedContentBefore() throws Exception
     {
         // First, before elements:
@@ -18,6 +23,7 @@ public class JsonNodeMixedContent403Test extends XmlTestBase
                 XML_MAPPER.readTree("<root>before<a>1</a><b>2</b></root>"));
     }
 
+    @Test
     public void testMixedContentBetween() throws Exception
     {
         // Second, between
@@ -25,6 +31,7 @@ public class JsonNodeMixedContent403Test extends XmlTestBase
                 XML_MAPPER.readTree("<root><a>1</a>between<b>2</b></root>"));
     }
 
+    @Test
     public void testMixedContentAfter() throws Exception
     {
         // and then after
@@ -32,6 +39,7 @@ public class JsonNodeMixedContent403Test extends XmlTestBase
                 XML_MAPPER.readTree("<root><a>1</a><b>2</b>after</root>"));
     }
 
+    @Test
     public void testMultipleMixedContent() throws Exception
     {
         // and then after
@@ -41,6 +49,7 @@ public class JsonNodeMixedContent403Test extends XmlTestBase
     }
 
     // [dataformat-xml#226]
+    @Test
     public void testMixed226() throws Exception
     {
         final String XML = "<root>\n"

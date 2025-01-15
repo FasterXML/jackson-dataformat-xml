@@ -1,19 +1,22 @@
 package tools.jackson.dataformat.xml.lists;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.*;
+
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.*;
 
-public class ListDeserializationTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ListDeserializationTest extends XmlTestUtil
 {
     @JsonRootName(value = "person", namespace ="http://example.org/person" )
     public static class Person
@@ -210,6 +213,7 @@ public class ListDeserializationTest extends XmlTestBase
      * 
      * Problems deserializing otherwise properly wrapped lists
      */
+    @Test
     public void testWrappedList() throws Exception
     {
         Person p = new Person( "Name", 30 );
@@ -225,6 +229,7 @@ public class ListDeserializationTest extends XmlTestBase
         assertEquals("note 2", result.notes.get(1));
     }
 
+    @Test
     public void testWrappedListWithGetters() throws Exception
     {
         PersonWithGetters p = new PersonWithGetters("abc");
@@ -239,6 +244,7 @@ public class ListDeserializationTest extends XmlTestBase
         assertEquals("note 2", result._notes.get(1));
     }
 
+    @Test
     public void testWrappedListBeanDeser() throws Exception
     {
         ListBeanWrapped bean = MAPPER.readValue(
@@ -253,6 +259,7 @@ public class ListDeserializationTest extends XmlTestBase
     }
 
     // for [dataformat-xml#33]
+    @Test
     public void testWrappedListWithAttribute() throws Exception
     {
         ListBeanWrapped bean = MAPPER.readValue(
@@ -268,6 +275,7 @@ public class ListDeserializationTest extends XmlTestBase
         assertEquals(2, bean.values.size());
     }
 
+    @Test
     public void testUnwrappedListBeanDeser() throws Exception
     {
         /*
@@ -290,6 +298,7 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
         assertEquals(Integer.valueOf(3), bean.values.get(2));
     }
 
+    @Test
     public void testUnwrappedAliasListBeanDeser() throws Exception
     {
         ListBeanUnwrapped bean = MAPPER.readValue(
@@ -304,6 +313,7 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
     }
 
     // [dataformat-xml#191]
+    @Test
     public void testListDeser191() throws Exception
     {
         final String XML =
@@ -322,6 +332,7 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
     }
 
     // [dataformat-xml#256]
+    @Test
     public void testListWithMixinDeser256() throws Exception
     {
         final String XML =
@@ -349,6 +360,7 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
     }
 
     // [dataformat-xml#294]
+    @Test
     public void testNestedLists294() throws Exception
     {
         RootLevel294 tree = new RootLevel294();
@@ -373,6 +385,7 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
     }
 
     // [dataformat-xml#307]
+    @Test
     public void testListDeser307() throws Exception
     {
         final String XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
@@ -398,6 +411,7 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
     }
 
     // [dataformat-xml#433]
+    @Test
     public void testListDeser433() throws Exception {
         final String XML =
 "<Product>\n" +

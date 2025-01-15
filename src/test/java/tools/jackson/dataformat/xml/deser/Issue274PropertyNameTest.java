@@ -5,10 +5,11 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.*;
-import tools.jackson.dataformat.xml.*;
+
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // [dataformat-xml#274]: Actually passes... can not reproduce failure
 public class Issue274PropertyNameTest extends XmlTestUtil

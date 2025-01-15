@@ -1,13 +1,17 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class WrappedListsTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class WrappedListsTest extends XmlTestUtil
 {
     static class Order  {
         @JacksonXmlElementWrapper(localName = "line_items")
@@ -30,6 +34,7 @@ public class WrappedListsTest extends XmlTestBase
     private final XmlMapper MAPPER = xmlMapper(true);
 
     // For [Issue#103]
+    @Test
     public void testEmptyList() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Order());

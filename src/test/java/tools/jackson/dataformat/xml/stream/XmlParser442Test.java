@@ -1,15 +1,22 @@
 package tools.jackson.dataformat.xml.stream;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.core.JsonToken;
+
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
-public class XmlParser442Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+public class XmlParser442Test extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();
 
     // For [dataformat-xml#442]
+    @Test
     public void testMixedContentBeforeElement442() throws Exception
     {
         final String XML =

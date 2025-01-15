@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Reproduces <i>no default no-arg ctor found</i> deserialization regression

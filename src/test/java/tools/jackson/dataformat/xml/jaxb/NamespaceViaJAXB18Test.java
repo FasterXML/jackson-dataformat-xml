@@ -1,13 +1,14 @@
 package tools.jackson.dataformat.xml.jaxb;
 
+import org.junit.jupiter.api.Test;
+
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class NamespaceViaJAXB18Test extends XmlTestUtil
 {

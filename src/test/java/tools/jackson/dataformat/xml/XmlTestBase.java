@@ -18,7 +18,6 @@ import tools.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector
 public abstract class XmlTestBase
     extends TestCase
 {
-
     protected static final String DEFAULT_NEW_LINE;
 
     static {

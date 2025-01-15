@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.testutil;
 
-import tools.jackson.databind.*;
+import tools.jackson.databind.DatabindContext;
+import tools.jackson.databind.JavaType;
 import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 
 /**

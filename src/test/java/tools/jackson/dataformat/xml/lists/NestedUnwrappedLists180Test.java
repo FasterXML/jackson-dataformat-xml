@@ -1,13 +1,19 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class NestedUnwrappedLists180Test  extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class NestedUnwrappedLists180Test extends XmlTestUtil
 {
     static class Records {
         @JacksonXmlElementWrapper(useWrapping=false)
@@ -35,6 +41,7 @@ public class NestedUnwrappedLists180Test  extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
 
+    @Test
     public void testNestedUnwrappedLists180() throws Exception
     {
         /*

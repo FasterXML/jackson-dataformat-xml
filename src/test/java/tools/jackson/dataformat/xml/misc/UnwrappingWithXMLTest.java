@@ -1,13 +1,19 @@
 package tools.jackson.dataformat.xml.misc;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // for #12
-public class UnwrappingWithXMLTest extends XmlTestBase
+public class UnwrappingWithXMLTest extends XmlTestUtil
 {
     @JsonPropertyOrder({"x", "y"})
     final static class Location {
@@ -86,6 +92,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
      * Simple test to verify that explicit schema mapping works fine
      * with unwrapped entities
      */
+    @Test
     public void testSimpleUnwrappingRoundtrip()
         throws Exception
     {
@@ -101,6 +108,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
         assertEquals(XML, mapper.writerFor(Unwrapping.class).writeValueAsString(wrapper));
     }
 
+    @Test
     public void testUnwrappingWithAttribute()
         throws Exception
     {
@@ -116,6 +124,7 @@ public class UnwrappingWithXMLTest extends XmlTestBase
         assertEquals(XML, mapper.writerFor(UnwrappingWithAttributes.class).writeValueAsString(wrapper));
     }
 
+    @Test
     public void testUnwrappingSubWithAttribute()
         throws Exception
     {

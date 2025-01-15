@@ -10,7 +10,8 @@ import tools.jackson.databind.cfg.CoercionAction;
 import tools.jackson.databind.cfg.CoercionInputShape;
 import tools.jackson.databind.exc.InvalidFormatException;
 import tools.jackson.databind.type.LogicalType;
-import tools.jackson.dataformat.xml.*;
+
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 

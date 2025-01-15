@@ -1,15 +1,20 @@
 package tools.jackson.dataformat.xml.node;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.ObjectWriter;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
-import tools.jackson.dataformat.xml.XmlTestBase;
+
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
 
-public class JsonNodeSerUnwrapped441Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class JsonNodeSerUnwrapped441Test extends XmlTestUtil
 {
     // [dataformat-xml#441]
     static class Stuff441 {
@@ -27,6 +32,7 @@ public class JsonNodeSerUnwrapped441Test extends XmlTestBase
             .with(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE);
 
     // [dataformat-xml#441]: before changes, work-around should be fine
+    @Test
     public void testOlderWorkaround() throws Exception
     {
         ObjectNode xml = XML_MAPPER.createObjectNode();
@@ -41,6 +47,7 @@ public class JsonNodeSerUnwrapped441Test extends XmlTestBase
     }
 
     // [dataformat-xml#441]
+    @Test
     public void testSimpleNode() throws Exception
     {
         ObjectNode root = XML_MAPPER.createObjectNode();
@@ -57,6 +64,7 @@ public class JsonNodeSerUnwrapped441Test extends XmlTestBase
     }
 
     // [dataformat-xml#441]
+    @Test
     public void testArrayInObjectNode() throws Exception
     {
         ObjectNode root = XML_MAPPER.createObjectNode();
@@ -78,6 +86,7 @@ public class JsonNodeSerUnwrapped441Test extends XmlTestBase
     // 03-Jul-2021, tatu: Would be great to further support "unwrapping" of
     //    properties further down but... for now not very likely to work
     //    but see [databind#3961] for possible improvements
+    @Test
     public void testNodeAsProperty() throws Exception
     {
         Stuff441 stuff = new Stuff441(XML_MAPPER.createObjectNode());

@@ -12,10 +12,12 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.ser.FilterProvider;
 import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
 import tools.jackson.databind.ser.std.SimpleFilterProvider;
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /*
  * Tests for ('JSON') Views, other filtering.

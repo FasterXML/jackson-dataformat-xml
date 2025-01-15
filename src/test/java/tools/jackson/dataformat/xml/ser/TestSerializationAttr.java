@@ -2,13 +2,17 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.util.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestSerializationAttr extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestSerializationAttr extends XmlTestUtil
 {
     static class NsAttrBean
     {
@@ -60,6 +64,7 @@ public class TestSerializationAttr extends XmlTestBase
 
     private final XmlMapper XML_MAPPER = newMapper();
 
+    @Test
     public void testSimpleNsAttr() throws Exception
     {
         String xml = XML_MAPPER.writeValueAsString(new NsAttrBean());
@@ -68,6 +73,7 @@ public class TestSerializationAttr extends XmlTestBase
         assertEquals("<NsAttrBean xmlns:wstxns1=\"http://foo\" wstxns1:attr=\"3\"/>", xml);
     }
 
+    @Test
     public void testIssue19() throws Exception
     {
         String xml = XML_MAPPER.writeValueAsString(new Issue19Bean());
@@ -79,12 +85,14 @@ public class TestSerializationAttr extends XmlTestBase
         	xml);
     }
 
+    @Test
     public void testIssue6() throws Exception
     {
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>",
                 XML_MAPPER.writeValueAsString(new Jurisdiction()));
     }
 
+    @Test
     public void testIssue117AnySetterAttrs() throws Exception
     {
         Map<String, String> values = new HashMap<String, String>();
@@ -103,6 +111,7 @@ public class TestSerializationAttr extends XmlTestBase
     
     // manual 'test' to see "what would JAXB do?"
     /*
+    @Test
     public void testJAXB() throws Exception
     {
         StringWriter sw = new StringWriter();

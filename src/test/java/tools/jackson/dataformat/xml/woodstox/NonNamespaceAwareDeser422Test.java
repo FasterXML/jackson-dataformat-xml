@@ -1,21 +1,22 @@
 package tools.jackson.dataformat.xml.woodstox;
 
 import java.util.List;
-
 import javax.xml.stream.XMLInputFactory;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import tools.jackson.dataformat.xml.XmlFactory;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // [dataformat-xml#422]: while setting itself is NOT Woodstox-specific,
 // many/most Stax implementations do not offer non-namespace-aware mode
 // so let's separate this into Woodstox-specific section
-public class NonNamespaceAwareDeser422Test extends XmlTestBase
+public class NonNamespaceAwareDeser422Test extends XmlTestUtil
 {
  // [dataformat-xml#422]
     @JsonIgnoreProperties(ignoreUnknown = true) // to skip `xmlns`
@@ -53,6 +54,7 @@ public class NonNamespaceAwareDeser422Test extends XmlTestBase
         public String content;
     }
 
+    @Test
     public void testBigDocIssue422() throws Exception
     {
         final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();

@@ -2,19 +2,24 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.util.*;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import tools.jackson.databind.SerializationFeature;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 
-public class XmlPrettyPrinterTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XmlPrettyPrinterTest extends XmlTestUtil
 {
     static class StringWrapperBean {
         public StringWrapper string;
@@ -86,9 +91,8 @@ public class XmlPrettyPrinterTest extends XmlTestBase
     protected XmlMapper _xmlMapper;
 
     // let's actually reuse XmlMapper to make things bit faster
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         _xmlMapper = XmlMapper.builder()
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .build();
@@ -101,6 +105,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
      */
 
     // Verify [dataformat-xml#1]
+    @Test
     public void testSimpleStringBean() throws Exception
     {
         StringWrapperBean input = new StringWrapperBean("abc");
@@ -125,6 +130,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         assertEquals("abc", result.string.str);
     }
 
+    @Test
     public void testSimpleIntBean() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new IntWrapperBean(42)); 
@@ -138,6 +144,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
         assertEquals(42, result.wrapped.i);
     }
     
+    @Test
     public void testSimpleMap() throws Exception
     {
         Map<String,String> map = new HashMap<String,String>();
@@ -157,6 +164,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
     }
 
     // [dataformat-xml#45]: Use of attributes should not force linefeed for empty elements
+    @Test
     public void testWithAttr() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrBean());
@@ -169,6 +177,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
             xml2);
     }
 
+    @Test
     public void testEmptyElem() throws Exception
     {
         PojoFor123 simple = new PojoFor123("foobar");
@@ -177,6 +186,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
             xml);
     }
 
+    @Test
     public void testMultiLevel172() throws Exception
     {
         Company root = new Company();
@@ -199,6 +209,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
                 xml);
     }
 
+    @Test
     public void testNewLine_withCustomNewLine() throws Exception {
         String customNewLine = "\n\rLF\n\r";
         DefaultXmlPrettyPrinter customXmlPrettyPrinter = new DefaultXmlPrettyPrinter().withCustomNewLine(customNewLine);
@@ -226,6 +237,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
             xml);
     }
 
+    @Test
     public void testNewLine_systemDefault() throws Exception {
         Company root = new Company();
         root.employee.add(new Employee("abc"));
@@ -250,6 +262,7 @@ public class XmlPrettyPrinterTest extends XmlTestBase
             xml);
     }
 
+    @Test
     public void testNewLine_UseSystemDefaultLineSeperatorOnNullCustomNewLine() throws Exception {
         Company root = new Company();
         root.employee.add(new Employee("abc"));

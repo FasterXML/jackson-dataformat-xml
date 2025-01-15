@@ -3,7 +3,9 @@ package tools.jackson.dataformat.xml.fuzz;
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.exc.StreamReadException;
-import tools.jackson.dataformat.xml.*;
+
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.fail;
 

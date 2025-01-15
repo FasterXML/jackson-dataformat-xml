@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import jakarta.xml.bind.annotation.*;
 
 import tools.jackson.databind.MapperFeature;
-import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AttributesWithJAXBTest extends XmlTestUtil
 {

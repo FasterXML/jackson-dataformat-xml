@@ -13,7 +13,7 @@ import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Although XML-backed data binding does not rely (or directly build) on JAXB

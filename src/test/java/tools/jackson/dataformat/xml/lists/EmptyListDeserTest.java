@@ -3,13 +3,18 @@ package tools.jackson.dataformat.xml.lists;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import tools.jackson.core.type.TypeReference;
+
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
 
-public class EmptyListDeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EmptyListDeserTest extends XmlTestUtil
 {
     // [dataformat-xml#124]
     static class TestList124 {
@@ -75,6 +80,7 @@ public class EmptyListDeserTest extends XmlTestBase
     }    
 
     // [dataformat-xml#177]
+    @Test
     public void testEmptyList() throws Exception
     {
         Config r = MAPPER.readValue(
@@ -90,6 +96,7 @@ public class EmptyListDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#319]
+    @Test
     public void testEmptyList319() throws Exception
     {
         final String DOC = "<orders></orders>";
@@ -106,6 +113,7 @@ public class EmptyListDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#435]
+    @Test
     public void testEmptyListAsNull435() throws Exception
     {
         XmlMapper mapper = mapperBuilder()
@@ -118,6 +126,7 @@ public class EmptyListDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#460]
+    @Test
     public void testWrappedEmptyListWithWhitespace458() throws Exception
     {
         String input = "<ChannelSet460>\n" +
@@ -126,7 +135,7 @@ public class EmptyListDeserTest extends XmlTestBase
                 "</channels>\n" +
                 "</ChannelSet460>";
         ChannelSet460 set = MAPPER.readValue(input, ChannelSet460.class);
-        assertEquals("List should be empty", 0,
-                set.channels.size());
+        assertEquals(0, set.channels.size(),
+                "List should be empty");
     }
 }

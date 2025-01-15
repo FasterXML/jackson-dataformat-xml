@@ -4,16 +4,17 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import tools.jackson.databind.*;
 import tools.jackson.databind.annotation.JsonTypeIdResolver;
 import tools.jackson.databind.jsontype.impl.TypeIdResolverBase;
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PolymorphicList426Test extends XmlTestUtil
 {

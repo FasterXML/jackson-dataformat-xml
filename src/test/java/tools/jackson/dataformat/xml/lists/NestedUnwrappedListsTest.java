@@ -2,12 +2,17 @@ package tools.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-public class NestedUnwrappedListsTest  extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class NestedUnwrappedListsTest extends XmlTestUtil
 {
     // // // Test
 
@@ -44,6 +49,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testNested1_2() throws Exception
     {
         final String XML =
@@ -76,6 +82,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         assertEquals("2013-09-12T09:29:07.536-04:00", act.recordedAtTime);
     }
 
+    @Test
     public void testNestedWithEmpty() throws Exception
     {
         final String XML =
@@ -93,6 +100,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         assertEquals(1, svc.vehicleMonitoringDelivery.size());
     }
 
+    @Test
     public void testNestedWithEmpty2() throws Exception
     {
         final String XML =
@@ -115,6 +123,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         assertEquals(1, del.vehicleActivity.size());
     }
     
+    @Test
     public void testNested1_2b() throws Exception
     {
         final String XML =
@@ -148,6 +157,7 @@ public class NestedUnwrappedListsTest  extends XmlTestBase
         assertEquals("2013-09-12T09:29:07.536-04:00", act.recordedAtTime);
     }
 
+    @Test
     public void testNested2_1() throws Exception
     {
         final String XML =

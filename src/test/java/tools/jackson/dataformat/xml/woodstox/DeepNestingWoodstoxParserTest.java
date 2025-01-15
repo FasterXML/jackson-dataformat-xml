@@ -1,17 +1,17 @@
 package tools.jackson.dataformat.xml.woodstox;
 
 import com.ctc.wstx.stax.WstxInputFactory;
+import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.JsonParser;
 
-import tools.jackson.dataformat.xml.XmlFactory;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class DeepNestingWoodstoxParserTest extends XmlTestBase
+public class DeepNestingWoodstoxParserTest extends XmlTestUtil
 {
     // Try using Woodstox-specific settings above and beyond
     // what Jackson-core would provide
+    @Test
     public void testDeepDocWithWoodstoxLimits() throws Exception
     {
         final WstxInputFactory wstxInputFactory = new WstxInputFactory();

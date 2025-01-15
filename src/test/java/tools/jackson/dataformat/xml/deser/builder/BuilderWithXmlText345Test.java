@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuilderWithXmlText345Test extends XmlTestUtil
 {

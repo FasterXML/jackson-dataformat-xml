@@ -1,21 +1,25 @@
 package tools.jackson.dataformat.xml.misc;
 
-import java.util.*;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.*;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
 
-/* NOTE: copied from jackson-databind (with some pruning)
- */
+import tools.jackson.databind.*;
+
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Conversion tests to ensure that standard ObjectMapper conversions
  * work despite XmlMapper having to add XML-specific work-arounds.
  */
-public class ArrayConversionsTest extends XmlTestBase
+public class ArrayConversionsTest extends XmlTestUtil
 {
     static class IntListWrapper {
         public List<Integer> values;
@@ -34,6 +38,7 @@ public class ArrayConversionsTest extends XmlTestBase
     /********************************************************
      */
 
+    @Test
     public void testNullXform() throws Exception {
         _testNullXform(xmlMapper(true));
         _testNullXform(xmlMapper(false));
@@ -52,6 +57,7 @@ public class ArrayConversionsTest extends XmlTestBase
      * correctly, i.e. type -> type gives equal (although
      * not necessarily same) output
      */
+    @Test
     public void testArrayIdentityTransforms() throws Exception {
         _testArrayIdentityTransforms(xmlMapper(true));
         _testArrayIdentityTransforms(xmlMapper(false));
@@ -70,6 +76,7 @@ public class ArrayConversionsTest extends XmlTestBase
         verifyDoubleArrayConversion(mapper, doubles(), float[].class);
     }
 
+    @Test
     public void testByteArrayFrom() throws Exception {
         _testByteArrayFrom(xmlMapper(true));
         _testByteArrayFrom(xmlMapper(false));
@@ -86,6 +93,7 @@ public class ArrayConversionsTest extends XmlTestBase
         verifyIntegralArrays(exp, data, exp.length);
     }
     
+    @Test
     public void testShortArrayToX() throws Exception
     {
         final XmlMapper mapper = new XmlMapper();
@@ -95,6 +103,7 @@ public class ArrayConversionsTest extends XmlTestBase
         verifyShortArrayConversion(mapper, data, long[].class);
     }
 
+    @Test
     public void testIntArrayToX() throws Exception
     {
         final XmlMapper mapper = new XmlMapper();
@@ -110,6 +119,7 @@ public class ArrayConversionsTest extends XmlTestBase
         assertEquals(expNums, actNums);
     }
 
+    @Test
     public void testLongArrayToX() throws Exception
     {
         final XmlMapper mapper = new XmlMapper();
@@ -123,6 +133,7 @@ public class ArrayConversionsTest extends XmlTestBase
         assertEquals(expNums, actNums);        
     }
 
+    @Test
     public void testListToIntArray() throws Exception
     {
         _testListToIntArray(true);
@@ -143,6 +154,7 @@ public class ArrayConversionsTest extends XmlTestBase
         }
     }
     
+    @Test
     public void testListAsProperty() throws Exception
     {
         _testListAsProperty(true);
@@ -240,7 +252,7 @@ public class ArrayConversionsTest extends XmlTestBase
             Number n2 = (Number) Array.get(outputArray, i);
             double value1 = ((Number) n1).longValue();
             double value2 = ((Number) n2).longValue();
-            assertEquals("Entry #"+i+"/"+size+" not equal", value1, value2);
+            assertEquals(value1, value2, "Entry #"+i+"/"+size+" not equal");
         }        
     }
 
@@ -251,7 +263,7 @@ public class ArrayConversionsTest extends XmlTestBase
             Number n2 = (Number) Array.get(outputArray, i);
             double value1 = ((Number) n1).doubleValue();
             double value2 = ((Number) n2).doubleValue();
-            assertEquals("Entry #"+i+"/"+size+" not equal", value1, value2);
+            assertEquals(value1, value2, "Entry #"+i+"/"+size+" not equal");
         }        
     }
 

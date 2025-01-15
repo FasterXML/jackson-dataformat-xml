@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.failing;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ import tools.jackson.databind.*;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UnwrappedAndList299DeserTest extends XmlTestUtil
 {

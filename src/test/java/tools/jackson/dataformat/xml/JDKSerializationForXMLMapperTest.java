@@ -1,12 +1,14 @@
 package tools.jackson.dataformat.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
-public class JDKSerializationForXMLMapperTest extends XmlTestBase
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class JDKSerializationForXMLMapperTest extends XmlTestUtil
 {
+    @Test
     public void testMapperSerialization() throws Exception
     {
         XmlMapper mapper1 = new XmlMapper(XmlFactory.builder()

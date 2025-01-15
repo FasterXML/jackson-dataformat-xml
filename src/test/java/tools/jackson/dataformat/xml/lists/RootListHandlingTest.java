@@ -1,6 +1,9 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -8,14 +11,17 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
+
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for verifying that Lists (and arrays) can be serialized even
  * when they are root values.
  */
-public class RootListHandlingTest extends XmlTestBase
+public class RootListHandlingTest extends XmlTestUtil
 {
     @JsonRootName("SR")
     @JsonPropertyOrder({ "id", "name", "description" })
@@ -64,6 +70,7 @@ public class RootListHandlingTest extends XmlTestBase
 
     // Test for ensuring that we can use ".withRootName()" to override
     // default name AND annotation
+    @Test
     public void testRenamedRootItem() throws Exception
     {
         XmlMapper xmlMapper = new XmlMapper();
@@ -77,6 +84,7 @@ public class RootListHandlingTest extends XmlTestBase
     }
     
     // for [Issue#38] -- root-level Collections not supported
+    @Test
     public void testListSerialization() throws Exception
     {
         _testListSerialization(true);
@@ -137,6 +145,7 @@ public class RootListHandlingTest extends XmlTestBase
     }
 
     // Related to #38 as well
+    @Test
     public void testArraySerialization() throws Exception
     {
         _testArraySerialization(true);

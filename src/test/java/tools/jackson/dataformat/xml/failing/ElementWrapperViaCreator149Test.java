@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.*;
+
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // 13-Nov-2020, tatu: Not quite sure how to configure test to pass;
 //   seems like it should work but does not. Leaving for future generations

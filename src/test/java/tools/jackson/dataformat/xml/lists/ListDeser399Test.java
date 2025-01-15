@@ -1,13 +1,17 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class ListDeser399Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class ListDeser399Test extends XmlTestUtil
 {
     static class Main {
         @JacksonXmlProperty(localName = "test")
@@ -22,7 +26,8 @@ public class ListDeser399Test extends XmlTestBase
     }
 
     private final XmlMapper MAPPER = newMapper();
-    
+
+    @org.junit.jupiter.api.Test
     public void testIssue399() throws Exception {
         final String XML =
 "<Main>\n" +

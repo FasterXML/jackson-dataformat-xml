@@ -10,13 +10,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import tools.jackson.databind.*;
 import tools.jackson.databind.exc.UnrecognizedPropertyException;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 // note: Copied from `jackson-databind`; related to [dataformat-xml#273]
-public class CaseInsensitiveDeserTest extends XmlTestBase
+public class CaseInsensitiveDeserTest extends XmlTestUtil
 {
     static class BaseResponse {
         public int errorCode;
@@ -105,6 +107,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testCreatorWithInsensitive() throws Exception
     {
         final String DOC = "<root><VALUE>3</VALUE></root>";

@@ -11,7 +11,8 @@ import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // [dataformat-xml#306]: Problem is that `@XmlText` has no nominal property name
 // of empty String (""), and that is not properly bound. Worse, empty String has

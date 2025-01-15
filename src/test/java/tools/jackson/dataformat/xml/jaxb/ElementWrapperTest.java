@@ -5,16 +5,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.*;
 
 import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ElementWrapperTest extends XmlTestUtil
 {

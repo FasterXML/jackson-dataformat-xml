@@ -1,13 +1,19 @@
 package tools.jackson.dataformat.xml;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.databind.ObjectReader;
 import tools.jackson.databind.ObjectWriter;
 
-public class RoundtripContentTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class RoundtripContentTest extends XmlTestUtil
 {
     // Let's use globally shared instance for funsies
     private final XmlMapper MAPPER = XmlMapper.shared();
 
+    @Test
     public void testRoundtrip() throws Exception
     {
         MediaItem.Content content = new MediaItem.Content();

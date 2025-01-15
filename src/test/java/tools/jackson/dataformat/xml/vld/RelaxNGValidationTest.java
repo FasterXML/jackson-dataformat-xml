@@ -3,9 +3,14 @@ package tools.jackson.dataformat.xml.vld;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 
+import org.junit.jupiter.api.Test;
+
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationException;
 import org.codehaus.stax2.validation.XMLValidationSchema;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RelaxNGValidationTest extends ValidationTestBase
 {
@@ -25,6 +30,7 @@ public class RelaxNGValidationTest extends ValidationTestBase
             +"</element>"
     ;
 
+    @Test
     public void testValidWithNamespace() throws Exception
     {
         String XML = "<root>\n"
@@ -51,6 +57,7 @@ public class RelaxNGValidationTest extends ValidationTestBase
         assertTokenType(XMLStreamConstants.END_DOCUMENT, sr.getEventType());
     }
 
+    @Test
     public void testInvalidWithNamespace()
         throws Exception
     {

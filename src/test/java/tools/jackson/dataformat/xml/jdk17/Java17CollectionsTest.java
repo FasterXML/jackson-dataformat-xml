@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class Java17CollectionsTest extends XmlTestBase
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Java17CollectionsTest extends XmlTestUtil
 {
     private final XmlMapper _xmlMapper = new XmlMapper();
 
-    public void testStreamOf()
-            throws Exception
+    @Test
+    public void testStreamOf() throws Exception
     {
         List<String> input = Stream.of("a", "b", "c").collect(Collectors.toList());
 

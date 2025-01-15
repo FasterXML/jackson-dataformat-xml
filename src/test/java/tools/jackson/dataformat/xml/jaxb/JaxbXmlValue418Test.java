@@ -2,9 +2,7 @@ package tools.jackson.dataformat.xml.jaxb;
 
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
@@ -13,7 +11,7 @@ import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Problem with handling of `@XmlValue` via JAXBAnnotationIntrospector
 // is that by default it gives implicit name of `value` for virtual

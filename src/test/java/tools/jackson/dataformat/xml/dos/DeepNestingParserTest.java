@@ -4,9 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.exc.StreamReadException;
-import tools.jackson.dataformat.xml.*;
+
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DeepNestingParserTest extends XmlTestUtil
 {

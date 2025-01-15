@@ -1,20 +1,17 @@
 package tools.jackson.dataformat.xml.failing;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.*;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-import static org.junit.jupiter.api.Assertions.*;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.annotation.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PolymorphicList576Test extends XmlTestUtil
 {

@@ -1,23 +1,23 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.jupiter.api.Test;
 
-import org.junit.*;
-
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.*;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * @author pgelinas
  */
-public class PolymorphicList97Test extends XmlTestBase
+public class PolymorphicList97Test extends XmlTestUtil
 {
     @JsonTypeInfo(property = "type", use = Id.NAME)
     public static abstract class Foo {

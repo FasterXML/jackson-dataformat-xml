@@ -5,9 +5,10 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.exc.StreamReadException;
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 // [dataformat-xml#463]
 // (but root cause of https://github.com/FasterXML/woodstox/issues/123)

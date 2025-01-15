@@ -2,14 +2,20 @@ package tools.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import jakarta.xml.bind.annotation.*;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
-import tools.jackson.dataformat.xml.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-public class UnwrappedListsTest extends XmlTestBase
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.annotation.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class UnwrappedListsTest extends XmlTestUtil
 {
     static class Value {
         public String v;
@@ -59,6 +65,7 @@ public class UnwrappedListsTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testWrappedLists() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
@@ -78,6 +85,7 @@ public class UnwrappedListsTest extends XmlTestBase
         assertEquals(2, output.value.length);
     }
     
+    @Test
     public void testUnwrappedLists() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
@@ -101,6 +109,7 @@ public class UnwrappedListsTest extends XmlTestBase
     /**
      * Test to verify that default wrapping setting is used
      */
+    @Test
     public void testDefaultWrapping() throws Exception
     {
         // by default, should be using wrapping, so:
@@ -124,6 +133,7 @@ public class UnwrappedListsTest extends XmlTestBase
         assertEquals(2, output.value.length);
     }
 
+    @Test
     public void testDefaultWrappingWithEmptyLists() throws Exception
     {
         // by default, should be using wrapping, so:
@@ -144,6 +154,7 @@ public class UnwrappedListsTest extends XmlTestBase
     }
 
     // // [Issue#64]
+    @Test
     public void testOptionalsWithMissingType() throws Exception
     {
         XmlMapper mapper = new XmlMapper();

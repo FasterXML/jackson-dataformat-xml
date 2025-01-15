@@ -1,11 +1,16 @@
 package tools.jackson.dataformat.xml.ser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestSerializationOrdering extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestSerializationOrdering extends XmlTestUtil
 {
     @JsonPropertyOrder({"a", "c" })
     static class Bean91 {
@@ -23,6 +28,7 @@ public class TestSerializationOrdering extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testOrdering() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Bean91("1", "2", "3"));

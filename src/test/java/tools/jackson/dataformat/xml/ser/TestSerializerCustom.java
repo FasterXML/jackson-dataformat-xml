@@ -1,18 +1,26 @@
 package tools.jackson.dataformat.xml.ser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import tools.jackson.core.*;
+
 import tools.jackson.databind.*;
 import tools.jackson.databind.deser.std.StdDeserializer;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.databind.ser.std.StdSerializer;
+
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Unit test(s) for [dataformat-xml#42], problems with custom (de)serializer.
  */
-public class TestSerializerCustom extends XmlTestBase
+public class TestSerializerCustom extends XmlTestUtil
 {
     @JsonPropertyOrder({ "name", "obj" })
     static class Item {
@@ -69,7 +77,8 @@ public class TestSerializerCustom extends XmlTestBase
     /**********************************************************
      */
 
-    public void testIssue42()
+    @Test
+    public void testIssue42() throws Exception
     {
         SimpleModule m = new SimpleModule("module", new Version(1,0,0,null,null,null));
         m.addSerializer(Item.class, new ItemSerializer());

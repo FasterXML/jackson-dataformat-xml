@@ -6,11 +6,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import tools.jackson.databind.*;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.exc.MismatchedInputException;
-import tools.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PojoWithCreatorRequired538Test extends XmlTestUtil
 {

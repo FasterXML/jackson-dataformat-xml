@@ -2,20 +2,18 @@ package tools.jackson.dataformat.xml.vld;
 
 import java.io.StringReader;
 import java.util.HashMap;
-
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamReader2;
-import org.codehaus.stax2.validation.XMLValidationException;
-import org.codehaus.stax2.validation.XMLValidationSchema;
-import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
+import org.codehaus.stax2.validation.*;
 
 import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
 import static javax.xml.stream.XMLStreamConstants.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
-abstract class ValidationTestBase extends XmlTestBase
+abstract class ValidationTestBase extends XmlTestUtil
 {
     final static HashMap<Integer,String> mTokenTypes = new HashMap<Integer,String>();
     static {
