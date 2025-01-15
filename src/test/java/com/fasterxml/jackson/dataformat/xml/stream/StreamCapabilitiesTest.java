@@ -1,15 +1,19 @@
 package com.fasterxml.jackson.dataformat.xml.stream;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.StreamReadCapability;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class StreamCapabilitiesTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class StreamCapabilitiesTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testReadCapabilities() throws Exception
     {
         try (JsonParser p = MAPPER.createParser("<root />")) {

@@ -1,13 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class TestNamespaces extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+public class TestNamespaces extends XmlTestUtil
 {
     final static String CHILD_NS = "uri:child";
     
@@ -65,6 +70,7 @@ public class TestNamespaces extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#26]: should prefer the "default namespace"
+    @Test
     public void testRootNamespaceOlder() throws Exception
     {
         Person person = new Person();
@@ -73,6 +79,7 @@ public class TestNamespaces extends XmlTestBase
     }
 
     // and a variant with `@JsonRootName`
+    @Test
     public void testRootNamespaceNewer() throws Exception
     {
         PersonWithRootName person = new PersonWithRootName();
@@ -92,6 +99,7 @@ public class TestNamespaces extends XmlTestBase
     }
 
     // [dataformat-xml#395]: should not bind standard `xml` namespace to anything
+    @Test
     public void testXmlNs() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Issue395());
@@ -99,11 +107,13 @@ public class TestNamespaces extends XmlTestBase
         assertEquals("<Issue395 xml:lang=\"en-US\"/>", xml.trim());
     }
 
+    @Test
     public void testXmlNamespaceWithXmlProp() throws Exception {
         _verifyChild(MAPPER, new ChildWithNsXmlProp());
     }
 
     // Jackson 2.12 allows "namespace" with `@JsonProperty` too; verify
+    @Test
     public void testXmlNamespaceWithJsonProp() throws Exception {
         _verifyChild(MAPPER, new ChildWithNsJsonProp());
     }

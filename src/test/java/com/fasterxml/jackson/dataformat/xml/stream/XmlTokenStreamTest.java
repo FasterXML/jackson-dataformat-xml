@@ -1,23 +1,23 @@
 package com.fasterxml.jackson.dataformat.xml.stream;
 
-import java.io.*;
+import java.io.StringReader;
+import javax.xml.stream.XMLStreamReader;
 
-import javax.xml.stream.*;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.io.ContentReference;
-
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlNameProcessors;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 import com.fasterxml.jackson.dataformat.xml.deser.XmlTokenStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // NOTE: test changed a lot between 2.13 and 2.14:
-public class XmlTokenStreamTest extends XmlTestBase
+public class XmlTokenStreamTest extends XmlTestUtil
 {
     private final XmlFactory XML_FACTORY = newMapper().getFactory();
 
+    @Test
     public void testSimple() throws Exception
     {
         XmlTokenStream tokens = _tokensFor("<root><leaf id='123'>abc</leaf></root>");
@@ -39,6 +39,7 @@ public class XmlTokenStreamTest extends XmlTestBase
         assertEquals(XmlTokenStream.XML_END, tokens.next());
     }
 
+    @Test
     public void testRootAttributes() throws Exception
     {
         _testRootAttributes(true); // empty tag as null
@@ -69,6 +70,7 @@ public class XmlTokenStreamTest extends XmlTestBase
         assertEquals(XmlTokenStream.XML_END, tokens.next());
     }
 
+    @Test
     public void testEmptyTags() throws Exception
     {
         _testEmptyTags(true); // empty tag as null
@@ -98,6 +100,7 @@ public class XmlTokenStreamTest extends XmlTestBase
         assertEquals(XmlTokenStream.XML_END, tokens.next());
     }
 
+    @Test
     public void testNested() throws Exception
     {
         XmlTokenStream tokens = _tokensFor( "<root><a><b><c>abc</c></b></a></root>");
@@ -119,6 +122,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     }
 
     // For [dataformat-xml#402]
+    @Test
     public void testMixedContentBetween() throws Exception
     {
         XmlTokenStream tokens = _tokensFor("<root>first<a>123</a> and second <b>abc</b>\n</root>");
@@ -149,6 +153,7 @@ public class XmlTokenStreamTest extends XmlTestBase
     }
 
     // For [dataformat-xml#402]
+    @Test
     public void testMixedContentAfter() throws Exception
     {
         XmlTokenStream tokens = _tokensFor("<root>first<a>123</a>last &amp; final</root>");

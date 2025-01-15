@@ -1,12 +1,15 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import com.fasterxml.jackson.annotation.*;
+import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // test(s) for [dataformat-xml#169]
-public class EmptyPolymorphicTest extends XmlTestBase
+public class EmptyPolymorphicTest extends XmlTestUtil
 {
     static class Data {
         public String name;
@@ -35,6 +38,7 @@ public class EmptyPolymorphicTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testEmpty() throws Exception
     {
         String xml = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(new Data("Foobar"));

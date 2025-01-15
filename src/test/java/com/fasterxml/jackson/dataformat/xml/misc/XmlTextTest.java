@@ -1,15 +1,20 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
-import org.junit.Assert;
 
-public class XmlTextTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class XmlTextTest extends XmlTestUtil
 {
     @JsonPropertyOrder({"first","second"})
     static class Data{
@@ -61,6 +66,7 @@ public class XmlTextTest extends XmlTestBase
 
     private final XmlMapper MAPPER = xmlMapper(true);
     
+    @Test
     public void testXmlTextWithSuppressedValue() throws Exception
     {
         final XmlMapper mapper = new XmlMapper();
@@ -71,6 +77,7 @@ public class XmlTextTest extends XmlTestBase
     }
 
     // for [dataformat-xml#196]
+    @Test
     public void testMixedContent() throws Exception
     {
         WindSpeed result = MAPPER.readValue("<windSpeed units='kt'> 27 <radius>20</radius></windSpeed>",
@@ -81,6 +88,7 @@ public class XmlTextTest extends XmlTestBase
     }
 
     // for [dataformat-xml#198]
+    @Test
     public void testSimple198() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Phone());
@@ -89,6 +97,7 @@ public class XmlTextTest extends XmlTestBase
     }
 
     // for [dataformat-xml#3581]
+    @Test
     public void testRawValue() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new RawValue());

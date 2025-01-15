@@ -3,9 +3,12 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DelegatingCreator254Test extends XmlTestUtil
 {

@@ -1,17 +1,23 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
-import java.io.*;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class SequenceWrite493Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class SequenceWrite493Test extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testIssue493() throws Exception
     {
         try (Writer w = new StringWriter()) {

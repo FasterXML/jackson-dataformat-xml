@@ -3,11 +3,16 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class DeserializePolyList178Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class DeserializePolyList178Test extends XmlTestUtil
 {
     static class Company {
         public List<Computer> computers;
@@ -64,6 +69,7 @@ public class DeserializePolyList178Test extends XmlTestBase
     private final XmlMapper MAPPER = new XmlMapper();
     
     // for [dataformat-xml#178]
+    @Test
     public void testPolyIdList178() throws Exception
     {
         Company input = new Company();

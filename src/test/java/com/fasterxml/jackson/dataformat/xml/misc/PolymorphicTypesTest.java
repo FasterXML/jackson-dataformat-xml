@@ -3,17 +3,15 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class PolymorphicTypesTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolymorphicTypesTest extends XmlTestUtil
 {
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY)
     static class BaseTypeWithClassProperty { }
@@ -77,6 +75,7 @@ public class PolymorphicTypesTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testAsClassProperty() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new SubTypeWithClassProperty("Foobar"));
@@ -95,6 +94,7 @@ public class PolymorphicTypesTest extends XmlTestBase
         assertEquals("Foobar", ((SubTypeWithClassProperty) result).name);
     }
         
+    @Test
     public void testAsClassObject() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new SubTypeWithClassObject("Foobar"));
@@ -105,6 +105,7 @@ public class PolymorphicTypesTest extends XmlTestBase
     }
 
     // Test for [dataformat-xml#81]
+    @Test
     public void testAsPropertyWithObjectId() throws Exception
     {
         List<TypeWithClassPropertyAndObjectId> data = new ArrayList<PolymorphicTypesTest.TypeWithClassPropertyAndObjectId>();
@@ -120,6 +121,7 @@ public class PolymorphicTypesTest extends XmlTestBase
     }
 
     // Test for [dataformat-xml#451]
+    @Test
     public void testDeduction() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new Child451("value1"));

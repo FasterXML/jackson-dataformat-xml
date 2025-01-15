@@ -1,13 +1,19 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // Test originally for [dataformat-xml#374] but later (2.13)
 // for [dataformat-xml#485]
-public class RootNameWrapping374Test extends XmlTestBase
+public class RootNameWrapping374Test extends XmlTestUtil
 {
     @JsonRootName("Root")
     static class Root {
@@ -28,6 +34,7 @@ public class RootNameWrapping374Test extends XmlTestBase
             .enable(DeserializationFeature.UNWRAP_ROOT_VALUE)
             .build();
 
+    @Test
     public void testWriteIgnoresWrapping() throws Exception
     {
         // Writing is without wrapping no matter what...
@@ -38,6 +45,7 @@ public class RootNameWrapping374Test extends XmlTestBase
         assertEquals(xmlDefault, xmlWrapEnabled);
     }
 
+    @Test
     public void testReadWithoutWrapping() throws Exception
     {
         String xml = DEFAULT_MAPPER.writeValueAsString(new Root());
@@ -45,6 +53,7 @@ public class RootNameWrapping374Test extends XmlTestBase
         assertNotNull(result);
     }
 
+    @Test
     public void testReadWithWrapping() throws Exception
     {
         String xml = DEFAULT_MAPPER.writeValueAsString(new Root());

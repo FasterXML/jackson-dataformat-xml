@@ -1,6 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 

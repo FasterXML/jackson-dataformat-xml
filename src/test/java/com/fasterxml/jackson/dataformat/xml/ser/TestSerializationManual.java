@@ -2,13 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class TestSerializationManual extends XmlTestBase
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class TestSerializationManual extends XmlTestUtil
 {
     public static class Value {
         public int num;
@@ -22,6 +26,7 @@ public class TestSerializationManual extends XmlTestBase
     /**********************************************************
      */
 
+    @Test
     public void testIssue54() throws Exception
     {
         XmlMapper xmlMapper = new XmlMapper();

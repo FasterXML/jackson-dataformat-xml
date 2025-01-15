@@ -3,12 +3,15 @@ package com.fasterxml.jackson.dataformat.xml.vld;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationException;
 import org.codehaus.stax2.validation.XMLValidationSchema;
+import org.junit.jupiter.api.Test;
 
 import static javax.xml.stream.XMLStreamConstants.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-// Basic verification that W3C Schema validation is available
 public class W3CSchemaValidationTest extends ValidationTestBase
 {
+    @Test
     public void testSimpleDataTypes() throws Exception
     {
         // Another sample schema, from

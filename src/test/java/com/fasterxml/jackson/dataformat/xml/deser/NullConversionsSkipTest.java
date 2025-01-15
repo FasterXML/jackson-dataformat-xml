@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 // for [databind#1402]; configurable null handling, specifically with SKIP
 public class NullConversionsSkipTest extends XmlTestUtil

@@ -6,10 +6,11 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import com.fasterxml.jackson.dataformat.xml.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // Note: copied from coercion tests of `jackson-databind`
 public class CoerceFromEmptyStringTest extends XmlTestUtil

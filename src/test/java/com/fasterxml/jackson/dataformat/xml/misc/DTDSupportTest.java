@@ -2,11 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.dataformat.xml.*;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 // for [databind-xml#211]
-public class DTDSupportTest extends XmlTestBase
+public class DTDSupportTest extends XmlTestUtil
 {
+    @Test
     public void testDTDAttempt() throws Exception
     {
         XmlMapper mapper = new XmlMapper();

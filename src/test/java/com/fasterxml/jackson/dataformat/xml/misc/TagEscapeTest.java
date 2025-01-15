@@ -1,16 +1,17 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlNameProcessors;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class TagEscapeTest extends XmlTestBase {
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class TagEscapeTest extends XmlTestUtil {
 
     public static class DTO {
         public Map<String, String> badMap = new HashMap<>();
@@ -36,6 +37,7 @@ public class TagEscapeTest extends XmlTestBase {
         }
     }
 
+    @Test
     public void testGoodMapKeys() throws JsonProcessingException {
         DTO dto = new DTO();
 
@@ -51,6 +53,7 @@ public class TagEscapeTest extends XmlTestBase {
         assertEquals(dto, reversed);
     }
 
+    @Test
     public void testBase64() throws JsonProcessingException {
         DTO dto = new DTO();
 
@@ -67,6 +70,7 @@ public class TagEscapeTest extends XmlTestBase {
         assertEquals(dto, reversed);
     }
 
+    @Test
     public void testAlwaysOnBase64() throws JsonProcessingException {
         DTO dto = new DTO();
 
@@ -83,6 +87,7 @@ public class TagEscapeTest extends XmlTestBase {
         assertEquals(dto, reversed);
     }
 
+    @Test
     public void testReplace() throws JsonProcessingException {
         DTO dto = new DTO();
 
@@ -103,6 +108,7 @@ public class TagEscapeTest extends XmlTestBase {
         public int $someVar$ = 5;
     }
 
+    @Test
     public void testBadVarName() throws JsonProcessingException {
         BadVarNameDTO dto = new BadVarNameDTO();
 

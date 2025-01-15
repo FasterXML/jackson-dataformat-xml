@@ -2,19 +2,19 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import jakarta.xml.bind.annotation.XmlElement;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-
 import com.fasterxml.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // Test for [dataformat-xml#291]: works via field, not constructor
 // (name mismatch to fix in test case)

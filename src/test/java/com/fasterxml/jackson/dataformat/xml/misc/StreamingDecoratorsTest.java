@@ -2,18 +2,25 @@ package com.fasterxml.jackson.dataformat.xml.misc;
 
 import java.io.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.testutil.PrefixInputDecorator;
 import com.fasterxml.jackson.dataformat.xml.testutil.PrefixOutputDecorator;
 
-public class StreamingDecoratorsTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+public class StreamingDecoratorsTest extends XmlTestUtil
 {
     @JsonRootName("wrapper")
     static class Value {
         public String value = "all";
     }
 
+    @Test
     public void testInputDecorators() throws IOException
     {
         final byte[] DOC = utf8Bytes("<wrapper>\n");
@@ -29,6 +36,7 @@ public class StreamingDecoratorsTest extends XmlTestBase
         assertEquals("test2", value.value);
     }
 
+    @Test
     public void testOutputDecorators() throws IOException
     {
         final String PREFIX = "///////";

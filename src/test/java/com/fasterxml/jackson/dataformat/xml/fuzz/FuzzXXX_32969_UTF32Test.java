@@ -3,9 +3,11 @@ package com.fasterxml.jackson.dataformat.xml.fuzz;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 // [dataformat-xml#???]
 // (but root cause of https://github.com/FasterXML/woodstox/issues/125)

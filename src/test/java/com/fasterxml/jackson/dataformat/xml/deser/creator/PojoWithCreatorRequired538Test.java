@@ -2,15 +2,13 @@ package com.fasterxml.jackson.dataformat.xml.deser.creator;
 
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PojoWithCreatorRequired538Test extends XmlTestUtil
 {

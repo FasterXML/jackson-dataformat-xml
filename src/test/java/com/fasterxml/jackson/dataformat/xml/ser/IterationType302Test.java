@@ -3,15 +3,19 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 import java.util.*;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 // [dataformat-xml#302] : Unable to serialize top-level Java8 Stream
-public class IterationType302Test extends XmlTestBase
+public class IterationType302Test extends XmlTestUtil
 {
     public static class StreamWrapper329 {
         private Stream<String> data;
@@ -85,6 +89,7 @@ public class IterationType302Test extends XmlTestBase
 
     private final ObjectMapper OBJECT_MAPPER = new XmlMapper();
 
+    @Test
     public void testCollectionSerialization() throws Exception {
         Collection<String> list = new ArrayList<>();
         list.add("a");
@@ -94,6 +99,7 @@ public class IterationType302Test extends XmlTestBase
             OBJECT_MAPPER.writeValueAsString(list));
     }
 
+    @Test
     public void testListSerialization() throws Exception {
         List<String> list = new ArrayList<>();
         list.add("a");
@@ -102,6 +108,7 @@ public class IterationType302Test extends XmlTestBase
             OBJECT_MAPPER.writeValueAsString(list));
     }
 
+    @Test
     public void testListIteratorSerialization() throws Exception {
         List<String> list = new ArrayList<>();
         list.add("a");
@@ -113,12 +120,14 @@ public class IterationType302Test extends XmlTestBase
     }
 
 
+    @Test
     public void testStreamIteratorSerialization() throws Exception {
         assertEquals("<Adapter><item>a</item><item>b</item></Adapter>",
             OBJECT_MAPPER.writeValueAsString(Stream.of("a", "b").iterator()));
     }
 
     // [dataformat-xml#329] : Jackson ignores JacksonXmlElementWrapper on Stream
+    @Test
     public void testCollectionWrapperSerialization329() throws Exception {
         Collection<String> collection = new ArrayList<>();
         collection.add("a");
@@ -135,6 +144,7 @@ public class IterationType302Test extends XmlTestBase
     }
 
     // [dataformat-xml#329] : Jackson ignores JacksonXmlElementWrapper on Stream
+    @Test
     public void testIteratorWrapperSerialization329() throws Exception {
         Collection<String> collection = new ArrayList<>();
         collection.add("a");
@@ -151,6 +161,7 @@ public class IterationType302Test extends XmlTestBase
     }
 
     // [dataformat-xml#148]
+    @Test
     public void testIteratorSerialization() throws Exception {
         assertEquals("<Bean148><list><item>2</item><item>1</item><item>0</item></list></Bean148>",
             OBJECT_MAPPER.writeValueAsString(new Bean148()).trim());

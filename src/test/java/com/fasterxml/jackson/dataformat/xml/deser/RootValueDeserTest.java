@@ -5,9 +5,10 @@ import java.math.BigInteger;
 
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // New tests (2.12) for root-level values
 public class RootValueDeserTest extends XmlTestUtil

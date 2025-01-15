@@ -2,15 +2,18 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.List;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
-public class UnwrappedListsTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class UnwrappedListsTest extends XmlTestUtil
 {
     static class Value {
         public String v;
@@ -60,6 +63,7 @@ public class UnwrappedListsTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testWrappedLists() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
@@ -79,6 +83,7 @@ public class UnwrappedListsTest extends XmlTestBase
         assertEquals(2, output.value.length);
     }
     
+    @Test
     public void testUnwrappedLists() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
@@ -102,6 +107,7 @@ public class UnwrappedListsTest extends XmlTestBase
     /**
      * Test to verify that default wrapping setting is used
      */
+    @Test
     public void testDefaultWrapping() throws Exception
     {
         // by default, should be using wrapping, so:
@@ -125,6 +131,7 @@ public class UnwrappedListsTest extends XmlTestBase
         assertEquals(2, output.value.length);
     }
 
+    @Test
     public void testDefaultWrappingWithEmptyLists() throws Exception
     {
         // by default, should be using wrapping, so:
@@ -145,6 +152,7 @@ public class UnwrappedListsTest extends XmlTestBase
     }
 
     // // [Issue#64]
+    @Test
     public void testOptionalsWithMissingType() throws Exception
     {
         XmlMapper mapper = new XmlMapper();

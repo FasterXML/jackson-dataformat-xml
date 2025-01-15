@@ -5,17 +5,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.PropertyName;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * A regression test for https://github.com/FasterXML/jackson-databind/issues/4595
  */
-public class CustomAnnotationIntrospectorNoWrapperTest extends XmlTestBase
+public class CustomAnnotationIntrospectorNoWrapperTest extends XmlTestUtil
 {
     public static class Foo {
         private final List<String> bar;
@@ -48,6 +52,7 @@ public class CustomAnnotationIntrospectorNoWrapperTest extends XmlTestBase
 
     private final XmlMapper VANILLA_MAPPER = newMapper();
 
+    @Test
     public void testNoWrapper() throws Exception {
         Foo foo = new Foo(Arrays.asList("Value1", "Value2"));
 

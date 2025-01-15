@@ -1,12 +1,16 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // [dataformat-xml#269]
-public class RawValueSerializationTest extends XmlTestBase
+public class RawValueSerializationTest extends XmlTestUtil
 {
     @JsonPropertyOrder({ "id", "raw" })
     static class RawWrapper {
@@ -24,6 +28,7 @@ public class RawValueSerializationTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testRawValueSerialization() throws Exception
     {
         assertEquals("<RawWrapper>"

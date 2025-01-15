@@ -2,6 +2,8 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
@@ -9,13 +11,16 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Unit test(s) for [Issue#42], problems with custom (de)serializer.
  */
 @SuppressWarnings("serial")
-public class TestSerializerCustom extends XmlTestBase
+public class TestSerializerCustom extends XmlTestUtil
 {
     @JsonPropertyOrder({ "name", "obj" })
     static class Item {
@@ -73,6 +78,7 @@ public class TestSerializerCustom extends XmlTestBase
     /**********************************************************
      */
 
+    @Test
     public void testIssue42() throws Exception
     {
         XmlMapper xmlMapper = new XmlMapper();

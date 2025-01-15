@@ -1,13 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.stream.dos;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.exc.StreamReadException;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class DeepNestingParserTest extends XmlTestBase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+public class DeepNestingParserTest extends XmlTestUtil {
+
+    @Test
     public void testDeepDoc() throws Exception
     {
         final XmlMapper xmlMapper = newMapper();

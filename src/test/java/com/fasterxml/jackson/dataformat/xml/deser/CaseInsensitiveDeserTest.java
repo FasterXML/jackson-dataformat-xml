@@ -4,16 +4,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
-import com.fasterxml.jackson.dataformat.xml.*;
+
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+import com.fasterxml.jackson.dataformat.xml.annotation.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
