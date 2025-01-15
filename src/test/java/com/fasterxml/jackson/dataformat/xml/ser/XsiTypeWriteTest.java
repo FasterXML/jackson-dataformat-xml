@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// [dataformat-xml#324]
 public class XsiTypeWriteTest extends XmlTestUtil
 {
     @JsonRootName("Typed")

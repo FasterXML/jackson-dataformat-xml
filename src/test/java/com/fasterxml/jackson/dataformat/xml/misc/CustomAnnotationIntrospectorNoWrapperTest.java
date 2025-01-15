@@ -16,6 +16,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * A regression test for https://github.com/FasterXML/jackson-databind/issues/4595
+ */
 public class CustomAnnotationIntrospectorNoWrapperTest extends XmlTestUtil
 {
     public static class Foo {

@@ -9,6 +9,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * See <a href="https://github.com/FasterXML/jackson-dataformat-xml/issues/270">issue #270</a>
+ * for details
+ */
 public class TestBinaryStreamToXMLSerialization extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();

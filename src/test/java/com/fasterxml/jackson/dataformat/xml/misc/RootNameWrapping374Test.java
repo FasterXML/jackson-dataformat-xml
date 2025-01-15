@@ -11,6 +11,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// Test originally for [dataformat-xml#374] but later (2.13)
+// for [dataformat-xml#485]
 public class RootNameWrapping374Test extends XmlTestUtil
 {
     @JsonRootName("Root")

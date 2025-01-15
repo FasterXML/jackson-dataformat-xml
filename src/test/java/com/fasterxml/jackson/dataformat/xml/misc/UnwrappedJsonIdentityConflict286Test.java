@@ -12,6 +12,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// for [dataformat-xml#286]: parser getting confused with unwrapped lists,
+// object id
 public class UnwrappedJsonIdentityConflict286Test extends XmlTestUtil
 {
     static class Town

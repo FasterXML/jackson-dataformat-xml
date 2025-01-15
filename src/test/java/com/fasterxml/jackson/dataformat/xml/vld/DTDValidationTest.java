@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
 import static org.junit.jupiter.api.Assertions.fail;
 
+// Should test validation failure too but...
 public class DTDValidationTest extends ValidationTestBase
 {
     final static String SIMPLE_DTD =

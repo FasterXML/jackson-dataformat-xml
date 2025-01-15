@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// test(s) for [dataformat-xml#169]
 public class EmptyPolymorphicTest extends XmlTestUtil
 {
     static class Data {

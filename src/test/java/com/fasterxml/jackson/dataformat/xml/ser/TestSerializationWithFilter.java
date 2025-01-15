@@ -15,6 +15,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit test for [PullRequest#616], problems with filtered serialization.
+ */
 public class TestSerializationWithFilter extends XmlTestUtil
 {
     @JsonFilter("filter")

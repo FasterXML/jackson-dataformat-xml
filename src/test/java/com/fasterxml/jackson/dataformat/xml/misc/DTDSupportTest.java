@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+// for [databind-xml#211]
 public class DTDSupportTest extends XmlTestUtil
 {
     @Test

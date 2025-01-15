@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// [dataformat-xml#269]
 public class RawValueSerializationTest extends XmlTestUtil
 {
     @JsonPropertyOrder({ "id", "raw" })

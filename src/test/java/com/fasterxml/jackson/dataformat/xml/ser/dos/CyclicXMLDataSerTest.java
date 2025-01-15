@@ -13,6 +13,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Simple unit tests to verify that we fail gracefully if you attempt to serialize
+ * data that is cyclic (eg a list that contains itself).
+ */
 public class CyclicXMLDataSerTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();

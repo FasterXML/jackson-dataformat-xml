@@ -13,6 +13,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+/**
+ * Unit test to showcase issue #104, based on TestObjectIdDeserialization unit test in databind package.
+ */
 public class ObjectId104Test extends XmlTestUtil {
     // // Classes for external id from property annotations:
     

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// [dataformat-xml#302] : Unable to serialize top-level Java8 Stream
 public class IterationType302Test extends XmlTestUtil
 {
     public static class StreamWrapper329 {

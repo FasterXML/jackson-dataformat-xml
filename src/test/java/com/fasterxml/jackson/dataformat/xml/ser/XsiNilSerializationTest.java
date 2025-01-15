@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// [dataformat-xml#360]
 public class XsiNilSerializationTest extends XmlTestUtil
 {
     static class WrapperBean<T>

@@ -15,6 +15,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+// NOTE: even tho `@JacksonXmlRootElement` will be deprecated in near
+// future (possibly in 2.13) -- to be replaced by `@JsonRootName` -- this
+// test will use it to ensure we handle both annotations as expected
 public class RootNameTest extends XmlTestUtil
 {
     static class RootBeanBase

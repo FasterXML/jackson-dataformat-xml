@@ -11,6 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// for #12
 public class UnwrappingWithXMLTest extends XmlTestUtil
 {
     @JsonPropertyOrder({"x", "y"})

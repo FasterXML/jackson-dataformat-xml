@@ -13,6 +13,7 @@ import static com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator.Feature.WR
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
+// [dataformat-xml#584]
 public class StringListRoundtripTest
 {
     private final static String[] TEST_DATA = new String[] {"", "test", null, "test2"};

@@ -12,6 +12,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// [dataformat-xml#422]: while setting itself is NOT Woodstox-specific,
+// many/most Stax implementations do not offer non-namespace-aware mode
+// so let's separate this into Woodstox-specific section
 public class NonNamespaceAwareDeser422Test extends XmlTestUtil
 {
  // [dataformat-xml#422]

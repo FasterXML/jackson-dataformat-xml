@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// [dataformat-xml#428]: problem with an encoding supported via JDK
 public class BadEncodingTest extends XmlTestUtil
 {
 //    private static final String xml = "<?xml version='1.0' encoding='WINDOWS-1252'?><x/>";

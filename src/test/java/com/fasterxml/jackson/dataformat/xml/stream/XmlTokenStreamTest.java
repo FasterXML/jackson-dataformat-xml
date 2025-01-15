@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.deser.XmlTokenStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// NOTE: test changed a lot between 2.13 and 2.14:
 public class XmlTokenStreamTest extends XmlTestUtil
 {
     private final XmlFactory XML_FACTORY = newMapper().getFactory();

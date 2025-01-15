@@ -13,6 +13,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Conversion tests to ensure that standard ObjectMapper conversions
+ * work despite XmlMapper having to add XML-specific work-arounds.
+ */
 public class ArrayConversionsTest extends XmlTestUtil
 {
     static class IntListWrapper {

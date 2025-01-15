@@ -14,6 +14,10 @@ import com.fasterxml.jackson.dataformat.xml.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for verifying that Lists (and arrays) can be serialized even
+ * when they are root values.
+ */
 public class RootListHandlingTest extends XmlTestUtil
 {
     @JsonRootName("SR")

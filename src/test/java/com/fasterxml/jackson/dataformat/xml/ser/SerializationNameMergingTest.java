@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// [dataformat-xml#637]
 public class SerializationNameMergingTest extends XmlTestUtil
 {
     // [dataformat-xml#637]
