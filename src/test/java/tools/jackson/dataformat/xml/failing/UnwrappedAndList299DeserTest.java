@@ -2,12 +2,17 @@ package tools.jackson.dataformat.xml.failing;
 
 import java.util.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import tools.jackson.databind.*;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class UnwrappedAndList299DeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UnwrappedAndList299DeserTest extends XmlTestUtil
 {
     static class Request {
          @JsonUnwrapped
@@ -28,6 +33,7 @@ public class UnwrappedAndList299DeserTest extends XmlTestBase
 
     private final ObjectMapper MAPPER = newMapper();
 
+    @Test
     public void testXmlMarshallingAndUnmarshalling() throws Exception {
         final Request request = new Request();
         request.composite.messageId = "ABC";

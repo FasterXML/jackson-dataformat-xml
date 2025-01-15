@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.*;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.*;
 
@@ -11,10 +14,12 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import tools.jackson.dataformat.xml.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 // 30-Jun-2020, tatu: This is deferred and possibly won't be fixed
 //   at all. But leaving failing test here just in case future brings
 //   alternate approach to do something.
-public class Issue37AdapterTest extends XmlTestBase
+public class Issue37AdapterTest extends XmlTestUtil
 {
     @XmlJavaTypeAdapter(URLEncoderMapDataAdapter.class)
     public static class MapData
@@ -100,10 +105,10 @@ public class Issue37AdapterTest extends XmlTestBase
 
     protected XmlMapper _nonJaxbMapper;
 
-    @Override
+    @BeforeEach
     public void setUp() throws Exception
     {
-        super.setUp();
+        _jaxbMapper = new XmlMapper();
         _nonJaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr =
@@ -120,6 +125,7 @@ public class Issue37AdapterTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testSimpleKeyMap() throws Exception
     {
         DocWithMapData bean = new DocWithMapData();
@@ -129,6 +135,7 @@ public class Issue37AdapterTest extends XmlTestBase
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @Test
     public void testNeedEncodingKeyMap() throws Exception
     {
         DocWithMapData bean = new DocWithMapData();
@@ -140,6 +147,7 @@ public class Issue37AdapterTest extends XmlTestBase
                 xml);
     }
 
+    @Test
     public void testSimpleKeyMapSimpleAnnotation() throws Exception
     {
         DocWithMapDataSimpleAnnotation bean = new DocWithMapDataSimpleAnnotation();
@@ -150,6 +158,7 @@ public class Issue37AdapterTest extends XmlTestBase
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @Test
     public void testNeedEncodingKeyMapSimpleAnnotation() throws Exception
     {
         DocWithMapDataSimpleAnnotation bean = new DocWithMapDataSimpleAnnotation();
@@ -160,6 +169,7 @@ public class Issue37AdapterTest extends XmlTestBase
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @Test
     public void testNeedEncodingKeyMap_nonJaxb() throws Exception
     {
         DocWithMapData bean = new DocWithMapData();
@@ -170,6 +180,7 @@ public class Issue37AdapterTest extends XmlTestBase
             _nonJaxbMapper.writeValueAsString(bean));
     }
 
+    @Test
     public void testNeedEncodingKeyMapSimpleAnnotation_nonJaxb() throws Exception
     {
         DocWithMapDataSimpleAnnotation bean = new DocWithMapDataSimpleAnnotation();

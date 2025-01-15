@@ -2,16 +2,18 @@ package tools.jackson.dataformat.xml.failing.records;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // [databind#517] XML wrapper doesn't work with java records
 // Equivalent to on in jdk17/.../deser/XmlWrapperRecord517Test.java
 public class XmlWrapperRecord517Test
-        extends XmlTestBase
+    extends XmlTestUtil
 {
 
     public record Request(

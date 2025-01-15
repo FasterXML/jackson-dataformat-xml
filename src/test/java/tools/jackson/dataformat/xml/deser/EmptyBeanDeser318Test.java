@@ -1,13 +1,16 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.databind.ObjectReader;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlReadFeature;
-import tools.jackson.dataformat.xml.XmlTestBase;
+
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-public class EmptyBeanDeser318Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EmptyBeanDeser318Test extends XmlTestUtil
 {
     static class Wrapper {
         @JacksonXmlProperty(localName = "id")
@@ -50,6 +53,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testEmptyString() throws Exception {
         String s = "<wrapper>"
                 + "  <id>id</id>"
@@ -62,6 +66,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         assertNull(value.nested.nested2);
     }
 
+    @Test
     public void testBlankString() throws Exception {
         String s = "<wrapper>"
                 + "  <id>id</id>"
@@ -77,6 +82,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         assertNull(value.nested.nested2);
     }
 
+    @Test
     public void testBlankString2() throws Exception {
         String s = "<wrapper>"
                 + "  <id>id</id>"
@@ -90,6 +96,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         assertNull(value.nested.nested2);
     }
 
+    @Test
     public void testMissing() throws Exception {
         String s = "<wrapper>"
                 + "  <id>id</id>"
@@ -100,6 +107,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
         assertNull(value.nested);
     }
 
+    @Test
     public void testValidStructure() throws Exception {
         String s = "<wrapper>"
                 + "  <id>id</id>"
@@ -115,6 +123,7 @@ public class EmptyBeanDeser318Test extends XmlTestBase
     }
 
     // [dataformat-xml#579]
+    @Test
     public void testEmptyRootElem579() throws Exception
     {
         Bean579 bean;

@@ -4,13 +4,18 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
+
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class ElementWithScalarAndAttr412Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ElementWithScalarAndAttr412Test extends XmlTestUtil
 {
     @JsonRootName("container")
     static class Bean412 {
@@ -100,6 +105,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
     
     // [dataformat-xml#412]
+    @Test
     public void testIntFromElemAndAttrInList() throws Exception
     {
         String XML = "<container>\n"
@@ -124,6 +130,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         assertEquals(42, many.v.get(1).count);
     }
 
+    @Test
     public void testIntFromElemAndAttr() throws Exception
     {
         TaggedInt412 result;
@@ -151,6 +158,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
     /**********************************************************
      */
 
+    @Test
     public void testBooleanFromElemAndAttr() throws Exception
     {
         final String XML = "<tagged><truthy bar='baz'>true</truthy><count>3</count></tagged>";
@@ -166,6 +174,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         }
     }
 
+    @Test
     public void testDoubleFromElemAndAttr() throws Exception
     {
         final String XML = "<tagged><count>28</count><value bar='baz'>  0.25 </value></tagged>";
@@ -182,6 +191,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         }
     }
 
+    @Test
     public void testStringFromElemAndAttr() throws Exception
     {
         TaggedString412 result = MAPPER.readValue(
@@ -191,6 +201,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         assertEquals(7, result.count);
     }
 
+    @Test
     public void testURIFromElemAndAttr() throws Exception
     {
         TaggedURI412 result = MAPPER.readValue(
@@ -202,6 +213,7 @@ public class ElementWithScalarAndAttr412Test extends XmlTestBase
         assertEquals(11, result.count);
     }
 
+    @Test
     public void testDateFromElemAndAttr() throws Exception
     {
         TaggedDate412 result = MAPPER.readValue(

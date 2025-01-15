@@ -1,16 +1,18 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 
 import tools.jackson.databind.*;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlReadFeature;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // for [databind#1402]; configurable null handling, specifically with SKIP
-public class NullConversionsSkipTest extends XmlTestBase
+public class NullConversionsSkipTest extends XmlTestUtil
 {
     static class NullSkipField {
         public String nullsOk = "a";
@@ -51,6 +53,7 @@ public class NullConversionsSkipTest extends XmlTestBase
             .enable(XmlReadFeature.EMPTY_ELEMENT_AS_NULL)
             .build();
 
+    @Test
     public void testSkipNullField1() throws Exception
     {
         // first, ok if assigning non-null to not-nullable, null for nullable
@@ -62,6 +65,7 @@ public class NullConversionsSkipTest extends XmlTestBase
         assertNull(result.nullsOk);
     }
 
+    @Test
     public void testSkipNullField2() throws Exception
     {
         // and then see that nulls are not ok for non-nullable
@@ -71,6 +75,7 @@ public class NullConversionsSkipTest extends XmlTestBase
         assertEquals("a", result.nullsOk);
     }
 
+    @Test
     public void testSkipNullMethod1() throws Exception
     {
         NullSkipMethod result = NULL_EXPOSING_MAPPER.readValue(
@@ -81,6 +86,7 @@ public class NullConversionsSkipTest extends XmlTestBase
         assertNull(result._nullsOk);
     }
 
+    @Test
     public void testSkipNullMethod2() throws Exception
     {
         NullSkipMethod result = NULL_EXPOSING_MAPPER.readValue("<NullSkipMethod><noNulls /></NullSkipMethod>",
@@ -95,6 +101,7 @@ public class NullConversionsSkipTest extends XmlTestBase
     /**********************************************************
      */
     
+    @Test
     public void testSkipNullWithDefaults() throws Exception
     {
 //        String doc = "<StringValue><value></value></StringValue>";

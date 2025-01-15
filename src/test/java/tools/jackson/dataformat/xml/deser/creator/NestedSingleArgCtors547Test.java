@@ -1,12 +1,15 @@
 package tools.jackson.dataformat.xml.deser.creator;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class NestedSingleArgCtors547Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class NestedSingleArgCtors547Test extends XmlTestUtil
 {
     private static final XmlMapper XML_MAPPER = newMapper();
 
@@ -38,6 +41,7 @@ public class NestedSingleArgCtors547Test extends XmlTestBase
     }
 
     // [dataformat-xml#547]
+    @Test
     public void testNested1ArgCtorsDelegating() throws Exception
     {
         String xml = "<outer><inner></inner></outer>";
@@ -47,6 +51,7 @@ public class NestedSingleArgCtors547Test extends XmlTestBase
     }
 
     // [dataformat-xml#547]
+    @Test
     public void testNested1ArgCtorsProps() throws Exception
     {
         String xml = "<outer><inner></inner></outer>";

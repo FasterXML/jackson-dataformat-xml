@@ -2,14 +2,18 @@ package tools.jackson.dataformat.xml.failing;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import tools.jackson.databind.ObjectReader;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-public class XmlTextWithEmpty449Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XmlTextWithEmpty449Test extends XmlTestUtil
 {
     static class Project449 {
         public Text449 text;
@@ -29,6 +33,7 @@ public class XmlTextWithEmpty449Test extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#449]
+    @Test
     public void testXmlText449ItemWithAttr() throws Exception
     {
         final ObjectReader r = MAPPER.readerFor(Project449.class);
@@ -46,6 +51,7 @@ public class XmlTextWithEmpty449Test extends XmlTestBase
     }
 
     // [dataformat-xml#449]
+    @Test
     public void testXmlText449ItemWithList() throws Exception
     {
         final ObjectReader r = MAPPER.readerFor(Project449WithList.class);

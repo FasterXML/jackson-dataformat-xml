@@ -2,6 +2,9 @@ package tools.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
@@ -9,14 +12,15 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.ser.FilterProvider;
 import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
 import tools.jackson.databind.ser.std.SimpleFilterProvider;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /*
  * Tests for ('JSON') Views, other filtering.
  */
-public class TestViews extends XmlTestBase
+public class TestViews extends XmlTestUtil
 {
     static class RestrictedView { };
 
@@ -62,9 +66,8 @@ public class TestViews extends XmlTestBase
     protected XmlMapper _xmlMapper;
 
     // let's actually reuse XmlMapper to make things bit faster
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         _xmlMapper = new XmlMapper();
     }
     
@@ -74,6 +77,7 @@ public class TestViews extends XmlTestBase
     /**********************************************************
      */
     
+    @Test
     public void testIssue7() throws Exception
     {
         Foo foo = new Foo();
@@ -107,12 +111,14 @@ public class TestViews extends XmlTestBase
         
     }
 
+    @Test
     public void testNullSuppression() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NonNullBean());
         assertEquals("<NonNullBean><name>Bob</name></NonNullBean>", xml);
     }
 
+    @Test
     public void testIssue44() throws IOException
     {
         String exp = "<Issue44Bean first=\"abc\"><second>13</second></Issue44Bean>";

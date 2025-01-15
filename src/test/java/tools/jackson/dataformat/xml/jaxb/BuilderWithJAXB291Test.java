@@ -2,6 +2,8 @@ package tools.jackson.dataformat.xml.jaxb;
 
 import jakarta.xml.bind.annotation.XmlElement;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,13 +11,13 @@ import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // Test for [dataformat-xml#291]: works via field, not constructor
 // (name mismatch to fix in test case)
-public class BuilderWithJAXB291Test extends XmlTestBase
+public class BuilderWithJAXB291Test extends XmlTestUtil
 {
     @JsonDeserialize(builder = Address.AddressBuilder.class)
     static class Address
@@ -107,6 +109,7 @@ public class BuilderWithJAXB291Test extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testBuilder291() throws Exception
     {
         final String DOC = "<Address>\n" + 

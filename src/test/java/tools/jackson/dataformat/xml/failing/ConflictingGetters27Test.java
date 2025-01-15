@@ -1,14 +1,17 @@
 package tools.jackson.dataformat.xml.failing;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 // For [dataformat-xml#27]
-public class ConflictingGetters27Test extends XmlTestBase
+public class ConflictingGetters27Test extends XmlTestUtil
 {
     // [dataformat-xml#27]
     @JsonRootName("output")
@@ -50,6 +53,7 @@ public class ConflictingGetters27Test extends XmlTestBase
      */
 
     // [dataformat-xml#27]
+    @Test
     public void testIssue27() throws Exception
     {
         XmlMapper mapper = new XmlMapper();

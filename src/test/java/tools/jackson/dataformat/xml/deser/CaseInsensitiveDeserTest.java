@@ -2,6 +2,8 @@ package tools.jackson.dataformat.xml.deser;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -81,6 +83,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
             .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
             .build();
 
+    @Test
     public void testCaseInsensitiveBasic() throws Exception
     {
         final String DOC =
@@ -110,6 +113,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#273]
+    @Test
     public void testCaseInsensitiveComplex() throws Exception
     {
         final String DOC =

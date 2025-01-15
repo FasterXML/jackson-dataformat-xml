@@ -1,11 +1,15 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class DelegatingCreator254Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class DelegatingCreator254Test extends XmlTestUtil
 {
     static class Foo {
         public Bar bar;
@@ -30,6 +34,7 @@ public class DelegatingCreator254Test extends XmlTestBase
 
     // [dataformat-xml#254]: Coercion needed for int-taking creator (as XML can
     // not natively detect scalars other than Strings)
+    @Test
     public void testIntDelegatingCreator() throws Exception
     {
         Foo foo = MAPPER.readValue(

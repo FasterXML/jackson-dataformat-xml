@@ -1,14 +1,20 @@
 package tools.jackson.dataformat.xml.fuzz;
 
-import tools.jackson.core.exc.StreamReadException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class Fuzz465_32906_CDataReadTest extends XmlTestBase
+import tools.jackson.core.exc.StreamReadException;
+
+import tools.jackson.databind.JsonNode;
+
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Fuzz465_32906_CDataReadTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testIssue465() throws Exception
     {
         byte[] doc = readResource("/data/fuzz-32906.xml");

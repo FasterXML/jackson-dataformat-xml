@@ -3,17 +3,20 @@ package tools.jackson.dataformat.xml.jaxb;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
 
-public class ElementWrapperTest extends XmlTestBase
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ElementWrapperTest extends XmlTestUtil
 {
     @XmlRootElement(name = "Individual")
     static class MyPerson {
@@ -37,6 +40,7 @@ public class ElementWrapperTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testElementWrapper() throws Exception
     {
         // Use JAXB-then-Jackson annotation introspector
@@ -65,6 +69,7 @@ public class ElementWrapperTest extends XmlTestBase
     }
 
     // And with JAXB, default should be "no wrapper"
+    @Test
     public void testNoElementWrapper() throws Exception
     {
         XmlMapper jaxbMapper = mapperBuilder()

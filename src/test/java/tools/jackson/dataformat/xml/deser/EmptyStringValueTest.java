@@ -3,17 +3,16 @@ package tools.jackson.dataformat.xml.deser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
+import org.junit.jupiter.api.Test;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlReadFeature;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.annotation.*;
+
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class EmptyStringValueTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EmptyStringValueTest extends XmlTestUtil
 {
     static class Name {
         public String first;
@@ -60,6 +59,7 @@ public class EmptyStringValueTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testEmptyString162() throws Exception
     {
         Name name = MAPPER.readValue("<name><first>Ryan</first><last></last></name>",
@@ -69,6 +69,7 @@ public class EmptyStringValueTest extends XmlTestBase
         assertEquals("", name.last);
     }
 
+    @Test
     public void testEmptyElement() throws Exception
     {
         final String XML = "<name><first/><last></last></name>";
@@ -91,6 +92,7 @@ public class EmptyStringValueTest extends XmlTestBase
         assertNull(name.last);
     }
 
+    @Test
     public void testEmptyStringElement() throws Exception
     {
         // then with empty element
@@ -102,6 +104,7 @@ public class EmptyStringValueTest extends XmlTestBase
     }
 
     // [dataformat-xml#25]
+    @Test
     public void testEmptyStringFromElemAndAttr() throws Exception
     {
         EmptyStrings25 ob = MAPPER.readValue("<EmptyString a=''><b /></EmptyString>",
@@ -112,6 +115,7 @@ public class EmptyStringValueTest extends XmlTestBase
     }
 
     // [dataformat-xml#427]
+    @Test
     public void testEmptyIssue427() throws Exception
     {
         String xml = "<product><stuff></stuff></product>";

@@ -1,13 +1,16 @@
 package tools.jackson.dataformat.xml.dos;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.exc.StreamConstraintsException;
-import tools.jackson.dataformat.xml.XmlFactory;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
 
-public class TokenCountTest extends XmlTestBase
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TokenCountTest extends XmlTestUtil
 {
     final XmlMapper XML_MAPPER;
     {
@@ -20,6 +23,7 @@ public class TokenCountTest extends XmlTestBase
         XML_MAPPER = mapperBuilder(factory).build();
     }
 
+    @Test
     public void testTokenCount10() throws Exception
     {
         final String XML = createDeepNestedDoc(10);
@@ -29,6 +33,7 @@ public class TokenCountTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testTokenCount100() throws Exception
     {
         final String XML = createDeepNestedDoc(100);
@@ -38,6 +43,7 @@ public class TokenCountTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testDeepDoc() throws Exception
     {
         final String XML = createDeepNestedDoc(1000);

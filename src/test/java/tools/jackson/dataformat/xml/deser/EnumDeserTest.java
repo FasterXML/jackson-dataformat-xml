@@ -1,11 +1,15 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import tools.jackson.dataformat.xml.*;
 
-public class EnumDeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EnumDeserTest extends XmlTestUtil
 {
     static enum TestEnum { A, B, C; }
 
@@ -48,6 +52,7 @@ public class EnumDeserTest extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
 
+    @Test
     public void testEnumInBean() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new EnumBean(TestEnum.B));
@@ -57,6 +62,7 @@ public class EnumDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#121]
+    @Test
     public void testRootEnum() throws Exception
     {
         String xml = MAPPER.writeValueAsString(TestEnum.B);
@@ -66,6 +72,7 @@ public class EnumDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#682]
+    @Test
     public void testEnumDeser682() throws Exception {
         String xml = MAPPER.writeValueAsString(Country682.ITALY);
         assertEquals("<Country682>Italy</Country682>", xml);

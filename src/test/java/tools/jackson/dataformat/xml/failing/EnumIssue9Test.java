@@ -1,12 +1,15 @@
 package tools.jackson.dataformat.xml.failing;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // related to [dataformat-xml#9] (and possibly others)
-public class EnumIssue9Test extends XmlTestBase
+public class EnumIssue9Test extends XmlTestUtil
 {
     static enum TestEnum { A, B, C; }
     
@@ -29,6 +32,7 @@ public class EnumIssue9Test extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testUntypedEnum() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new UntypedEnumBean(TestEnum.B));

@@ -1,10 +1,13 @@
 package tools.jackson.dataformat.xml.deser;
 
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class TestBinaryData extends XmlTestBase
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestBinaryData extends XmlTestUtil
 {
     public static class Data {
         public byte[] bytes;
@@ -24,6 +27,7 @@ public class TestBinaryData extends XmlTestBase
 //    private final XmlMapper MAPPER = new XmlMapper();
     
     // for [https://github.com/FasterXML/jackson-dataformat-xml/issues/29]
+    @Test
     public void testTwoBinaryProps() throws Exception
     {
         /* Hmmh. Looks like XmlMapper has some issues with convertValue:

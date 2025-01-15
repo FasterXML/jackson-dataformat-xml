@@ -1,9 +1,13 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
 
-public class DeserErrorHandling236Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.fail;
+
+public class DeserErrorHandling236Test extends XmlTestUtil
 {
     static class Employee {
         public String name;
@@ -18,6 +22,7 @@ public class DeserErrorHandling236Test extends XmlTestBase
     protected XmlMapper MAPPER = new XmlMapper();
 
     // [dataformat-xml#236]
+    @Test
     public void testExceptionWrapping() throws Exception
     {
         final String XML = "<name>monica&</name>";

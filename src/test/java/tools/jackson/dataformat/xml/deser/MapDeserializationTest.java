@@ -1,13 +1,14 @@
 package tools.jackson.dataformat.xml.deser;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class MapDeserializationTest extends XmlTestBase
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MapDeserializationTest extends XmlTestUtil
 {
     /*
     /**********************************************************
@@ -18,6 +19,7 @@ public class MapDeserializationTest extends XmlTestBase
     private final XmlMapper XML_MAPPER = newMapper();
 
     // [dataformat-xml#14]
+    @Test
     public void testMapWithAttr() throws Exception
     {
         final String xml = "<order><person lang='en'>John Smith</person></order>";

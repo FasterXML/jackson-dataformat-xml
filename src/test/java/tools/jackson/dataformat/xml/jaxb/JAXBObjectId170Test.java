@@ -5,15 +5,17 @@ import java.util.List;
 
 import jakarta.xml.bind.annotation.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class JAXBObjectId170Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JAXBObjectId170Test extends XmlTestUtil
 {
     static class Company
     {
@@ -84,6 +86,7 @@ public class JAXBObjectId170Test extends XmlTestBase
      */
 
     // for [dataformat-xml#178]
+    @Test
     public void testPolyIdList178() throws Exception
     {
         final String XML =

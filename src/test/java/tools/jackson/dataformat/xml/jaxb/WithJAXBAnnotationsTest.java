@@ -2,22 +2,25 @@ package tools.jackson.dataformat.xml.jaxb;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import jakarta.xml.bind.annotation.*;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Although XML-backed data binding does not rely (or directly build) on JAXB
  * annotations, it should be possible to use them similar to how they are used
  * with default Jackson JSON data binding. Let's verify this is the case.
  */
-public class WithJAXBAnnotationsTest extends XmlTestBase
+public class WithJAXBAnnotationsTest extends XmlTestUtil
 {
     /*
     /**********************************************************************
@@ -91,9 +94,9 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
     protected XmlMapper _nonJaxbMapper;
 
     // let's actually reuse XmlMapper to make things bit faster
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
+        _jaxbMapper = new XmlMapper();
         _nonJaxbMapper = new XmlMapper();
         // Use JAXB-then-Jackson annotation introspector
         AnnotationIntrospector intr = XmlAnnotationIntrospector.Pair.instance
@@ -113,6 +116,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
      * Unit test for verifying that root element name can be overridden
      * with {@link XmlRootElement} annotation.
      */
+    @Test
     public void testRootName() throws Exception
     {
         RootBean bean = new RootBean();
@@ -125,6 +129,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
      * Unit test for verifying that a property defaults to being written as
      * element, but can be redefined with {@link XmlAttribute} annotation.
      */
+    @Test
     public void testSerializeAsAttr() throws Exception
     {
         AttrBean bean = new AttrBean();
@@ -136,6 +141,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
      * Unit test for verifying correct handling of
      * {@link XmlValue} annotation.
      */
+    @Test
     public void testAsTextWithJAXB() throws IOException
     {
     	// first: serialize
@@ -149,6 +155,7 @@ public class WithJAXBAnnotationsTest extends XmlTestBase
     	assertEquals("else", result.text);
     }
 
+    @Test
     public void testPersonAsXml() throws Exception {
         MyPerson person = new MyPerson();
         person.id = Long.valueOf(1L);

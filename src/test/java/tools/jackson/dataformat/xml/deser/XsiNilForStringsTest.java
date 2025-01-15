@@ -1,9 +1,12 @@
 package tools.jackson.dataformat.xml.deser;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class XsiNilForStringsTest extends XmlTestBase
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XsiNilForStringsTest extends XmlTestUtil
 {
     private final static String XSI_NS_DECL = "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'";
 
@@ -14,6 +17,7 @@ public class XsiNilForStringsTest extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#378]
+    @Test
     public void testWithStringAsNull() throws Exception
     {
         StringPair bean;
@@ -29,6 +33,7 @@ public class XsiNilForStringsTest extends XmlTestBase
     }
 
     // [dataformat-xml#378]
+    @Test
     public void testWithStringAsNull2() throws Exception
     {
         StringPair bean;

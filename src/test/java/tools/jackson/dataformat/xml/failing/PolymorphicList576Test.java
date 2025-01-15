@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-public class PolymorphicList576Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolymorphicList576Test extends XmlTestUtil
 {
     @JacksonXmlRootElement(localName = "wrapper")
     static class Wrapper extends Base {
@@ -91,6 +95,7 @@ public class PolymorphicList576Test extends XmlTestBase
 
     private final ObjectMapper XML_MAPPER = newMapper();
 
+    @Test
     public void test_3itemsInXml_expect_3itemsInDeserializedObject() throws Exception {
         String xmlString = 
                 "<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -104,6 +109,7 @@ public class PolymorphicList576Test extends XmlTestBase
         assertEquals(3, ((Wrapper)base).getItems().size());
     }
 
+    @Test
     public void test_2itemsInObject_expect_2itemsInObjectAfterRoundTripDeserializationToBaseClass() throws Exception {
         Wrapper wrapper = new Wrapper();
         Item item1 = new Item("1");

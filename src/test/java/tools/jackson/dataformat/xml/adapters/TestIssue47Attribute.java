@@ -2,10 +2,14 @@ package tools.jackson.dataformat.xml.adapters;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TestIssue47Attribute extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestIssue47Attribute extends XmlTestUtil
 {
     public static class Response
     {
@@ -20,6 +24,7 @@ public class TestIssue47Attribute extends XmlTestBase
         public String b;
     }
 
+    @Test
     public void testEmptyStringFromElemAndAttr() throws Exception
     {
         final XmlMapper MAPPER = new XmlMapper();

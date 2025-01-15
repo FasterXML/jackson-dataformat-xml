@@ -1,12 +1,17 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
+
 import tools.jackson.databind.*;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 // [dataformat-xml#274]: Actually passes... can not reproduce failure
-public class Issue274PropertyNameTest extends XmlTestBase
+public class Issue274PropertyNameTest extends XmlTestUtil
 {
     private static final String XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -45,6 +50,7 @@ public class Issue274PropertyNameTest extends XmlTestBase
      */
     
     // [dataformat-xml#274]
+    @Test
     public void testIssue274() throws Exception
     {
         final ObjectMapper xm = mapperBuilder()

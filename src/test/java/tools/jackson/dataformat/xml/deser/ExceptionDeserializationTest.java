@@ -2,10 +2,13 @@ package tools.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class ExceptionDeserializationTest extends XmlTestBase
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExceptionDeserializationTest extends XmlTestUtil
 {
     /*
     /**********************************************************
@@ -16,6 +19,7 @@ public class ExceptionDeserializationTest extends XmlTestBase
     private final XmlMapper MAPPER = new XmlMapper();
 
     // [dataformat-xml#250]
+    @Test
     public void testEmptyString162() throws Exception
     {
         IOException src = new IOException("test");

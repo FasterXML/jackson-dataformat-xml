@@ -1,5 +1,7 @@
 package tools.jackson.dataformat.xml.deser.builder;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.core.Version;
@@ -9,10 +11,11 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 import tools.jackson.databind.exc.UnrecognizedPropertyException;
 import tools.jackson.databind.introspect.NopAnnotationIntrospector;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class BuilderSimpleTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class BuilderSimpleTest extends XmlTestUtil
 {
     // // Simple 2-property value class, builder with standard naming
 
@@ -253,6 +256,7 @@ public class BuilderSimpleTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testSimple() throws Exception
     {
         String doc = "<ValueClassXY><x>1</x><y>2</y></ValueClassXY>";
@@ -266,6 +270,7 @@ public class BuilderSimpleTest extends XmlTestBase
     }
 
     // related to [databind#1214]
+    @Test
     public void testSimpleWithIgnores() throws Exception
     {
         // 'z' is unknown, and would fail by default:
@@ -297,6 +302,7 @@ public class BuilderSimpleTest extends XmlTestBase
         assertEquals(value._y, 3);
     }
     
+    @Test
     public void testMultiAccess() throws Exception
     {
         String doc = "<ValueClassABC><c>3</c>  <a>2</a>  <b>-9</b></ValueClassABC>";
@@ -317,6 +323,7 @@ public class BuilderSimpleTest extends XmlTestBase
     }
 
     // test for Immutable builder, to ensure return value is used
+    @Test
     public void testImmutable() throws Exception
     {
         ValueImmutable value = MAPPER.readValue("<ValueImmutable><value>13</value></ValueImmutable>",
@@ -325,6 +332,7 @@ public class BuilderSimpleTest extends XmlTestBase
     }
 
     // test with custom 'with-prefix'
+    @Test
     public void testCustomWith() throws Exception
     {
         ValueFoo value = MAPPER.readValue("<ValueFoo><value>1</value></ValueFoo>", ValueFoo.class);        
@@ -333,12 +341,14 @@ public class BuilderSimpleTest extends XmlTestBase
 
     // for [databind#761]
     
+    @Test
     public void testBuilderMethodReturnMoreGeneral() throws Exception
     {
         ValueInterface value = MAPPER.readValue("<ValueInterface><x>1</x></ValueInterface>", ValueInterface.class);
         assertEquals(2, value.getX());
     }
 
+    @Test
     public void testBuilderMethodReturnMoreSpecific() throws Exception
     {
         final String doc = "<ValueInterface2><x>1</x></ValueInterface2>}";
@@ -346,6 +356,7 @@ public class BuilderSimpleTest extends XmlTestBase
         assertEquals(2, value.getX());
     }
 
+    @Test
     public void testSelfBuilder777() throws Exception
     {
         SelfBuilder777 result = MAPPER.readValue("<SelfBuilder777><x>3</x></SelfBuilder777>'",
@@ -357,6 +368,7 @@ public class BuilderSimpleTest extends XmlTestBase
     // Won't work well with XML, omit:
 //    public void testWithAnySetter822() throws Exception
 
+    @Test
     public void testPOJOConfigResolution1557() throws Exception
     {
         ObjectMapper mapper = mapperBuilder()

@@ -1,12 +1,16 @@
 package tools.jackson.dataformat.xml.dos;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.exc.StreamReadException;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class DeepNestingParserTest extends XmlTestBase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class DeepNestingParserTest extends XmlTestUtil
+{
+    @Test
     public void testDeepDoc() throws Exception
     {
         final XmlMapper xmlMapper = newMapper();

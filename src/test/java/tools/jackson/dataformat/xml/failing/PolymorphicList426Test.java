@@ -2,16 +2,20 @@ package tools.jackson.dataformat.xml.failing;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.*;
 import tools.jackson.databind.annotation.JsonTypeIdResolver;
 import tools.jackson.databind.jsontype.impl.TypeIdResolverBase;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class PolymorphicList426Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolymorphicList426Test extends XmlTestUtil
 {
     static class Auto {
         @JacksonXmlProperty(localName = "Object")
@@ -38,6 +42,8 @@ public class PolymorphicList426Test extends XmlTestBase
     static class Body extends CarParts{}
 
     static class CarPartsResolver extends TypeIdResolverBase {
+        private static final long serialVersionUID = 1L;
+
         private JavaType superType;
 
         @Override
@@ -82,6 +88,7 @@ public class PolymorphicList426Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#426]
+    @Test
     public void testPolymorphicList426() throws Exception
     {
         String xml = "" +

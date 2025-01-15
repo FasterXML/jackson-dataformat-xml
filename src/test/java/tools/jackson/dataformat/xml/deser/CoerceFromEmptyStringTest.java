@@ -3,12 +3,15 @@ package tools.jackson.dataformat.xml.deser;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.core.type.TypeReference;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // Note: copied from coercion tests of `jackson-databind`
-public class CoerceFromEmptyStringTest extends XmlTestBase
+public class CoerceFromEmptyStringTest extends XmlTestUtil
 {
     static class PointWrapper {
         public Point p;
@@ -45,6 +48,7 @@ public class CoerceFromEmptyStringTest extends XmlTestBase
 
     private final static String EMPTY_XML = "<GeneralEmpty><value /></GeneralEmpty>";
 
+    @Test
     public void testNullsToEmptyPojo() throws Exception
     {
         PointWrapper pw = MAPPER.readValue("<PointWrapper><p /></PointWrapper>",
@@ -55,6 +59,7 @@ public class CoerceFromEmptyStringTest extends XmlTestBase
         assertEquals(0, pw.p.y);
     }
 
+    @Test
     public void testNullsToGenericPojo() throws Exception
     {
 //        String xml = MAPPER.writeValueAsString(new GeneralEmpty<Point>(new Point(1, 2)));
@@ -66,6 +71,7 @@ public class CoerceFromEmptyStringTest extends XmlTestBase
         assertEquals(0, p.y);
     }
 
+    @Test
     public void testNullsToEmptyCollection() throws Exception
     {
         GeneralEmpty<List<String>> result = MAPPER.readValue(EMPTY_XML,
@@ -80,6 +86,7 @@ public class CoerceFromEmptyStringTest extends XmlTestBase
         assertEquals(0, result2.value.size());
     }
 
+    @Test
     public void testNullsToEmptyMap() throws Exception
     {
         GeneralEmpty<Map<String,String>> result = MAPPER.readValue(EMPTY_XML,
@@ -88,6 +95,7 @@ public class CoerceFromEmptyStringTest extends XmlTestBase
         assertEquals(0, result.value.size());
     }
 
+    @Test
     public void testNullsToEmptyArrays() throws Exception
     {
         final String doc = EMPTY_XML;

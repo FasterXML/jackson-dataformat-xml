@@ -1,9 +1,12 @@
 package tools.jackson.dataformat.xml.deser;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class XsiNilNestingTest extends XmlTestBase
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XsiNilNestingTest extends XmlTestUtil
 {
     // for [dataformat-xml#366]
     protected static class Parent366 {
@@ -22,6 +25,7 @@ public class XsiNilNestingTest extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // for [dataformat-xml#366]
+    @Test
     public void testDoesNotAffectHierarchy() throws Exception
     {
         String xml = "<Parent xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"

@@ -1,13 +1,15 @@
 package tools.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectReader;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlReadFeature;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class XsiNilBasicTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XsiNilBasicTest extends XmlTestUtil
 {
     private final static String XSI_NS_DECL = "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'";
 
@@ -29,6 +31,7 @@ public class XsiNilBasicTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testWithDoubleAsNull() throws Exception
     {
         DoubleWrapper bean = MAPPER.readValue(
@@ -46,6 +49,7 @@ public class XsiNilBasicTest extends XmlTestBase
         // actually we should perhaps also verify there is no content but... for now, let's leave it.
     }
 
+    @Test
     public void testWithDoubleAsNonNull() throws Exception
     {
         DoubleWrapper bean = MAPPER.readValue(
@@ -55,6 +59,7 @@ public class XsiNilBasicTest extends XmlTestBase
         assertEquals(Double.valueOf(0.25), bean.d);
     }
 
+    @Test
     public void testWithDoubleAsMixed() throws Exception
     {
         DoubleWrapper2 bean = MAPPER.readValue(
@@ -89,6 +94,7 @@ public class XsiNilBasicTest extends XmlTestBase
         assertEquals(defaultValue.b, bean.b);
     }
 
+    @Test
     public void testRootPojoAsNull() throws Exception
     {
         Point bean = MAPPER.readValue(
@@ -97,6 +103,7 @@ public class XsiNilBasicTest extends XmlTestBase
         assertNull(bean);
     }
 
+    @Test
     public void testRootPojoAsNonNull() throws Exception
     {
         Point bean = MAPPER.readValue(
@@ -106,6 +113,7 @@ public class XsiNilBasicTest extends XmlTestBase
     }
 
     // [dataformat-xml#467]: Ok to have contents within "xsi:nil" element
+    @Test
     public void testXsiNilWithNonEmptyElement() throws Exception
     {
         JsonNode node = MAPPER.readTree(
@@ -118,6 +126,7 @@ public class XsiNilBasicTest extends XmlTestBase
     }
 
     // [dataformat-xml#468]: Allow disabling xsi:nil special handling
+    @Test
     public void testDisableXsiNilLeafProcessing() throws Exception
     {
         final ObjectReader r = MAPPER.readerFor(JsonNode.class);
@@ -133,6 +142,7 @@ public class XsiNilBasicTest extends XmlTestBase
 
     // [dataformat-xml#468]: Allow disabling xsi:nil special handling
 
+    @Test
     public void testDisableXsiNilRootProcessing() throws Exception
     {
         final ObjectReader r = MAPPER.readerFor(JsonNode.class);

@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.*;
 
-public class UntypedListSerialization8Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UntypedListSerialization8Test extends XmlTestUtil
 {
     @JsonRootName("L")
     static class UntypedListBean
@@ -49,6 +52,7 @@ public class UntypedListSerialization8Test extends XmlTestBase
      *  For [dataformat-xml#8] -- Will not use wrapping, if type is not statically known
      *  to be a Collection
      */
+    @Test
     public void testListAsObject() throws IOException
     {
         String xmlForUntyped = MAPPER.writeValueAsString(new UntypedListBean());

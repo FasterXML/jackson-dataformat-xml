@@ -4,19 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+
+import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // [databind#517] XML wrapper doesn't work with java records
 // Equivalent to on in jdk17/.../records/XmlWrapperRecord517Test.java
 //
 // NOTE: works on 2.x (2.18 and above); fails on 3.0 for some reason
 public class XmlWrapperClass517Test
-    extends XmlTestBase
+    extends XmlTestUtil
 {
     public static final class Request {
         @JacksonXmlElementWrapper(localName = "messages")

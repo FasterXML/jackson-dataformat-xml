@@ -2,12 +2,16 @@ package tools.jackson.dataformat.xml.jaxb;
 
 import java.io.IOException;
 
-import jakarta.xml.bind.annotation.*;
-import tools.jackson.databind.MapperFeature;
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class AttributesWithJAXBTest extends XmlTestBase
+import jakarta.xml.bind.annotation.*;
+
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AttributesWithJAXBTest extends XmlTestUtil
 {
     @XmlAccessorType(value = XmlAccessType.FIELD)
     public class Jurisdiction {
@@ -37,6 +41,7 @@ public class AttributesWithJAXBTest extends XmlTestBase
     /**********************************************************
      */
 
+    @Test
     public void testTwoAttributes() throws IOException
     {
         XmlMapper mapper = XmlMapper.builder()
@@ -47,6 +52,7 @@ public class AttributesWithJAXBTest extends XmlTestBase
         assertEquals("<Jurisdiction name=\"Foo\" value=\"13\"/>", xml);
     }
 
+    @Test
     public void testAttributeAndElement() throws IOException
     {
         XmlMapper mapper = XmlMapper.builder()

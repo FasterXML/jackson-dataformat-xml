@@ -1,10 +1,14 @@
 package tools.jackson.dataformat.xml.failing;
 
+import org.junit.jupiter.api.Test;
+
 import tools.jackson.databind.DatabindException;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.dataformat.xml.XmlTestBase;
+import tools.jackson.dataformat.xml.XmlTestUtil;
 
-public class VerifyRootLocalName247Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class VerifyRootLocalName247Test extends XmlTestUtil
 {
     // [dataformat-xml#247]
     static class Root {
@@ -20,6 +24,7 @@ public class VerifyRootLocalName247Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#247]
+    @Test
     public void testRootNameValidation247() throws Exception
     {
         Root root = MAPPER
