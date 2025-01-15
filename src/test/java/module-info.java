@@ -12,8 +12,8 @@ module tools.jackson.dataformat.xml
 
     // Then test dependencies
     requires junit;
-    //requires org.junit.jupiter.api;
-    //requires org.junit.jupiter.params;
+    requires org.junit.jupiter.api;
+    requires org.junit.jupiter.params;
 
     requires com.ctc.wstx; // woodstox
     requires jakarta.xml.bind; // Jakarta-binding
