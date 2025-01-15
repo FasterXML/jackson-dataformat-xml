@@ -3,13 +3,16 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.List;
 
 import jakarta.xml.bind.annotation.XmlElement;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class UnwrappedListWithEmptyCData129Test extends XmlTestUtil
 {
     static class ListValues {
         @XmlElement(name = "value", required = true)
@@ -25,6 +28,7 @@ public class UnwrappedListWithEmptyCData129Test extends XmlTestBase
     }
 
     // for [dataformat-xml#129]
+    @Test
     public void testListWithEmptyCData() throws Exception
     {
         _testListWithEmptyCData(" ");

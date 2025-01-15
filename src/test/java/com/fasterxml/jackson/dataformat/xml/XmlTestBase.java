@@ -7,15 +7,11 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import com.fasterxml.jackson.core.*;
-
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-
-import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
-
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
 
 public abstract class XmlTestBase
     extends TestCase

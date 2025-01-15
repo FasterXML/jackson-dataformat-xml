@@ -1,14 +1,16 @@
 package com.fasterxml.jackson.dataformat.xml.incr;
 
-import java.io.*;
+import java.io.StringReader;
 import javax.xml.stream.*;
 
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PartialReadTest extends XmlTestUtil
 {

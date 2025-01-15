@@ -1,16 +1,20 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // Trying to reproduce [dataformat-xml#469]
-public class ListDeser469Test extends XmlTestBase
+public class ListDeser469Test extends XmlTestUtil
 {
     static class OuterBean {
         @JacksonXmlProperty(localName = "Middle", namespace = "http://jackson.test.model")
@@ -71,6 +75,7 @@ public class ListDeser469Test extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testIssue469WithDefaults() throws Exception
     {
         // Here we just use default settings (which defaults to using wrappers)
@@ -115,6 +120,7 @@ public class ListDeser469Test extends XmlTestBase
     }
 
     // But alternatively can try setting default to "no wrappers":
+    @Test
     public void testIssue469WithNoWrapper() throws Exception
     {
         final XmlMapper mapper = XmlMapper.builder()

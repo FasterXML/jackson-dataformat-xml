@@ -1,15 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.Base64Variant;
 import com.fasterxml.jackson.core.Base64Variants;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Base64VariantWriteTest extends XmlTestBase
+public class Base64VariantWriteTest extends XmlTestUtil
 {
     public static class BinaryValue {
         public byte[] value;
@@ -43,6 +46,7 @@ public class Base64VariantWriteTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
 
+    @Test
     public void testBinaryVariantsCompact() throws Exception
     {
         _testBinaryVariants(Base64Variants.MIME, XML_MIME, false);
@@ -56,6 +60,7 @@ public class Base64VariantWriteTest extends XmlTestBase
         _testBinaryVariants(null, XML_MIME, false);
     }
 
+    @Test
     public void testBinaryVariantsPretty() throws Exception
     {
         _testBinaryVariants(Base64Variants.MIME, XML_MIME, true);

@@ -11,7 +11,8 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class XmlTestUtil
 {
@@ -279,7 +280,7 @@ public abstract class XmlTestUtil
         if (str.length() !=  actLen) {
             fail("Internal problem (jp.token == "+jp.getCurrentToken()+"): jp.getText().length() ['"+str+"'] == "+str.length()+"; jp.getTextLength() == "+actLen);
         }
-        assertEquals("String access via getText(), getTextXxx() must be the same", str, str2);
+        assertEquals(str, str2, "String access via getText(), getTextXxx() must be the same");
 
         return str;
     }

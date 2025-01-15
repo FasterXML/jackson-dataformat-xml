@@ -3,8 +3,8 @@ package com.fasterxml.jackson.dataformat.xml.fuzz;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
-
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 public class Fuzz618_64655_InvalidXMLTest extends XmlTestUtil
 {

@@ -4,12 +4,6 @@ import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.extension.*;
 
-/**
- * Custom {@link InvocationInterceptor} that intercepts test method invocation.
- * To pass the test ***only if*** test fails with an exception, and fail the test otherwise.
- *
- * @since 2.19
- */
 public class JacksonTestFailureExpectedInterceptor
     implements InvocationInterceptor
 {

@@ -1,22 +1,21 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.PropertyFilter;
-import com.fasterxml.jackson.databind.ser.PropertyWriter;
+import com.fasterxml.jackson.databind.ser.*;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-/**
- * Unit test for [PullRequest#616], problems with filtered serialization.
- */
-public class TestSerializationWithFilter extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestSerializationWithFilter extends XmlTestUtil
 {
     @JsonFilter("filter")
     @JsonPropertyOrder({ "b", "c" })
@@ -28,6 +27,7 @@ public class TestSerializationWithFilter extends XmlTestBase
         public int c;
     }
 
+    @Test
     public void testPullRequest616() throws Exception
     {
         Item bean = new Item();

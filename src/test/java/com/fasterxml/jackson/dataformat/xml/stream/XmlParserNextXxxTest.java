@@ -1,22 +1,26 @@
 package com.fasterxml.jackson.dataformat.xml.stream;
 
-import java.io.*;
+import java.io.StringReader;
 
-import com.fasterxml.jackson.core.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
-public class XmlParserNextXxxTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class XmlParserNextXxxTest extends XmlTestUtil
 {
     protected JsonFactory _jsonFactory;
     protected XmlFactory _xmlFactory;
 
     // let's actually reuse XmlMapper to make things bit faster
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         _xmlFactory = new XmlFactory();
     }
 
@@ -27,6 +31,7 @@ public class XmlParserNextXxxTest extends XmlTestBase
      */
 
     // [dataformat-xml#204]
+    @Test
     public void testXmlAttributesWithNextTextValue() throws Exception
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";

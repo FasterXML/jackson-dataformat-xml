@@ -1,18 +1,22 @@
 package com.fasterxml.jackson.dataformat.xml.stream;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.core.*;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.format.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
-public class FormatDetectionTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FormatDetectionTest extends XmlTestUtil
 {
     static class POJO {
         public int x, y;
@@ -37,6 +41,7 @@ public class FormatDetectionTest extends XmlTestBase
 
     private final XmlFactory XML_F = new XmlFactory();
     
+    @Test
     public void testSimpleValidXmlDecl() throws Exception
     {
         DataFormatDetector detector = new DataFormatDetector(XML_F);
@@ -54,6 +59,7 @@ public class FormatDetectionTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testSimpleValidRoot() throws Exception
     {
         DataFormatDetector detector = new DataFormatDetector(XML_F);
@@ -72,6 +78,7 @@ public class FormatDetectionTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testSimpleValidDoctype() throws Exception
     {
         DataFormatDetector detector = new DataFormatDetector(XML_F);
@@ -89,6 +96,7 @@ public class FormatDetectionTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testSimpleValidComment() throws Exception
     {
         DataFormatDetector detector = new DataFormatDetector(XML_F);
@@ -104,6 +112,7 @@ public class FormatDetectionTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testSimpleValidPI() throws Exception
     {
         DataFormatDetector detector = new DataFormatDetector(XML_F);
@@ -119,6 +128,7 @@ public class FormatDetectionTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testSimpleViaObjectReader() throws Exception
     {
         ObjectMapper mapper = new ObjectMapper();
@@ -133,6 +143,7 @@ public class FormatDetectionTest extends XmlTestBase
         assertEquals(3, pojo.y);
     }
 
+    @Test
     public void testListViaObjectReader() throws Exception
     {
         ObjectMapper mapper = new ObjectMapper();
@@ -156,6 +167,7 @@ public class FormatDetectionTest extends XmlTestBase
     /**********************************************************
      */
     
+    @Test
     public void testSimpleInvalid() throws Exception
     {
         DataFormatDetector detector = new DataFormatDetector(XML_F);

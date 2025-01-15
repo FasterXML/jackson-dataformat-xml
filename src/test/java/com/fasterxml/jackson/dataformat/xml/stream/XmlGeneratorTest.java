@@ -1,19 +1,22 @@
 package com.fasterxml.jackson.dataformat.xml.stream;
 
-import java.io.*;
-
+import java.io.File;
+import java.io.StringWriter;
 import javax.xml.namespace.QName;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
-public class XmlGeneratorTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class XmlGeneratorTest extends XmlTestUtil
 {
     private final XmlFactory XML_F = new XmlFactory();
 
+    @Test
     public void testSimpleElement() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -31,6 +34,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem>value</elem></root>", xml);
     }
 
+    @Test
     public void testNullValuedElement() throws Exception
     {
         // First explicitly written
@@ -58,6 +62,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem/></root>", xml);
     }
     
+    @Test
     public void testSimpleAttribute() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -77,6 +82,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root attr=\"value\"/>", xml);
     }
 
+    @Test
     public void testSecondLevelAttribute() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -98,6 +104,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem attr=\"value\"/></root>", xml);
     }
 
+    @Test
     public void testAttrAndElem() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -120,6 +127,7 @@ public class XmlGeneratorTest extends XmlTestBase
     }
 
     // [Issue#6], missing overrides for File-backed generator
+    @Test
     public void testWriteToFile() throws Exception
     {
         ObjectMapper mapper = new XmlMapper();
@@ -132,6 +140,7 @@ public class XmlGeneratorTest extends XmlTestBase
         f.delete();
     }
 
+    @Test
     public void testRawSimpleValue() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -149,6 +158,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem>value</elem></root>", xml);
     }
 
+    @Test
     public void testRawOffsetValue() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -166,6 +176,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem>value</elem></root>", xml);
     }
 
+    @Test
     public void testRawCharArrayValue() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -183,6 +194,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root><elem>value</elem></root>", xml);
     }
 
+    @Test
     public void testRawSimpleValueUnwrapped() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -201,6 +213,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root>value</root>", xml);
     }
 
+    @Test
     public void testRawOffsetValueUnwrapped() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -219,6 +232,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root>value</root>", xml);
     }
 
+    @Test
     public void testRawCharArrayValueUnwrapped() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -237,6 +251,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root>value</root>", xml);
     }
 
+    @Test
     public void testRawSimpleAttribute() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -256,6 +271,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root attr=\"value\"/>", xml);
     }
 
+    @Test
     public void testRawOffsetAttribute() throws Exception
     {
         StringWriter out = new StringWriter();
@@ -275,6 +291,7 @@ public class XmlGeneratorTest extends XmlTestBase
         assertEquals("<root attr=\"value\"/>", xml);
     }
 
+    @Test
     public void testRawCharArratAttribute() throws Exception
     {
         StringWriter out = new StringWriter();

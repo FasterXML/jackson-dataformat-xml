@@ -4,16 +4,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyName;
-
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-// NOTE: even tho `@JacksonXmlRootElement` will be deprecated in near
-// future (possibly in 2.13) -- to be replaced by `@JsonRootName` -- this
-// test will use it to ensure we handle both annotations as expected
-public class RootNameTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+public class RootNameTest extends XmlTestUtil
 {
     static class RootBeanBase
     {
@@ -54,6 +56,7 @@ public class RootNameTest extends XmlTestBase
     protected XmlMapper _xmlMapper = new XmlMapper();
 
     // Unit test to verify that root name is properly set
+    @Test
     public void testRootNameAnnotation() throws IOException
     {
         String xml = _xmlMapper.writeValueAsString(new StringBean());
@@ -79,6 +82,7 @@ public class RootNameTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testDynamicRootName() throws IOException
     {
         String xml;
@@ -96,6 +100,7 @@ public class RootNameTest extends XmlTestBase
         assertEquals("<rudy xmlns=\"localhost\"/>", xml);
     }
 
+    @Test
     public void testDynamicRootNameForList() throws IOException
     {
         String xml;

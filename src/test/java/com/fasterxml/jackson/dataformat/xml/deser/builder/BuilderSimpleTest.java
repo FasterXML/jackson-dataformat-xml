@@ -3,15 +3,14 @@ package com.fasterxml.jackson.dataformat.xml.deser.builder;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.*;
-
 import com.fasterxml.jackson.core.Version;
-
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 

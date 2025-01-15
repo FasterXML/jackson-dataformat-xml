@@ -3,15 +3,20 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // [dataformat-xml#646]
-public class IterableCollectionBuilder646Test extends XmlTestBase
+public class IterableCollectionBuilder646Test extends XmlTestUtil
 {
 	@JsonDeserialize(builder = Parent.Builder.class)
 	@JacksonXmlRootElement(localName = "parent")
@@ -78,6 +83,7 @@ public class IterableCollectionBuilder646Test extends XmlTestBase
 	// -- Test Methods --//
 	private final XmlMapper MAPPER = newMapper();
 
+	@Test
 	public void testIssue646() throws Exception {
 		final String XML = "<parent><child><id>1</id></child></parent>";
 		Parent parent = MAPPER.readValue(XML, Parent.class);

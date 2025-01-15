@@ -1,11 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.testutil;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.SequenceInputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.core.io.IOContext;

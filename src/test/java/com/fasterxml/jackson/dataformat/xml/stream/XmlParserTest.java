@@ -2,17 +2,18 @@ package com.fasterxml.jackson.dataformat.xml.stream;
 
 import java.io.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.JsonParser.NumberType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
-public class XmlParserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class XmlParserTest extends XmlTestUtil
 {
     protected final JsonFactory _jsonFactory = new JsonFactory();
     protected final XmlMapper _xmlMapper = newMapper();
@@ -24,6 +25,7 @@ public class XmlParserTest extends XmlTestBase
     /**********************************************************************
      */
     
+    @Test
     public void testSimplest() throws Exception
     {
         final String XML = "<root><leaf>abc</leaf></root>";
@@ -52,6 +54,7 @@ public class XmlParserTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testSimpleWithEmpty() throws Exception
     {
         // 21-Jun-2017, tatu: Depends on setting actually...
@@ -88,6 +91,7 @@ public class XmlParserTest extends XmlTestBase
      * Test that verifies coercion of a "simple" cdata segment within root element
      * as matching scalar token, similar to how other elements work.
      */
+    @Test
     public void testRootScalar() throws Exception
     {
         // 02-Jul-2020, tatu: Does not work quite yet
@@ -105,6 +109,7 @@ public class XmlParserTest extends XmlTestBase
         }
     }
 
+    @Test
     public void testRootMixed() throws Exception
     {
         // 02-Jul-2020, tatu: Does not work quite yet
@@ -133,6 +138,7 @@ public class XmlParserTest extends XmlTestBase
     /**********************************************************************
      */
     
+    @Test
     public void testSimpleNested() throws Exception
     {
         assertEquals("{\"a\":{\"b\":{\"c\":\"xyz\"}}}",
@@ -144,6 +150,7 @@ public class XmlParserTest extends XmlTestBase
      * specification as XML, and read it back in "as JSON", with
      * expected transformation.
      */
+    @Test
     public void testRoundTripWithSample() throws Exception
     {
         // First: let's convert from sample JSON doc to default xml output
@@ -231,6 +238,7 @@ public class XmlParserTest extends XmlTestBase
      * Test to ensure functionality used to force an element to be reported
      * as "JSON" Array, instead of default Object.
      */
+    @Test
     public void testForceElementAsArray() throws Exception
     {
         final String XML = "<array><elem>value</elem><elem><property>123</property></elem><elem>1</elem></array>";
@@ -269,7 +277,7 @@ public class XmlParserTest extends XmlTestBase
         assertTrue(xp.getParsingContext().inObject()); // true until we do following:
 
         // must request 'as-array' handling, which will "convert" current token:
-        assertTrue("Should 'convert' START_OBJECT to START_ARRAY", xp.isExpectedStartArrayToken());
+        assertTrue(xp.isExpectedStartArrayToken(), "Should 'convert' START_OBJECT to START_ARRAY");
         assertToken(JsonToken.START_ARRAY, xp.getCurrentToken()); // <elem>
         assertTrue(xp.getParsingContext().inArray());
 
@@ -301,6 +309,7 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
     }
 
+    @Test
     public void testXmlAttributes() throws Exception
     {
         final String XML = "<data max=\"7\" offset=\"9\"/>";
@@ -332,6 +341,7 @@ public class XmlParserTest extends XmlTestBase
         xp.close();
     }
 
+    @Test
     public void testMixedContent() throws Exception
     {
         String exp = a2q("{'':'first','a':'123','':'second','b':'456','':'last'}");
@@ -341,6 +351,7 @@ public class XmlParserTest extends XmlTestBase
         assertEquals(exp, result);
     }
 
+    @Test
     public void testInferredNumbers() throws Exception
     {
         final String XML = "<data value1='abc' value2='42'>123456789012</data>";

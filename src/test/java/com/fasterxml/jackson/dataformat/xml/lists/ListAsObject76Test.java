@@ -1,23 +1,24 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Test originally from [dataformat-xml#76].
 //
 // Should pass on JDK17+ too on Jackson 2.15+
 @SuppressWarnings("serial")
-public class ListAsObject76Test extends XmlTestBase
+public class ListAsObject76Test extends XmlTestUtil
 {
     static final class Value {
         @XmlElement(name = "v")
@@ -46,6 +47,7 @@ public class ListAsObject76Test extends XmlTestBase
         void setValues(final List<Value> values) { this.values = values; }
     }
 
+    @Test
     public void testCollection() throws Exception {
         final Values values = new XmlMapper().readValue("<values type=\"array\">" +
                 "  <value><v>c</v></value>" +

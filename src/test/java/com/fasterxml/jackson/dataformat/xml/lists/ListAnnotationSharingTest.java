@@ -1,16 +1,20 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 // for [dataformat-xml#55]
-public class ListAnnotationSharingTest extends XmlTestBase
+public class ListAnnotationSharingTest extends XmlTestUtil
 {
     static class Wrapper {
         @JacksonXmlElementWrapper(localName = "Points", useWrapping = true)
@@ -40,7 +44,8 @@ public class ListAnnotationSharingTest extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
     
-     public void testAnnotationSharing() throws Exception
+     @Test
+    public void testAnnotationSharing() throws Exception
      {
          Wrapper input = new Wrapper();
          input.points.add(new Point(1, 2));

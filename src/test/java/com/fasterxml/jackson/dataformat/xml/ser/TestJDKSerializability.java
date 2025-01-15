@@ -1,21 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.*;
-
 import javax.xml.namespace.QName;
-import com.fasterxml.jackson.annotation.JsonRootName;
+
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit test related to core [core#31](https://github.com/FasterXML/jackson-core/issues/31)
- * as it relates to XmlFactory.
- */
-public class TestJDKSerializability extends XmlTestBase
+public class TestJDKSerializability extends XmlTestUtil
 {
     @JsonRootName("MyPojo")
     @JsonPropertyOrder({ "x", "y" })
@@ -39,6 +36,7 @@ public class TestJDKSerializability extends XmlTestBase
     /**********************************************************
      */    
 
+    @Test
     public void testXmlFactory() throws Exception
     {
         XmlFactory f = new XmlFactory();
@@ -55,6 +53,7 @@ public class TestJDKSerializability extends XmlTestBase
         assertEquals(origXml, _writeXml(f2, true));
     }
 
+    @Test
     public void testMapper() throws IOException
     {
         XmlMapper mapper = new XmlMapper();

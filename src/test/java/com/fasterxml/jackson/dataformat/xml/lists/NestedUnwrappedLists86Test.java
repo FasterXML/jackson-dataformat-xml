@@ -1,18 +1,19 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class NestedUnwrappedLists86Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class NestedUnwrappedLists86Test extends XmlTestUtil
 {
     @JsonRootName("test")
     public static class Issue86 {
@@ -61,6 +62,7 @@ public class NestedUnwrappedLists86Test extends XmlTestBase
     /***********************************************************************
      */
 
+    @Test
     public void testDeserializeUnwrappedListWhenLocalNameForRootElementAndXmlPropertyMatch() throws Exception
     {
         final String sourceIndented =

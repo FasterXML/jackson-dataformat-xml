@@ -1,15 +1,14 @@
 package com.fasterxml.jackson.dataformat.xml.interop;
 
+import com.sun.xml.stream.ZephyrParserFactory;
+import com.sun.xml.stream.ZephyrWriterFactory;
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.xml.*;
 
-import org.junit.jupiter.api.Test;
-
-import com.sun.xml.stream.ZephyrParserFactory;
-import com.sun.xml.stream.ZephyrWriterFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // to verify issue behind [dataformat-xml#482]
 public class NonWoodstoxStaxImpl482Test extends XmlTestUtil

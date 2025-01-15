@@ -2,13 +2,12 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class NamespaceViaJAXB18Test extends XmlTestUtil
 {

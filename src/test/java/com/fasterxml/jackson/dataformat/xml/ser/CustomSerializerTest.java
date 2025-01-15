@@ -2,14 +2,18 @@ package com.fasterxml.jackson.dataformat.xml.ser;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class CustomSerializerTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class CustomSerializerTest extends XmlTestUtil
 {
     @SuppressWarnings("serial")
     static class CustomSerializer extends StdScalarSerializer<String>
@@ -24,6 +28,7 @@ public class CustomSerializerTest extends XmlTestBase
     }
     
     // for [dataformat-xml#41]
+    @Test
     public void testCustomSerializer() throws Exception
     {
         SimpleModule module = new SimpleModule();

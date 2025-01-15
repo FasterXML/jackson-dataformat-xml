@@ -1,6 +1,6 @@
 package com.fasterxml.jackson.dataformat.xml.testutil;
 
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 

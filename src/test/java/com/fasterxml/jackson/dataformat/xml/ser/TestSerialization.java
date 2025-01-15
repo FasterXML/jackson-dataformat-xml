@@ -1,16 +1,20 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SuppressWarnings("serial")
-public class TestSerialization extends XmlTestBase
+public class TestSerialization extends XmlTestUtil
 {
     static class StringBean2
     {
@@ -97,6 +101,7 @@ public class TestSerialization extends XmlTestBase
 
     private final XmlMapper _xmlMapper = new XmlMapper();
 
+    @Test
     public void testSimpleAttribute() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttributeBean());
@@ -104,6 +109,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<AttributeBean attr=\"something\"/>", xml);
     }
 
+    @Test
     public void testSimpleNsElem() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NsElemBean());
@@ -112,6 +118,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean>", xml);
     }
 
+    @Test
     public void testSimpleNsElemWithJsonProp() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new NsElemBean2());
@@ -120,6 +127,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<NsElemBean2><wstxns1:text xmlns:wstxns1=\"http://foo\">blah</wstxns1:text></NsElemBean2>", xml);
     }
     
+    @Test
     public void testSimpleAttrAndElem() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new AttrAndElem());
@@ -127,6 +135,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<AttrAndElem id=\"42\"><elem>whatever</elem></AttrAndElem>", xml);
     }
 
+    @Test
     public void testMap() throws Exception
     {
         // First, map in a general wrapper
@@ -152,6 +161,7 @@ public class TestSerialization extends XmlTestBase
                 xml);
     }
 
+    @Test
     public void testNakedMap() throws Exception
     {
         CustomMap input = new CustomMap();        
@@ -168,6 +178,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals(Integer.valueOf(456), result.get("b"));
     }
 
+    @Test
     public void testCDataString() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new CDataStringBean());
@@ -175,6 +186,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals("<CDataStringBean><value><![CDATA[<some<data\"]]></value></CDataStringBean>", xml);
     }
 
+    @Test
     public void testCDataStringArray() throws Exception
     {
         String xml = _xmlMapper.writeValueAsString(new CDataStringArrayBean());
@@ -184,6 +196,7 @@ public class TestSerialization extends XmlTestBase
 
     // manual 'test' to see "what would JAXB do?"
     /*
+    @Test
     public void testJAXB() throws Exception
     {
         StringWriter sw = new StringWriter();
@@ -192,6 +205,7 @@ public class TestSerialization extends XmlTestBase
     }
     */
 
+    @Test
     public void testFloatInfinity() throws Exception
     {
         Floats infinite = new Floats();
@@ -221,6 +235,7 @@ public class TestSerialization extends XmlTestBase
         assertEquals(original.elem, deserialized.elem);
     }
 
+    @Test
     public void testDoubleInfinity() throws Exception
     {
         Doubles infinite = new Doubles();

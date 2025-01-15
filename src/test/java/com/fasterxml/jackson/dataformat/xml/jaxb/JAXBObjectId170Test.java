@@ -4,20 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.xml.bind.annotation.*;
-
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.*;
-
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JAXBObjectId170Test extends XmlTestUtil
 {

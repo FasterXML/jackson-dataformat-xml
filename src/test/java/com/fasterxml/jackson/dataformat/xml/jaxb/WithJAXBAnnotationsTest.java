@@ -3,19 +3,15 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 import java.io.IOException;
 
 import jakarta.xml.bind.annotation.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Although XML-backed data binding does not rely (or directly build) on JAXB

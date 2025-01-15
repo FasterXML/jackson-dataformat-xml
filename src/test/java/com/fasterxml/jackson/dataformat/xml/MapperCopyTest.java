@@ -2,6 +2,8 @@ package com.fasterxml.jackson.dataformat.xml;
 
 import java.io.*;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
@@ -9,7 +11,9 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlSerializerProvider;
 import com.fasterxml.jackson.dataformat.xml.util.XmlRootNameLookup;
 
-public class MapperCopyTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MapperCopyTest extends XmlTestUtil
 {
     @JsonRootName("AnnotatedName")
     static class Pojo282
@@ -17,6 +21,7 @@ public class MapperCopyTest extends XmlTestBase
         public int a = 3;
     }
 
+    @Test
     public void testMapperCopy()
     {
         XmlMapper mapper1 = mapperBuilder()
@@ -41,18 +46,20 @@ public class MapperCopyTest extends XmlTestBase
         SerializationConfig sc2 = mapper2.getSerializationConfig();
         assertNotSame(sc1, sc2);
         assertEquals(
-            "serialization features did not get copied",
             sc1.getSerializationFeatures(),
-            sc2.getSerializationFeatures()
+            sc2.getSerializationFeatures(),
+            "serialization features did not get copied"
         );
     }
 
+    @Test
     public void testSerializerProviderCopy() {
         DefaultSerializerProvider provider = new XmlSerializerProvider(new XmlRootNameLookup());
         DefaultSerializerProvider copy = provider.copy();
         assertNotSame(provider, copy);
     }
 
+    @Test
     public void testMapperSerialization() throws Exception
     {
         XmlMapper mapper1 = mapperBuilder()
@@ -74,6 +81,7 @@ public class MapperCopyTest extends XmlTestBase
 
     // [dataformat-xml#282]
     @SuppressWarnings("deprecation")
+    @Test
     public void testCopyWith() throws Exception
     {
         XmlMapper xmlMapper = newMapper();

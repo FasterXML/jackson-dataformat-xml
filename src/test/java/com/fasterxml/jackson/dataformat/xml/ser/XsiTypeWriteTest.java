@@ -1,15 +1,16 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-// [dataformat-xml#324]
-public class XsiTypeWriteTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class XsiTypeWriteTest extends XmlTestUtil
 {
     @JsonRootName("Typed")
     static class TypeBean {
@@ -31,12 +32,14 @@ public class XsiTypeWriteTest extends XmlTestBase
             .configure(ToXmlGenerator.Feature.AUTO_DETECT_XSI_TYPE, true)
             .build();
 
+    @Test
     public void testExplicitXsiTypeWriteDisabled() throws Exception
     {
         assertEquals("<Typed><xsi:type>abc</xsi:type></Typed>",
                 NO_XSI_MAPPER.writeValueAsString(new TypeBean()));
     }
 
+    @Test
     public void testExplicitXsiTypeWriteEnabled() throws Exception
     {
         assertEquals(
@@ -44,6 +47,7 @@ public class XsiTypeWriteTest extends XmlTestBase
                 a2q(XSI_ENABLED_MAPPER.writeValueAsString(new TypeBean())));
     }
 
+    @Test
     public void testXsiTypeAsTypeIdWriteDisabled() throws Exception
     {
         // not legal XML but with explicitly specified name is what caller wants
@@ -53,6 +57,7 @@ public class XsiTypeWriteTest extends XmlTestBase
                 a2q(NO_XSI_MAPPER.writeValueAsString(new PolyBean())));
     }
 
+    @Test
     public void testXsiTypeAsTypeIdWriteEnabled() throws Exception
     {
         assertEquals(

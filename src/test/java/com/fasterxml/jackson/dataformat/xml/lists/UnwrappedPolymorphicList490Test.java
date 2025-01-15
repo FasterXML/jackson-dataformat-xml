@@ -1,19 +1,17 @@
 package com.fasterxml.jackson.dataformat.xml.lists;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class UnwrappedPolymorphicList490Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class UnwrappedPolymorphicList490Test extends XmlTestUtil
 {
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.NAME,
@@ -37,6 +35,7 @@ public class UnwrappedPolymorphicList490Test extends XmlTestBase
     }
 
     // [dataformat-xml#490]
+    @Test
     public void testPolymorphicUnwrappedList490() throws Exception
     {
         XmlMapper xmlMapper = XmlMapper.builder()

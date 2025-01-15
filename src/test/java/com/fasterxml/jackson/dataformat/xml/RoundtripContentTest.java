@@ -1,12 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-public class RoundtripContentTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class RoundtripContentTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = new XmlMapper();
 
+    @Test
     public void testRoundtrip() throws Exception
     {
         MediaItem.Content content = new MediaItem.Content();

@@ -1,17 +1,20 @@
 package com.fasterxml.jackson.dataformat.xml.node;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
-public class JsonNodeBasicDeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class JsonNodeBasicDeserTest extends XmlTestUtil
 {
     final private ObjectMapper XML_MAPPER = newMapper();
 
+    @Test
     public void testSimpleNode() throws Exception
     {
         JsonNode root = XML_MAPPER.readTree("<root attr='123' />");
@@ -21,6 +24,7 @@ public class JsonNodeBasicDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#403]: Allow sequences
+    @Test
     public void testRepeated() throws Exception
     {
         JsonNode root = XML_MAPPER.readTree("<root><value>a</value><value>b</value></root>");
@@ -34,6 +38,7 @@ public class JsonNodeBasicDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#405]: support mixed content
+    @Test
     public void testMixedContent() throws Exception
     {
         JsonNode fromXml = XML_MAPPER.readTree("<root>first<a>123</a>second<b>abc</b>last</root>");

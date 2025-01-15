@@ -1,9 +1,13 @@
 package com.fasterxml.jackson.dataformat.xml.ser;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class TestXmlDeclaration extends XmlTestBase
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestXmlDeclaration extends XmlTestUtil
 {
     /*
     /**********************************************************
@@ -11,6 +15,7 @@ public class TestXmlDeclaration extends XmlTestBase
     /**********************************************************
      */
     
+    @Test
     public void testXml10Declaration() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
@@ -19,6 +24,7 @@ public class TestXmlDeclaration extends XmlTestBase
         assertEquals(xml, "<?xml version='1.0' encoding='UTF-8'?><StringBean><text>123</text></StringBean>");
     }
 
+    @Test
     public void testXml11Declaration() throws Exception
     {
         XmlMapper mapper = new XmlMapper();
