@@ -7,7 +7,6 @@ package com.fasterxml.jackson.dataformat.xml.testutil.failure;
  *
  * @since 2.19
  */
-
 public class JacksonTestShouldFailException
     extends RuntimeException
 {
