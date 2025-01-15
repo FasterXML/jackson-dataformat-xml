@@ -109,6 +109,18 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <scope>test</scope>
     </dependency>
 
+    <!-- 11-Jan-2025, joohyukkim: For JSTEP-10, migrate to JUnit5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!--  Jakarta XMLBind (nee javax/jaxb( annotation introspector is needed BUT ONLY
           for tests (starting 2.13: previously compile/runtime)
        -->
