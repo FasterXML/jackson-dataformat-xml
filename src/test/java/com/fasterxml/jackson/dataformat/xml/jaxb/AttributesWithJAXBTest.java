@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml.jaxb;
 import java.io.IOException;
 
 import jakarta.xml.bind.annotation.*;
+
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.MapperFeature;

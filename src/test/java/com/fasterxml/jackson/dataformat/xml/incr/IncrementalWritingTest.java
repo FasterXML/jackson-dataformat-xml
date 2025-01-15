@@ -12,7 +12,6 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class IncrementalWritingTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = xmlMapper(true);
