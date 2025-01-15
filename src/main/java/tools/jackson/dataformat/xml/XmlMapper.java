@@ -119,6 +119,12 @@ public class XmlMapper extends ObjectMapper
             return new XmlBuilderState(this);
         }
 
+        /**
+         * NOTE: despite being public not exposed as part of API
+         *
+         * @param state State to restore builder from
+         */
+        @SuppressWarnings("exports")
         public Builder(XmlBuilderState state) {
             super(state);
             _defaultUseWrapper = state._defaultUseWrapper;
