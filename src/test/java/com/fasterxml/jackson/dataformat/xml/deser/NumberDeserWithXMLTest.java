@@ -2,6 +2,8 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -13,10 +15,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // Tests copied from databind "JDKNumberDeserTest" (only a small subset)
-public class NumberDeserWithXMLTest extends XmlTestBase
+public class NumberDeserWithXMLTest extends XmlTestUtil
 {
     // [databind#2644]
     @JsonRootName("Root")
@@ -85,6 +90,7 @@ public class NumberDeserWithXMLTest extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // [databind#2644]
+    @Test
     public void testBigDecimalSubtypes() throws Exception
     {
         ObjectMapper mapper = mapperBuilder()
@@ -101,6 +107,7 @@ public class NumberDeserWithXMLTest extends XmlTestBase
     }
 
     // [databind#2784]
+    @Test
     public void testBigDecimalUnwrapped() throws Exception
     {
         // mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
@@ -109,6 +116,7 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         assertEquals(new BigDecimal("5.00"), result.holder.value);
     }
 
+    @Test
     public void testDoubleUnwrapped() throws Exception
     {
         final String DOC = "<Nested><value>125.123456789</value></Nested>";
@@ -116,6 +124,7 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         assertEquals(Double.parseDouble("125.123456789"), result.holder.value);
     }
 
+    @Test
     public void testFloatUnwrapped() throws Exception
     {
         final String DOC = "<Nested><value>125.123</value></Nested>";
@@ -123,6 +132,7 @@ public class NumberDeserWithXMLTest extends XmlTestBase
         assertEquals(Float.parseFloat("125.123"), result.holder.value);
     }
 
+    @Test
     public void testVeryBigDecimalUnwrapped() throws Exception
     {
         final int len = 1200;
@@ -136,11 +146,12 @@ public class NumberDeserWithXMLTest extends XmlTestBase
             MAPPER.readValue(DOC, NestedBigDecimalHolder2784.class);
             fail("expected JsonMappingException");
         } catch (JsonMappingException jme) {
-            assertTrue("unexpected exception message: " + jme.getMessage(),
-                    jme.getMessage().startsWith("Number value length (1200) exceeds the maximum allowed"));
+            assertTrue(jme.getMessage().startsWith("Number value length (1200) exceeds the maximum allowed"),
+                    "unexpected exception message: " + jme.getMessage());
         }
     }
 
+    @Test
     public void testVeryBigDecimalUnwrappedWithUnlimitedNumLength() throws Exception
     {
         final int len = 1200;

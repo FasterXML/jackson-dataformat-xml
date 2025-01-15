@@ -1,11 +1,16 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.deser.EmptyStringValueTest.Name;
 import com.fasterxml.jackson.dataformat.xml.deser.EmptyStringValueTest.Names;
 
-public class SimpleStringValuesTest extends XmlTestBase
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class SimpleStringValuesTest extends XmlTestUtil
 {
     protected static class Bean2
     {
@@ -29,6 +34,7 @@ public class SimpleStringValuesTest extends XmlTestBase
 
     private final XmlMapper MAPPER = newMapper();
     
+    @Test
     public void testSimpleStringElement() throws Exception
     {
         // first, simple one to verify baseline
@@ -43,6 +49,7 @@ public class SimpleStringValuesTest extends XmlTestBase
     //   build Bean, but with gets empty String, passed via String-creator.
     // 06-Sep-2022, tatu: With 2.14 behavior should become closer to 2.11 in
     //   this respect.
+    @Test
     public void testMissingString() throws Exception
     {
         StringBean bean = MAPPER.readValue("<StringBean />", StringBean.class);
@@ -56,6 +63,7 @@ public class SimpleStringValuesTest extends XmlTestBase
     /**********************************************************
      */
     
+    @Test
     public void testStringWithAttribute() throws Exception
     {
         // and then the money shot: with 'standard' attribute...
@@ -64,6 +72,7 @@ public class SimpleStringValuesTest extends XmlTestBase
         assertEquals("Pulla", bean.text);
     }
 
+    @Test
     public void testStringsWithAttribute() throws Exception
     {
         Bean2 bean = MAPPER.readValue(
@@ -78,6 +87,7 @@ public class SimpleStringValuesTest extends XmlTestBase
         assertEquals("def", bean.b);
     }
     
+    @Test
     public void testStringArrayWithAttribute() throws Exception
     {
         // should even work for arrays of those
@@ -95,6 +105,7 @@ public class SimpleStringValuesTest extends XmlTestBase
         assertEquals("Good stuff", beans[2].text);
     }
 
+    @Test
     public void testEmptyElementToString() throws Exception
     {
         final String XML =
@@ -115,6 +126,7 @@ public class SimpleStringValuesTest extends XmlTestBase
     /**********************************************************
      */
     
+    @Test
     public void testStringsInList() throws Exception
     {
         Names input = new Names();

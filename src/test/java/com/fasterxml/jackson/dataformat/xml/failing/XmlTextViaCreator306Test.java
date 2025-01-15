@@ -2,17 +2,20 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.beans.ConstructorProperties;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // [dataformat-xml#306]: Problem is that `@XmlText` has no nominal property name
 // of empty String (""), and that is not properly bound. Worse, empty String has
 // special meaning so that annotation CANNOT specify it, either.
-public class XmlTextViaCreator306Test extends XmlTestBase
+public class XmlTextViaCreator306Test extends XmlTestUtil
 {
     // [dataformat-xml#306]
     @JsonRootName("ROOT")
@@ -90,6 +93,7 @@ public class XmlTextViaCreator306Test extends XmlTestBase
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#306]
+    @Test
     public void testIssue306WithCtor() throws Exception
     {
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
@@ -97,6 +101,7 @@ public class XmlTextViaCreator306Test extends XmlTestBase
         assertNotNull(root);
     }
 
+    @Test
     public void testIssue306NoCtor() throws Exception
     {
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
@@ -105,6 +110,7 @@ public class XmlTextViaCreator306Test extends XmlTestBase
     }
 
     // [dataformat-xml#423]
+    @Test
     public void testXmlTextViaCtor423() throws Exception
     {
         final String XML = "<Sample423 attribute='attrValue'>text value</Sample423>";

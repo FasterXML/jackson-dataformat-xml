@@ -4,14 +4,18 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlValue;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // Problem with handling of `@XmlValue` via JAXBAnnotationIntrospector
 // is that by default it gives implicit name of `value` for virtual
@@ -23,7 +27,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 //   binding can not be relied on)
 // 2. Override default implicit name to be `null`, which should allow
 //   combination of accessors
-public class JaxbXmlValue418Test extends XmlTestBase
+public class JaxbXmlValue418Test extends XmlTestUtil
 {
     // [dataformat-xml#418]
     @XmlRootElement(name = "ROOT")
@@ -98,6 +102,7 @@ public class JaxbXmlValue418Test extends XmlTestBase
     private static final String EXPECTED_418 = "<ROOT><CHILD attr=\"attr_value\">text</CHILD></ROOT>";
 
     // [dataformat-xml#418]
+    @Test
     public void testWithJaxbAnnotations() throws Exception {
         final RootWithJaxbAnnotations value = new RootWithJaxbAnnotations();
 
@@ -113,6 +118,7 @@ public class JaxbXmlValue418Test extends XmlTestBase
         assertEquals(EXPECTED_418, xml);
     }
 
+    @Test
     public void testWithJacksonAnnotations() throws Exception {
         final RootWithJacksonAnnotations value = new RootWithJacksonAnnotations();
 

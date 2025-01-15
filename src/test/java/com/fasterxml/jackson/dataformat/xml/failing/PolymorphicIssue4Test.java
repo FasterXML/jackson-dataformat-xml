@@ -1,15 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.failing;
 
+import org.junit.jupiter.api.Test;
+
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // for:
 //
 // [dataformat-xml#4]
 // [dataformat-xml#9] (enums)
-
-public class PolymorphicIssue4Test extends XmlTestBase
+public class PolymorphicIssue4Test extends XmlTestUtil
 {
     /*
     /**********************************************************
@@ -72,6 +75,7 @@ public class PolymorphicIssue4Test extends XmlTestBase
      */
     // Does not work since array wrapping is not explicitly forced (unlike with collection
     // property of a bean
+    @Test
     public void testAsClassArray() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new SubTypeWithClassArray("Foobar"));
@@ -83,6 +87,7 @@ public class PolymorphicIssue4Test extends XmlTestBase
 
     // Hmmh. Does not yet quite work either, since we do not properly force
     // array context when writing...
+    @Test
     public void testAsWrappedClassArray() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new ClassArrayWrapper("Foobar"));

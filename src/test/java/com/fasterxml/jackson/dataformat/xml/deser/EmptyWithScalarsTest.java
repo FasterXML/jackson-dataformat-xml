@@ -3,17 +3,20 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // [dataformat-xml#473]: 2.11 -> 2.12 coercion of empty to "default"
 // [dataformat-xml#474]: no failure for primitives, no null
-public class EmptyWithScalarsTest extends XmlTestBase
+public class EmptyWithScalarsTest extends XmlTestUtil
 {
     @JacksonXmlRootElement(localName = "w")
     static class NumbersPrimitive {
@@ -52,6 +55,7 @@ public class EmptyWithScalarsTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testPrimitiveIntsWithEmpty() throws Exception
     {
         NumbersPrimitive p = MAPPER.readValue(_emptyWrapped("i"),
@@ -62,6 +66,7 @@ public class EmptyWithScalarsTest extends XmlTestBase
         assertEquals(0L, p.l);
     }
 
+    @Test
     public void testPrimitiveFPsWithEmpty() throws Exception
     {
         NumbersPrimitive p = MAPPER.readValue(_emptyWrapped("d"),
@@ -74,6 +79,7 @@ public class EmptyWithScalarsTest extends XmlTestBase
 
     // [dataformat-xml#474]: no failure for primitives, no null
     // (will try to fix in 2.13, but not 2.12)
+    @Test
     public void testPrimitivesNoNulls() throws Exception
     {
         ObjectReader r = MAPPER
@@ -101,6 +107,7 @@ public class EmptyWithScalarsTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testIntegralsWithEmpty() throws Exception
     {
         NumbersWrapper w = MAPPER.readValue(_emptyWrapped("I"),
@@ -115,6 +122,7 @@ public class EmptyWithScalarsTest extends XmlTestBase
         assertNull(o.bi);
     }
 
+    @Test
     public void testFPWithEmpty() throws Exception
     {
         NumbersWrapper w = MAPPER.readValue(_emptyWrapped("D"),
@@ -135,6 +143,7 @@ public class EmptyWithScalarsTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testOtherScalarWithEmpty() throws Exception
     {
         MiscOther o = MAPPER.readValue(_emptyWrapped("B"),

@@ -2,14 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class TypeAttributeOrder242Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TypeAttributeOrder242Test extends XmlTestUtil
 {
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = B.class)
     @JsonSubTypes({
@@ -41,6 +44,7 @@ public class TypeAttributeOrder242Test extends XmlTestBase
 
     private final XmlMapper MAPPER = new XmlMapper();
 
+    @Test
     public void testAttributeOrder() throws Exception
     {
         String content1 = "<A type='B' id='1'><attr><param name='1'/><param name='2'/></attr></A>";

@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser.creator;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -8,13 +10,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.databind.introspect.AnnotatedParameter;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // copied form [jackson-databind]
 public class ImplicitParamsForCreatorTest
-    extends XmlTestBase
+    extends XmlTestUtil
 {
     @SuppressWarnings("serial")
     static class MyParamIntrospector extends JacksonAnnotationIntrospector
@@ -80,6 +83,7 @@ public class ImplicitParamsForCreatorTest
             .annotationIntrospector(new MyParamIntrospector())
             .build();
 
+    @Test
     public void testNonSingleArgCreator() throws Exception
     {
         XY value = MAPPER.readValue(
@@ -91,6 +95,7 @@ public class ImplicitParamsForCreatorTest
     }
 
     // [databind#2932]
+    @Test
     public void testJsonCreatorWithOtherAnnotations() throws Exception
     {
         Bean2932 bean = MAPPER.readValue(
@@ -105,6 +110,7 @@ public class ImplicitParamsForCreatorTest
     // 04-Feb-2024, tatu: XML does not have type information wrt Integer so this
     //    can't work
     /*
+    @Test
     public void testDelegatingInferFromJsonValue() throws Exception
     {
         // First verify serialization via `@JsonValue`

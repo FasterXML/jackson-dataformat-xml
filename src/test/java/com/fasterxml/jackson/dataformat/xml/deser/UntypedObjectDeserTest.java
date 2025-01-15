@@ -4,20 +4,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class UntypedObjectDeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UntypedObjectDeserTest extends XmlTestUtil
 {
     private final ObjectMapper XML_MAPPER = newMapper();
 
     // for [dataformat-xml#205], handling "untyped" ({@code java.lang.Object}-targeted)
     // deserialization, including handling of element sequences
+    @Test
     public void testRepeatingElements() throws Exception
     {
         final String XML =
@@ -68,6 +73,7 @@ public class UntypedObjectDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#405]: support mixed content
+    @Test
     public void testMixedContent() throws Exception
     {
         final String XML = "<root>first<a>123</a>second<b>abc</b>last</root>";
@@ -88,6 +94,7 @@ public class UntypedObjectDeserTest extends XmlTestBase
 
     // [dataformat-xml#445]: problem with earlier #205 implementation (from 2.12.0),
     // fixed in 2.12.2
+    @Test
     public void testDuplicateListDeser445() throws Exception
     {
         final String XML =

@@ -2,15 +2,15 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 // For [dataformat-xml#509]
 public class UnexpectedNonWhitespaceText509Test {
@@ -57,7 +57,7 @@ public class UnexpectedNonWhitespaceText509Test {
 	@Test
 	public void testDeSerData() throws Exception {
 		Data value = deSer("<data key=\"MadeWith\">Text Editor</data>", Data.class);
-		assertEquals("\"key\" attribute not correctly deserialized", value.getKey(), "MadeWith");
+		assertEquals(value.getKey(), "MadeWith", "\"key\" attribute not correctly deserialized");
 	}
 
 	@Test
@@ -67,11 +67,11 @@ public class UnexpectedNonWhitespaceText509Test {
 				+ "    <data key=\"Version\">1.0.0</data>\n" //
 				+ "</metaData>", MetaData.class);
 		List<Data> entries = value.getData();
-		assertEquals("\"data\" not correctly deserialized", entries.size(), 2);
+		assertEquals(2, entries.size(), "\"data\" not correctly deserialized");
 		Data entry = entries.get(0);
-		assertEquals("\"key\" attribute not correctly deserialized", entry.getKey(), "MadeWith");
+		assertEquals(entry.getKey(), "MadeWith", "\"key\" attribute not correctly deserialized");
 		entry = entries.get(1);
-		assertEquals("\"key\" attribute not correctly deserialized", entry.getKey(), "Version");
+		assertEquals(entry.getKey(), "Version", "\"key\" attribute not correctly deserialized");
 	}
 
 	private <T> T deSer(String xmlString, Class<T> clazz) throws Exception {

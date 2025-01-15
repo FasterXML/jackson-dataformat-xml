@@ -2,13 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.testutil.NoCheckSubTypeValidator;
 
-public class DefaultTyping325Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DefaultTyping325Test extends XmlTestUtil
 {
     static class Simple325 {
         protected String[] list;
@@ -18,6 +22,7 @@ public class DefaultTyping325Test extends XmlTestBase
     }
 
     // [dataformat-xml#325]
+    @Test
     public void testDefaultTypingWithInnerClass() throws IOException
     {
         ObjectMapper mapper = mapperBuilder()

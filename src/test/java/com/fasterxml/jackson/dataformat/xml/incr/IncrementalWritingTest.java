@@ -5,14 +5,19 @@ import java.io.*;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
-public class IncrementalWritingTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+
+public class IncrementalWritingTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = xmlMapper(true);
     
+    @Test
     public void testSimple() throws Exception
     {
         StringWriter strw = new StringWriter();
@@ -35,6 +40,7 @@ public class IncrementalWritingTest extends XmlTestBase
     }
 
     // @since 2.17
+    @Test
     public void testWriteUsingXMLStreamWriter() throws Exception
     {
         XMLOutputFactory staxF = MAPPER.getFactory().getXMLOutputFactory();

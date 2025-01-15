@@ -3,14 +3,18 @@ package com.fasterxml.jackson.dataformat.xml.incr;
 import java.io.*;
 import javax.xml.stream.*;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
 
-public class PartialReadTest extends XmlTestBase
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PartialReadTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = xmlMapper(true);
 
+    @Test
     public void testSimpleRead() throws Exception
     {
         final String XML = "<?xml version='1.0'?><root>"
@@ -46,6 +50,7 @@ public class PartialReadTest extends XmlTestBase
     }
 
     // @since 2.17
+    @Test
     public void testReadUsingXMLStreamReader() throws Exception
     {
         final String DOC = "<Point><x>1</x><y>2</y></Point>";

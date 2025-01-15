@@ -3,19 +3,22 @@ package com.fasterxml.jackson.dataformat.xml.deser.convert;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.type.LogicalType;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import static org.junit.jupiter.api.Assertions.*;
 
 // 2020-12-18, tatu: Modified from "jackson-databind" version: XML
 //  backend MUST NOT prevent coercion from String since XML has no
 //  native number representation (although TBH JsonParser.isExpectedNumberInt()
 //  can work around that in many cases)
 public class CoerceStringToIntsTest
-    extends XmlTestBase
+    extends XmlTestUtil
 {
     private final ObjectMapper DEFAULT_MAPPER = newMapper();
     private final ObjectMapper MAPPER_LEGACY_FAIL = mapperBuilder()
@@ -84,10 +87,12 @@ public class CoerceStringToIntsTest
     // even if seemingly prevented -- this because XML has no native
     // number type and Strings present all scalar values, essentially
 
+    @Test
     public void testDefaultStringToIntCoercion() throws Exception {
         _verifyLegacyFromStringSucceeds(DEFAULT_MAPPER);
     }
 
+    @Test
     public void testLegacyFailStringToInt() throws Exception {
         _verifyLegacyFromStringSucceeds(MAPPER_LEGACY_FAIL);
     }
@@ -129,6 +134,7 @@ public class CoerceStringToIntsTest
 
     // When explicitly enabled, should pass
 
+    @Test
     public void testCoerceConfigStringToNull() throws Exception {
         _verifyCoercionFromStringSucceeds(MAPPER_TO_NULL);
     }
@@ -136,14 +142,17 @@ public class CoerceStringToIntsTest
     // But even if blocked, or changed to null, should pass since with
     // XML, "String" is a native representation of numbers
 
+    @Test
     public void testCoerceConfigStringToEmpty() throws Exception {
         _verifyCoercionFromStringSucceeds(MAPPER_TO_EMPTY);
     }
 
+    @Test
     public void testCoerceConfigStringConvert() throws Exception {
         _verifyCoercionFromStringSucceeds(MAPPER_TRY_CONVERT);
     }
 
+    @Test
     public void testCoerceConfigFailFromString() throws Exception {
         _verifyCoercionFromStringSucceeds(MAPPER_TO_FAIL);
     }

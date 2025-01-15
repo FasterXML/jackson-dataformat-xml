@@ -2,13 +2,16 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class MapWithDupsDeser498Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MapWithDupsDeser498Test extends XmlTestUtil
 {
     /*
     /**********************************************************************
@@ -21,6 +24,7 @@ public class MapWithDupsDeser498Test extends XmlTestBase
     private final ObjectMapper JSON_MAPPER = new JsonMapper();
 
     // [dataformat-xml#498]
+    @Test
     public void testRootLevelMap() throws Exception
     {
         final String xml = "<result>\n"

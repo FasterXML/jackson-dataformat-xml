@@ -2,14 +2,17 @@ package com.fasterxml.jackson.dataformat.xml.interop;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.dataformat.xml.XmlFactory;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import org.junit.jupiter.api.Test;
+
 import com.sun.xml.stream.ZephyrParserFactory;
 import com.sun.xml.stream.ZephyrWriterFactory;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 // to verify issue behind [dataformat-xml#482]
-public class NonWoodstoxStaxImpl482Test extends XmlTestBase
+public class NonWoodstoxStaxImpl482Test extends XmlTestUtil
 {
     static class Root {
         public int value = 3;
@@ -23,6 +26,7 @@ public class NonWoodstoxStaxImpl482Test extends XmlTestBase
             .build();
  
     // [dataformat-xml#482]
+    @Test
     public void testSjsxpFromByteArray() throws Exception
     {
         byte[] xml0 = SJSXP_MAPPER.writeValueAsBytes(new Root());
@@ -34,6 +38,7 @@ public class NonWoodstoxStaxImpl482Test extends XmlTestBase
     }
 
     // [dataformat-xml#482]
+    @Test
     public void testSjsxpFromCharArray() throws Exception
     {
         char[] xml0 = SJSXP_MAPPER.writeValueAsString(new Root()).toCharArray();
