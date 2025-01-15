@@ -3,18 +3,21 @@ package com.fasterxml.jackson.dataformat.xml.deser.convert;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.CoercionAction;
 import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.type.LogicalType;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import static org.junit.jupiter.api.Assertions.*;
 
 // 2020-12-18, tatu: Modified from "jackson-databind" version: XML
 //   backend MUST NOT prevent coercion from String since XML has no
 //   native boolean representation
 public class CoerceToBooleanTest
-    extends XmlTestBase
+    extends XmlTestUtil
 {
     static class BooleanPOJO {
         public boolean value;
@@ -43,6 +46,7 @@ public class CoerceToBooleanTest
      */
 
     // for [databind#403]
+    @Test
     public void testEmptyStringFailForBooleanPrimitive() throws IOException
     {
         final ObjectReader reader = MAPPER_EMPTY_TO_BOOLEAN_FAIL
@@ -56,6 +60,7 @@ public class CoerceToBooleanTest
         }
     }
 
+    @Test
     public void testDefaultStringToBooleanCoercionOk() throws Exception {
         _verifyStringToBooleanOk(DEFAULT_MAPPER);
     }
@@ -66,6 +71,7 @@ public class CoerceToBooleanTest
     /**********************************************************
      */
 
+    @Test
     public void testStringToBooleanOkDespiteCoercionConfig() throws Exception {
         _verifyStringToBooleanOk(MAPPER_STRING_TO_BOOLEAN_FAIL);
     }

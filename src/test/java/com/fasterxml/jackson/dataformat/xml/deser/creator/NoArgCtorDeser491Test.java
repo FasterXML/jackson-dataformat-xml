@@ -1,12 +1,15 @@
 package com.fasterxml.jackson.dataformat.xml.deser.creator;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Reproduces <i>no default no-arg ctor found</i> deserialization regression
@@ -24,7 +27,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
  * Use cases where (non-empty) element needs to map to Scalar types is now handled
  * with mechanism introduced in 2.13.
  */
-public class NoArgCtorDeser491Test extends XmlTestBase
+public class NoArgCtorDeser491Test extends XmlTestUtil
 {
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.NAME,
@@ -83,6 +86,7 @@ public class NoArgCtorDeser491Test extends XmlTestBase
     /**
      * Passes on 2.11.4 and 2.12.{0..4}.
      */
+    @Test
     public void test_empty_Problem_JSON_deserialization() throws Exception
     {
         Problem problem = JSON_MAPPER.readValue("{}", Problem.class);
@@ -93,6 +97,7 @@ public class NoArgCtorDeser491Test extends XmlTestBase
     /**
      * Passes on 2.11.4, but fails on 2.12.{0..4}.
      */
+    @Test
     public void test_empty_Problem_XML_deserialization() throws Exception
     {
         Problem problem = XML_MAPPER.readValue(

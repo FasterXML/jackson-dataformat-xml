@@ -2,17 +2,20 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import static org.junit.jupiter.api.Assertions.*;
 
 // Tests for [dataformat-xml#525], related to relative order of "type"
 // property (as attribute) compared to other properties
-public class TypeInfoOrder525Test extends XmlTestBase
+public class TypeInfoOrder525Test extends XmlTestUtil
 {
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
     @JsonSubTypes({
@@ -46,6 +49,7 @@ public class TypeInfoOrder525Test extends XmlTestBase
             .defaultUseWrapper(false)
             .build();
 
+    @Test
     public void testTypeAfterOtherProperties() throws Exception {
         String xml =
                 "  <typeInfo name=\"MyName\" type=\"ClassInfo\">\n" +
@@ -59,6 +63,7 @@ public class TypeInfoOrder525Test extends XmlTestBase
         assertEquals("Test", ((ClassInfo525)m).element.get(0).binding.description);
     }
 
+    @Test
     public void testTypeBeforeOtherProperties() throws Exception {
         String xml =
                 "  <typeInfo type=\"ClassInfo\" name=\"MyName\">\n" +

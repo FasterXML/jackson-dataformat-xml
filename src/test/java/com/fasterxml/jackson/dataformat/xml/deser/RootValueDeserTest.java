@@ -3,11 +3,14 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.dataformat.xml.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // New tests (2.12) for root-level values
-public class RootValueDeserTest extends XmlTestBase
+public class RootValueDeserTest extends XmlTestUtil
 {
     private final XmlMapper MAPPER = newMapper();
 
@@ -17,6 +20,7 @@ public class RootValueDeserTest extends XmlTestBase
     /**********************************************************
      */
 
+    @Test
     public void testNumbers() throws Exception
     {
         _testScalar(Integer.valueOf(42), "<Integer>42</Integer>");
@@ -25,6 +29,7 @@ public class RootValueDeserTest extends XmlTestBase
         _testScalar(BigInteger.valueOf(31337), "<BigInteger>31337</BigInteger>");
     }
 
+    @Test
     public void testNumbersWithENotation() throws Exception
     {
         BigInteger bigInteger = new BigDecimal("2e308").toBigInteger();

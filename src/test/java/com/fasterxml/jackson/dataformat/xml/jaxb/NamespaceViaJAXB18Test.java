@@ -1,12 +1,16 @@
 package com.fasterxml.jackson.dataformat.xml.jaxb;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
-
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-public class NamespaceViaJAXB18Test extends XmlTestBase
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class NamespaceViaJAXB18Test extends XmlTestUtil
 {
     final static String TEST_NAMESPACE = "http://namespace-base";
 
@@ -36,6 +40,7 @@ public class NamespaceViaJAXB18Test extends XmlTestBase
             .build();
 
     // [dataformat-xml#18]
+    @Test
     public void testNamespaceViaJAXB() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new House());

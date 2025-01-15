@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.deser.creator;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -8,7 +10,9 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.xml.*;
 
-public class PojoWithCreatorRequired538Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PojoWithCreatorRequired538Test extends XmlTestUtil
 {
     @JsonRootName(value = "bar")
     static class Bar538
@@ -35,6 +39,7 @@ public class PojoWithCreatorRequired538Test extends XmlTestBase
             .build();
 
     // [dataformat-xml#538]
+    @Test
     public void testPojoWithRequiredFromEmpty() throws Exception
     {
         // Should fail

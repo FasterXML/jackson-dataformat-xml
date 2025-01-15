@@ -3,17 +3,21 @@ package com.fasterxml.jackson.dataformat.xml.failing;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.*;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class PolymorphicList426Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class PolymorphicList426Test extends XmlTestUtil
 {
     static class Auto {
         @JacksonXmlProperty(localName = "Object")
@@ -84,6 +88,7 @@ public class PolymorphicList426Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#426]
+    @Test
     public void testPolymorphicList426() throws Exception
     {
         String xml = "" +

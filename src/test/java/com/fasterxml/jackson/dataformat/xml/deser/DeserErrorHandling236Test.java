@@ -1,9 +1,13 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.*;
 
-public class DeserErrorHandling236Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DeserErrorHandling236Test extends XmlTestUtil
 {
     static class Employee {
         public String name;
@@ -18,6 +22,7 @@ public class DeserErrorHandling236Test extends XmlTestBase
     protected XmlMapper MAPPER = new XmlMapper();
 
     // [dataformat-xml#236]
+    @Test
     public void testExceptionWrapping() throws Exception
     {
         final String XML = "<name>monica&</name>";

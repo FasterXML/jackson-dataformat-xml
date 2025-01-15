@@ -1,16 +1,19 @@
 package com.fasterxml.jackson.dataformat.xml.deser;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 // [dataformat-xml#634]
-public class XsiTypeReadTest extends XmlTestBase
+public class XsiTypeReadTest extends XmlTestUtil
 {
     @JsonRootName("Typed")
     static class TypeBean {
@@ -37,6 +40,7 @@ public class XsiTypeReadTest extends XmlTestBase
             .configure(FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE, true)
             .build();
 
+    @Test
     public void testExplicitXsiTypeReadEnabled() throws Exception
     {
         final String XML = XSI_ENABLED_MAPPER.writeValueAsString(new TypeBean("type0"));
@@ -44,6 +48,7 @@ public class XsiTypeReadTest extends XmlTestBase
         assertEquals("type0", result.typeId);
     }
 
+    @Test
     public void testXsiTypeAsTypeReadeEnabled() throws Exception
     {
         final String XML = XSI_ENABLED_MAPPER.writeValueAsString(new PolyBean(42));

@@ -1,14 +1,18 @@
 package com.fasterxml.jackson.dataformat.xml.deser.builder;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class BuilderWithXmlText345Test extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class BuilderWithXmlText345Test extends XmlTestUtil
 {
     @JsonRootName("example")
     @JsonDeserialize(builder = Example345.ExampleBuilder.class)
@@ -67,6 +71,7 @@ public class BuilderWithXmlText345Test extends XmlTestBase
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#345]
+    @Test
     public void testXmlTextViaBuilder345() throws Exception
     {
         Example345 in = Example345.builder()

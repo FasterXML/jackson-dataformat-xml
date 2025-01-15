@@ -7,14 +7,16 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
-import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class ElementWrapperTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ElementWrapperTest extends XmlTestUtil
 {
     @XmlRootElement(name = "Individual")
     static class MyPerson {
@@ -38,6 +40,7 @@ public class ElementWrapperTest extends XmlTestBase
     /**********************************************************************
      */
 
+    @Test
     public void testElementWrapper() throws Exception
     {
         XmlMapper _jaxbMapper = new XmlMapper();
@@ -63,6 +66,7 @@ public class ElementWrapperTest extends XmlTestBase
     }
 
     // And with JAXB, default should be "no wrapper"
+    @Test
     public void testNoElementWrapper() throws Exception
     {
         XmlMapper jaxbMapper = mapperBuilder()

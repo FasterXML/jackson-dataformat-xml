@@ -2,18 +2,22 @@ package com.fasterxml.jackson.dataformat.xml.deser;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class CaseInsensitiveDeserTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CaseInsensitiveDeserTest extends XmlTestUtil
 {
     static class BaseResponse {
         public int errorCode;
@@ -80,6 +84,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
             .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
             .build();
 
+    @Test
     public void testCaseInsensitive1036() throws Exception
     {
         final String DOC =
@@ -100,6 +105,7 @@ public class CaseInsensitiveDeserTest extends XmlTestBase
     }
 
     // [dataformat-xml#273]
+    @Test
     public void testCaseInsensitiveComplex() throws Exception
     {
         final String DOC =
