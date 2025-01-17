@@ -1,19 +1,23 @@
 package tools.jackson.dataformat.xml;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import tools.jackson.core.*;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.testutil.JacksonTestUtilBase;
+
 import tools.jackson.databind.AnnotationIntrospector;
+
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import tools.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class XmlTestUtil
+    extends JacksonTestUtilBase
 {
     protected static final String DEFAULT_NEW_LINE;
 
@@ -249,59 +253,11 @@ public abstract class XmlTestUtil
     /**********************************************************
      */
 
-    protected void assertToken(JsonToken expToken, JsonToken actToken)
-    {
-        if (actToken != expToken) {
-            fail("Expected token "+expToken+", current token "+actToken);
-        }
-    }
-
-    protected void assertToken(JsonToken expToken, JsonParser jp)
-    {
-        assertToken(expToken, jp.currentToken());
-    }
-
-    /**
-     * Method that gets textual contents of the current token using
-     * available methods, and ensures results are consistent, before
-     * returning them
-     */
-    protected String getAndVerifyText(JsonParser jp)
-        throws IOException
-    {
-        // Ok, let's verify other accessors
-        int actLen = jp.getStringLength();
-        char[] ch = jp.getStringCharacters();
-        String str2 = new String(ch, jp.getStringOffset(), actLen);
-        String str = jp.getString();
-
-        if (str.length() !=  actLen) {
-            fail("Internal problem (jp.token == "+jp.currentToken()+"): jp.getText().length() ['"+str+"'] == "+str.length()+"; jp.getTextLength() == "+actLen);
-        }
-        assertEquals(str, str2, "String access via getText(), getTextXxx() must be the same");
-
-        return str;
-    }
-
     protected void verifyFieldName(JsonParser jp, String expName)
         throws IOException
     {
         assertEquals(expName, jp.getString());
         assertEquals(expName, jp.currentName());
-    }
-
-    protected void verifyException(Throwable e, String... matches)
-    {
-        String msg = e.getMessage();
-        String lmsg = (msg == null) ? "" : msg.toLowerCase();
-        for (String match : matches) {
-            String lmatch = match.toLowerCase();
-            if (lmsg.indexOf(lmatch) >= 0) {
-                return;
-            }
-        }
-        fail("Expected an exception with one of substrings ("+Arrays.asList(matches)+"): got one ("+
-                e.getClass().getName()+") with message \""+msg+"\"");
     }
     
     /*
@@ -310,14 +266,6 @@ public abstract class XmlTestUtil
     /**********************************************************
      */
 
-    protected static String a2q(String content) {
-        return content.replace("'", "\"");
-    }
-
-    protected byte[] utf8Bytes(String str) {
-        return str.getBytes(StandardCharsets.UTF_8);
-    }
-    
     /**
      * Helper method that tries to remove unnecessary namespace
      * declaration that default JDK XML parser (SJSXP) sees fit
@@ -344,29 +292,6 @@ public abstract class XmlTestUtil
         }
         br.close();
         return sb.toString();
-    }
-
-    protected byte[] readResource(String ref)
-    {
-       ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-       final byte[] buf = new byte[4000];
-
-       InputStream in = getClass().getResourceAsStream(ref);
-       if (in != null) {
-           try {
-               int len;
-               while ((len = in.read(buf)) > 0) {
-                   bytes.write(buf, 0, len);
-               }
-               in.close();
-           } catch (IOException e) {
-               throw new RuntimeException("Failed to read resource '"+ref+"': "+e);
-           }
-       }
-       if (bytes.size() == 0) {
-           throw new IllegalArgumentException("Failed to read resource '"+ref+"': empty resource?");
-       }
-       return bytes.toByteArray();
     }
 
     public String jaxbSerialized(Object ob, Class<?>... classes) throws Exception

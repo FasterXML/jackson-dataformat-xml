@@ -87,7 +87,19 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     </dependency>
 
     <!-- Test dependencies -->
-    
+
+    <!-- 16-Jan-2025, tatu: Use the new (in 3.0) shared core test-jar
+        for some shared test functionality.
+      -->
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version.core}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
     <!-- 11-Jan-2025, joohyukkim: For JSTEP-10, migrate to JUnit5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
