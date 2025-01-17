@@ -11,8 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * @author pgelinas
@@ -43,11 +42,11 @@ public class PolymorphicList97Test extends XmlTestUtil
                 .build();
         String xml = "<Foo type=\"good\" data=\"dummy\"><bar>FOOBAR</bar></Foo>";
         Foo fooRead = mapper.readValue(xml, Foo.class);
-        assertThat(fooRead, instanceOf(FooGood.class));
+        assertInstanceOf(FooGood.class, fooRead);
 
         xml = "<Foo data=\"dummy\" type=\"good\" ><bar>FOOBAR</bar></Foo>";
         fooRead = mapper.readValue(xml, Foo.class);
-        assertThat(fooRead, instanceOf(FooGood.class));
+        assertInstanceOf(FooGood.class, fooRead);
     }
     
     @Test
@@ -57,10 +56,10 @@ public class PolymorphicList97Test extends XmlTestUtil
                 .build();
         String xml = "<Foo type=\"bad\" data=\"dummy\"><bar><bar>FOOBAR</bar></bar></Foo>";
         Foo fooRead = mapper.readValue(xml, Foo.class);
-        assertThat(fooRead, instanceOf(FooBad.class));
+        assertInstanceOf(FooBad.class, fooRead);
 
         xml = "<Foo data=\"dummy\" type=\"bad\"><bar><bar>FOOBAR</bar></bar></Foo>";
         fooRead = mapper.readValue(xml, Foo.class);
-        assertThat(fooRead, instanceOf(FooBad.class));
+        assertInstanceOf(FooBad.class, fooRead);
     }
 }

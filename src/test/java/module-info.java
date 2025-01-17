@@ -10,10 +10,21 @@ module tools.jackson.dataformat.xml
     requires tools.jackson.core;
     requires tools.jackson.databind;
 
-    // Then test dependencies
-    requires junit;
+    /// // Actual Test dependencies
+
+    // Shared Jackson test functionality
+
+    // 15-Jan-2025, tatu: missing module-info for `tools.jackson.core` can't yet add
+    //  (but will be included in Class path just not Module path)
+    //
+    //requires tools.jackson.core.testutil;
+
+    // Test frameworks, libraries
+
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.params;
+
+    // Other Test dependencies
 
     requires com.ctc.wstx; // woodstox
     requires jakarta.xml.bind; // Jakarta-binding
