@@ -112,7 +112,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <scope>test</scope>
     </dependency>
 
-    <!--  Jakarta XMLBind (nee javax/jaxb( annotation introspector is needed BUT ONLY
+    <!--  Jakarta XMLBind (nee javax/jaxb) annotation introspector is needed BUT ONLY
           for tests (starting 2.13: previously compile/runtime)
         -->
     <dependency>
