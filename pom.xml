@@ -86,13 +86,8 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       </exclusions> 
     </dependency>
 
-    <!-- 20-Apr-2024, tatu: JUnit4 no longer from jackson-base, so: -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
+    <!-- Test dependencies -->
+    
     <!-- 11-Jan-2025, joohyukkim: For JSTEP-10, migrate to JUnit5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
