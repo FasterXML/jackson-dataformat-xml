@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.tofix;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -52,6 +53,7 @@ public class UntypedListSerialization8Test extends XmlTestUtil
      *  For [dataformat-xml#8] -- Will not use wrapping, if type is not statically known
      *  to be a Collection
      */
+    @JacksonTestFailureExpected
     @Test
     public void testListAsObject() throws IOException
     {

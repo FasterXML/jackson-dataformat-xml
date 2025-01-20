@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.tofix;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.*;
+import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -125,6 +126,7 @@ public class Issue37AdapterTest extends XmlTestUtil
     /**********************************************************************
      */
 
+    @JacksonTestFailureExpected
     @Test
     public void testSimpleKeyMap() throws Exception
     {
@@ -135,6 +137,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMap() throws Exception
     {
@@ -147,6 +150,7 @@ public class Issue37AdapterTest extends XmlTestUtil
                 xml);
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testSimpleKeyMapSimpleAnnotation() throws Exception
     {
@@ -158,6 +162,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMapSimpleAnnotation() throws Exception
     {
@@ -169,6 +174,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMap_nonJaxb() throws Exception
     {
@@ -180,6 +186,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _nonJaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMapSimpleAnnotation_nonJaxb() throws Exception
     {
