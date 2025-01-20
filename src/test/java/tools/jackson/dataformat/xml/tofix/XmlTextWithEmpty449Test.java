@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.tofix;
 
 import java.util.List;
 
@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import tools.jackson.databind.ObjectReader;
+
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
+import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,6 +37,7 @@ public class XmlTextWithEmpty449Test extends XmlTestUtil
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#449]
+    @JacksonTestFailureExpected
     @Test
     public void testXmlText449ItemWithAttr() throws Exception
     {
@@ -53,6 +56,7 @@ public class XmlTextWithEmpty449Test extends XmlTestUtil
     }
 
     // [dataformat-xml#449]
+    @JacksonTestFailureExpected
     @Test
     public void testXmlText449ItemWithList() throws Exception
     {

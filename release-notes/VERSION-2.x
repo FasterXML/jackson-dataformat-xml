@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 2.19.0 (not yet released)
 
+#700: Unify testing structure/tools [JSTEP-10]
+ (fix contributed by Joo Hyuk K)
 - Upgrade Woodstox to 7.1.0
 
 2.18.2 (27-Nov-2024)
