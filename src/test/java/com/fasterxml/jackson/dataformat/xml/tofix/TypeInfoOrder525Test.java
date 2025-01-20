@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.tofix;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,6 +47,7 @@ public class TypeInfoOrder525Test extends XmlTestUtil
             .defaultUseWrapper(false)
             .build();
 
+    @JacksonTestFailureExpected
     @Test
     public void testTypeAfterOtherProperties() throws Exception {
         String xml =

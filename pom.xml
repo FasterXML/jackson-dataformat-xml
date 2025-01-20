@@ -189,9 +189,6 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${version.plugin.surefire}</version>
           <configuration>
-            <excludes>
-              <exclude>**/failing/**/*.java</exclude>
-            </excludes>
             <includes>
               <include>**/Test*.java</include>
               <include>**/*Test.java</include>

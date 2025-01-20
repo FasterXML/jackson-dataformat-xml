@@ -1,10 +1,11 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.tofix;
 
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
+import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -76,6 +77,7 @@ public class PolymorphicIssue4Test extends XmlTestUtil
      */
     // Does not work since array wrapping is not explicitly forced (unlike with collection
     // property of a bean
+    @JacksonTestFailureExpected
     @Test
     public void testAsClassArray() throws Exception
     {
@@ -88,6 +90,7 @@ public class PolymorphicIssue4Test extends XmlTestUtil
 
     // Hmmh. Does not yet quite work either, since we do not properly force
     // array context when writing...
+    @JacksonTestFailureExpected
     @Test
     public void testAsWrappedClassArray() throws Exception
     {

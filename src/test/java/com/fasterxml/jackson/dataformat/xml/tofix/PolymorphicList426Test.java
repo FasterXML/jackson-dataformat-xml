@@ -1,4 +1,4 @@
-package com.fasterxml.jackson.dataformat.xml.failing;
+package com.fasterxml.jackson.dataformat.xml.tofix;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -89,6 +90,7 @@ public class PolymorphicList426Test extends XmlTestUtil
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#426]
+    @JacksonTestFailureExpected
     @Test
     public void testPolymorphicList426() throws Exception
     {
