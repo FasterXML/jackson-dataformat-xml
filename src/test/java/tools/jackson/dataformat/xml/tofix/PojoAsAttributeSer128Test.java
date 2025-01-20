@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.tofix;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,6 +40,7 @@ public class PojoAsAttributeSer128Test extends XmlTestUtil
 
     private final XmlMapper MAPPER = newMapper();
 
+    @JacksonTestFailureExpected
     @Test
     public void testAttributeDeser128() throws Exception
     {

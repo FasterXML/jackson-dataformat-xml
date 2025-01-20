@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.tofix;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +10,7 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
+import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -95,6 +96,7 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#306]
+    @JacksonTestFailureExpected
     @Test
     public void testIssue306WithCtor() throws Exception
     {
@@ -103,6 +105,8 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
         assertNotNull(root);
     }
 
+    // [dataformat-xml#306]
+    @JacksonTestFailureExpected
     @Test
     public void testIssue306NoCtor() throws Exception
     {
@@ -112,6 +116,7 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
     }
 
     // [dataformat-xml#423]
+    @JacksonTestFailureExpected
     @Test
     public void testXmlTextViaCtor423() throws Exception
     {

@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.tofix;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -15,6 +15,7 @@ import jakarta.xml.bind.annotation.adapters.*;
 import tools.jackson.databind.*;
 import tools.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -127,6 +128,7 @@ public class Issue37AdapterTest extends XmlTestUtil
     /**********************************************************************
      */
 
+    @JacksonTestFailureExpected
     @Test
     public void testSimpleKeyMap() throws Exception
     {
@@ -137,6 +139,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMap() throws Exception
     {
@@ -149,6 +152,7 @@ public class Issue37AdapterTest extends XmlTestUtil
                 xml);
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testSimpleKeyMapSimpleAnnotation() throws Exception
     {
@@ -160,6 +164,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMapSimpleAnnotation() throws Exception
     {
@@ -171,6 +176,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _jaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMap_nonJaxb() throws Exception
     {
@@ -182,6 +188,7 @@ public class Issue37AdapterTest extends XmlTestUtil
             _nonJaxbMapper.writeValueAsString(bean));
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testNeedEncodingKeyMapSimpleAnnotation_nonJaxb() throws Exception
     {

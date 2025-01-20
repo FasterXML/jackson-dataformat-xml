@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.failing;
+package tools.jackson.dataformat.xml.tofix;
 
 import org.junit.jupiter.api.Test;
 
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,6 +34,7 @@ public class EnumIssue9Test extends XmlTestUtil
 
     private final XmlMapper MAPPER = newMapper();
 
+    @JacksonTestFailureExpected
     @Test
     public void testUntypedEnum() throws Exception
     {
