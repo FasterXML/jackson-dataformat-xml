@@ -150,6 +150,7 @@ public class Issue37AdapterTest extends XmlTestUtil
                 xml);
     }
 
+    @JacksonTestFailureExpected
     @Test
     public void testSimpleKeyMapSimpleAnnotation() throws Exception
     {
