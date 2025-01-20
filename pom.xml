@@ -46,16 +46,18 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
          on deploy time), Stax2 API.
       -->
     <dependency>
-      <groupId>tools.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version.core}</version>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version.databind}</version>
     </dependency>
 
     <!-- JDK 1.6+ provides stax-api (javax.xml.stream), but Stax2 API must be included -->
