@@ -139,16 +139,14 @@ One useful setting is the [maxElementDepth](https://javadoc.io/static/com.faster
 
 ## Android quirks
 
-Usage of this library on Android is currently not supported. This is due to the fact that the Stax API is unavailable on the Android platform, and attempts to declare an explicit dependency on the Stax API library will result in errors at build time (since the inclusion of the `javax.*` namespace in apps is restricted).
-For more on the issues, see:
+Use of this library on Android is supported since version 2.15.0 (partly via fix of
+[#533](https://github.com/FasterXML/jackson-dataformat-xml/issues/533)).
+
+Earlier versions had problem due to Stax API being unavailable on the Android platform, and attempts to declare an explicit dependency on the Stax API library resulting in errors at build time (since the inclusion of the `javax.*` namespace in apps is restricted).
+For more on this old issue, see:
 
 * https://stackoverflow.com/questions/31360025/using-jackson-dataformat-xml-on-android
 * https://www.docx4java.org/blog/2012/05/jaxb-can-be-made-to-run-on-android/
-
-Note that as per above articles it MAY be possible to use the module on Android, but it unfortunately requires
-various work-arounds and development team can not do much to alleviate these issues.
-Suggestions for improvements would be welcome; discussions on
-[Jackson users list](https://groups.google.com/forum/#!forum/jackson-user) encouraged.
 
 ## Serializing POJOs as XML
 
