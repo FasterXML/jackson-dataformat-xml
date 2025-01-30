@@ -228,15 +228,18 @@ public abstract class XmlTestUtil
         return XmlMapper.builder();
     }
 
+    protected static XmlMapper.Builder mapperBuilder(boolean useListWrapping) {
+        return XmlMapper.builder()
+                .defaultUseWrapper(useListWrapping);
+    }
+
     protected static XmlMapper.Builder mapperBuilder(XmlFactory f) {
         return XmlMapper.builder(f);
     }
 
     protected XmlMapper xmlMapper(boolean useListWrapping)
     {
-        return XmlMapper.builder()
-                .defaultUseWrapper(useListWrapping)
-                .build();
+        return mapperBuilder(useListWrapping).build();
     }
 
     protected AnnotationIntrospector jakartaXMLBindAnnotationIntrospector() {

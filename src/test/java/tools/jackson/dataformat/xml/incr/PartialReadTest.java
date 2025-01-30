@@ -6,7 +6,7 @@ import javax.xml.stream.*;
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.JsonParser;
-
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 
@@ -15,7 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PartialReadTest extends XmlTestUtil
 {
-    private final XmlMapper MAPPER = xmlMapper(true);
+    private final XmlMapper MAPPER = mapperBuilder(true)
+            .disable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+            .build();
 
     @Test
     public void testSimpleRead() throws Exception
@@ -28,9 +30,8 @@ public class PartialReadTest extends XmlTestUtil
         assertEquals(sr.next(), XMLStreamConstants.START_ELEMENT);
         assertEquals("root", sr.getLocalName());
 
-        /* 30-May-2014, tatu: This is bit tricky... need to ensure that currently
-         *    pointed to START_ELEMENT is sort of re-read.
-         */
+        // 30-May-2014, tatu: This is bit tricky... need to ensure that currently
+        //    pointed to START_ELEMENT is sort of re-read.
         assertEquals(sr.next(), XMLStreamConstants.START_ELEMENT);
         assertEquals("NameBean", sr.getLocalName());
         
