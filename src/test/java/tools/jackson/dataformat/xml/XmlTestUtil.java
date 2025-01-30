@@ -113,7 +113,7 @@ public abstract class XmlTestUtil
         }
     }
 
-    protected static class StringBean
+    public static class StringBean
     {
         public String text;
 
@@ -131,7 +131,7 @@ public abstract class XmlTestUtil
      * Simple wrapper around String type, usually to test value
      * conversions or wrapping
      */
-    protected static class StringWrapper {
+    public static class StringWrapper {
         public String str;
 
         public StringWrapper() { }
@@ -140,7 +140,7 @@ public abstract class XmlTestUtil
         }
     }
 
-    protected static class IntWrapper {
+    public static class IntWrapper {
         public int i;
 
         public IntWrapper() { }
@@ -152,7 +152,7 @@ public abstract class XmlTestUtil
     public static class Point {
         public int x, y;
 
-        protected Point() { } // for deser
+        public Point() { } // for deser
         public Point(int x0, int y0) {
             x = x0;
             y = y0;
