@@ -230,15 +230,18 @@ public abstract class XmlTestUtil
         return XmlMapper.builder();
     }
 
+    protected static XmlMapper.Builder mapperBuilder(boolean useListWrapping) {
+        return XmlMapper.builder()
+                .defaultUseWrapper(useListWrapping);
+    }
+
     protected static XmlMapper.Builder mapperBuilder(XmlFactory f) {
         return XmlMapper.builder(f);
     }
 
     protected XmlMapper xmlMapper(boolean useListWrapping)
     {
-        JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(useListWrapping);
-        return new XmlMapper(module);
+        return mapperBuilder(useListWrapping).build();
     }
 
     protected AnnotationIntrospector jakartaXMLBindAnnotationIntrospector() {

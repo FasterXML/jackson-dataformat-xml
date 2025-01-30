@@ -349,7 +349,7 @@ public class BuilderSimpleTest extends XmlTestUtil
     @Test
     public void testBuilderMethodReturnMoreSpecific() throws Exception
     {
-        final String json = "<ValueInterface2><x>1</x></ValueInterface2>}";
+        final String json = "<ValueInterface2><x>1</x></ValueInterface2>";
         ValueInterface2 value = MAPPER.readValue(json, ValueInterface2.class);
         assertEquals(2, value.getX());
     }
@@ -357,7 +357,7 @@ public class BuilderSimpleTest extends XmlTestUtil
     @Test
     public void testSelfBuilder777() throws Exception
     {
-        SelfBuilder777 result = MAPPER.readValue("<SelfBuilder777><x>3</x></SelfBuilder777>'",
+        SelfBuilder777 result = MAPPER.readValue("<SelfBuilder777><x>3</x></SelfBuilder777>",
                 SelfBuilder777.class);
         assertNotNull(result);
         assertEquals(3, result.x);

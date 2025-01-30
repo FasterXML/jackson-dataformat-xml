@@ -28,9 +28,8 @@ public class PartialReadTest extends XmlTestUtil
         assertEquals(sr.next(), XMLStreamConstants.START_ELEMENT);
         assertEquals("root", sr.getLocalName());
 
-        /* 30-May-2014, tatu: This is bit tricky... need to ensure that currently
-         *    pointed to START_ELEMENT is sort of re-read.
-         */
+        // 30-May-2014, tatu: This is bit tricky... need to ensure that currently
+        //    pointed to START_ELEMENT is sort of re-read.
         assertEquals(sr.next(), XMLStreamConstants.START_ELEMENT);
         assertEquals("NameBean", sr.getLocalName());
         
