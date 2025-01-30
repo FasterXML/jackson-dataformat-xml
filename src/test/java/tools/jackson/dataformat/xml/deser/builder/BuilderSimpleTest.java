@@ -22,7 +22,7 @@ public class BuilderSimpleTest extends XmlTestUtil
     // // Simple 2-property value class, builder with standard naming
 
     @JsonDeserialize(builder=SimpleBuilderXY.class)
-    static class ValueClassXY
+    public static class ValueClassXY
     {
         final int _x, _y;
 
@@ -32,7 +32,7 @@ public class BuilderSimpleTest extends XmlTestUtil
         }
     }
 
-    static class SimpleBuilderXY
+    public static class SimpleBuilderXY
     {
         public int x, y;
     	
@@ -54,7 +54,7 @@ public class BuilderSimpleTest extends XmlTestUtil
     // // 3-property value, with more varied builder
 
     @JsonDeserialize(builder=BuildABC.class)
-    static class ValueClassABC
+    public static class ValueClassABC
     {
         final int a, b, c;
 
@@ -66,7 +66,7 @@ public class BuilderSimpleTest extends XmlTestUtil
     }
 
     @JsonIgnoreProperties({ "d" })
-    static class BuildABC
+    public static class BuildABC
     {
         public int a; // to be used as is
         private int b, c;
@@ -91,16 +91,16 @@ public class BuilderSimpleTest extends XmlTestUtil
     // // Then Builder that is itself immutable
     
     @JsonDeserialize(builder=BuildImmutable.class)
-    static class ValueImmutable
+    public static class ValueImmutable
     {
         final int value;
         protected ValueImmutable(int v) { value = v; }
     }
     
-    static class BuildImmutable {
+    public static class BuildImmutable {
         private final int value;
-        
-        private BuildImmutable() { this(0); }
+
+        public BuildImmutable() { this(0); }
         private BuildImmutable(int v) {
             value = v;
         }
@@ -114,14 +114,14 @@ public class BuilderSimpleTest extends XmlTestUtil
     // And then with custom naming:
 
     @JsonDeserialize(builder=BuildFoo.class)
-    static class ValueFoo
+    public static class ValueFoo
     {
         final int value;
-        protected ValueFoo(int v) { value = v; }
+        public ValueFoo(int v) { value = v; }
     }
 
     @JsonPOJOBuilder(withPrefix="foo", buildMethodName="construct")
-    static class BuildFoo {
+    public static class BuildFoo {
         private int value;
         
         public BuildFoo fooValue(int v) {
@@ -137,20 +137,20 @@ public class BuilderSimpleTest extends XmlTestUtil
     // for [databind#761]
 
     @JsonDeserialize(builder=ValueInterfaceBuilder.class)
-    interface ValueInterface {
+    public interface ValueInterface {
         int getX();
     }
 
     @JsonDeserialize(builder=ValueInterface2Builder.class)
-    interface ValueInterface2 {
+    public interface ValueInterface2 {
         int getX();
     }
     
-    static class ValueInterfaceImpl implements ValueInterface
+    public static class ValueInterfaceImpl implements ValueInterface
     {
         final int _x;
 
-        protected ValueInterfaceImpl(int x) {
+        public ValueInterfaceImpl(int x) {
             _x = x+1;
         }
 
@@ -160,11 +160,11 @@ public class BuilderSimpleTest extends XmlTestUtil
         }
     }
 
-    static class ValueInterface2Impl implements ValueInterface2
+    public static class ValueInterface2Impl implements ValueInterface2
     {
         final int _x;
 
-        protected ValueInterface2Impl(int x) {
+        public ValueInterface2Impl(int x) {
             _x = x+1;
         }
 
@@ -174,7 +174,7 @@ public class BuilderSimpleTest extends XmlTestUtil
         }
     }
     
-    static class ValueInterfaceBuilder
+    public static class ValueInterfaceBuilder
     {
         public int x;
 
@@ -188,7 +188,7 @@ public class BuilderSimpleTest extends XmlTestUtil
         }
     }
 
-    static class ValueInterface2Builder
+    public static class ValueInterface2Builder
     {
         public int x;
 
@@ -206,7 +206,7 @@ public class BuilderSimpleTest extends XmlTestUtil
     // [databind#777]
     @JsonDeserialize(builder = SelfBuilder777.class)
     @JsonPOJOBuilder(buildMethodName = "", withPrefix = "with")
-    static class SelfBuilder777 {
+    public static class SelfBuilder777 {
         public int x;
 
         public SelfBuilder777 withX(int value) {
