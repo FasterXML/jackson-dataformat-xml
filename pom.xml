@@ -46,16 +46,18 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
          on deploy time), Stax2 API.
       -->
     <dependency>
-      <groupId>tools.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version.core}</version>
+    </dependency>
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version.databind}</version>
     </dependency>
 
     <!-- JDK 1.6+ provides stax-api (javax.xml.stream), but Stax2 API must be included -->
@@ -87,7 +89,19 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
     </dependency>
 
     <!-- Test dependencies -->
-    
+
+    <!-- 16-Jan-2025, tatu: Use the new (in 3.0) shared core test-jar
+        for some shared test functionality.
+      -->
+    <dependency>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version.core}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
     <!-- 11-Jan-2025, joohyukkim: For JSTEP-10, migrate to JUnit5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -100,7 +114,7 @@ alternative support for serializing POJOs as XML and deserializing XML as pojos.
       <scope>test</scope>
     </dependency>
 
-    <!--  Jakarta XMLBind (nee javax/jaxb( annotation introspector is needed BUT ONLY
+    <!--  Jakarta XMLBind (nee javax/jaxb) annotation introspector is needed BUT ONLY
           for tests (starting 2.13: previously compile/runtime)
         -->
     <dependency>
