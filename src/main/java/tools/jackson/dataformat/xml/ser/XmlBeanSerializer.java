@@ -96,7 +96,6 @@ public class XmlBeanSerializer extends XmlBeanSerializerBase
          * - have any getter
          */
         if ((_objectIdWriter == null)
-                && (_anyGetterWriter == null)
                 && (_propertyFilterId == null)
                 ) {
             return new BeanAsArraySerializer(this);
