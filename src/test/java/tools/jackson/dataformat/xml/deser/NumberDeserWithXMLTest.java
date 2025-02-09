@@ -75,6 +75,24 @@ public class NumberDeserWithXMLTest extends XmlTestUtil
         public FloatHolder2784 holder;
     }
 
+    static class DeserializationIssue4917 {
+        public DecimalHolder4917 decimalHolder;
+        public double number;
+    }
+
+    static class DecimalHolder4917 {
+        public BigDecimal value;
+
+        private DecimalHolder4917(BigDecimal value) {
+            this.value = value;
+        }
+
+        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+        static DecimalHolder4917 of(BigDecimal value) {
+            return new DecimalHolder4917(value);
+        }
+    }
+
     /*
     /**********************************************************************
     /* Test methods
@@ -161,5 +179,16 @@ public class NumberDeserWithXMLTest extends XmlTestUtil
                 .build();
         NestedBigDecimalHolder2784 result = new XmlMapper(f).readValue(DOC, NestedBigDecimalHolder2784.class);
         assertEquals(new BigDecimal(value), result.holder.value);
+    }
+
+    // [databind#4917]
+    @Test
+    public void bigDecimal4917() throws Exception
+    {
+        DeserializationIssue4917 issue = MAPPER.readValue(
+                "<root><decimalHolder>100.00</decimalHolder><number>50</number></root>",
+                DeserializationIssue4917.class);
+        assertEquals(new BigDecimal("100.00"), issue.decimalHolder.value);
+        assertEquals(50.0, issue.number);
     }
 }
