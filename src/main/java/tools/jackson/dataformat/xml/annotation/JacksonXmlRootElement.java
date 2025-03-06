@@ -21,9 +21,12 @@ import java.lang.annotation.Target;
  * {@link com.fasterxml.jackson.annotation.JsonRootName} instead.
  * About the only expected usage may be to have different root name for XML
  * content than other formats.
+ *
+ * @deprecated Since 2.4 use {@link com.fasterxml.jackson.annotation.JsonRootName} instead
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated
 public @interface JacksonXmlRootElement
 {
     String namespace() default "";

@@ -1,6 +1,5 @@
 package tools.jackson.dataformat.xml.misc;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,6 +9,7 @@ import tools.jackson.databind.ObjectWriter;
 import tools.jackson.databind.PropertyName;
 
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -17,8 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 // NOTE: even tho `@JacksonXmlRootElement` will be deprecated in near
-// future (possibly in 2.13) -- to be replaced by `@JsonRootName` -- this
+// future  -- to be replaced by `@JsonRootName` -- this
 // test will use it to ensure we handle both annotations as expected
+@SuppressWarnings({ "serial" })
 public class RootNameTest extends XmlTestUtil
 {
     static class RootBeanBase
@@ -31,19 +32,21 @@ public class RootNameTest extends XmlTestUtil
         }
     }
 
+    @SuppressWarnings("deprecation")
     @JacksonXmlRootElement(localName="root")
     static class RootBean extends RootBeanBase
     {
         protected RootBean() { super(); }
     }
 
+    @SuppressWarnings("deprecation")
     @JacksonXmlRootElement(localName="nsRoot", namespace="http://foo")
     static class NsRootBean
     {
         public String value = "abc";
     }
 
-    @SuppressWarnings("serial")
+    @SuppressWarnings("deprecation")
     @JacksonXmlRootElement(localName="TheStrings")
     static class StringList extends ArrayList<String> {
         public StringList(String...strings) {
@@ -57,11 +60,13 @@ public class RootNameTest extends XmlTestUtil
     /**********************************************************
      */
 
-    protected XmlMapper _xmlMapper = new XmlMapper();
+    protected XmlMapper _xmlMapper = mapperBuilder()
+            .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
+            .build();
 
     // Unit test to verify that root name is properly set
     @Test
-    public void testRootNameAnnotation() throws IOException
+    public void testRootNameAnnotation()
     {
         String xml = _xmlMapper.writeValueAsString(new StringBean());
         
@@ -87,7 +92,7 @@ public class RootNameTest extends XmlTestUtil
     }
 
     @Test
-    public void testDynamicRootName() throws IOException
+    public void testDynamicRootName()
     {
         String xml;
 
@@ -105,7 +110,7 @@ public class RootNameTest extends XmlTestUtil
     }
 
     @Test
-    public void testDynamicRootNameForList() throws IOException
+    public void testDynamicRootNameForList()
     {
         String xml;
 
