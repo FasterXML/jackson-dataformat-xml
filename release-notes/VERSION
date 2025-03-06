@@ -13,5 +13,6 @@ Version: 3.x (for earlier see VERSION-2.x)
 #687: JSTEP-8: rename `FromXmlParser.Feature` as `XmlReadFeature`,
   `ToXmlGenerator.Feature` as `XmlWriteFeature`
 #701: Change 3.0 to use `module-info.java` directly, remove use of Moditect
+#725: Change `XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE` default to `true`
 - Add `XmlMapper.shared()`
 - Minimum Java baseline: Java 17

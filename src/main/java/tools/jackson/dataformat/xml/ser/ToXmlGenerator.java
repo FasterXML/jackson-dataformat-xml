@@ -44,8 +44,6 @@ public class ToXmlGenerator
      */
     protected final static String DEFAULT_UNKNOWN_ELEMENT = "unknown";
 
-    
-
     /*
     /**********************************************************************
     /* Configuration
