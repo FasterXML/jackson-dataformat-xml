@@ -70,7 +70,8 @@ public class ToXmlGenerator
          * If enabled, `xsi:nil` attribute will be added to the empty element; if disabled,
          * it will not.
          *<p>
-         * Feature is disabled by default for backwards compatibility.
+         * Default setting is {@code disabled} in Jackson 2.x for backwards compatibility:
+         * but will be changed in 3.0 to {@code enabled}.
          *
          * @since 2.10
          */
@@ -102,6 +103,9 @@ public class ToXmlGenerator
          * and output is indicated to be done as XML Attribute.
          * This is mostly desirable for Polymorphic handling where it is difficult
          * to specify XML Namespace for type identifier
+         *<p>
+         * Default setting is {@code disabled} in Jackson 2.x for backwards compatibility:
+         * but will be changed in 3.0 to {@code enabled}.
          *
          * @since 2.17
          */
@@ -132,7 +136,8 @@ public class ToXmlGenerator
          * so there is no corresponding
          * {@link com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.Feature}.
          *<p>
-         * Feature is disabled by default for backwards compatibility.
+         * Feature is {@code disabled} by default in Jackson 2.x for backwards compatibility:
+         * but will be changed in 3.0 to {@code enabled}.
          *
          * @since 2.17
          */
