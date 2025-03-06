@@ -243,7 +243,7 @@ public class XmlMapper extends ObjectMapper
          *     default settings of Jackson 2.x.
          * </p>
          */
-        //@Override
+        @Override
         public Builder configureForJackson2() {
             return super.configureForJackson2()
                     .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
