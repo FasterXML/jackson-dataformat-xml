@@ -8,13 +8,16 @@ import org.junit.jupiter.api.Test;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XmlGeneratorTest extends XmlTestUtil
 {
-    private final XmlMapper MAPPER = xmlMapper(true);
+    private final XmlMapper MAPPER = mapperBuilder(true)
+            .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
+            .build();
 
     @Test
     public void testSimpleElement() throws Exception
