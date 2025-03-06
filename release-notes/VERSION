@@ -17,5 +17,6 @@ Version: 3.x (for earlier see VERSION-2.x)
 #727: Change `XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL` default to `true`
 #728: Change `XmlWriteFeature.AUTO_DETECT_XSI_TYPE` default to `true`
 #729: Change `XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS` default to `true`
+#732: Change `XmlReadFeature.AUTO_DETECT_XSI_TYPE` default to `true`
 - Add `XmlMapper.shared()`
 - Minimum Java baseline: Java 17

@@ -22,9 +22,9 @@ public enum XmlReadFeature implements FormatFeature
      * usually used for Polymorphic handling where it is difficult
      * to specify proper XML Namespace for type identifier.
      *<p>
-     * Default setting is {@code false}.
+     * Default setting is {@code true} (was {@code false} in Jackson 2.x).
      */
-    AUTO_DETECT_XSI_TYPE(false),
+    AUTO_DETECT_XSI_TYPE(true),
 
     /**
      * Feature that indicates whether empty XML elements
