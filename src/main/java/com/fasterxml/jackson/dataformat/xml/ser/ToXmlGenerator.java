@@ -88,7 +88,7 @@ public class ToXmlGenerator
          * configured, or {@code ObjectNode} otherwise).
          *<p>
          * Default setting is {@code disabled} in Jackson 2.x, for backwards compatibility:
-         * likely to be changed in 3.0 to {@code enabled}.
+         * but will be changed in 3.0 to {@code enabled}.
          *
          * @since 2.13
          */
