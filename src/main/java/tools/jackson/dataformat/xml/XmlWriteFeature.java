@@ -36,9 +36,10 @@ public enum XmlWriteFeature implements FormatFeature
      * If enabled, `xsi:nil` attribute will be added to the empty element; if disabled,
      * it will not.
      *<p>
-     * Feature is disabled by default for backwards compatibility.
+     * Default setting is {@code true} (enabled) in Jackson 3.x:
+     * it was {@code false} (disabled)in Jackson 2.x.
      */
-    WRITE_NULLS_AS_XSI_NIL(false),
+    WRITE_NULLS_AS_XSI_NIL(true),
 
     /**
      * Feature that determines writing of root values of type {@code ObjectNode}
@@ -51,8 +52,8 @@ public enum XmlWriteFeature implements FormatFeature
      * root element name is determined using normal logic (either explicitly
      * configured, or {@code ObjectNode} otherwise).
      *<p>
-     * Default setting is {@code true} (enabled) in Jackson 3.0:
-     * it was {@code false} in Jackson 2.x.
+     * Default setting is {@code true} (enabled) in Jackson 3.x:
+     * it was {@code false} (disabled)in Jackson 2.x.
      */
     UNWRAP_ROOT_OBJECT_NODE(true),
 
@@ -64,8 +65,11 @@ public enum XmlWriteFeature implements FormatFeature
      * and output is indicated to be done as XML Attribute.
      * This is mostly desirable for Polymorphic handling where it is difficult
      * to specify XML Namespace for type identifier
+     *<p>
+     * Default setting is {@code true} (enabled) in Jackson 3.0:
+     * it was {@code false} (disabled)in Jackson 2.x.
      */
-    AUTO_DETECT_XSI_TYPE(false),
+    AUTO_DETECT_XSI_TYPE(true),
 
     /**
      * Feature that determines how floating-point infinity values are
@@ -92,9 +96,10 @@ public enum XmlWriteFeature implements FormatFeature
      * so there is no corresponding
      * {@link tools.jackson.dataformat.xml.XmlReadFeature}.
      *<p>
-     * Feature is disabled by default for backwards compatibility.
+     * Default setting is {@code true} (enabled) in Jackson 3.0:
+     * it was {@code false} (disabled)in Jackson 2.x.
      */
-    WRITE_XML_SCHEMA_CONFORMING_FLOATS(false),
+    WRITE_XML_SCHEMA_CONFORMING_FLOATS(true),
     ;
 
     private final boolean _defaultState;
