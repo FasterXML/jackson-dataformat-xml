@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
  * About the only expected usage may be to have different root name for XML
  * content than other formats.
  *
- * @deprecated Since 2.4 use {@link com.fasterxml.jackson.annotation.JsonRootName} instead
+ * @deprecated Since 3.0 use {@link com.fasterxml.jackson.annotation.JsonRootName} instead
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
