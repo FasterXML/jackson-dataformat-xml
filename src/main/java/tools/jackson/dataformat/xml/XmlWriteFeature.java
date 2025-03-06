@@ -37,8 +37,6 @@ public enum XmlWriteFeature implements FormatFeature
      * it will not.
      *<p>
      * Feature is disabled by default for backwards compatibility.
-     *
-     * @since 2.10
      */
     WRITE_NULLS_AS_XSI_NIL(false),
 
@@ -53,12 +51,10 @@ public enum XmlWriteFeature implements FormatFeature
      * root element name is determined using normal logic (either explicitly
      * configured, or {@code ObjectNode} otherwise).
      *<p>
-     * Default setting is {@code disabled} in Jackson 2.x, for backwards compatibility:
-     * likely to be changed in 3.0 to {@code enabled}.
-     *
-     * @since 2.13
+     * Default setting is {@code true} (enabled) in Jackson 3.0:
+     * it was {@code false} in Jackson 2.x.
      */
-    UNWRAP_ROOT_OBJECT_NODE(false),
+    UNWRAP_ROOT_OBJECT_NODE(true),
 
     /**
      * Feature that enables automatic conversion of logical property
@@ -68,8 +64,6 @@ public enum XmlWriteFeature implements FormatFeature
      * and output is indicated to be done as XML Attribute.
      * This is mostly desirable for Polymorphic handling where it is difficult
      * to specify XML Namespace for type identifier
-     *
-     * @since 2.17
      */
     AUTO_DETECT_XSI_TYPE(false),
 
