@@ -17,7 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class XmlParserTest extends XmlTestUtil
 {
     protected final ObjectMapper _jsonMapper = new JsonMapper();
-    protected final XmlMapper _xmlMapper = newMapper();
+    protected final XmlMapper _xmlMapper = mapperBuilder()
+            // Test written for 2.x which does not unwrap nodes so
+            .disable(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
+            .build();
 
     /*
     /**********************************************************************
