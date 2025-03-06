@@ -6,7 +6,6 @@ import javax.xml.stream.XMLOutputFactory;
 
 import tools.jackson.core.ErrorReportConfiguration;
 import tools.jackson.core.StreamReadConstraints;
-import tools.jackson.core.StreamReadFeature;
 import tools.jackson.core.StreamWriteConstraints;
 import tools.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
 
