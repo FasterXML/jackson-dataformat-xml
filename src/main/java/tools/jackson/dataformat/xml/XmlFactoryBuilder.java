@@ -6,6 +6,7 @@ import javax.xml.stream.XMLOutputFactory;
 
 import tools.jackson.core.ErrorReportConfiguration;
 import tools.jackson.core.StreamReadConstraints;
+import tools.jackson.core.StreamReadFeature;
 import tools.jackson.core.StreamWriteConstraints;
 import tools.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
 
@@ -220,6 +221,23 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
 
     public XmlFactoryBuilder configure(XmlWriteFeature f, boolean state) {
         return state ? enable(f) : disable(f);
+    }
+
+    /**
+     * The builder returned uses default settings more closely
+     * matching the default configs used in Jackson 2.x versions.
+     * <p>
+     *     This method is still a work in progress and may not yet fully replicate the
+     *     default settings of Jackson 2.x.
+     * </p>
+     */
+    @Override
+    public XmlFactoryBuilder configureForJackson2() {
+        return super.configureForJackson2()
+                .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
+                .disable(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
+                .disable(XmlWriteFeature.AUTO_DETECT_XSI_TYPE)
+                .disable(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
     }
 
     // // // Other config

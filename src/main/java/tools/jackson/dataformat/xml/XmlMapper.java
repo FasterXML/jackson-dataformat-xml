@@ -235,6 +235,23 @@ public class XmlMapper extends ObjectMapper
             return this;
         }
 
+        /**
+         * The builder returned uses default settings more closely
+         * matching the default configs used in Jackson 2.x versions.
+         * <p>
+         *     This method is still a work in progress and may not yet fully replicate the
+         *     default settings of Jackson 2.x.
+         * </p>
+         */
+        //@Override
+        public Builder configureForJackson2() {
+            //TODO call super.configureForJackson2() when available - https://github.com/FasterXML/jackson-databind/pull/5004
+            return disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
+                    .disable(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
+                    .disable(XmlWriteFeature.AUTO_DETECT_XSI_TYPE)
+                    .disable(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
+        }
+
         /*
         /******************************************************************
         /* XML specific additional config
@@ -338,6 +355,19 @@ public class XmlMapper extends ObjectMapper
 
     public static XmlMapper.Builder builder(XmlFactory streamFactory) {
         return new XmlMapper.Builder(streamFactory);
+    }
+
+    /**
+     * The builder returned uses default settings more closely
+     * matching the default configs used in Jackson 2.x versions.
+     * <p>
+     *     This method is still a work in progress and may not yet fully replicate the
+     *     default settings of Jackson 2.x.
+     * </p>
+     */
+    public static XmlMapper.Builder builderWithJackson2Defaults() {
+        return builder(XmlFactory.builderWithJackson2Defaults().build())
+                .configureForJackson2();
     }
 
     @SuppressWarnings("unchecked")
