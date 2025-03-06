@@ -67,6 +67,9 @@ public class FromXmlParser
          * matching {@code ToXmlGenerator.Feature#AUTO_DETECT_XSI_TYPE} feature,
          * usually used for Polymorphic handling where it is difficult
          * to specify proper XML Namespace for type identifier.
+         * 
+         * Default setting is {@code false} in Jackson 2.x (for backwards compatibility):
+         * will be changed to true in Jackson 3.x
          *
          * @since 2.17
          */
@@ -79,7 +82,7 @@ public class FromXmlParser
          * returned as `null` tokens, they will be returned as {@link JsonToken#VALUE_STRING}
          * tokens with textual value of "" (empty String).
          *<p>
-         * Default setting was {@code true} (for backwards compatibility from 2.9 to 2.11 (inclusive)
+         * Default setting was {@code true} (for backwards compatibility) from 2.9 to 2.11 (inclusive)
          * but was changed in 2.12 to be {@code false} (see [dataformat-xml#411] for details)
          *
          * @since 2.9
