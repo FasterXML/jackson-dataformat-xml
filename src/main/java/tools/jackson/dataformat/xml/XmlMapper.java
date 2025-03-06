@@ -245,8 +245,8 @@ public class XmlMapper extends ObjectMapper
          */
         //@Override
         public Builder configureForJackson2() {
-            //TODO call super.configureForJackson2() when available - https://github.com/FasterXML/jackson-databind/pull/5004
-            return disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
+            return super.configureForJackson2()
+                    .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
                     .disable(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
                     .disable(XmlWriteFeature.AUTO_DETECT_XSI_TYPE)
                     .disable(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
