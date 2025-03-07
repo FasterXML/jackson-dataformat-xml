@@ -168,6 +168,18 @@ public class XmlFactory
     }
 
     /**
+     * The builder returned uses default settings more closely
+     * matching the default configs used in Jackson 2.x versions.
+     * <p>
+     *     This method is still a work in progress and may not yet fully replicate the
+     *     default settings of Jackson 2.x.
+     * </p>
+     */
+    public static XmlFactoryBuilder builderWithJackson2Defaults() {
+        return builder().configureForJackson2();
+    }
+
+    /**
      * Note: compared to base implementation by {@link TokenStreamFactory},
      * here the copy will actually share underlying XML input and
      * output factories, as there is no way to make copies of those.
