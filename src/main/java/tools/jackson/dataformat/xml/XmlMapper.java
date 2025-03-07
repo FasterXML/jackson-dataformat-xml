@@ -249,7 +249,8 @@ public class XmlMapper extends ObjectMapper
                     .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL)
                     .disable(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
                     .disable(XmlWriteFeature.AUTO_DETECT_XSI_TYPE)
-                    .disable(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS);
+                    .disable(XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                    .disable(XmlReadFeature.AUTO_DETECT_XSI_TYPE);
         }
 
         /*

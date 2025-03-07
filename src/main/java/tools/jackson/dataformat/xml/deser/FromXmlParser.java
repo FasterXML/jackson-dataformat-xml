@@ -19,6 +19,7 @@ import tools.jackson.core.io.IOContext;
 import tools.jackson.core.io.NumberInput;
 import tools.jackson.core.util.ByteArrayBuilder;
 import tools.jackson.core.util.JacksonFeatureSet;
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.util.CaseInsensitiveNameSet;
 import tools.jackson.dataformat.xml.util.StaxUtil;
 
@@ -281,6 +282,10 @@ public class FromXmlParser
             }
         }
         _streamReadContext.setNamesToWrap(namesToWrap);
+    }
+
+    public final boolean isEnabled(XmlReadFeature f) {
+        return (_formatFeatures & f.getMask()) != 0;
     }
 
     /*
