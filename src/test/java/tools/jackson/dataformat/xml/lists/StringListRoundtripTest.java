@@ -1,7 +1,6 @@
 package tools.jackson.dataformat.xml.lists;
 
 import java.util.*;
-import static java.util.Arrays.asList;
 
 import org.junit.jupiter.api.Test;
 
@@ -129,7 +128,7 @@ public class StringListRoundtripTest
 
 	private void _stringListRoundtrip(ObjectMapper mapper, boolean shouldBeNull) throws Exception
 	{
-		List<String> list = asList(TEST_DATA);
+		List<String> list = Arrays.asList(TEST_DATA);
 
 		// serialize to string
 		String xml = mapper.writeValueAsString(list);
@@ -166,7 +165,7 @@ public class StringListRoundtripTest
 	private void _stringListPojoRoundtrip(ObjectMapper mapper, boolean shouldBeNull) throws Exception
 	{
 		ListPojo listPojo =  new ListPojo();
-		listPojo.setList(asList(TEST_DATA));
+		listPojo.setList(Arrays.asList(TEST_DATA));
 
 		// serialize to string
 		String xml = mapper.writeValueAsString(listPojo);
