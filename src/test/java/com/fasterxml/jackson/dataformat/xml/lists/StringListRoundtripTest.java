@@ -2,7 +2,7 @@ package com.fasterxml.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import static com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser.Feature.PROCESS_XSI_NIL;
 import static com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator.Feature.WRITE_NULLS_AS_XSI_NIL;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 // [dataformat-xml#584]
 public class StringListRoundtripTest
