@@ -1,5 +1,7 @@
 package com.fasterxml.jackson.dataformat.xml.jdk17;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,6 +13,7 @@ public class Java17CollectionsTest extends XmlTestBase
 {
     private final XmlMapper _xmlMapper = new XmlMapper();
 
+    @Test
     public void testStreamOf()
             throws Exception
     {
