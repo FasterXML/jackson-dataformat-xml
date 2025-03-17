@@ -210,10 +210,10 @@ alternative support for serializing POJOs as XML and deserializing XML as POJOs.
 
   <profiles>
     <profile>
-      <!-- And different set up for JDK 17 -->
+      <!-- And different set up for JDK 17 and above -->
       <id>java17</id>
       <activation>
-        <jdk>17</jdk>
+        <jdk>[17, )</jdk>
       </activation>
       <build>
         <plugins>
