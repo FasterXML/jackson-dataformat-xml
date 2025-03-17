@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.dataformat.xml.misc;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -101,6 +100,6 @@ public class XmlTextTest extends XmlTestUtil
     public void testRawValue() throws Exception
     {
         String xml = MAPPER.writeValueAsString(new RawValue());
-        Assert.assertEquals("<RawValue><a>b</a></RawValue>", xml);
+        assertEquals("<RawValue><a>b</a></RawValue>", xml);
     }
 }
