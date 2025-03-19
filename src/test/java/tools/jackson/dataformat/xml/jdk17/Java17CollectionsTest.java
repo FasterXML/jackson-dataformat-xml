@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import tools.jackson.dataformat.xml.XmlMapper;
-import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class XmlWrapperRecord517Test
     extends XmlTestUtil
 {
-
     public record Request(
             @JacksonXmlElementWrapper(localName = "messages")
             @JacksonXmlProperty(localName = "message")
@@ -24,14 +23,14 @@ public class XmlWrapperRecord517Test
     ) {
         public Request {}
 
-        Request() {this(null);}
+        protected Request() {this(null);}
     }
 
     public record Message(String text) {
         public Message {
         }
 
-        Message() {
+        protected Message() {
             this(null);
         }
     }
