@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.*;
 
-public class Java17CollectionsTest extends XmlTestBase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class Java17CollectionsTest extends XmlTestUtil
 {
     private final XmlMapper _xmlMapper = new XmlMapper();
 

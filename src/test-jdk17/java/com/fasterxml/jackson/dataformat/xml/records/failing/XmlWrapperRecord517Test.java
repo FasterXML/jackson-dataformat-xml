@@ -4,17 +4,18 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
+import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 // [databind#517] XML wrapper doesn't work with java records
 // Equivalent to on in jdk17/.../deser/XmlWrapperRecord517Test.java
 public class XmlWrapperRecord517Test
-        extends XmlTestBase
+    extends XmlTestUtil
 {
-
     public record Request(
             @JacksonXmlElementWrapper(localName = "messages")
             @JacksonXmlProperty(localName = "message")
@@ -22,14 +23,14 @@ public class XmlWrapperRecord517Test
     ) {
         public Request {}
 
-        private Request() {this(null);}
+        protected Request() {this(null);}
     }
 
     public record Message(String text) {
         public Message {
         }
 
-        private Message() {
+        protected Message() {
             this(null);
         }
     }

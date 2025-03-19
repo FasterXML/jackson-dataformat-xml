@@ -13,10 +13,10 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
 
+@Deprecated // since 2.19
 public abstract class XmlTestBase
     extends TestCase
 {
-
     protected static final String DEFAULT_NEW_LINE;
 
     static {
