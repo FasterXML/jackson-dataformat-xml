@@ -70,7 +70,6 @@ alternative support for serializing POJOs as XML and deserializing XML as POJOs.
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>stax2-api</artifactId>
-      <version>4.2.2</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
@@ -85,15 +84,11 @@ alternative support for serializing POJOs as XML and deserializing XML as POJOs.
     <!-- 09-May-2016, tatu: With Jackson 2.8, let's make this compile-dep to make it
         less likely users accidentally try to use Sjsxp from JDK, which leads to probs
       -->
-    <!-- 28-Jun-2022, tatu: For 2.14, 6.4 to get OSGi metadata, bug fixes -->
-    <!-- 18-Apr-2023, tatu: For 2.15, 6.5.1 for more OSGi fixes -->
-    <!-- 17-Jan-2024, tatu: For 2.17, 6.6.1 (latest) -->
     <!-- 21-Jun-2024, tatu: For 2.18, 7.0.0 (Java 8) -->
     <!-- 22-Oct-2024, tatu: For 2.19, 7.1.0 (latest) -->
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
       <artifactId>woodstox-core</artifactId>
-      <version>7.1.0</version>
       <exclusions>
         <exclusion>
 	  <groupId>javax.xml.stream</groupId>
