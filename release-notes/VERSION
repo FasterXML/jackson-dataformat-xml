@@ -5,6 +5,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 === Releases === 
 ------------------------------------------------------------------------
 
+3.0.0-rc2 (28-Mar-2025)
+
+No changes since rc1.
+
 3.0.0-rc1 (07-Mar-2025)
 
 #25: `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` not honored in xml module for attributes
