@@ -72,10 +72,10 @@ public class DefaultingXmlTypeResolverBuilder
         switch (_idType) {
         case CLASS:
             return new XmlTypeResolverBuilder.XmlClassNameIdResolver(baseType, config.getTypeFactory(),
-                    subTypeValidator(config));
+                    subtypes, subTypeValidator(config));
         case MINIMAL_CLASS:
             return new XmlTypeResolverBuilder.XmlMinimalClassNameIdResolver(baseType, config.getTypeFactory(),
-                    subTypeValidator(config));
+                    subtypes, subTypeValidator(config));
         default:
         }
         return super.idResolver(config, baseType, subtypeValidator, subtypes, forSer, forDeser);
