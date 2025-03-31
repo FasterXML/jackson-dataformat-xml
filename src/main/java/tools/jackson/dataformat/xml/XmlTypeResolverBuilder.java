@@ -61,9 +61,11 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
         // Only override handlers of class, minimal class; name is good as is
         switch (_idType) {
         case CLASS:
-            return new XmlClassNameIdResolver(baseType, subTypeValidator(ctxt));
+            return new XmlClassNameIdResolver(baseType, subtypes,
+                    subTypeValidator(ctxt));
         case MINIMAL_CLASS:
-            return new XmlMinimalClassNameIdResolver(baseType, subTypeValidator(ctxt));
+            return new XmlMinimalClassNameIdResolver(baseType, subtypes,
+                    subTypeValidator(ctxt));
         default:
         }
         return super.idResolver(ctxt, baseType, subtypeValidator, subtypes, forSer, forDeser);
@@ -125,9 +127,10 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     {
         private static final long serialVersionUID = 3L;
 
-        public XmlClassNameIdResolver(JavaType baseType, PolymorphicTypeValidator ptv)
+        public XmlClassNameIdResolver(JavaType baseType, Collection<NamedType> subtypes,
+                PolymorphicTypeValidator ptv)
         {
-            super(baseType, ptv);
+            super(baseType, subtypes, ptv);
         }
 
         @Override
@@ -147,9 +150,10 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
     {
         private static final long serialVersionUID = 3L;
 
-        public XmlMinimalClassNameIdResolver(JavaType baseType, PolymorphicTypeValidator ptv)
+        public XmlMinimalClassNameIdResolver(JavaType baseType, Collection<NamedType> subtypes,
+                PolymorphicTypeValidator ptv)
         {
-            super(baseType, ptv);
+            super(baseType, subtypes, ptv);
         }
 
         @Override
