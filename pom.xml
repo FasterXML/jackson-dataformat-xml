@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- This module was also published with a richer model, Gradle metadata,  -->
+    <!-- which should be used instead. Do not delete the following line which  -->
+    <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+    <!-- that they should prefer consuming it instead. -->
+    <!-- do_not_remove: published-with-gradle-metadata -->
     <modelVersion>4.0.0</modelVersion> 
     <parent>
         <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-parent</artifactId>
-        <version>2.7</version>
+        <artifactId>jackson-base</artifactId>
+        <version>2.19.0-SNAPSHOT</version>
     </parent>
     <groupId>com.fasterxml.jackson.dataformat</groupId>
     <artifactId>jackson-dataformat-xml</artifactId>
-    <version>2.7.0-rc4-SNAPSHOT</version>
+    <version>2.19.0-SNAPSHOT</version>
     <name>Jackson-dataformat-XML</name>
-    <packaging>bundle</packaging>
-    <description>Data format extension for Jackson (http://jackson.codehaus.org) to offer
-        alternative support for serializing POJOs as XML and deserializing XML as pojos.
-        Support implemented on top of Stax API (javax.xml.stream), by implementing core Jackson Streaming API types like JsonGenerator, JsonParser and JsonFactory.
-        Some data-binding types overridden as well (ObjectMapper sub-classed as XmlMapper).
+    <packaging>jar</packaging>
+    <description>Data format extension for Jackson to offer
+        alternative support for serializing POJOs as XML and deserializing XML as POJOs.
     </description>
-    <url>http://wiki.fasterxml.com/JacksonExtensionXmlDataBinding</url>
+    <url>https://github.com/FasterXML/jackson-dataformat-xml</url>
     <scm>
         <connection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</connection>
         <developerConnection>scm:git:git@github.com:FasterXML/jackson-dataformat-xml.git</developerConnection>
@@ -24,75 +27,146 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <version.jackson.annotations>2.7.0-rc3</version.jackson.annotations>
-        <version.jackson.core>2.7.0</version.jackson.core>
-        <version.jackson.jaxb>2.7.0-rc3</version.jackson.jaxb>
         <packageVersion.dir>com/fasterxml/jackson/dataformat/xml</packageVersion.dir>
         <packageVersion.package>${project.groupId}.xml</packageVersion.package>
 
         <!-- Default export should work fine... -->
         <!-- And presumably import too? -->
+
+        <!-- for Reproducible Builds -->
+        <project.build.outputTimestamp>2025-04-08T01:47:16Z</project.build.outputTimestamp>
     </properties>
 
     <dependencies>
-        <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation on deploy time), Stax2 API.
-           Also requires JAXB annotations module
+        <!-- Extends Jackson (jackson-mapper); requires Stax API (and implementation on
+           deploy time), Stax2 API.
         -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${version.jackson.core}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${version.jackson.annotations}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${version.jackson.core}</version>
         </dependency>
-        <!--  JAXB annotation introspector is needed too? -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${version.jackson.jaxb}</version>
-        </dependency>
-        <!-- JDK 1.6 provides stax-api (javax.xml.stream), but let's add this for documentation
+
+        <!-- 20-Mar-2019, tatu: Stax-api been part of JDK since Java 6, so let's drop
+          dependency as it causes issues with JDK9+ module info
         -->
+        <!--
         <dependency>
-            <groupId>javax.xml.stream</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0-2</version>
-            <scope>provided</scope>
+          <groupId>javax.xml.stream</groupId>
+          <artifactId>stax-api</artifactId>
+          <version>1.0-2</version>
+          <scope>provided</scope>
         </dependency>
+        -->
+
         <!--  But Stax2 API must be included -->
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>stax2-api</artifactId>
-            <!-- 01-Jan-2010, Stupid Maven Release plug-in mandates a non-range
-                version
-            -->
-            <!--
-                  <version>[3.0.4, 3.5.0)</version>
-            -->
-            <version>3.1.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.stream</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions> 
         </dependency>
         <!--  and a Stax impl is needed: SJSXP (from JDK 1.6) might work, but always   
             has odd issues. Let's default to Woodstox: caller can upgrade to Aalto
            (needs to block this dep)
         -->
+        <!-- 09-May-2016, tatu: With Jackson 2.8, let's make this compile-dep to make it
+          less likely users accidentally try to use Sjsxp from JDK, which leads to probs
+        -->
+        <!-- 21-Jun-2024, tatu: For 2.18, 7.0.0 (Java 8) -->
+        <!-- 22-Oct-2024, tatu: For 2.19, 7.1.0 (latest) -->
         <dependency>
             <groupId>com.fasterxml.woodstox</groupId>
             <artifactId>woodstox-core</artifactId>
-            <version>5.0.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.xml.stream</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions> 
+        </dependency>
+
+        <!-- 20-Apr-2024, tatu: JUnit4 no longer from jackson-base, so: -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 11-Jan-2025, joohyukkim: For JSTEP-10, migrate to JUnit5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--  Jakarta XMLBind (nee javax/jaxb( annotation introspector is needed BUT ONLY
+           for tests (starting 2.13: previously compile/runtime)
+        -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 03-Jul-2021, tatu: We may or may not need this, but only for tests
+        -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- 03-Jul-2021, tatu: For sanity checking of non-Woodstox impl usage
+          need, say, Sjsxp
+        -->
+        <dependency>
+            <groupId>com.sun.xml.stream</groupId>
+            <artifactId>sjsxp</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!-- attached to Maven test phase -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <!-- Inherited from oss-base. Generate PackageVersion.java.-->
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -104,34 +178,87 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--  Need to skip known-failing tests for build... -->
+            <!-- 20-Mar-2019, tatu: use Moditect for JDK9+ module info inclusion -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${version.plugin.surefire}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>com/fasterxml/jackson/dataformat/xml/failing/*.java</exclude>
-                    </excludes>
-                    <includes>
-                        <include>**/Test*.java</include>
-                        <include>**/*Test.java</include>
-                    </includes>
-                </configuration>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+            </plugin>
+            <!-- 05-Jul-2020, tatu: Add gradle module metadata -->
+            <plugin>
+                <groupId>org.gradlex</groupId>
+                <artifactId>gradle-module-metadata-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
+    <!-- Alas, need to include snapshot reference since otherwise can not find
+    snapshot of parent... -->
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <profiles>
-        <!--  19-Feb-2012, tatu: Since we have some failing tests, may need to force release -->
         <profile>
-            <id>force-release</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-                <skipTests>true</skipTests>
-            </properties>
+            <!-- And different set up for JDK 17 and above -->
+            <id>java17</id>
+            <activation>
+                <jdk>[17, )</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/test-jdk17/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <!-- Enable Java 17 for all sources so that Intellij picks the right language level -->
+                            <source>17</source>
+                            <release>17</release>
+                            <compilerArgs>
+                                <arg>-parameters</arg>
+                                <arg>--add-opens=java.base/java.lang=ALL-UNNAMED</arg>
+                                <arg>--add-opens=java.base/java.util=ALL-UNNAMED</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
-    <!-- NOTE: repositories from parent POM -->
 
 </project>
