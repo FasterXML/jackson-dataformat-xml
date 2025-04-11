@@ -85,8 +85,8 @@ public class BuilderWithJAXB291Test extends XmlTestUtil
             String county;
 
             @JsonCreator
-            public AddressBuilder(@JsonProperty("address1") String address1, @JsonProperty("city") String city, @JsonProperty("stateProvince") String stateProvince,
-                    @JsonProperty("postalCode") String postalCode, @JsonProperty("country") String country) {
+            public AddressBuilder(@JsonProperty("Address1") String address1, @JsonProperty("City") String city, @JsonProperty("StateProvince") String stateProvince,
+                    @JsonProperty("PostalCode") String postalCode, @JsonProperty("Country") String country) {
                 this.address1 = address1;
                 this.city = city;
                 this.stateProvince = stateProvince;
