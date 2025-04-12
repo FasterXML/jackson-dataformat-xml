@@ -52,6 +52,15 @@ public class ToXmlGenerator
         WRITE_XML_DECLARATION(false),
 
         /**
+         * Feature that controls whether XML declaration should include the standalone attribute
+         * when generator is initialized (true) or not (false). Only honored when
+         * {@link Feature#WRITE_XML_DECLARATION WRITE_XML_DECLARATION} is enabled
+         *
+         * @since 2.19
+         */
+        WRITE_STANDALONE_YES_TO_XML_DECLARATION(false),
+
+        /**
          * Feature that controls whether output should be done as XML 1.1; if so,
          * certain aspects may differ from default (1.0) processing: for example,
          * XML declaration will be automatically added (regardless of setting
@@ -297,15 +306,24 @@ public class ToXmlGenerator
         _initialized = true;
         try {
             boolean xmlDeclWritten;
-            if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures)) {
-                _xmlWriter.writeStartDocument("UTF-8", "1.1");
-                xmlDeclWritten = true;
-            } else if (Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-                _xmlWriter.writeStartDocument("UTF-8", "1.0");
+
+            if (Feature.WRITE_XML_1_1.enabledIn(_formatFeatures) ||
+                    Feature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
+
+                String xmlVersion = Feature.WRITE_XML_1_1.enabledIn(_formatFeatures) ? "1.1" : "1.0";
+                String encoding = "UTF-8";
+
+                if (Feature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
+                    _xmlWriter.writeStartDocument(xmlVersion, encoding, true);
+                } else {
+                    _xmlWriter.writeStartDocument(encoding, xmlVersion);
+                }
+
                 xmlDeclWritten = true;
             } else {
                 xmlDeclWritten = false;
             }
+
             // as per [dataformat-xml#172], try adding indentation
             if (xmlDeclWritten && (_xmlPrettyPrinter != null)) {
                 // ... but only if it is likely to succeed:
