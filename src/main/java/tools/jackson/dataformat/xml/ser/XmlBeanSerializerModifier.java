@@ -35,7 +35,7 @@ public class XmlBeanSerializerModifier
      */
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config,
-            BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties)
+            BeanDescription.Supplier beanDescRef, List<BeanPropertyWriter> beanProperties)
     {
         final AnnotationIntrospector intr = config.getAnnotationIntrospector();
         for (int i = 0, len = beanProperties.size(); i < len; ++i) {
@@ -73,12 +73,11 @@ public class XmlBeanSerializerModifier
     
     @Override
     public ValueSerializer<?> modifySerializer(SerializationConfig config,
-            BeanDescription beanDesc, ValueSerializer<?> serializer)
+            BeanDescription.Supplier beanDescRefc, ValueSerializer<?> serializer)
     {
-        /* First things first: we can only handle real BeanSerializers; question
-         * is, what to do if it's not one: throw exception or bail out?
-         * For now let's do latter.
-         */
+        // First things first: we can only handle real BeanSerializers; question
+        // is, what to do if it's not one: throw exception or bail out?
+        // For now let's do latter.
         if (!(serializer instanceof BeanSerializerBase)) {
             return serializer;
         }

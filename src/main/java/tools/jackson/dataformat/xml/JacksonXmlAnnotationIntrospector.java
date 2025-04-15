@@ -85,6 +85,7 @@ public class JacksonXmlAnnotationIntrospector
         return null;
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     public PropertyName findRootName(MapperConfig<?> config, AnnotatedClass ac)
     {
