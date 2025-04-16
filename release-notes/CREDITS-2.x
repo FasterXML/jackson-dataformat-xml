@@ -271,3 +271,8 @@ Bas Passon (@bpasson)
 * Reported, contributed fix for #646: Deserializing fails when using builder classes
   with `Iterable` Collection setters
  (2.17.1)
+
+多多冰冰 (@duoduobingbing)
+
+* Contributed #745: Add feature to include `standalone='yes'` in xml declaration
+ (2.19.0)

@@ -4,7 +4,10 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.19.0-rc (07-Apr-2025)
+#745: Add feature to include `standalone='yes'` in xml declaration
+ (contributed by @duoduobingbing)
+
+2.19.0-rc2 (07-Apr-2025)
 
 #700: Unify testing structure/tools [JSTEP-10]
  (fix contributed by Joo Hyuk K)
