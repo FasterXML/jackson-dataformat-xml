@@ -31,7 +31,7 @@ public class XmlBeanDeserializerModifier
 
     @Override
     public List<BeanPropertyDefinition> updateProperties(DeserializationConfig config,
-            BeanDescription beanDesc, List<BeanPropertyDefinition> propDefs)
+            BeanDescription.Supplier beanDescRef, List<BeanPropertyDefinition> propDefs)
     {
         final AnnotationIntrospector intr = config.getAnnotationIntrospector();
         int changed = 0;
@@ -80,7 +80,7 @@ public class XmlBeanDeserializerModifier
 
     @Override
     public ValueDeserializer<?> modifyDeserializer(DeserializationConfig config,
-            BeanDescription beanDesc, ValueDeserializer<?> deser0)
+            BeanDescription.Supplier beanDescRef, ValueDeserializer<?> deser0)
     {
         if (!(deser0 instanceof BeanDeserializerBase)) {
             return deser0;
