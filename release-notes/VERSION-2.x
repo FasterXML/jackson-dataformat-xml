@@ -4,6 +4,8 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
+#508: `XmlMapper` is unable to deserialise into an empty record
+ (reported by @protazy)
 #745: Add feature to include `standalone='yes'` in xml declaration
  (contributed by @duoduobingbing)
 
