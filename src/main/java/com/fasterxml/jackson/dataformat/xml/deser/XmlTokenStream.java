@@ -269,9 +269,6 @@ public class XmlTokenStream
         case XML_START_ELEMENT: 
             System.out.printf(" XmlTokenStream.next(): XML_START_ELEMENT '%s' %s\n", _localName, _loc());
             break;
-        case XML_DELAYED_START_ELEMENT: 
-            System.out.printf(" XmlTokenStream.next(): XML_DELAYED_START_ELEMENT '%s' %s\n", _localName, _loc());
-            break;
         case XML_END_ELEMENT: 
             // 24-May-2020, tatu: no name available for end element so do not print
             System.out.printf(" XmlTokenStream.next(): XML_END_ELEMENT %s\n", _loc());
@@ -407,6 +404,16 @@ public class XmlTokenStream
     }
 
     /**
+     * Method that can be called to mark stream as having reached end of stream.
+     *
+     * @since 2.19
+     */
+    protected void markAsStreamEnd()
+    {
+        _currentState = XML_END;
+    }
+
+    /**
      * Method called to skip any attributes current START_ELEMENT may have,
      * so that they are not returned as token.
      * 
@@ -460,6 +467,7 @@ public class XmlTokenStream
                 // 08-Jul-2021, tatu: as per [dataformat-xml#467] just skip anything
                 //   element might have, no need to ensure it was empty
                 _xmlReader.skipElement();
+//System.out.println(" XmlTokenStream._next(): Got xsi:nil, skipping element");
                 return _handleEndElement();
             }
             if (_nextAttributeIndex < _attributeCount) {
@@ -693,7 +701,7 @@ public class XmlTokenStream
         int count = _xmlReader.getAttributeCount();
         _attributeCount = count;
 
-        // [dataformat-xml#354]: xsi:nul handling; at first only if first attribute
+        // [dataformat-xml#354]: xsi:nil handling; at first only if first attribute
         if (count >= 1) {
             // [dataformat-xml#468]: may disable xsi:nil processing
             if (_cfgProcessXsiNil
@@ -703,6 +711,7 @@ public class XmlTokenStream
                     _nextAttributeIndex = 1;
                     // but only mark as nil marker if enabled
                     _xsiNilFound = "true".equals(_xmlReader.getAttributeValue(0));
+//System.out.println(" XMLTokenStream._checkXsiAttributes(), _xsiNilFound: "+_xsiNilFound);
                     return;
                 }
             }
@@ -813,6 +822,8 @@ public class XmlTokenStream
 
             }
         } else {
+//System.out.println(" XMLTokenStream._handleEndElement(): no wrapper");
+
             // Not (necessarily) known, as per above, so:
             _localName = "";
             _namespaceURI = "";

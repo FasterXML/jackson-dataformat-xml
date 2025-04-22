@@ -6,6 +6,8 @@ Project: jackson-dataformat-xml
 
 #508: `XmlMapper` is unable to deserialise into an empty record
  (reported by @protazy)
+#714: Root-level `null` handling (via `xsi:nil`) leaves trailing token in
+ `JsonParser`-exposed token stream
 #745: Add feature to include `standalone='yes'` in xml declaration
  (contributed by @duoduobingbing)
 
