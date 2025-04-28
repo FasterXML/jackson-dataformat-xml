@@ -35,10 +35,10 @@ public class FromXmlParser
     implements ElementWrappable
 {
     /**
-     * The default name placeholder for XML text segments is empty
-     * String ("").
+     * The default name placeholder for XML text segments is &lt;xml:text&gt;
+     * @since 3.0.0 Is now &lt;xml:text&gt; - was empty String ("") before.
      */
-    public final static String DEFAULT_UNNAMED_TEXT_PROPERTY = "";
+    public final static String DEFAULT_TEXT_PROPERTY = "<xml:text>";
 
     /**
      * XML format has some peculiarities, indicated via capability
@@ -61,7 +61,7 @@ public class FromXmlParser
      * may be changed for inter-operability reasons: JAXB, for example, uses
      * "value" as name.
      */
-    protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
+    protected String _cfgNameForTextElement = DEFAULT_TEXT_PROPERTY;
 
     /*
     /**********************************************************************

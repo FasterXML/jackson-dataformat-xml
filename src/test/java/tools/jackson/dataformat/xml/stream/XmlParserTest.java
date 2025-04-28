@@ -99,7 +99,7 @@ public class XmlParserTest extends XmlTestUtil
         try (JsonParser p = _xmlMapper.createParser(XML)) {
             assertToken(JsonToken.START_OBJECT, p.nextToken());
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
-            assertEquals("", p.currentName());
+            assertEquals(FromXmlParser.DEFAULT_TEXT_PROPERTY, p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("value", p.getString());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
@@ -118,7 +118,7 @@ public class XmlParserTest extends XmlTestUtil
             assertToken(JsonToken.START_OBJECT, p.nextToken());
 
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
-            assertEquals("", p.currentName());
+            assertEquals(FromXmlParser.DEFAULT_TEXT_PROPERTY, p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
             assertEquals("value", p.getString());
 
@@ -343,7 +343,7 @@ public class XmlParserTest extends XmlTestUtil
     @Test
     public void testMixedContent() throws Exception
     {
-        String exp = a2q("{'':'first','a':'123','':'second','b':'456','':'last'}");
+        String exp = a2q(String.format("{'%1$s':'first','a':'123','%1$s':'second','b':'456','%1$s':'last'}", FromXmlParser.DEFAULT_TEXT_PROPERTY));
         String result = _readXmlWriteJson("<root>first<a>123</a>second<b>456</b>last</root>");
 
 //System.err.println("result = \n"+result);
@@ -373,7 +373,7 @@ public class XmlParserTest extends XmlTestUtil
         assertEquals(42, xp.getIntValue());
 
         assertToken(JsonToken.PROPERTY_NAME, xp.nextToken()); // implicit for text
-        assertEquals("", xp.currentName());
+        assertEquals(FromXmlParser.DEFAULT_TEXT_PROPERTY, xp.currentName());
 
         assertToken(JsonToken.VALUE_STRING, xp.nextToken());
         assertTrue(xp.isExpectedNumberIntToken());

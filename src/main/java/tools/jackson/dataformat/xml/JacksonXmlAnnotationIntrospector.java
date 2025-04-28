@@ -8,6 +8,7 @@ import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.*;
 import tools.jackson.dataformat.xml.annotation.*;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 /**
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support
@@ -208,6 +209,10 @@ public class JacksonXmlAnnotationIntrospector
         PropertyName pn = PropertyName.merge(_findXmlName(a),
                 super.findNameForDeserialization(config, a));
         if (pn == null) {
+            if(_hasAnnotation(a, JacksonXmlText.class)){
+                return PropertyName.construct(FromXmlParser.DEFAULT_TEXT_PROPERTY);
+            }
+
             if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
                 return PropertyName.USE_DEFAULT;
             }

@@ -67,7 +67,7 @@ public class XmlMapper extends ObjectMapper
             //    String into `null` (where it otherwise is an error) is very useful.
             enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
             _defaultUseWrapper = JacksonXmlAnnotationIntrospector.DEFAULT_USE_WRAPPER;
-            _nameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
+            _nameForTextElement = FromXmlParser.DEFAULT_TEXT_PROPERTY;
 
             // as well as AnnotationIntrospector: note, however, that "use wrapper" may well
             // change later on

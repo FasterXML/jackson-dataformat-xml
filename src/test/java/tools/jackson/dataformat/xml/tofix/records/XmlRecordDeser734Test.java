@@ -18,7 +18,6 @@ public class XmlRecordDeser734Test extends XmlTestUtil
     private final String XML =
             a2q("<Amt Ccy='EUR'>1</Amt>");
 
-    @JacksonTestFailureExpected
     @Test
     public void testDeser() throws Exception {
         XmlMapper mapper = new XmlMapper();

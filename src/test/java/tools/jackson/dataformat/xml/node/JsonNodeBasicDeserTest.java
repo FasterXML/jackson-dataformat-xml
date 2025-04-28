@@ -7,6 +7,7 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.JsonNodeType;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,7 +44,7 @@ public class JsonNodeBasicDeserTest extends XmlTestUtil
     {
         JsonNode fromXml = XML_MAPPER.readTree("<root>first<a>123</a>second<b>abc</b>last</root>");
         final ObjectNode exp = XML_MAPPER.createObjectNode();
-        exp.putArray("")
+        exp.putArray(FromXmlParser.DEFAULT_TEXT_PROPERTY)
             .add("first")
             .add("second")
             .add("last");

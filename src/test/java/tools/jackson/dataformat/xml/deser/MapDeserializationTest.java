@@ -41,7 +41,7 @@ public class MapDeserializationTest extends XmlTestUtil
          assertEquals(1, map.size());
          Map<String,Object> inner = new LinkedHashMap<>();
          inner.put("lang", "en");
-         inner.put("", "John Smith");
+         inner.put(FromXmlParser.DEFAULT_TEXT_PROPERTY, "John Smith");
          assertEquals(Collections.singletonMap("person", inner), map);
     }
 }

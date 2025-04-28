@@ -77,7 +77,7 @@ public class UntypedObjectDeserTest extends XmlTestUtil
         final String XML = "<root>first<a>123</a>second<b>abc</b>last</root>";
         final JsonNode fromXml = XML_MAPPER.valueToTree(XML_MAPPER.readValue(XML, Object.class));
         final ObjectNode exp = XML_MAPPER.createObjectNode();
-        exp.putArray("")
+        exp.putArray(FromXmlParser.DEFAULT_TEXT_PROPERTY)
             .add("first")
             .add("second")
             .add("last");

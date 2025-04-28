@@ -44,7 +44,7 @@ public class XmlParser442Test extends XmlTestUtil
             // Here's what we are missing:
             assertToken(JsonToken.START_OBJECT, xp.nextToken());
             assertToken(JsonToken.PROPERTY_NAME, xp.nextToken());
-            assertEquals("", xp.currentName());
+            assertEquals(FromXmlParser.DEFAULT_TEXT_PROPERTY, xp.currentName());
 
             assertToken(JsonToken.VALUE_STRING, xp.nextToken());
             assertEquals("text", xp.getString().trim());

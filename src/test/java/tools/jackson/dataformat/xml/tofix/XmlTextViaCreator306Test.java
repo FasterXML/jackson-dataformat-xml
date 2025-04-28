@@ -116,7 +116,6 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
     }
 
     // [dataformat-xml#423]
-    @JacksonTestFailureExpected
     @Test
     public void testXmlTextViaCtor423() throws Exception
     {

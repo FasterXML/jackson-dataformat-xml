@@ -68,7 +68,7 @@ public class XmlDeserializationContext
             final String propName = p.currentName();
             JsonToken t = p.nextToken();
             if (t == JsonToken.VALUE_STRING) {
-                if (propName.equals("")) {
+                if (FromXmlParser.DEFAULT_TEXT_PROPERTY.equals(propName)) {
                     text = p.getString();
                 }
             } else {

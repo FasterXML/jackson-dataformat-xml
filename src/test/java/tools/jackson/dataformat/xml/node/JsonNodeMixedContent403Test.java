@@ -6,6 +6,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,7 +20,7 @@ public class JsonNodeMixedContent403Test extends XmlTestUtil
     public void testMixedContentBefore() throws Exception
     {
         // First, before elements:
-        assertEquals(JSON_MAPPER.readTree(a2q("{'':'before','a':'1','b':'2'}")),
+        assertEquals(JSON_MAPPER.readTree(a2q(String.format("{'%s':'before','a':'1','b':'2'}", FromXmlParser.DEFAULT_TEXT_PROPERTY))),
                 XML_MAPPER.readTree("<root>before<a>1</a><b>2</b></root>"));
     }
 
@@ -27,7 +28,7 @@ public class JsonNodeMixedContent403Test extends XmlTestUtil
     public void testMixedContentBetween() throws Exception
     {
         // Second, between
-        assertEquals(JSON_MAPPER.readTree(a2q("{'a':'1','':'between','b':'2'}")),
+        assertEquals(JSON_MAPPER.readTree(a2q(String.format("{'a':'1','%s':'between','b':'2'}", FromXmlParser.DEFAULT_TEXT_PROPERTY))),
                 XML_MAPPER.readTree("<root><a>1</a>between<b>2</b></root>"));
     }
 
@@ -35,7 +36,7 @@ public class JsonNodeMixedContent403Test extends XmlTestUtil
     public void testMixedContentAfter() throws Exception
     {
         // and then after
-        assertEquals(JSON_MAPPER.readTree(a2q("{'a':'1','b':'2','':'after'}")),
+        assertEquals(JSON_MAPPER.readTree(a2q(String.format("{'a':'1','b':'2','%s':'after'}", FromXmlParser.DEFAULT_TEXT_PROPERTY))),
                 XML_MAPPER.readTree("<root><a>1</a><b>2</b>after</root>"));
     }
 
@@ -44,7 +45,7 @@ public class JsonNodeMixedContent403Test extends XmlTestUtil
     {
         // and then after
         assertEquals(JSON_MAPPER.readTree(
-                a2q("{'':['first','second','third'],'a':'1','b':'2'}")),
+                a2q(String.format("{'%s':['first','second','third'],'a':'1','b':'2'}", FromXmlParser.DEFAULT_TEXT_PROPERTY))),
                 XML_MAPPER.readTree("<root>first<a>1</a>second<b>2</b>third</root>"));
     }
 
@@ -57,7 +58,7 @@ public class JsonNodeMixedContent403Test extends XmlTestUtil
                 +" mixed2</a>\n"
                 +"</root>";
         JsonNode fromJson = JSON_MAPPER.readTree(
-                a2q("{'a':{'':['mixed1 ',' mixed2'],'b':'leaf'}}"));
+                a2q(String.format("{'a':{'%s':['mixed1 ',' mixed2'],'b':'leaf'}}", FromXmlParser.DEFAULT_TEXT_PROPERTY)));
         assertEquals(fromJson, XML_MAPPER.readTree(XML));
     }
 }
