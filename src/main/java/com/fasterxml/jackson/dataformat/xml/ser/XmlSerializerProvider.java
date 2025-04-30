@@ -315,7 +315,7 @@ public class XmlSerializerProvider extends DefaultSerializerProvider
             JsonSerializer<Object> ser) throws IOException
     {
         ObjectNode root = (ObjectNode) value;
-        Map.Entry<String, JsonNode> entry = root.fields().next();
+        Map.Entry<String, JsonNode> entry = root.properties().iterator().next();
         final JsonNode newRoot = entry.getValue();
 
         // No namespace associated with JsonNode:
