@@ -6,7 +6,7 @@ Project: jackson-dataformat-xml
 
 2.20.0 (not yet released)
 
--
+- Generate SBOMs [JSTEP-14]
 
 2.19.0-rc2 (24-Apr-2025)
 
