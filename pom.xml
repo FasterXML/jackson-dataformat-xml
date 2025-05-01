@@ -158,6 +158,11 @@ alternative support for serializing POJOs as XML and deserializing XML as POJOs.
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
       </plugin>
+      <!-- 29-Apr-2025, tatu: SBOM generation [JSTEP-14] -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+      </plugin>
       <!-- 05-Jul-2020, tatu: Add gradle module metadata -->
       <plugin>
         <groupId>org.gradlex</groupId>
