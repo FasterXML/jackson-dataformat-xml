@@ -8,7 +8,6 @@ import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.*;
 import tools.jackson.dataformat.xml.annotation.*;
-import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 /**
  * Extension of {@link JacksonAnnotationIntrospector} that is needed to support
@@ -38,12 +37,19 @@ public class JacksonXmlAnnotationIntrospector
 
     protected boolean _cfgDefaultUseWrapper;
 
+    protected final JacksonXmlAnnotationIntrospectorConfig _cfgIntrospectorConfig;
+
     public JacksonXmlAnnotationIntrospector() {
         this(DEFAULT_USE_WRAPPER);
     }
 
     public JacksonXmlAnnotationIntrospector(boolean defaultUseWrapper) {
+        this(defaultUseWrapper, new JacksonXmlAnnotationIntrospectorConfig());
+    }
+
+    public JacksonXmlAnnotationIntrospector(boolean defaultUseWrapper, JacksonXmlAnnotationIntrospectorConfig introspectorConfig) {
         _cfgDefaultUseWrapper = defaultUseWrapper;
+        _cfgIntrospectorConfig = introspectorConfig;
     }
 
     /*
@@ -85,7 +91,7 @@ public class JacksonXmlAnnotationIntrospector
         }
         return null;
     }
-    
+
     @SuppressWarnings("deprecation")
     @Override
     public PropertyName findRootName(MapperConfig<?> config, AnnotatedClass ac)
@@ -94,7 +100,7 @@ public class JacksonXmlAnnotationIntrospector
         if (root != null) {
             String local = root.localName();
             String ns = root.namespace();
-            
+
             if (local.length() == 0 && ns.length() == 0) {
                 return PropertyName.USE_DEFAULT;
             }
@@ -209,8 +215,11 @@ public class JacksonXmlAnnotationIntrospector
         PropertyName pn = PropertyName.merge(_findXmlName(a),
                 super.findNameForDeserialization(config, a));
         if (pn == null) {
-            if(_hasAnnotation(a, JacksonXmlText.class)){
-                return PropertyName.construct(FromXmlParser.DEFAULT_TEXT_PROPERTY);
+            JacksonXmlText jacksonXmlTextAnnotation = _findAnnotation(a, JacksonXmlText.class);
+
+            if (jacksonXmlTextAnnotation != null && jacksonXmlTextAnnotation.value() &&
+                !_cfgIntrospectorConfig.inferXmlTextPropertyName()) {
+                return _cfgIntrospectorConfig.xmlTextPropertyName();
             }
 
             if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
