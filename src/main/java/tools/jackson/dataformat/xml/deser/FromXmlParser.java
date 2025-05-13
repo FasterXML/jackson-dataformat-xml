@@ -35,8 +35,12 @@ public class FromXmlParser
     implements ElementWrappable
 {
     /**
-     * The default name placeholder for XML text segments is &lt;xml:text&gt;
-     * @since 3.0 Is now &lt;xml:text&gt; - was empty String ("") before.
+     * The default name placeholder for XML text segments: used because Token stream
+     * requires all values inside "Objects" to have names associated.
+     * For Jackson 3.x this is {@code <xml:text>}; in 2.x matching constant was defined
+     * as empty String ({@code ""}).
+     * 
+     * @since 3.0 Constant was renamed: was {@code DEFAULT_UNNAMED_TEXT_PROPERTY} in 2.x
      */
     public final static String DEFAULT_TEXT_PROPERTY = "<xml:text>";
 
