@@ -43,13 +43,13 @@ public class XmlFactory
      * Bitfield (set of flags) of all parser features that are enabled
      * by default.
      */
-    final static int DEFAULT_XML_PARSER_FEATURE_FLAGS = XmlReadFeature.collectDefaults();
+    protected final static int DEFAULT_XML_READ_FEATURE_FLAGS = XmlReadFeature.collectDefaults();
 
     /**
      * Bitfield (set of flags) of all generator features that are enabled
      * by default.
      */
-    final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = XmlWriteFeature.collectDefaults();
+    protected final static int DEFAULT_XML_WRITE_FEATURE_FLAGS = XmlWriteFeature.collectDefaults();
 
     /*
     /**********************************************************************
@@ -91,7 +91,7 @@ public class XmlFactory
     }
 
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
-        this(DEFAULT_XML_PARSER_FEATURE_FLAGS, DEFAULT_XML_GENERATOR_FEATURE_FLAGS,
+        this(DEFAULT_XML_READ_FEATURE_FLAGS, DEFAULT_XML_WRITE_FEATURE_FLAGS,
                 xmlIn, xmlOut, XmlNameProcessors.newPassthroughProcessor(),
                 null);
     }
@@ -333,11 +333,6 @@ public class XmlFactory
     /* Configuration, XML-specific
     /**********************************************************************
      */
-
-    @Deprecated
-    public void setXMLTextElementName(String name) {
-        _cfgNameForTextElement = name;
-    }
 
     public String getXMLTextElementName() {
         return _cfgNameForTextElement;

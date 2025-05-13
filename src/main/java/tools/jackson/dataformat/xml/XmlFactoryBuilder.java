@@ -78,8 +78,8 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         super(StreamReadConstraints.defaults(),
                 StreamWriteConstraints.defaults(),
                 ErrorReportConfiguration.defaults(),
-                XmlFactory.DEFAULT_XML_PARSER_FEATURE_FLAGS,
-                XmlFactory.DEFAULT_XML_GENERATOR_FEATURE_FLAGS);
+                XmlFactory.DEFAULT_XML_READ_FEATURE_FLAGS,
+                XmlFactory.DEFAULT_XML_WRITE_FEATURE_FLAGS);
         _classLoaderForStax = null;
         _nameProcessor = XmlNameProcessors.newPassthroughProcessor();
     }
