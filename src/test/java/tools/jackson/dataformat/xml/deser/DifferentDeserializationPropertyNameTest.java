@@ -14,17 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DifferentDeserializationPropertyNameTest extends XmlTestUtil {
-
+public class DifferentDeserializationPropertyNameTest extends XmlTestUtil
+{
     static class TestBean {
-
         @JacksonXmlProperty(localName = "wrong")
         String wrong;
 
         @JacksonXmlText
         String name;
-
-
     }
 
     /*
@@ -36,7 +33,8 @@ public class DifferentDeserializationPropertyNameTest extends XmlTestUtil {
     @Test
     public void testWithExplicitProperty() {
         final XmlMapper mapper = XmlMapper.builder()
-                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false, new JacksonXmlAnnotationIntrospectorConfig(false, new PropertyName("name"))))
+                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false,
+                        new JacksonXmlAnnotationIntrospectorConfig(false, new PropertyName("name"))))
                 .build();
 
         String xmlInput = "<testBean>ABC123</testBean>";
@@ -49,7 +47,8 @@ public class DifferentDeserializationPropertyNameTest extends XmlTestUtil {
     @Test
     public void testWithInferName() {
         final XmlMapper mapper = XmlMapper.builder()
-                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false, new JacksonXmlAnnotationIntrospectorConfig(true, null)))
+                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false,
+                        new JacksonXmlAnnotationIntrospectorConfig(true, null)))
                 .build();
 
         String xmlInput = "<testBean>DEF</testBean>";
@@ -62,7 +61,8 @@ public class DifferentDeserializationPropertyNameTest extends XmlTestUtil {
     @Test
     public void testWithDuplicateExplicitProperty() {
         final XmlMapper mapper = XmlMapper.builder()
-                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false, new JacksonXmlAnnotationIntrospectorConfig(false, new PropertyName("wrong"))))
+                .annotationIntrospector(new JacksonXmlAnnotationIntrospector(false,
+                        new JacksonXmlAnnotationIntrospectorConfig(false, new PropertyName("wrong"))))
                 .build();
 
         String xmlInput = "<testBean>DEF</testBean>";
@@ -71,5 +71,4 @@ public class DifferentDeserializationPropertyNameTest extends XmlTestUtil {
 
         assertTrue(result.getMessage().contains("Multiple fields representing property \"wrong\""));
     }
-
 }
