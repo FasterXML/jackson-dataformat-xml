@@ -61,7 +61,7 @@ public class FromXmlParser
      * may be changed for inter-operability reasons: JAXB, for example, uses
      * "value" as name.
      */
-    protected String _cfgNameForTextElement = DEFAULT_UNNAMED_TEXT_PROPERTY;
+    protected final String _cfgNameForTextElement;
 
     /*
     /**********************************************************************
@@ -158,13 +158,15 @@ public class FromXmlParser
     public FromXmlParser(ObjectReadContext readCtxt, IOContext ioCtxt,
             int parserFeatures, int xmlFeatures,
             XMLStreamReader xmlReader,
-            XmlNameProcessor nameProcessor)
+            XmlNameProcessor nameProcessor,
+            String nameForTextElement)
     {
         super(readCtxt, ioCtxt, parserFeatures);
         _formatFeatures = xmlFeatures;
         _streamReadContext = XmlReadContext.createRootContext(-1, -1);
         _xmlTokens = new XmlTokenStream(xmlReader, ioCtxt.contentReference(),
                     _formatFeatures, nameProcessor);
+        _cfgNameForTextElement = nameForTextElement;
 
         final int firstToken;
         try {
@@ -206,10 +208,6 @@ public class FromXmlParser
     @Override
     public Version version() {
         return PackageVersion.VERSION;
-    }
-
-    public void setXMLTextElementName(String name) {
-        _cfgNameForTextElement = name;
     }
 
     @Override // since 3.0

@@ -8,6 +8,7 @@ import tools.jackson.core.ErrorReportConfiguration;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.StreamWriteConstraints;
 import tools.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 /**
  * {@link tools.jackson.core.TSFBuilder}
@@ -82,6 +83,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
                 XmlFactory.DEFAULT_XML_WRITE_FEATURE_FLAGS);
         _classLoaderForStax = null;
         _nameProcessor = XmlNameProcessors.newPassthroughProcessor();
+        _nameForTextElement = FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY;
     }
 
     public XmlFactoryBuilder(XmlFactory base) {
