@@ -8,7 +8,7 @@ Project: jackson-dataformat-xml
 
 - Generate SBOMs [JSTEP-14]
 
-2.19.0-rc2 (24-Apr-2025)
+2.19.0 (24-Apr-2025)
 
 #508: `XmlMapper` is unable to deserialise into an empty record
  (reported by @protazy)
@@ -20,6 +20,7 @@ Project: jackson-dataformat-xml
  (contributed by @duoduobingbing)
 - Upgrade Woodstox to 7.1.0
 
+2.18.4 (06-May-2025)
 2.18.3 (28-Feb-2025)
 
 No changes since 2.18.2
