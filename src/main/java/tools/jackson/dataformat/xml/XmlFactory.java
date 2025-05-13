@@ -92,7 +92,7 @@ public class XmlFactory
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
         this(DEFAULT_XML_READ_FEATURE_FLAGS, DEFAULT_XML_WRITE_FEATURE_FLAGS,
                 xmlIn, xmlOut, XmlNameProcessors.newPassthroughProcessor(),
-                null);
+                FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY);
     }
 
     protected XmlFactory(int xpFeatures, int xgFeatures,

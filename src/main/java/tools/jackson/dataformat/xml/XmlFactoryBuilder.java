@@ -51,7 +51,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      *<p>
      * Name used for pseudo-property used for returning XML Text value (which does
      * not have actual element name to use). Defaults to empty String, but
-     * may be changed for interoperability reasons: JAXB, for example, uses
+     * may be changed for inter-operability reasons: JAXB, for example, uses
      * "value" as name.
      */
     protected String _nameForTextElement;

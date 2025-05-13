@@ -74,7 +74,7 @@ public class FromXmlParser
      * {@link XmlReadFeature}s
      * are enabled.
      */
-    protected int _formatFeatures;
+    protected final int _formatFeatures;
 
     /*
     /**********************************************************************
