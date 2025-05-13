@@ -117,9 +117,7 @@ public class XmlFactory
     }
 
     /**
-     * Constructors used by {@link XmlFactoryBuilder} for instantiation.
-     *
-     * @since 3.0
+     * Constructor used by {@link XmlFactoryBuilder} for instantiation.
      */
     protected XmlFactory(XmlFactoryBuilder b)
     {
@@ -131,6 +129,11 @@ public class XmlFactory
         _initFactories(_xmlInputFactory, _xmlOutputFactory);
     }
 
+    /**
+     * Constructor used by {@link XmlFactory#copy()}
+     *
+     * @param src Factory to make copy of
+     */
     protected XmlFactory(XmlFactory src)
     {
         this(src, src._cfgNameForTextElement);
@@ -196,6 +199,11 @@ public class XmlFactory
         return this;
     }
 
+    /**
+     * "Mutant factory" method used to allow {@code XmlMapper.Builder} to configure
+     * name used for text elements, instead of requiring defining it via
+     * {@code XmlFactoryBuilder}.
+     */
     public XmlFactory withNameForTextElement(String name) {
         if (name == null) {
             name = "";
