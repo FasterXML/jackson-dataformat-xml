@@ -8,6 +8,7 @@ import tools.jackson.core.ErrorReportConfiguration;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.StreamWriteConstraints;
 import tools.jackson.core.base.DecorableTSFactory.DecorableTSFBuilder;
+import tools.jackson.dataformat.xml.deser.FromXmlParser;
 
 /**
  * {@link tools.jackson.core.TSFBuilder}
@@ -50,7 +51,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      *<p>
      * Name used for pseudo-property used for returning XML Text value (which does
      * not have actual element name to use). Defaults to empty String, but
-     * may be changed for interoperability reasons: JAXB, for example, uses
+     * may be changed for inter-operability reasons: JAXB, for example, uses
      * "value" as name.
      */
     protected String _nameForTextElement;
@@ -82,6 +83,7 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
                 XmlFactory.DEFAULT_XML_WRITE_FEATURE_FLAGS);
         _classLoaderForStax = null;
         _nameProcessor = XmlNameProcessors.newPassthroughProcessor();
+        _nameForTextElement = FromXmlParser.DEFAULT_TEXT_PROPERTY;
     }
 
     public XmlFactoryBuilder(XmlFactory base) {

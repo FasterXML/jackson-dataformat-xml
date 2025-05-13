@@ -57,8 +57,7 @@ public class XmlFactory
     /**********************************************************************
      */
 
-    // !!! 09-Jan-2018, tatu: make final ASAP
-    protected String _cfgNameForTextElement;
+    protected final String _cfgNameForTextElement;
 
     protected final XmlNameProcessor _nameProcessor;
 
@@ -93,7 +92,7 @@ public class XmlFactory
     public XmlFactory(XMLInputFactory xmlIn, XMLOutputFactory xmlOut) {
         this(DEFAULT_XML_READ_FEATURE_FLAGS, DEFAULT_XML_WRITE_FEATURE_FLAGS,
                 xmlIn, xmlOut, XmlNameProcessors.newPassthroughProcessor(),
-                null);
+                FromXmlParser.DEFAULT_TEXT_PROPERTY);
     }
 
     protected XmlFactory(int xpFeatures, int xgFeatures,
@@ -435,15 +434,11 @@ public class XmlFactory
         }
 
         // false -> not managed
-        FromXmlParser xp = new FromXmlParser(readCtxt,
+        return new FromXmlParser(readCtxt,
                 _createContext(_createContentReference(sr), false),
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr, _nameProcessor);
-        if (_cfgNameForTextElement != null) {
-            xp.setXMLTextElementName(_cfgNameForTextElement);
-        }
-        return xp;
+                sr, _nameProcessor, _cfgNameForTextElement);
     }
 
     /**
@@ -480,14 +475,10 @@ public class XmlFactory
             return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+        return new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr, _nameProcessor);
-        if (_cfgNameForTextElement != null) {
-            xp.setXMLTextElementName(_cfgNameForTextElement);
-        }
-        return xp;
+                sr, _nameProcessor, _cfgNameForTextElement);
     }
 
     @Override
@@ -501,14 +492,10 @@ public class XmlFactory
             return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+        return new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr, _nameProcessor);
-        if (_cfgNameForTextElement != null) {
-            xp.setXMLTextElementName(_cfgNameForTextElement);
-        }
-        return xp;
+                sr, _nameProcessor, _cfgNameForTextElement);
     }
 
     @Override
@@ -531,14 +518,10 @@ public class XmlFactory
             return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+        return new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr, _nameProcessor);
-        if (_cfgNameForTextElement != null) {
-            xp.setXMLTextElementName(_cfgNameForTextElement);
-        }
-        return xp;
+                sr, _nameProcessor, _cfgNameForTextElement);
     }
 
     @Override
@@ -558,14 +541,10 @@ public class XmlFactory
             return StaxUtil.throwAsReadException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(readCtxt, ioCtxt,
+        return new FromXmlParser(readCtxt, ioCtxt,
                 readCtxt.getStreamReadFeatures(_streamReadFeatures),
                 readCtxt.getFormatReadFeatures(_formatReadFeatures),
-                sr, _nameProcessor);
-        if (_cfgNameForTextElement != null) {
-            xp.setXMLTextElementName(_cfgNameForTextElement);
-        }
-        return xp;
+                sr, _nameProcessor, _cfgNameForTextElement);
     }
 
     /*

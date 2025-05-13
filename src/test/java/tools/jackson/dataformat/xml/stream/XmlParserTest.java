@@ -343,7 +343,8 @@ public class XmlParserTest extends XmlTestUtil
     @Test
     public void testMixedContent() throws Exception
     {
-        String exp = a2q(String.format("{'%1$s':'first','a':'123','%1$s':'second','b':'456','%1$s':'last'}", FromXmlParser.DEFAULT_TEXT_PROPERTY));
+        String exp = a2q(String.format("{'%1$s':'first','a':'123','%1$s':'second','b':'456','%1$s':'last'}",
+                FromXmlParser.DEFAULT_TEXT_PROPERTY));
         String result = _readXmlWriteJson("<root>first<a>123</a>second<b>456</b>last</root>");
 
 //System.err.println("result = \n"+result);
