@@ -8,6 +8,10 @@ Project: jackson-dataformat-xml
 
 -
 
+2.19.1 (not yet released)
+
+- Add explicit version for Woodstox, stax2-api (no longer managed via jackson-bom)
+
 2.19.0 (24-Apr-2025)
 
 #508: `XmlMapper` is unable to deserialise into an empty record
