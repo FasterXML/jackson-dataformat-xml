@@ -521,6 +521,10 @@ public class FromXmlParser
     {
         if (!_closed) {
             _closed = true;
+            // 30-May-2025, tatu: was missing before 2.20
+            if (JsonParser.Feature.CLEAR_CURRENT_TOKEN_ON_CLOSE.enabledIn(_features)) {
+                _currToken = null;
+            }
             try {
                 if (_ioContext.isResourceManaged() || isEnabled(JsonParser.Feature.AUTO_CLOSE_SOURCE)) {
                     _xmlTokens.closeCompletely();

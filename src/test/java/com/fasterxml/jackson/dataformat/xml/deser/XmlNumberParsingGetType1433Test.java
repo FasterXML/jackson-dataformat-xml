@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 
 import com.fasterxml.jackson.dataformat.xml.*;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -35,8 +34,6 @@ public class XmlNumberParsingGetType1433Test
         assertEquals(JsonParser.NumberType.INT, p.getNumberType());
         assertToken(JsonToken.END_OBJECT, p.nextToken());
         _verifyGetNumberTypeFail(p, "END_OBJECT");
-        assertNull(p.nextToken());
-        _verifyGetNumberTypeFail(p, "null");
         p.close();
         _verifyGetNumberTypeFail(p, "null");
     }
