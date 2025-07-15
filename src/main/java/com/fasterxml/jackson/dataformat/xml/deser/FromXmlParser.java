@@ -274,17 +274,20 @@ public class FromXmlParser
      */
 
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures,
-             ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor)
-        throws IOException
-    {
+             ObjectCodec codec, XMLStreamReader xmlReader, XmlNameProcessor tagProcessor) throws IOException {
+        this(ctxt, genericParserFeatures, codec, new XmlTokenStream(xmlReader, ctxt.contentReference(), xmlFeatures, tagProcessor));
+    }
+
+    public FromXmlParser(IOContext ctxt, int genericParserFeatures, ObjectCodec codec, XmlTokenStream xmlTokenStream) throws IOException {
         super(genericParserFeatures, ctxt.streamReadConstraints());
-        _formatFeatures = xmlFeatures;
         _ioContext = ctxt;
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
-        _xmlTokens = new XmlTokenStream(xmlReader, ctxt.contentReference(),
-                    _formatFeatures, tagProcessor);
-
+        if (xmlTokenStream == null) {
+            throw new IllegalArgumentException("xmlTokenStream cannot be null");
+        }
+        _xmlTokens = xmlTokenStream;
+        _formatFeatures = xmlTokenStream.getFormatFeatures();
         final int firstToken;
         try {
             firstToken = _xmlTokens.initialize();

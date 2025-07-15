@@ -254,6 +254,10 @@ public class XmlTokenStream
         _cfgProcessXsiType = FromXmlParser.Feature.AUTO_DETECT_XSI_TYPE.enabledIn(f);
     }
 
+    public int getFormatFeatures() {
+        return _formatFeatures;
+    }
+
     /*
     /**********************************************************************
     /* Public API
