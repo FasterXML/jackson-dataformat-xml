@@ -38,16 +38,16 @@ public class XmlFactory extends JsonFactory
     public final static String FORMAT_NAME_XML = "XML";
 
     /**
-     * Bitfield (set of flags) of all parser features that are enabled
+     * Bit field (set of flags) of all parser features that are enabled
      * by default.
      */
-    final static int DEFAULT_XML_PARSER_FEATURE_FLAGS = FromXmlParser.Feature.collectDefaults();
+    protected final static int DEFAULT_XML_PARSER_FEATURE_FLAGS = FromXmlParser.Feature.collectDefaults();
 
     /**
-     * Bitfield (set of flags) of all generator features that are enabled
+     * Bit field (set of flags) of all generator features that are enabled
      * by default.
      */
-    final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = ToXmlGenerator.Feature.collectDefaults();
+    protected final static int DEFAULT_XML_GENERATOR_FEATURE_FLAGS = ToXmlGenerator.Feature.collectDefaults();
 
     /*
     /**********************************************************
@@ -502,16 +502,6 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Overriding this method makes it easy to extend and customize the ToXmlGenerator.
-     *
-     * @since 2.20
-     */
-    public ToXmlGenerator createGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures, ObjectCodec codec,
-                                          XMLStreamWriter sw, XmlNameProcessor nameProcessor) {
-        return new ToXmlGenerator(ctxt, stdFeatures, xmlFeatures, codec, sw, nameProcessor);
-    }
-
     @Override
     public ToXmlGenerator createGenerator(OutputStream out) throws IOException {
         return createGenerator(out, JsonEncoding.UTF8);
@@ -523,7 +513,7 @@ public class XmlFactory extends JsonFactory
         // false -> we won't manage the stream unless explicitly directed to
         final IOContext ctxt = _createContext(_createContentReference(out), false);
         ctxt.setEncoding(enc);
-        return this.createGenerator(ctxt,
+        return createGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
@@ -532,7 +522,7 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createGenerator(Writer out) throws IOException
     {
         final IOContext ctxt = _createContext(_createContentReference(out), false);
-        return this.createGenerator(ctxt,
+        return createGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
@@ -545,7 +535,7 @@ public class XmlFactory extends JsonFactory
         // true -> yes, we have to manage the stream since we created it
         final IOContext ctxt = _createContext(_createContentReference(out), true);
         ctxt.setEncoding(enc);
-        return this.createGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        return createGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
 
@@ -584,7 +574,7 @@ public class XmlFactory extends JsonFactory
      * @since 2.20
      */
     protected FromXmlParser createParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures, ObjectCodec codec,
-                                         XMLStreamReader xmlReader, XmlNameProcessor tagProcessor) throws IOException {
+            XMLStreamReader xmlReader, XmlNameProcessor tagProcessor) throws IOException {
         return new FromXmlParser(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor);
     }
 
@@ -599,8 +589,19 @@ public class XmlFactory extends JsonFactory
     {
         sw = _initializeXmlWriter(sw);
         IOContext ctxt = _createContext(_createContentReference(sw), false);
-        return this.createGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        return createGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sw, _nameProcessor);
+    }
+
+    /**
+     * Factory method called by more other {@code creatoGenerator} methods.
+     * Overriding this method makes it easy to extend and customize the ToXmlGenerator.
+     *
+     * @since 2.20
+     */
+    public ToXmlGenerator createGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures, ObjectCodec codec,
+            XMLStreamWriter sw, XmlNameProcessor nameProcessor) {
+        return new ToXmlGenerator(ctxt, stdFeatures, xmlFeatures, codec, sw, nameProcessor);
     }
 
     /*

@@ -276,3 +276,8 @@ Bas Passon (@bpasson)
 
 * Contributed #745: Add feature to include `standalone='yes'` in xml declaration
  (2.19.0)
+
+(@xzxiaoshan)
+* Contributed #768: `FromXmlParser` lacks extension point for passing
+  custom `XmlTokenStream`
+ (2.20.0)
