@@ -559,12 +559,23 @@ public class XmlFactory extends JsonFactory
         }
 
         // false -> not managed
-        FromXmlParser xp = new FromXmlParser(_createContext(_createContentReference(sr), false),
+        FromXmlParser xp = this.createParser(_createContext(_createContentReference(sr), false),
                 _parserFeatures, _xmlParserFeatures, _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
         }
         return xp;
+    }
+
+    /**
+     * Creates and returns a new instance of {@link FromXmlParser} configured with the provided parameters.
+     * If you need to extend or customize the FromXmlParser, you can simply override this method.
+     *
+     * @since 2.20
+     */
+    protected FromXmlParser createParser(IOContext ctxt, int genericParserFeatures, int xmlFeatures, ObjectCodec codec,
+                                         XMLStreamReader xmlReader, XmlNameProcessor tagProcessor) throws IOException {
+        return new FromXmlParser(ctxt, genericParserFeatures, xmlFeatures, codec, xmlReader, tagProcessor);
     }
 
     /**
@@ -598,7 +609,7 @@ public class XmlFactory extends JsonFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
+        FromXmlParser xp = this.createParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -616,7 +627,7 @@ public class XmlFactory extends JsonFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
+        FromXmlParser xp = this.createParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -643,7 +654,7 @@ public class XmlFactory extends JsonFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
+        FromXmlParser xp = this.createParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
@@ -677,7 +688,7 @@ public class XmlFactory extends JsonFactory
             return StaxUtil.throwAsParseException(e, null);
         }
         sr = _initializeXmlReader(sr);
-        FromXmlParser xp = new FromXmlParser(ctxt, _parserFeatures, _xmlParserFeatures,
+        FromXmlParser xp = this.createParser(ctxt, _parserFeatures, _xmlParserFeatures,
                 _objectCodec, sr, _nameProcessor);
         if (_cfgNameForTextElement != null) {
             xp.setXMLTextElementName(_cfgNameForTextElement);
