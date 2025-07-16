@@ -502,6 +502,16 @@ public class XmlFactory extends JsonFactory
     /**********************************************************
      */
 
+    /**
+     * Overriding this method makes it easy to extend and customize the ToXmlGenerator.
+     *
+     * @since 2.20
+     */
+    public ToXmlGenerator createGenerator(IOContext ctxt, int stdFeatures, int xmlFeatures, ObjectCodec codec,
+                                          XMLStreamWriter sw, XmlNameProcessor nameProcessor) {
+        return new ToXmlGenerator(ctxt, stdFeatures, xmlFeatures, codec, sw, nameProcessor);
+    }
+
     @Override
     public ToXmlGenerator createGenerator(OutputStream out) throws IOException {
         return createGenerator(out, JsonEncoding.UTF8);
@@ -513,7 +523,7 @@ public class XmlFactory extends JsonFactory
         // false -> we won't manage the stream unless explicitly directed to
         final IOContext ctxt = _createContext(_createContentReference(out), false);
         ctxt.setEncoding(enc);
-        return new ToXmlGenerator(ctxt,
+        return this.createGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
@@ -522,7 +532,7 @@ public class XmlFactory extends JsonFactory
     public ToXmlGenerator createGenerator(Writer out) throws IOException
     {
         final IOContext ctxt = _createContext(_createContentReference(out), false);
-        return new ToXmlGenerator(ctxt,
+        return this.createGenerator(ctxt,
                 _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
@@ -535,7 +545,7 @@ public class XmlFactory extends JsonFactory
         // true -> yes, we have to manage the stream since we created it
         final IOContext ctxt = _createContext(_createContentReference(out), true);
         ctxt.setEncoding(enc);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        return this.createGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, _createXmlWriter(ctxt, out), _nameProcessor);
     }
 
@@ -589,7 +599,7 @@ public class XmlFactory extends JsonFactory
     {
         sw = _initializeXmlWriter(sw);
         IOContext ctxt = _createContext(_createContentReference(sw), false);
-        return new ToXmlGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
+        return this.createGenerator(ctxt, _generatorFeatures, _xmlGeneratorFeatures,
                 _objectCodec, sw, _nameProcessor);
     }
 
