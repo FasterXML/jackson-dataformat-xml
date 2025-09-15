@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// [dataformat-xml#734]
-public class XmlClassDeser734Test extends XmlTestUtil
+// [dataformat-xml#735]
+public class XmlClassDeser735Test extends XmlTestUtil
 {
     public static class Amount {
         @JacksonXmlText

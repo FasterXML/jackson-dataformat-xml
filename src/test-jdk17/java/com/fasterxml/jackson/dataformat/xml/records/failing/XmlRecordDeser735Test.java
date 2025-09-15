@@ -9,8 +9,8 @@ import com.fasterxml.jackson.dataformat.xml.testutil.failure.JacksonTestFailureE
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// [dataformat-xml#734]
-public class XmlRecordDeser734Test extends XmlTestUtil
+// [dataformat-xml#735]
+public class XmlRecordDeser735Test extends XmlTestUtil
 {
     record Amount(@JacksonXmlText String value,
                   @JacksonXmlProperty(isAttribute = true, localName = "Ccy") String currency) {}
