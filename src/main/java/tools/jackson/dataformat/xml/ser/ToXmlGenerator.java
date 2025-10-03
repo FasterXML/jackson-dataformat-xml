@@ -292,6 +292,11 @@ public class ToXmlGenerator
         return _streamWriteContext.inRoot();
     }
 
+    @Override // @since 3.0
+    public XmlPrettyPrinter getPrettyPrinter() {
+        return _xmlPrettyPrinter;
+    }
+
     /*
     /**********************************************************************
     /* Extended API, access to some internal components

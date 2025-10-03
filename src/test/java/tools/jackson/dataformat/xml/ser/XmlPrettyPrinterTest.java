@@ -1,6 +1,9 @@
 package tools.jackson.dataformat.xml.ser;
 
+import java.io.StringWriter;
 import java.util.*;
+
+import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,8 +11,9 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import tools.jackson.databind.SerializationFeature;
+import tools.jackson.core.JsonGenerator;
 
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
@@ -147,7 +151,7 @@ public class XmlPrettyPrinterTest extends XmlTestUtil
     @Test
     public void testSimpleMap() throws Exception
     {
-        Map<String,String> map = new HashMap<String,String>();
+        Map<String,String> map = new HashMap<>();
         map.put("a", "b");
         String xml = _xmlMapper.writeValueAsString(map);
 
@@ -284,5 +288,32 @@ public class XmlPrettyPrinterTest extends XmlTestUtil
                 + "  </e>" + DEFAULT_NEW_LINE
                 + "</Company>" + DEFAULT_NEW_LINE,
             xml);
+    }
+
+    // [core#1480]
+    @Test
+    void accessToPrettyPrinter() {
+        // By default, no indenting:
+        XmlMapper noIndentMapper = newMapper();
+        try (JsonGenerator g = noIndentMapper.createGenerator(new StringWriter())) {
+            assertNull(g.getPrettyPrinter());
+            _writeDoc(g);
+        }
+
+        // But can enable
+        XmlMapper indentingMapper = mapperBuilder()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .build();
+        try (JsonGenerator g = indentingMapper.createGenerator(new StringWriter())) {
+            assertTrue(g.getPrettyPrinter() instanceof DefaultXmlPrettyPrinter);
+            _writeDoc(g);
+        }
+    }
+
+    private void _writeDoc(JsonGenerator g) {
+        ((ToXmlGenerator) g).setNextName(new QName("abc"));
+        g.writeStartObject();
+        g.writeNumberProperty("value", 42);
+        g.writeEndObject();
     }
 }
