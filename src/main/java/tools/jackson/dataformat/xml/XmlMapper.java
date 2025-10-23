@@ -22,8 +22,6 @@ import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 import tools.jackson.databind.jsontype.TypeResolverBuilder;
 import tools.jackson.databind.ser.SerializationContextExt;
 import tools.jackson.databind.type.LogicalType;
-import tools.jackson.dataformat.cbor.CBORReadFeature;
-import tools.jackson.dataformat.cbor.CBORWriteFeature;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.deser.XmlDeserializationContexts;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
