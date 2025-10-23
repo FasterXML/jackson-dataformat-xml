@@ -6,6 +6,7 @@ import tools.jackson.databind.ObjectReader;
 import tools.jackson.databind.ObjectWriter;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FeatureDefaultsTest extends XmlTestUtil
 {
@@ -23,5 +24,14 @@ public class FeatureDefaultsTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer();
         assertNotSame(w, w.with(XmlWriteFeature.WRITE_XML_1_1));
+    }
+
+    // [dataformat-xml#780]
+    @Test
+    void testFeaturesViaMapper() {
+        XmlMapper mapper = XmlMapper.shared();
+        assertTrue(mapper.isEnabled(XmlReadFeature.AUTO_DETECT_XSI_TYPE));
+        assertTrue(mapper.isEnabled(XmlWriteFeature.AUTO_DETECT_XSI_TYPE));
+        
     }
 }

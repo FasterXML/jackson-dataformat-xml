@@ -22,6 +22,8 @@ import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 import tools.jackson.databind.jsontype.TypeResolverBuilder;
 import tools.jackson.databind.ser.SerializationContextExt;
 import tools.jackson.databind.type.LogicalType;
+import tools.jackson.dataformat.cbor.CBORReadFeature;
+import tools.jackson.dataformat.cbor.CBORWriteFeature;
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.deser.XmlDeserializationContexts;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -457,6 +459,21 @@ public class XmlMapper extends ObjectMapper
     public XmlFactory tokenStreamFactory() {
         return (XmlFactory) _streamFactory;
     }
+
+    /*
+    /**********************************************************************
+    /* Format-specific
+    /**********************************************************************
+     */
+
+    public boolean isEnabled(XmlReadFeature f) {
+        return _deserializationConfig.hasFormatFeature(f);
+    }
+
+    public boolean isEnabled(XmlWriteFeature f) {
+        return _serializationConfig.hasFormatFeature(f);
+    }
+
 
     /*
     /**********************************************************************
