@@ -7,7 +7,7 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 3.1.0 (not yet released)
 
-#780: Add `isEnabled()` methods for format-specific features to mappers (3.1)
+#780: Add `isEnabled()` methods for format-specific features to mappers
 
 3.0.1 (21-Oct-2025)
 
