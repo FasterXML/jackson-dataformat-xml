@@ -84,6 +84,12 @@ public final class XmlReadContext
         _nestingDepth = nestingDepth;
     }
 
+    @Deprecated // @since 2.21
+    public XmlReadContext(XmlReadContext parent, int nestingDepth,
+            int type, int lineNr, int colNr) {
+        this(parent, null, nestingDepth, type, lineNr, colNr);
+    }
+
     protected final void reset(int type, int lineNr, int colNr)
     {
         _type = type;
@@ -96,7 +102,7 @@ public final class XmlReadContext
         if (_dupDetector != null) {
             _dupDetector.reset();
         }
-        // _nestingDepth fine as is, same level for reuse
+        // _nestingDepth fine as-is, same level for reuse
     }
 
     @Override
@@ -119,6 +125,12 @@ public final class XmlReadContext
         return new XmlReadContext(null, dups, 0, TYPE_ROOT, lineNr, colNr);
     }
 
+    @Deprecated // @since 2.21
+    public static XmlReadContext createRootContext(int lineNr, int colNr) {
+        return createRootContext(null, lineNr, colNr);
+    }
+
+    @Deprecated // @since 2.21
     public static XmlReadContext createRootContext() {
         return createRootContext(null, 1, 0);
     }
@@ -196,18 +208,20 @@ public final class XmlReadContext
 
     public void setCurrentName(String name) throws JsonProcessingException {
         _currentName = name;
-        // Only check for duplicates in Object contexts, not in Arrays or Root
-        if (_dupDetector != null && _type == TYPE_OBJECT) {
-            if (_dupDetector.isDup(name)) {
-                // Use the parser's location for the error message
-                Object src = (_dupDetector == null) ? null : _dupDetector.getSource();
-                throw new JsonParseException(null,
-                    "Duplicate field '" + name + "'", startLocation(
-                        (src instanceof ContentReference) ? (ContentReference) src : ContentReference.unknown()));
-            }
+        if (_dupDetector != null) {
+            _checkDup(_dupDetector, name);
         }
     }
 
+    // @since 2.21
+    private static void _checkDup(DupDetector dd, String name) throws JsonProcessingException
+    {
+        if (dd.isDup(name)) {
+            throw new JsonParseException(null,
+                    "Duplicate field '"+name+"'", dd.findLocation());
+        }
+    }
+    
     public void setNamesToWrap(Set<String> namesToWrap) {
         _namesToWrap = namesToWrap;
     }
