@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.base.ParserMinimalBase;
 import com.fasterxml.jackson.core.exc.StreamConstraintsException;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.io.NumberInput;
+import com.fasterxml.jackson.core.json.DupDetector;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 
@@ -284,22 +285,21 @@ public class FromXmlParser
      * This constructor initializes the parser with the given I/O context, parser features,
      * and object codec for deserializing XML content into Java objects.
      *
-     * @since 2.20
      * @param ctxt I/O context used for handling low-level I/O operations and buffering
      * @param genericParserFeatures set of bitmasked parser features to control parsing behavior
      * @param codec object codec used for converting between JSON-like structures and Java objects
      * @param xmlTokenStream the pre-processed XML token stream to parse from
      * @throws IOException if an I/O error occurs during initialization or parsing setup
+     *
+     * @since 2.20
      */
     public FromXmlParser(IOContext ctxt, int genericParserFeatures, ObjectCodec codec, XmlTokenStream xmlTokenStream) throws IOException {
         super(genericParserFeatures, ctxt.streamReadConstraints());
         _ioContext = ctxt;
         _objectCodec = codec;
-        _parsingContext = XmlReadContext.createRootContext(-1, -1);
-        // Enable duplicate detection if STRICT_DUPLICATE_DETECTION feature is enabled
-        if (isEnabled(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)) {
-            _parsingContext.withDupDetector(this);
-        }
+        DupDetector dups = JsonParser.Feature.STRICT_DUPLICATE_DETECTION.enabledIn(genericParserFeatures)
+                ? DupDetector.rootDetector(this) : null;
+        _parsingContext = XmlReadContext.createRootContext(dups, -1, -1);
         _xmlTokens = Objects.requireNonNull(xmlTokenStream, "xmlTokenStream cannot be null");
         _formatFeatures = xmlTokenStream.getFormatFeatures();
         final int firstToken;
@@ -530,11 +530,11 @@ public class FromXmlParser
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             ctxt = ctxt.getParent();
         }
+        // Unfortunate, but since we did not expose exceptions, need to wrap
         try {
             ctxt.setCurrentName(name);
-        } catch (JsonProcessingException e) {
-            // Wrap in unchecked exception since we cannot change signature
-            throw new UncheckedIOException(e);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
     }
 

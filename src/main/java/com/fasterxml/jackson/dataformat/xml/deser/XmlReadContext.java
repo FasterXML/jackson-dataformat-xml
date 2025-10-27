@@ -30,7 +30,7 @@ public final class XmlReadContext
      *
      * @since 2.21
      */
-    protected DupDetector _dupDetector;
+    protected final DupDetector _dupDetector;
 
     // // // Location information (minus source reference)
 
@@ -68,28 +68,20 @@ public final class XmlReadContext
      */
 
     /**
-     * @since 2.18
+     * @since 2.21
      */
-    public XmlReadContext(XmlReadContext parent, int nestingDepth,
+    public XmlReadContext(XmlReadContext parent, DupDetector dups,
+            int nestingDepth,
             int type, int lineNr, int colNr)
     {
         super();
         _type = type;
         _parent = parent;
+        _dupDetector = dups;
         _lineNr = lineNr;
         _columnNr = colNr;
         _index = -1;
         _nestingDepth = nestingDepth;
-    }
-
-    /**
-     * @deprecated Since 2.18
-     */
-    @Deprecated // since 2.18
-    public XmlReadContext(XmlReadContext parent, int type, int lineNr, int colNr)
-    {
-        this(parent, (parent == null) ? 0 : parent._nestingDepth + 1,
-                type, lineNr, colNr);
     }
 
     protected final void reset(int type, int lineNr, int colNr)
@@ -123,20 +115,22 @@ public final class XmlReadContext
     /**********************************************************************
      */
 
-    public static XmlReadContext createRootContext(int lineNr, int colNr) {
-        return new XmlReadContext(null, 0, TYPE_ROOT, lineNr, colNr);
+    public static XmlReadContext createRootContext(DupDetector dups, int lineNr, int colNr) {
+        return new XmlReadContext(null, dups, 0, TYPE_ROOT, lineNr, colNr);
     }
 
     public static XmlReadContext createRootContext() {
-        return new XmlReadContext(null, 0, TYPE_ROOT, 1, 0);
+        return createRootContext(null, 1, 0);
     }
-    
+
     public final XmlReadContext createChildArrayContext(int lineNr, int colNr)
     {
         ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(this, _nestingDepth+1, TYPE_ARRAY, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(this,
+                    (_dupDetector == null) ? null : _dupDetector.child(),
+                            _nestingDepth+1, TYPE_ARRAY, lineNr, colNr);
             return ctxt;
         }
         ctxt.reset(TYPE_ARRAY, lineNr, colNr);
@@ -148,13 +142,11 @@ public final class XmlReadContext
         ++_index; // not needed for Object, but does not hurt so no need to check curr type
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
-            _child = ctxt = new XmlReadContext(this, TYPE_OBJECT, lineNr, colNr);
+            _child = ctxt = new XmlReadContext(this,
+                    (_dupDetector == null) ? null : _dupDetector.child(),
+                            _nestingDepth+1, TYPE_OBJECT, lineNr, colNr);
         } else {
             ctxt.reset(TYPE_OBJECT, lineNr, colNr);
-        }
-        // Propagate DupDetector to child if parent has one
-        if (_dupDetector != null) {
-            ctxt._dupDetector = _dupDetector.child();
         }
         return ctxt;
     }
@@ -223,26 +215,6 @@ public final class XmlReadContext
     // @since 2.11.1
     public boolean shouldWrap(String localName) {
         return (_namesToWrap != null) && _namesToWrap.contains(localName);
-    }
-
-    /**
-     * Method that can be called to create a new DupDetector for this context,
-     * if duplicate detection is enabled.
-     *
-     * @param parser The parser instance to associate with the detector
-     * @return The newly created DupDetector
-     * @since 2.21
-     */
-    public DupDetector withDupDetector(JsonParser parser) {
-        _dupDetector = DupDetector.rootDetector(parser);
-        return _dupDetector;
-    }
-
-    /**
-     * @since 2.21
-     */
-    public DupDetector getDupDetector() {
-        return _dupDetector;
     }
 
     protected void convertToArray() {
