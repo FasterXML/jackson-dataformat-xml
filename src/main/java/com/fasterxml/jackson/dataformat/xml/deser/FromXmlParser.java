@@ -296,6 +296,10 @@ public class FromXmlParser
         _ioContext = ctxt;
         _objectCodec = codec;
         _parsingContext = XmlReadContext.createRootContext(-1, -1);
+        // Enable duplicate detection if STRICT_DUPLICATE_DETECTION feature is enabled
+        if (isEnabled(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)) {
+            _parsingContext.withDupDetector(this);
+        }
         _xmlTokens = Objects.requireNonNull(xmlTokenStream, "xmlTokenStream cannot be null");
         _formatFeatures = xmlTokenStream.getFormatFeatures();
         final int firstToken;
@@ -526,7 +530,12 @@ public class FromXmlParser
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             ctxt = ctxt.getParent();
         }
-        ctxt.setCurrentName(name);
+        try {
+            ctxt.setCurrentName(name);
+        } catch (JsonProcessingException e) {
+            // Wrap in unchecked exception since we cannot change signature
+            throw new UncheckedIOException(e);
+        }
     }
 
     @Override
@@ -1050,7 +1059,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
     }
 
 
-    private void _updateState(JsonToken t)
+    private void _updateState(JsonToken t) throws JsonProcessingException
     {
         switch (t) {
         case START_OBJECT:

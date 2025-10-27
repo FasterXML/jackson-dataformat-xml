@@ -5,6 +5,7 @@ import java.util.Set;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.io.CharTypes;
 import com.fasterxml.jackson.core.io.ContentReference;
+import com.fasterxml.jackson.core.json.DupDetector;
 
 /**
  * Extension of {@link JsonStreamContext}, which implements
@@ -22,6 +23,14 @@ public final class XmlReadContext
     // // // Configuration
 
     protected final XmlReadContext _parent;
+
+    /**
+     * Object used for checking for duplicate field names, if enabled
+     * (null if not enabled)
+     *
+     * @since 2.21
+     */
+    protected DupDetector _dupDetector;
 
     // // // Location information (minus source reference)
 
@@ -92,6 +101,9 @@ public final class XmlReadContext
         _currentName = null;
         _currentValue = null;
         _namesToWrap = null;
+        if (_dupDetector != null) {
+            _dupDetector.reset();
+        }
         // _nestingDepth fine as is, same level for reuse
     }
 
@@ -137,9 +149,13 @@ public final class XmlReadContext
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new XmlReadContext(this, TYPE_OBJECT, lineNr, colNr);
-            return ctxt;
+        } else {
+            ctxt.reset(TYPE_OBJECT, lineNr, colNr);
         }
-        ctxt.reset(TYPE_OBJECT, lineNr, colNr);
+        // Propagate DupDetector to child if parent has one
+        if (_dupDetector != null) {
+            ctxt._dupDetector = _dupDetector.child();
+        }
         return ctxt;
     }
 
@@ -186,8 +202,18 @@ public final class XmlReadContext
         ++_index;
     }
 
-    public void setCurrentName(String name) {
+    public void setCurrentName(String name) throws JsonProcessingException {
         _currentName = name;
+        // Only check for duplicates in Object contexts, not in Arrays or Root
+        if (_dupDetector != null && _type == TYPE_OBJECT) {
+            if (_dupDetector.isDup(name)) {
+                // Use the parser's location for the error message
+                Object src = (_dupDetector == null) ? null : _dupDetector.getSource();
+                throw new JsonParseException(null,
+                    "Duplicate field '" + name + "'", startLocation(
+                        (src instanceof ContentReference) ? (ContentReference) src : ContentReference.unknown()));
+            }
+        }
     }
 
     public void setNamesToWrap(Set<String> namesToWrap) {
@@ -197,6 +223,26 @@ public final class XmlReadContext
     // @since 2.11.1
     public boolean shouldWrap(String localName) {
         return (_namesToWrap != null) && _namesToWrap.contains(localName);
+    }
+
+    /**
+     * Method that can be called to create a new DupDetector for this context,
+     * if duplicate detection is enabled.
+     *
+     * @param parser The parser instance to associate with the detector
+     * @return The newly created DupDetector
+     * @since 2.21
+     */
+    public DupDetector withDupDetector(JsonParser parser) {
+        _dupDetector = DupDetector.rootDetector(parser);
+        return _dupDetector;
+    }
+
+    /**
+     * @since 2.21
+     */
+    public DupDetector getDupDetector() {
+        return _dupDetector;
     }
 
     protected void convertToArray() {
