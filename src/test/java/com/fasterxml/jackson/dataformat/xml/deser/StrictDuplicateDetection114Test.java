@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 
@@ -13,19 +11,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for [dataformat-xml#114]: Support for STRICT_DUPLICATE_DETECTION
+ *
+ * @since 2.21
  */
 public class StrictDuplicateDetection114Test extends XmlTestUtil
 {
-    static class TestBean {
+    static class TestBean114 {
         public String field1;
         public String field2;
     }
 
-    private final XmlMapper XML_MAPPER = XmlMapper.builder()
-            .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
-            .build();
-
-    private final ObjectMapper JSON_MAPPER = JsonMapper.builder()
+    private final XmlMapper STRICT_MAPPER = XmlMapper.builder()
             .enable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION)
             .build();
 
@@ -33,20 +29,11 @@ public class StrictDuplicateDetection114Test extends XmlTestUtil
     @Test
     public void testStrictDuplicateDetectionWithPOJO() throws Exception
     {
-        // First verify JSON mapper properly rejects duplicates
-        final String jsonWithDup = "{\"field1\":\"value1\",\"field1\":\"value2\"}";
-
-        StreamReadException e = assertThrows(StreamReadException.class, () -> {
-            JSON_MAPPER.readValue(jsonWithDup, TestBean.class);
-        });
-        assertTrue(e.getMessage().contains("Duplicate field"),
-                "Expected 'Duplicate field' error, got: " + e.getMessage());
-
-        // Now test XML mapper should also reject duplicates
+        // Test XML mapper should also reject duplicates
         final String xmlWithDup = "<TestBean><field1>value1</field1><field1>value2</field1></TestBean>";
 
-        e = assertThrows(StreamReadException.class, () -> {
-            XML_MAPPER.readValue(xmlWithDup, TestBean.class);
+        StreamReadException e = assertThrows(StreamReadException.class, () -> {
+            STRICT_MAPPER.readValue(xmlWithDup, TestBean114.class);
         });
         assertTrue(e.getMessage().contains("Duplicate field"),
                 "Expected 'Duplicate field' error, got: " + e.getMessage());
@@ -57,7 +44,7 @@ public class StrictDuplicateDetection114Test extends XmlTestUtil
     {
         final String xml = "<TestBean><field1>value1</field1><field2>value2</field2></TestBean>";
 
-        TestBean bean = XML_MAPPER.readValue(xml, TestBean.class);
+        TestBean114 bean = STRICT_MAPPER.readValue(xml, TestBean114.class);
         assertNotNull(bean);
         assertEquals("value1", bean.field1);
         assertEquals("value2", bean.field2);
@@ -71,7 +58,7 @@ public class StrictDuplicateDetection114Test extends XmlTestUtil
         // Should allow duplicates by default (last value wins)
         final String xmlWithDup = "<TestBean><field1>value1</field1><field1>value2</field1></TestBean>";
 
-        TestBean bean = mapper.readValue(xmlWithDup, TestBean.class);
+        TestBean114 bean = mapper.readValue(xmlWithDup, TestBean114.class);
         assertNotNull(bean);
         assertEquals("value2", bean.field1); // last value wins
     }
