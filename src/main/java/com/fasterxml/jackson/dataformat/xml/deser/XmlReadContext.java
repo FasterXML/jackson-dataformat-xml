@@ -30,7 +30,7 @@ public final class XmlReadContext
      *
      * @since 2.21
      */
-    protected final DupDetector _dupDetector;
+    protected final DupDetector _dups;
 
     // // // Location information (minus source reference)
 
@@ -77,7 +77,7 @@ public final class XmlReadContext
         super();
         _type = type;
         _parent = parent;
-        _dupDetector = dups;
+        _dups = dups;
         _lineNr = lineNr;
         _columnNr = colNr;
         _index = -1;
@@ -99,8 +99,8 @@ public final class XmlReadContext
         _currentName = null;
         _currentValue = null;
         _namesToWrap = null;
-        if (_dupDetector != null) {
-            _dupDetector.reset();
+        if (_dups != null) {
+            _dups.reset();
         }
         // _nestingDepth fine as-is, same level for reuse
     }
@@ -141,7 +141,7 @@ public final class XmlReadContext
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new XmlReadContext(this,
-                    (_dupDetector == null) ? null : _dupDetector.child(),
+                    (_dups == null) ? null : _dups.child(),
                             _nestingDepth+1, TYPE_ARRAY, lineNr, colNr);
             return ctxt;
         }
@@ -155,7 +155,7 @@ public final class XmlReadContext
         XmlReadContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new XmlReadContext(this,
-                    (_dupDetector == null) ? null : _dupDetector.child(),
+                    (_dups == null) ? null : _dups.child(),
                             _nestingDepth+1, TYPE_OBJECT, lineNr, colNr);
         } else {
             ctxt.reset(TYPE_OBJECT, lineNr, colNr);
@@ -208,8 +208,8 @@ public final class XmlReadContext
 
     public void setCurrentName(String name) throws JsonProcessingException {
         _currentName = name;
-        if (_dupDetector != null) {
-            _checkDup(_dupDetector, name);
+        if (_dups != null) {
+            _checkDup(_dups, name);
         }
     }
 
