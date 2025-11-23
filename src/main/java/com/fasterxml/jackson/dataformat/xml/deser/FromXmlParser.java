@@ -786,8 +786,21 @@ public class FromXmlParser
                 return _updateToken(JsonToken.START_OBJECT);
             }
             if (_parsingContext.inArray()) {
-                // Yup: in array, so this element could be verified; but it won't be
-                // reported anyway, and we need to process following event.
+                // Validate that all array elements have the same element name
+                String currentElementName = _xmlTokens.getLocalName();
+                String expectedElementName = _parsingContext.getExpectedArrayElementName();
+
+                if (expectedElementName != null) {
+                    // We have an expected name, validate it matches
+                    if (!expectedElementName.equals(currentElementName)) {
+                        _reportError("Unexpected element name '%s' in array; expected '%s'",
+                                currentElementName, expectedElementName);
+                    }
+                } else {
+                    // First element in array, set as expected name
+                    _parsingContext.setExpectedArrayElementName(currentElementName);
+                }
+
                 token = _nextToken();
                 _mayBeLeaf = true;
                 continue;

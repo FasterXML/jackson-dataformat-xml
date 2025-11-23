@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -13,11 +14,13 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test for [dataformat-xml#787]: List deserialization should ignore
- * non-matching element types (e.g., &lt;bar&gt; elements when deserializing
- * into List&lt;Foo&gt;)
+ * Test for [dataformat-xml#787]: List deserialization should throw an exception
+ * when encountering mismatched element types (e.g., &lt;bar&gt; elements when
+ * expecting &lt;foo&gt; in a list)
  */
 public class ListDeser787Test extends XmlTestUtil
 {
@@ -64,7 +67,7 @@ public class ListDeser787Test extends XmlTestUtil
 
     private final ObjectMapper MAPPER = newMapper();
 
-    // [dataformat-xml#787]: Should skip non-matching elements in list
+    // [dataformat-xml#787]: Should throw exception on non-matching elements in list
     @Test
     public void testDeser787MixedElements() throws Exception
     {
@@ -77,18 +80,16 @@ public class ListDeser787Test extends XmlTestUtil
                 "    </foos>\n" +
                 "</root>";
 
-        Root787 root = MAPPER.readValue(xml, Root787.class);
+        // Should throw exception when encountering <bar> element in a list expecting <foo> elements
+        JsonMappingException exception = assertThrows(JsonMappingException.class, () -> {
+            MAPPER.readValue(xml, Root787.class);
+        });
 
-        // Should only have 2 Foo elements, <bar> should be ignored
-        assertNotNull(root.foos);
-        assertEquals(2, root.foos.size());
-
-        Foo787 foo1 = root.foos.get(0);
-        assertEquals("somefoo", foo1.text);
-        assertEquals(Integer.valueOf(1), foo1.sequenceNr);
-
-        Foo787 foo2 = root.foos.get(1);
-        assertEquals("otherfoo", foo2.text);
-        assertEquals(Integer.valueOf(2), foo2.sequenceNr);
+        // Verify the error message mentions the mismatched element names
+        String message = exception.getMessage();
+        assertTrue(message.contains("Unexpected element name 'bar'"),
+                "Error message should mention 'bar': " + message);
+        assertTrue(message.contains("expected 'foo'"),
+                "Error message should mention expected 'foo': " + message);
     }
 }

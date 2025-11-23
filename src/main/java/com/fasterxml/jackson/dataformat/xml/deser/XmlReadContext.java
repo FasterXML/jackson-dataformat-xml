@@ -51,6 +51,14 @@ public final class XmlReadContext
      */
     protected String _wrappedName;
 
+    /**
+     * Expected element name for array elements. When set, all elements
+     * in this array context must have this local name.
+     *
+     * @since 2.21
+     */
+    protected String _expectedArrayElementName;
+
     /*
     /**********************************************************************
     /* Simple instance reuse slots; speeds up things a bit (10-15%)
@@ -99,6 +107,7 @@ public final class XmlReadContext
         _currentName = null;
         _currentValue = null;
         _namesToWrap = null;
+        _expectedArrayElementName = null;
         if (_dups != null) {
             _dups.reset();
         }
@@ -229,6 +238,20 @@ public final class XmlReadContext
     // @since 2.11.1
     public boolean shouldWrap(String localName) {
         return (_namesToWrap != null) && _namesToWrap.contains(localName);
+    }
+
+    /**
+     * @since 2.21
+     */
+    public String getExpectedArrayElementName() {
+        return _expectedArrayElementName;
+    }
+
+    /**
+     * @since 2.21
+     */
+    public void setExpectedArrayElementName(String name) {
+        _expectedArrayElementName = name;
     }
 
     protected void convertToArray() {
