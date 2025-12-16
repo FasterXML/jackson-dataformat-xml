@@ -49,7 +49,7 @@ public class XmlSerializationContext extends SerializationContextExt
     @Override
     public void serializeValue(JsonGenerator gen, Object value) throws JacksonException
     {
-        _generator = gen;
+        _assignGenerator(gen);
         if (value == null) {
             _serializeXmlNull(gen);
             return;
@@ -101,7 +101,7 @@ public class XmlSerializationContext extends SerializationContextExt
     public void serializeValue(JsonGenerator gen, Object value, JavaType rootType,
             ValueSerializer<Object> ser) throws JacksonException
     {
-        _generator = gen;
+        _assignGenerator(gen);
         if (value == null) {
             _serializeXmlNull(gen);
             return;
@@ -155,7 +155,7 @@ public class XmlSerializationContext extends SerializationContextExt
             ValueSerializer<Object> valueSer, TypeSerializer typeSer)
         throws JacksonException
     {
-        _generator = gen;
+        _assignGenerator(gen);
         if (value == null) {
             _serializeXmlNull(gen);
             return;
