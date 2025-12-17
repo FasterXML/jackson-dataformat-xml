@@ -2,6 +2,7 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
@@ -146,7 +147,7 @@ public class TestSerialization extends XmlTestUtil
         map.put("b", 2);
 
         String xml;
-        
+
         xml = _xmlMapper.writeValueAsString(new WrapperBean<Map<?,?>>(map));
         assertEquals("<WrapperBean><value>"
                 +"<a>1</a>"
@@ -269,5 +270,14 @@ public class TestSerialization extends XmlTestUtil
         Doubles deserialized = _xmlMapper.readValue(xml, Doubles.class);
         assertEquals(original.attr, deserialized.attr);
         assertEquals(original.elem, deserialized.elem);
+    }
+
+    @Test
+    public void uuidSerializability() throws Exception
+    {
+        String uuidStr = "6D416BE5-7EA9-4981-897C-32C57226205E".toLowerCase();
+        String xml = _xmlMapper.writeValueAsString(new WrapperBean<UUID>(
+                UUID.fromString(uuidStr))).trim();
+        assertEquals("<WrapperBean><value>"+uuidStr+"</value></WrapperBean>", xml);
     }
 }
