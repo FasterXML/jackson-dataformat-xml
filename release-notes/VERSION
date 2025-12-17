@@ -5,6 +5,13 @@ Version: 3.x (for earlier see VERSION-2.x)
 === Releases === 
 ------------------------------------------------------------------------
 
+3.0.4 (not yet released)
+
+#793: `XmlSerializationContext`: NPE _writeCapabilities not set for
+  `SerializationContext`
+ (reported by Ghenadii B)
+ (fix by @pjfanning)
+
 3.0.3 (28-Nov-2025)
 
 No changes since 3.0.2

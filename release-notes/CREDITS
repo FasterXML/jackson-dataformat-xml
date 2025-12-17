@@ -10,3 +10,15 @@ Morten Olav Hansen (mortenoh@github)
 * Reported #25: `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` not honored in xml module
   for attributes
  (3.0.0)
+
+Ghenadii Batalski (@ghenadiibatalski)
+
+* Reported #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
+  `SerializationContext`
+ (3.0.4)
+
+PJ Fanning (@pjfanning)
+
+* Fixed #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
+  `SerializationContext`
+ (3.0.4)
