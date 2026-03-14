@@ -1,0 +1,34 @@
+name: Post Coverage Comment
+on:
+  workflow_run:
+    workflows: ["Build and Deploy Snapshot"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-24.04
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    steps:
+    - name: Download comment artifact
+      uses: dawidd6/action-download-artifact@2536c51d3d126276eb39f74d6bc9c72ac6ef30d3 # v16
+      with:
+        name: pr-comment
+        path: pr-comment/
+        run_id: ${{ github.event.workflow_run.id }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Post coverage comment
+      run: |
+        PR_NUMBER=$(cat pr-comment/pr-number.txt)
+        COMMENT_BODY=$(cat pr-comment/comment-body.txt)
+        COMMENT_ID=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json comments \
+          --jq '.comments[] | select(.body | contains("<!-- jacoco-coverage-comment -->")) | .id' | head -1)
+        if [ -n "$COMMENT_ID" ]; then
+          gh api -X DELETE "repos/${{ github.repository }}/issues/comments/$COMMENT_ID" || true
+        fi
+        gh pr comment $PR_NUMBER --repo ${{ github.repository }} --body "$COMMENT_BODY"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
