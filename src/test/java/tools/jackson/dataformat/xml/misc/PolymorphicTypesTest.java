@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PolymorphicTypesTest extends XmlTestUtil
 {
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY)
-    static class BaseTypeWithClassProperty { }
+    public static class BaseTypeWithClassProperty { }
 
-    static class SubTypeWithClassProperty extends BaseTypeWithClassProperty {
+    public static class SubTypeWithClassProperty extends BaseTypeWithClassProperty {
         public String name;
 
         public SubTypeWithClassProperty() { }
@@ -25,9 +25,9 @@ public class PolymorphicTypesTest extends XmlTestUtil
     }
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
-    protected static class BaseTypeWithClassObject { }
+    public static class BaseTypeWithClassObject { }
 
-    protected static class SubTypeWithClassObject extends BaseTypeWithClassObject {
+    public static class SubTypeWithClassObject extends BaseTypeWithClassObject {
         public String name;
     
         public SubTypeWithClassObject() { }
@@ -36,14 +36,14 @@ public class PolymorphicTypesTest extends XmlTestUtil
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    protected static class TypeWithClassPropertyAndObjectId {
+    public static class TypeWithClassPropertyAndObjectId {
         public String id;
 
         public TypeWithClassPropertyAndObjectId() {}
         public TypeWithClassPropertyAndObjectId(String id) { this.id = id; }
     }
 
-    protected static class Wrapper {
+    public static class Wrapper {
         public List<TypeWithClassPropertyAndObjectId> data;
 
         public Wrapper(){}

@@ -307,6 +307,13 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         throws JacksonException
     {
         if (_objectIdWriter != null) {
+            // [dataformat-xml#81]: XML cannot represent typed object id references
+            // as arrays ([type, id]) inline within lists, unlike JSON. So for
+            // back-references, write just the id without type wrapping.
+            WritableObjectId oid = ctxt.findObjectId(bean, _objectIdWriter.generator);
+            if (oid.writeAsReference(gen, ctxt, _objectIdWriter)) {
+                return;
+            }
             _serializeWithObjectId(bean, gen, ctxt, typeSer);
             return;
         }
