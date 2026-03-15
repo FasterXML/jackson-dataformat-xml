@@ -116,7 +116,7 @@ public class XmlValueInstantiators
 
             // Check @JacksonXmlText
             Boolean isText = AnnotationUtil.findIsTextAnnotation(config, intr, member);
-            if (isText != null && isText.booleanValue()) {
+            if (Boolean.TRUE.equals(isText)) {
                 if (!_cfgNameForTextValue.equals(origName)) {
                     if (renames.isEmpty()) {
                         renames = new HashMap<>();
