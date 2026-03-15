@@ -48,10 +48,19 @@ public class XmlBeanSerializerModifier
             bpw.setInternalSetting(XmlBeanSerializerBase.KEY_XML_INFO,
             		new XmlInfo(isAttribute, ns, isText, isCData));
 
-            // Actually: if we have a Collection type, easiest place to add wrapping would be here...
-            //  or: let's also allow wrapping of "untyped" (Object): assuming it is a dynamically
-            //   typed Collection...
-            if (!TypeUtil.isIndexedType(bpw.getType())) {
+            // If we have a Collection type, easiest place to add wrapping would be here.
+            // [dataformat-xml#8]: also allow wrapping of "untyped" (Object): assuming it may
+            // be a dynamically typed Collection at runtime. Use dynamic wrapping so that
+            // wrapping is only applied when runtime value is actually a Collection.
+            final boolean isIndexed = TypeUtil.isIndexedType(bpw.getType());
+            final boolean isObjectType = TypeUtil.isObjectType(bpw.getType());
+            if (!isIndexed && !isObjectType) {
+                continue;
+            }
+            // [dataformat-xml#8]: for Object-typed properties, only wrap standard
+            // BeanPropertyWriters; skip virtual properties (e.g. @JsonAppend)
+            // and other custom subclasses whose get() won't survive wrapping
+            if (isObjectType && (bpw.getClass() != BeanPropertyWriter.class)) {
                 continue;
             }
             PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
@@ -66,7 +75,11 @@ public class XmlBeanSerializerModifier
             if (localName == null || localName.length() == 0) {
                 wrapperName = wrappedName;
             }
-            beanProperties.set(i, new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName));
+            // [dataformat-xml#8]: for Object-typed properties, use dynamic wrapping
+            // that checks at runtime if the value is actually a Collection
+            beanProperties.set(i, isObjectType
+                    ? new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName, true)
+                    : new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName));
         }
         return beanProperties;
     }

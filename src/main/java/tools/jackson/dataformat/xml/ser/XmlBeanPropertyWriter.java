@@ -14,8 +14,6 @@ import tools.jackson.databind.ser.impl.PropertySerializerMap;
 public class XmlBeanPropertyWriter
     extends BeanPropertyWriter
 {
-    private static final long serialVersionUID = 1L;
-
     /*
     /**********************************************************************
     /* Config settings
@@ -32,6 +30,16 @@ public class XmlBeanPropertyWriter
      */
     protected final QName _wrappedQName;
 
+    /**
+     * Whether wrapping should be checked dynamically based on the runtime value type.
+     * When {@code true}, wrapping is only applied if the runtime value is actually
+     * a Collection, Iterable, or array. Used for properties declared as {@code Object}
+     * that may or may not contain a collection at runtime.
+     *
+     * @since 3.2
+     */
+    protected final boolean _dynamicWrapping;
+
     /*
     /**********************************************************************
     /* Life-cycle: construction, configuration
@@ -40,16 +48,34 @@ public class XmlBeanPropertyWriter
 
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
             PropertyName wrapperName, PropertyName wrappedName) {
-        this(wrapped, wrapperName, wrappedName, null);
+        this(wrapped, wrapperName, wrappedName, null, false);
     }
 
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
             PropertyName wrapperName, PropertyName wrappedName,
             ValueSerializer<Object> serializer)
     {
+        this(wrapped, wrapperName, wrappedName, serializer, false);
+    }
+
+    /**
+     * @since 3.2
+     */
+    public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
+            PropertyName wrapperName, PropertyName wrappedName,
+            boolean dynamicWrapping)
+    {
+        this(wrapped, wrapperName, wrappedName, null, dynamicWrapping);
+    }
+
+    private XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
+            PropertyName wrapperName, PropertyName wrappedName,
+            ValueSerializer<Object> serializer, boolean dynamicWrapping)
+    {
         super(wrapped);
         _wrapperQName = _qname(wrapperName);
         _wrappedQName = _qname(wrappedName);
+        _dynamicWrapping = dynamicWrapping;
 
         if (serializer != null) {
             assignSerializer(serializer);
@@ -64,7 +90,7 @@ public class XmlBeanPropertyWriter
         }
         return new QName(ns, n.getSimpleName());
     }
-    
+
     /*
     /**********************************************************************
     /* Overridden methods
@@ -81,10 +107,17 @@ public class XmlBeanPropertyWriter
     {
         Object value = get(bean);
 
+        // [dataformat-xml#8]: For dynamic wrapping (Object-typed properties),
+        // check runtime type and delegate to standard handling if not a collection
+        if (_dynamicWrapping && (value == null || !_isIndexedValue(value))) {
+            super.serializeAsProperty(bean, g, ctxt);
+            return;
+        }
+
         /* 13-Feb-2014, tatu: As per [#103], default handling does not really
          *   work here. Rather, we need just a wrapping and should NOT call
          *   null handler, as it does not know what to do...
-         *   
+         *
          *   Question, however, is what should it be serialized as. We have two main
          *   choices; equivalent empty List, and "nothing" (missing). Let's start with
          *   empty List? But producing missing entry is non-trivial...
@@ -102,7 +135,7 @@ public class XmlBeanPropertyWriter
             }
             */
             // but for missing thing, well, just output nothing
-            
+
             return;
         }
 
@@ -149,5 +182,15 @@ public class XmlBeanPropertyWriter
         if (xmlGen != null) {
             xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
         }
+    }
+
+    /**
+     * Check if the runtime value is a Collection, array, or Iterable
+     * (i.e. something that should get wrapper element handling).
+     */
+    private static boolean _isIndexedValue(Object value) {
+        return (value instanceof java.util.Collection<?>)
+                || (value instanceof Iterable<?>)
+                || value.getClass().isArray();
     }
 }

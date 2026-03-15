@@ -27,4 +27,14 @@ public class TypeUtil
         }
         return false;
     }
+
+    /**
+     * Helper method for checking if the declared type is {@code java.lang.Object},
+     * meaning the actual runtime type could be anything including a Collection.
+     *
+     * @since 2.19
+     */
+    public static boolean isObjectType(JavaType type) {
+        return type.hasRawClass(Object.class);
+    }
 }

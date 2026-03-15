@@ -7,6 +7,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 3.2.0 (not yet released)
 
+#8: Serialization of `List` incorrect if property declared as plain `java.lang.Object`
+ (fix by @cowtowncoder, w/ Claude code)
 #802: Serialization with Polymorphisme and `EXTERNAL_PROPERTY` = duplicate property
  (reported by @ Adrien-dev25 )
  (fix by @cowtowncoder, w/ Claude code)
