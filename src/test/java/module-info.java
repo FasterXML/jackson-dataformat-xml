@@ -56,7 +56,6 @@ module tools.jackson.dataformat.xml
     opens tools.jackson.dataformat.xml.records;
     opens tools.jackson.dataformat.xml.stream;
     opens tools.jackson.dataformat.xml.tofix;
-    opens tools.jackson.dataformat.xml.tofix.records;
     opens tools.jackson.dataformat.xml.testutil.failure;
     opens tools.jackson.dataformat.xml.vld;
     opens tools.jackson.dataformat.xml.woodstox;

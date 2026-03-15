@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix.records;
+package tools.jackson.dataformat.xml.deser.records;
 
 import java.util.List;
 
@@ -8,7 +8,6 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT;
@@ -31,7 +30,6 @@ public class EntityRecordList615Test {
     }
 
     @Test
-    @JacksonTestFailureExpected
     void testXmlDeser() {
         XmlMapper xmlMapper = XmlMapper.builder()
                 .defaultUseWrapper(false)

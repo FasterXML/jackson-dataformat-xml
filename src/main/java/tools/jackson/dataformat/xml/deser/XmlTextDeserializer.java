@@ -90,10 +90,14 @@ public class XmlTextDeserializer
         throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
+            if (_valueInstantiator.canCreateUsingDefault()) {
                 Object bean = _valueInstantiator.createUsingDefault(ctxt);
                 _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
                 return bean;
             }
+            // [dataformat-xml#615]: No default constructor (e.g. records);
+            // synthesize object tokens so the delegate can use property-based creators
+            return _deserializeFromStringViaDelegate(p, ctxt);
         }
         return _delegatee.deserialize(p,  ctxt);
     }
@@ -131,5 +135,24 @@ public class XmlTextDeserializer
                     +deser.getClass().getName());
         }
         return (BeanDeserializerBase) deser;
+    }
+
+    /**
+     * [dataformat-xml#615]: When the parser sees a bare VALUE_STRING but the type
+     * has no default constructor (e.g. Java records), wrap the text value as
+     * {@code { "": "text" }} so the delegate can use its property-based creator.
+     */
+    private Object _deserializeFromStringViaDelegate(JsonParser p,
+            DeserializationContext ctxt) throws JacksonException
+    {
+        TokenBuffer tb = ctxt.bufferForInputBuffering(p);
+        tb.writeStartObject();
+        tb.writeName(_xmlTextProperty.getName());
+        tb.writeString(p.getText());
+        tb.writeEndObject();
+        JsonParser syntheticParser = tb.asParserOnFirstToken(ctxt, p);
+        Object result = _delegatee.deserialize(syntheticParser, ctxt);
+        tb.close();
+        return result;
     }
 }
