@@ -53,7 +53,7 @@ public class XmlBeanSerializerModifier
             // be a dynamically typed Collection at runtime. Use dynamic wrapping so that
             // wrapping is only applied when runtime value is actually a Collection.
             final boolean isIndexed = TypeUtil.isIndexedType(bpw.getType());
-            final boolean isObjectType = TypeUtil.isObjectType(bpw.getType());
+            final boolean isObjectType = bpw.getType().isJavaLangObject();
             if (!isIndexed && !isObjectType) {
                 continue;
             }
