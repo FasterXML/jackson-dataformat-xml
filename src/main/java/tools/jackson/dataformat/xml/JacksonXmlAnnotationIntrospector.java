@@ -30,6 +30,16 @@ public class JacksonXmlAnnotationIntrospector
     };
 
     /**
+     * Marker PropertyName used for {@code @JacksonXmlText} creator parameters.
+     * Must be non-empty so {@code PotentialCreator} recognizes the parameter as named.
+     * {@link tools.jackson.dataformat.xml.deser.XmlValueInstantiators} will later rename this to the actual text element
+     * name (empty string by default).
+     *
+     * @since 3.2
+     */
+    private final static PropertyName _XML_TEXT_NAME = PropertyName.construct("#xml.text");
+
+    /**
      * For backwards compatibility with 2.0, the default behavior is
      * to assume use of List wrapper if no annotations are used.
      */
@@ -209,6 +219,14 @@ public class JacksonXmlAnnotationIntrospector
                 super.findNameForDeserialization(config, a));
         if (pn == null) {
             if (_hasOneOf(a, ANNOTATIONS_TO_INFER_XML_PROP)) {
+                // [dataformat-xml#615]: Return non-empty name so PotentialCreator
+                // treats the parameter as named; XmlValueInstantiators renames to ""
+                if (a instanceof AnnotatedParameter) {
+                    JacksonXmlText textAnn = _findAnnotation(a, JacksonXmlText.class);
+                    if (textAnn != null && textAnn.value()) {
+                        return _XML_TEXT_NAME;
+                    }
+                }
                 return PropertyName.USE_DEFAULT;
             }
         }

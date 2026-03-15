@@ -4,6 +4,7 @@ import tools.jackson.core.Version;
 
 import tools.jackson.databind.JacksonModule;
 import tools.jackson.dataformat.xml.deser.XmlBeanDeserializerModifier;
+import tools.jackson.dataformat.xml.deser.XmlValueInstantiators;
 import tools.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 
 public class XmlModule
@@ -34,5 +35,8 @@ public class XmlModule
         XmlMapper.Builder builder = (XmlMapper.Builder) context.getOwner();
         final String textElemName = builder.nameForTextElement();
         context.addDeserializerModifier(new XmlBeanDeserializerModifier(textElemName));
+        // [dataformat-xml#615]: XmlValueInstantiators renames creator properties
+        // to match the text element name used by updateProperties() and FromXmlParser
+        context.addValueInstantiators(new XmlValueInstantiators(textElemName));
     }
 }

@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix.records;
+package tools.jackson.dataformat.xml.deser.records;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,7 +43,6 @@ public class XmlWrapperRecord517Test
                     "</messages>" +
                 "</Request>";
 
-    @JacksonTestFailureExpected
     @Test
     public void testWrapper() throws Exception {
         XmlWrapperRecord517Test.Request request = new Request(List.of(new Message("Hello, World!")));

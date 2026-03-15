@@ -44,6 +44,7 @@ module tools.jackson.dataformat.xml
     opens tools.jackson.dataformat.xml.deser.builder;
     opens tools.jackson.dataformat.xml.deser.convert;
     opens tools.jackson.dataformat.xml.deser.creator;
+    opens tools.jackson.dataformat.xml.deser.records;
     opens tools.jackson.dataformat.xml.dos;
     opens tools.jackson.dataformat.xml.fuzz;
     opens tools.jackson.dataformat.xml.jaxb;

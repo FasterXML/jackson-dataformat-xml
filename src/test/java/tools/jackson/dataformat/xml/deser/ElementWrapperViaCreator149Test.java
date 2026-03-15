@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.deser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,14 +13,11 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-// 13-Nov-2020, tatu: Not quite sure how to configure test to pass;
-//   seems like it should work but does not. Leaving for future generations
-//   to figure out...
+// [dataformat-xml#149]
 public class ElementWrapperViaCreator149Test extends XmlTestUtil
 {
     @JsonRootName("body")
@@ -40,7 +37,7 @@ public class ElementWrapperViaCreator149Test extends XmlTestUtil
             this.type = type;
             this.labels = labels;
         }
-    }    
+    }
 
     /*
     /**********************************************************************
@@ -51,7 +48,6 @@ public class ElementWrapperViaCreator149Test extends XmlTestUtil
     private final ObjectMapper MAPPER = newMapper();
 
     // [dataformat-xml#149]
-    @JacksonTestFailureExpected
     @Test
     public void testElementWrapper149() throws Exception
     {
@@ -63,7 +59,5 @@ public class ElementWrapperViaCreator149Test extends XmlTestUtil
         assertEquals("TYPE", result.type);
         assertNotNull(result.labels);
         assertEquals(Arrays.asList("foo", "bar"), result.labels);
-
-//System.err.println("XML: "+MAPPER.writeValueAsString(result));        
     }
 }

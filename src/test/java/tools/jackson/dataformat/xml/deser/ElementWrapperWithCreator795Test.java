@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.deser;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -71,7 +70,6 @@ public class ElementWrapperWithCreator795Test extends XmlTestUtil
 
     // Deserialization fails: XmlBeanDeserializerModifier renames property to wrapper name
     // ("httpHeaders") but creator property retains original name ("property"), causing mismatch.
-    @JacksonTestFailureExpected
     @Test
     public void testDeserializeWithWrapper() throws Exception
     {

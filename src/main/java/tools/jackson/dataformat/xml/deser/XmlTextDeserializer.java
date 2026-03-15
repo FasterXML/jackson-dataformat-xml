@@ -6,6 +6,7 @@ import tools.jackson.databind.deser.*;
 import tools.jackson.databind.deser.bean.BeanDeserializerBase;
 import tools.jackson.databind.deser.std.DelegatingDeserializer;
 import tools.jackson.databind.jsontype.TypeDeserializer;
+import tools.jackson.databind.util.TokenBuffer;
 
 /**
  * Delegating deserializer that is used in the special cases where
@@ -89,9 +90,10 @@ public class XmlTextDeserializer
         throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
-            Object bean = _valueInstantiator.createUsingDefault(ctxt);
-            _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
-            return bean;
+                Object bean = _valueInstantiator.createUsingDefault(ctxt);
+                _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
+                return bean;
+            }
         }
         return _delegatee.deserialize(p,  ctxt);
     }

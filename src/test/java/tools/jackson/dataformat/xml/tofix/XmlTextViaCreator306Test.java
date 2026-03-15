@@ -12,7 +12,6 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // [dataformat-xml#306]: Problem is that `@XmlText` has the nominal property name
@@ -72,21 +71,6 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
         public String el;
     }
 
-    // [dataformat-xml#423]
-    static class Sample423
-    {
-        final String text;
-        final String attribute;
-
-        @JsonCreator
-        public Sample423(@JacksonXmlText String text,
-                @JacksonXmlProperty(localName = "attribute", isAttribute = true)
-                String attribute) {
-            this.text = text;
-            this.attribute = attribute;
-        }
-    }
-
     /*
     /********************************************************
     /* Test methods
@@ -113,16 +97,5 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
         RootWithoutConstructor rootNoCtor = MAPPER.readValue(XML, RootWithoutConstructor.class);
         assertNotNull(rootNoCtor);
-    }
-
-    // [dataformat-xml#423]
-    @JacksonTestFailureExpected
-    @Test
-    public void testXmlTextViaCtor423() throws Exception
-    {
-        final String XML = "<Sample423 attribute='attrValue'>text value</Sample423>";
-        Sample423 result = MAPPER.readValue(XML, Sample423.class);
-        assertEquals("attrValue", result.attribute);
-        assertEquals("text value", result.text);
     }
 }

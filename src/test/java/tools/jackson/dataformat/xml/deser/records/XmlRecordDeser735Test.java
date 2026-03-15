@@ -1,11 +1,10 @@
-package tools.jackson.dataformat.xml.tofix.records;
+package tools.jackson.dataformat.xml.deser.records;
 
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,12 +25,11 @@ public class XmlRecordDeser735Test extends XmlTestUtil
             this.currency = currency;
         }
     }
-    
+
     private final String XML = "<Amt Ccy='EUR'>1</Amt>";
 
     private final XmlMapper MAPPER = newMapper();
 
-    @JacksonTestFailureExpected
     @Test
     public void testPojoDeser() throws Exception {
         Pojo735 amt = MAPPER.readValue(XML, Pojo735.class);
@@ -39,7 +37,6 @@ public class XmlRecordDeser735Test extends XmlTestUtil
         assertEquals("EUR", amt.currency);
     }
 
-    @JacksonTestFailureExpected
     @Test
     public void testRecordDeser() throws Exception {
         Amount amt = MAPPER.readValue(XML, Amount.class);
