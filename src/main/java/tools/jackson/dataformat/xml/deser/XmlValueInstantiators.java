@@ -111,9 +111,7 @@ public class XmlValueInstantiators
 
         for (BeanPropertyDefinition propDef : beanDescRef.get().findProperties()) {
             AnnotatedMember member = propDef.getPrimaryMember();
-            if (member == null) {
-                continue;
-            }
+
             final String origName = propDef.getName();
 
             // Check @JacksonXmlText
