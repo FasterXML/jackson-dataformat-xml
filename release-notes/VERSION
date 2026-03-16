@@ -15,9 +15,24 @@ Version: 3.x (for earlier see VERSION-2.x)
 #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
  (reported by Eduard W)
  (fix by Christopher M)
+#426: `InvalidTypeIdException` when parsing XML to POJO containing nested `List<>`,
+  custom `TypeIdResolver`
+ (reported by @ankagar)
+ (fix by @cowtowncoder, w/ Claude code)
+#455: Can't deserialize list in JsonSubtype when type property is visible
+ (reported by Jiri M)
+ (fix by @cowtowncoder, w/ Claude code)
 #517: XML wrapper doesn't work with java records
  (reported by Josip A)
  (fix by Christopher M)
+#525: Order of XML Properties trigger different behaviors with
+  polymorphic nested objects
+ (reported by Vitor P)
+ (fix by @cowtowncoder, w/ Claude code)
+#567: First element in unwrapped XML array is ignored during
+  deserialization to base class
+ (reported by @tetradon)
+ (fix by @cowtowncoder, w/ Claude code)
 #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
   `java.util.Map`) fails
  (reported by Severin K)

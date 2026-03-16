@@ -12,7 +12,8 @@ import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PolymorphicList576Test extends XmlTestUtil
+// For [dataformat-xml#567]
+public class PolymorphicList567Test extends XmlTestUtil
 {
     @JsonRootName("wrapper")
     static class Wrapper extends Base {
@@ -35,8 +36,6 @@ public class PolymorphicList576Test extends XmlTestUtil
         public void setItems(List<Item> items) {
             this.items = items;
         }
-
-
 
         @Override
         public String toString() {
@@ -91,7 +90,6 @@ public class PolymorphicList576Test extends XmlTestUtil
 
     private final ObjectMapper XML_MAPPER = newMapper();
 
-    // [dataformat-xml#576]
     @Test
     public void test_3itemsInXml_expect_3itemsInDeserializedObject() throws Exception {
         String xmlString = 
@@ -106,7 +104,6 @@ public class PolymorphicList576Test extends XmlTestUtil
         assertEquals(3, ((Wrapper)base).getItems().size());
     }
 
-    // [dataformat-xml#576]
     @Test
     public void test_2itemsInObject_expect_2itemsInObjectAfterRoundTripDeserializationToBaseClass() throws Exception {
         Wrapper wrapper = new Wrapper();

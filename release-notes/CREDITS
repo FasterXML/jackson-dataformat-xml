@@ -6,61 +6,61 @@ XML format backend (`jackson-dataformat-xml`), version 3.x
 Tatu Saloranta, tatu.saloranta@iki.fi: author
 
 Morten Olav Hansen (mortenoh@github)
-
-* Reported #25: `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` not honored in xml module
-  for attributes
- (3.0.0)
+ * Reported #25: `ACCEPT_EMPTY_STRING_AS_NULL_OBJECT` not honored in xml module
+   for attributes
+  (3.0.0)
 
 Ghenadii Batalski (@ghenadiibatalski)
-
-* Reported #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
-  `SerializationContext`
- (3.0.4)
+ * Reported #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
+   `SerializationContext`
+  (3.0.4)
 
 PJ Fanning (@pjfanning)
-
-* Fixed #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
-  `SerializationContext`
- (3.0.4)
+ * Fixed #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
+   `SerializationContext`
+  (3.0.4)
 
 Dai MIKURUBE (@dmikurube)
-
-* Reported #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
- (3.2.0)
+ * Reported #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
+  (3.2.0)
 
 Christopher McVay (@mcvayc)
-
-* Fixed #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
- (3.2.0)
-* Fixed #517: XML wrapper doesn't work with java records
- (3.2.0)
-* Fixed #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
+ * Fixed #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
+  (3.2.0)
+ * Fixed #517: XML wrapper doesn't work with java records
+  (3.2.0)
+ * Fixed #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
   `java.util.Map`) fails
- (3.2.0)
-* Fixed #735: Java Record with `@JacksonXmlText` stopped working with 2.18
- (3.2.0)
-* Fixed #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
- (3.2.0)
-* Fixed #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
- (3.2.0)
+  (3.2.0)
+ * Fixed #735: Java Record with `@JacksonXmlText` stopped working with 2.18
+  (3.2.0)
+ * Fixed #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
+  (3.2.0)
+ * Fixed #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
+  (3.2.0)
 
 Eduard Wirch (@ewirch)
+ * Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
+  (3.2.0)
 
-* Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
- (3.2.0)
+Jiri Mikulasek (@jimirocks)
+ * Reported #455: Can't deserialize list in JsonSubtype when type property is visible
+  (3.2.0)
 
 Josip Antoliš (@Antolius)
+ * Reported #517: XML wrapper doesn't work with java records
+  (3.2.0)
 
-* Reported #517: XML wrapper doesn't work with java records
- (3.2.0)
+Vitor Pamplona (@vitorpamplona)
+ * Reported #525: Order of XML Properties trigger different behaviors with
+  polymorphic nested objects
+  (3.2.0)
 
 Severin Kistler (@kistlers)
-
-* Reported #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
-  `java.util.Map`) fails
- (3.2.0)
+ * Reported #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
+   `java.util.Map`) fails
+  (3.2.0)
 
 Charles Moulliard (@cmoulliard)
-
-* Reported #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
- (3.2.0)
+ * Reported #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
+  (3.2.0)
