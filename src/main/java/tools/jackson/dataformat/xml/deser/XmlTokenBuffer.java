@@ -14,7 +14,7 @@ import tools.jackson.databind.util.TokenBuffer;
  * virtual wrapping to be configured on the underlying XML parser even
  * when content has been buffered (e.g., during polymorphic type resolution).
  *
- * @since 2.19
+ * @since 3.2
  */
 public class XmlTokenBuffer extends TokenBuffer
 {
@@ -22,18 +22,17 @@ public class XmlTokenBuffer extends TokenBuffer
      * Reference to the original XML parser that implements {@link ElementWrappable},
      * if one was found when this buffer was created.
      */
-    protected final ElementWrappable _xmlParser;
+    protected final ElementWrappable _wrappableParser;
 
     protected XmlTokenBuffer(JsonParser p, ObjectReadContext ctxt)
     {
         super(p, ctxt);
         // Find the ElementWrappable parser by unwrapping delegates
         JsonParser unwrapped = p;
-        while (unwrapped instanceof JsonParserDelegate) {
-            unwrapped = ((JsonParserDelegate) unwrapped).delegate();
+        while (unwrapped instanceof JsonParserDelegate del) {
+            unwrapped = del.delegate();
         }
-        _xmlParser = (unwrapped instanceof ElementWrappable)
-                ? (ElementWrappable) unwrapped : null;
+        _wrappableParser = (unwrapped instanceof ElementWrappable ew) ? ew : null;
     }
 
     public static XmlTokenBuffer xmlBufferForInputBuffering(JsonParser p,
@@ -50,22 +49,18 @@ public class XmlTokenBuffer extends TokenBuffer
     @Override
     public JsonParser asParser(ObjectReadContext readCtxt)
     {
-        JsonParser p = super.asParser(readCtxt);
-        return _wrapIfNeeded(p);
+        return _wrapIfNeeded(super.asParser(readCtxt));
     }
 
     @Override
     public JsonParser asParser(ObjectReadContext readCtxt, JsonParser p0)
     {
-        JsonParser p = super.asParser(readCtxt, p0);
-        return _wrapIfNeeded(p);
+        return _wrapIfNeeded(super.asParser(readCtxt, p0));
     }
 
     protected JsonParser _wrapIfNeeded(JsonParser p) {
-        if (_xmlParser != null) {
-            return new ElementWrappableParser(p, _xmlParser);
-        }
-        return p;
+        return (_wrappableParser == null) ? p
+                : new ElementWrappableParser(p, _wrappableParser);
     }
 
     /*

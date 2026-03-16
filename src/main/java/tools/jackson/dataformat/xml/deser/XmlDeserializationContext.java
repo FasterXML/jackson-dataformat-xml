@@ -37,19 +37,6 @@ public class XmlDeserializationContext
     /**********************************************************
      */
 
-    /**
-     * Override to return XML-aware {@link XmlTokenBuffer} that produces
-     * parsers implementing {@link ElementWrappable}, allowing virtual wrapping
-     * to be configured even after content has been buffered (e.g., during
-     * polymorphic type resolution).
-     *
-     * @since 2.19
-     */
-    @Override
-    public TokenBuffer bufferForInputBuffering(JsonParser p) {
-        return XmlTokenBuffer.xmlBufferForInputBuffering(p, this);
-    }
-
     @Override
     public Object readRootValue(JsonParser p, JavaType valueType,
             ValueDeserializer<Object> deser, Object valueToUpdate)
@@ -94,5 +81,18 @@ public class XmlDeserializationContext
             }
         }
         return text;
+    }
+
+    /**
+     * Override to return XML-aware {@link XmlTokenBuffer} that produces
+     * parsers implementing {@link ElementWrappable}, allowing virtual wrapping
+     * to be configured even after content has been buffered (e.g., during
+     * polymorphic type resolution).
+     *
+     * @since 3.2
+     */
+    @Override
+    public TokenBuffer bufferForInputBuffering(JsonParser p) {
+        return XmlTokenBuffer.xmlBufferForInputBuffering(p, this);
     }
 }
