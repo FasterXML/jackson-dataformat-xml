@@ -9,7 +9,7 @@ import tools.jackson.databind.ser.impl.PropertySerializerMap;
 
 /**
  * Property writer sub-class used for handling element wrapping needed for serializing
- * collection (array, Collection; possibly Map) types.
+ * collection (array, Collection; not Map) types.
  */
 public class XmlBeanPropertyWriter
     extends BeanPropertyWriter
@@ -46,11 +46,19 @@ public class XmlBeanPropertyWriter
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.2
+     */
+    @Deprecated
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
             PropertyName wrapperName, PropertyName wrappedName) {
         this(wrapped, wrapperName, wrappedName, null, false);
     }
 
+    /**
+     * @deprecated Since 3.2
+     */
+    @Deprecated
     public XmlBeanPropertyWriter(BeanPropertyWriter wrapped,
             PropertyName wrapperName, PropertyName wrappedName,
             ValueSerializer<Object> serializer)
