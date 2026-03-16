@@ -298,6 +298,19 @@ public class FromXmlParser
                 _xmlTokens.repeatStartElement();
             }
         }
+        // 15-Mar-2026, tatu: [dataformat-xml#455] Handle case where wrapping is
+        //   configured after the first matching element's PROPERTY_NAME was already
+        //   emitted (happens during polymorphic type resolution where the type
+        //   deserializer consumed properties before wrapping was set up).
+        //   In this case, the root check above would have skipped repeatStartElement,
+        //   but we still need to wrap the current element retroactively.
+        else if (!_streamReadContext.inRoot()
+                && _currToken == JsonToken.PROPERTY_NAME) {
+            String name = _xmlTokens.getLocalName();
+            if ((name != null) && namesToWrap.contains(name)) {
+                _xmlTokens.repeatStartElement();
+            }
+        }
         _streamReadContext.setNamesToWrap(namesToWrap);
     }
 

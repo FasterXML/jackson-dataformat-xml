@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.lists;
 
 import java.util.*;
 
@@ -10,8 +10,6 @@ import tools.jackson.databind.ObjectMapper;
 
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.*;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PolymorphicList576Test extends XmlTestUtil
@@ -93,7 +91,7 @@ public class PolymorphicList576Test extends XmlTestUtil
 
     private final ObjectMapper XML_MAPPER = newMapper();
 
-    @JacksonTestFailureExpected
+    // [dataformat-xml#576]
     @Test
     public void test_3itemsInXml_expect_3itemsInDeserializedObject() throws Exception {
         String xmlString = 
@@ -108,7 +106,7 @@ public class PolymorphicList576Test extends XmlTestUtil
         assertEquals(3, ((Wrapper)base).getItems().size());
     }
 
-    @JacksonTestFailureExpected
+    // [dataformat-xml#576]
     @Test
     public void test_2itemsInObject_expect_2itemsInObjectAfterRoundTripDeserializationToBaseClass() throws Exception {
         Wrapper wrapper = new Wrapper();

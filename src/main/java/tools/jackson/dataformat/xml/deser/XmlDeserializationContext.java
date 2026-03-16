@@ -10,6 +10,7 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.deser.DeserializationContextExt;
 import tools.jackson.databind.deser.DeserializerCache;
 import tools.jackson.databind.deser.DeserializerFactory;
+import tools.jackson.databind.util.TokenBuffer;
 import tools.jackson.dataformat.xml.XmlFactory;
 
 /**
@@ -35,6 +36,19 @@ public class XmlDeserializationContext
     /* Overrides we need
     /**********************************************************
      */
+
+    /**
+     * Override to return XML-aware {@link XmlTokenBuffer} that produces
+     * parsers implementing {@link ElementWrappable}, allowing virtual wrapping
+     * to be configured even after content has been buffered (e.g., during
+     * polymorphic type resolution).
+     *
+     * @since 2.19
+     */
+    @Override
+    public TokenBuffer bufferForInputBuffering(JsonParser p) {
+        return XmlTokenBuffer.xmlBufferForInputBuffering(p, this);
+    }
 
     @Override
     public Object readRootValue(JsonParser p, JavaType valueType,

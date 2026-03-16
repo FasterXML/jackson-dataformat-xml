@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.deser;
 
 import java.util.List;
 
@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.*;
 import tools.jackson.databind.ObjectMapper;
 
 import tools.jackson.dataformat.xml.XmlTestUtil;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // Tests for [dataformat-xml#525], related to relative order of "type"
@@ -49,7 +47,7 @@ public class TypeInfoOrder525Test extends XmlTestUtil
             .defaultUseWrapper(false)
             .build();
 
-    @JacksonTestFailureExpected
+    // [dataformat-xml#525]
     @Test
     public void testTypeAfterOtherProperties() throws Exception {
         String xml =

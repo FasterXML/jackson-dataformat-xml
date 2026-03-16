@@ -147,13 +147,23 @@ public class WrapperHandlingDeserializer
     @SuppressWarnings("resource")
     protected final void _configureParser(JsonParser p) throws JacksonException
     {
+        if (_namesToWrap == null) {
+            return;
+        }
         // 05-Sep-2019, tatu: May get XML parser, except for case where content is
         //   buffered. In that case we may still have access to real parser if we
         //   are lucky (like in [dataformat-xml#242])
+        // 15-Mar-2026, tatu: [dataformat-xml#455] Check for ElementWrappable at
+        //   each delegation level, not just at the innermost parser. This handles
+        //   the case where XmlTokenBuffer wraps the TokenBuffer.Parser with an
+        //   ElementWrappable delegate during polymorphic type resolution.
         while (p instanceof JsonParserDelegate) {
+            if (p instanceof ElementWrappable) {
+                break;
+            }
             p = ((JsonParserDelegate) p).delegate();
         }
-        if ((p instanceof ElementWrappable) && (_namesToWrap != null)) {
+        if (p instanceof ElementWrappable) {
             // 03-May-2021, tatu: as per [dataformat-xml#469] there are special
             //   cases where we get String token to represent XML empty element.
             //   If so, need to refrain from adding wrapping as that would
