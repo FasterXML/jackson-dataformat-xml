@@ -37,7 +37,7 @@ public class JacksonXmlAnnotationIntrospector
      *
      * @since 3.2
      */
-    private final static PropertyName _XML_TEXT_NAME = PropertyName.construct("#xml.text");
+    private final static PropertyName _XML_TEXT_NAME = PropertyName.construct("&xml.text");
 
     /**
      * For backwards compatibility with 2.0, the default behavior is
