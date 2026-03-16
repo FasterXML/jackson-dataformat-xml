@@ -62,8 +62,6 @@ public class XmlValueInstantiators
             return defaultInstantiator;
         }
 
-        SettableBeanProperty[] renamedCreatorProps = Arrays.copyOf(creatorProps, creatorProps.length);
-
         // Build a map of original-property-name -> new-name for renames that
         // updateProperties() will perform on the property definitions.
         // We need to apply the same renames to creator properties so names match.
@@ -77,6 +75,7 @@ public class XmlValueInstantiators
         }
 
         boolean hasRenames = false;
+        SettableBeanProperty[] renamedCreatorProps = Arrays.copyOf(creatorProps, creatorProps.length);
         for (int i = 0, len = renamedCreatorProps.length; i < len; ++i) {
             SettableBeanProperty prop = renamedCreatorProps[i];
             if (prop == null) {
@@ -136,30 +135,30 @@ public class XmlValueInstantiators
         for (BeanPropertyDefinition propDef : beanDescRef.get().findProperties()) {
             final AnnotatedMember member = propDef.getPrimaryMember();
             final String origName = propDef.getName();
+            String renamed = null;
 
             // Check @JacksonXmlText
             Boolean isText = AnnotationUtil.findIsTextAnnotation(config, intr, member);
             if (Boolean.TRUE.equals(isText)) {
                 if (!_cfgNameForTextValue.equals(origName)) {
-                    if (renames.isEmpty()) {
-                        renames = new HashMap<>();
-                    }
-                    renames.put(origName, _cfgNameForTextValue);
+                    renamed = _cfgNameForTextValue;
                 }
-                continue;
+            } else {
+                // Check wrapper name (for Lists)
+                PropertyName wrapperName = propDef.getWrapperName();
+                if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
+                    String localName = wrapperName.getSimpleName();
+                    if (localName != null && localName.length() > 0
+                            && !localName.equals(origName)) {
+                        renamed = localName;
+                    }
+                }
             }
-
-            // Check wrapper name (for Lists)
-            PropertyName wrapperName = propDef.getWrapperName();
-            if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
-                String localName = wrapperName.getSimpleName();
-                if (localName != null && localName.length() > 0
-                        && !localName.equals(origName)) {
-                    if (renames.isEmpty()) {
-                        renames = new HashMap<>();
-                    }
-                    renames.put(origName, localName);
+            if (renamed != null) {
+                if (renames.isEmpty()) {
+                    renames = new HashMap<>();
                 }
+                renames.put(origName, renamed);
             }
         }
         return renames;
