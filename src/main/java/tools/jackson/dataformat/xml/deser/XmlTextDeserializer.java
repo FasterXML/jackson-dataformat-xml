@@ -141,18 +141,21 @@ public class XmlTextDeserializer
      * [dataformat-xml#615]: When the parser sees a bare VALUE_STRING but the type
      * has no default constructor (e.g. Java records), wrap the text value as
      * {@code { "": "text" }} so the delegate can use its property-based creator.
+     *
+     * @since 3.2
      */
     private Object _deserializeFromStringViaDelegate(JsonParser p,
-            DeserializationContext ctxt) throws JacksonException
+            DeserializationContext ctxt)
+        throws JacksonException
     {
-        TokenBuffer tb = ctxt.bufferForInputBuffering(p);
-        tb.writeStartObject();
-        tb.writeName(_xmlTextProperty.getName());
-        tb.writeString(p.getText());
-        tb.writeEndObject();
-        JsonParser syntheticParser = tb.asParserOnFirstToken(ctxt, p);
-        Object result = _delegatee.deserialize(syntheticParser, ctxt);
-        tb.close();
-        return result;
+        try (TokenBuffer tb = ctxt.bufferForInputBuffering(p)) {
+            tb.writeStartObject();
+            tb.writeName(_xmlTextProperty.getName());
+            tb.writeString(p.getString());
+            tb.writeEndObject();
+            try (JsonParser syntheticParser = tb.asParserOnFirstToken(ctxt, p)) {
+                return _delegatee.deserialize(syntheticParser, ctxt);
+            }
+        }
     }
 }
