@@ -22,3 +22,38 @@ PJ Fanning (@pjfanning)
 * Fixed #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
   `SerializationContext`
  (3.0.4)
+
+Dai MIKURUBE (@dmikurube)
+
+* Reported #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
+ (3.2.0)
+
+Christopher McVay (@mcvayc)
+
+* Fixed #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
+ (3.2.0)
+* Fixed #517: XML wrapper doesn't work with java records
+ (3.2.0)
+* Fixed #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
+  `java.util.Map`) fails
+ (3.2.0)
+* Fixed #735: Java Record with `@JacksonXmlText` stopped working with 2.18
+ (3.2.0)
+* Fixed #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
+ (3.2.0)
+
+Josip Antoliš (@Antolius)
+
+* Reported #517: XML wrapper doesn't work with java records
+ (3.2.0)
+
+Severin Kistler (@kistlers)
+
+* Reported #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
+  `java.util.Map`) fails
+ (3.2.0)
+
+Charles Moulliard (@cmoulliard)
+
+* Reported #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
+ (3.2.0)

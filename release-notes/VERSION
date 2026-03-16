@@ -9,6 +9,22 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 #8: Serialization of `List` incorrect if property declared as plain `java.lang.Object`
  (fix by @cowtowncoder, w/ Claude code)
+#149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
+ (reported by Dai M)
+ (fix by Christopher M))
+#517: XML wrapper doesn't work with java records
+ (reported by Josip A)
+ (fix by Christopher M)
+#615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
+  `java.util.Map`) fails
+ (reported by Severin K)
+ (fix by Christopher M)
+#735: Java Record with `@JacksonXmlText` stopped working with 2.18
+ (reported by @akastyka))
+ (fix by Christopher M)
+#795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
+ (reported by Charles M)
+ (fix by Christopher M)
 #802: Serialization with Polymorphisme and `EXTERNAL_PROPERTY` = duplicate property
  (reported by @ Adrien-dev25 )
  (fix by @cowtowncoder, w/ Claude code)
