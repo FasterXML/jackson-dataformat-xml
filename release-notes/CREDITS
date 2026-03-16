@@ -41,6 +41,13 @@ Christopher McVay (@mcvayc)
  (3.2.0)
 * Fixed #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
  (3.2.0)
+* Fixed #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
+ (3.2.0)
+
+Eduard Wirch (@ewirch)
+
+* Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
+ (3.2.0)
 
 Josip Antoliš (@Antolius)
 

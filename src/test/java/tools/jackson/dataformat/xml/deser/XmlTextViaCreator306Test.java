@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.deser;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,13 +10,10 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-// [dataformat-xml#306]: Problem is that `@XmlText` has the nominal property name
-// of empty String (""), and that is not properly bound. Worse, empty String has
-// special meaning so that annotation CANNOT specify it, either.
+// [dataformat-xml#306]: @JacksonXmlText with constructor parameters
 public class XmlTextViaCreator306Test extends XmlTestUtil
 {
     // [dataformat-xml#306]
@@ -25,7 +22,8 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
         @JacksonXmlProperty(localName = "CHILD")
         final Child child;
 
-        public Root(Child child) {
+        @JsonCreator
+        public Root(@JsonProperty("CHILD") Child child) {
             this.child = child;
         }
 
@@ -54,7 +52,7 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
         final ChildWithoutConstructor child;
 
         @JsonCreator
-        public RootWithoutConstructor(@JsonProperty("child") ChildWithoutConstructor child) {
+        public RootWithoutConstructor(@JsonProperty("CHILD") ChildWithoutConstructor child) {
             this.child = child;
         }
 
@@ -80,22 +78,26 @@ public class XmlTextViaCreator306Test extends XmlTestUtil
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#306]
-    @JacksonTestFailureExpected
     @Test
     public void testIssue306WithCtor() throws Exception
     {
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
         Root root = MAPPER.readValue(XML, Root.class);
         assertNotNull(root);
+        assertNotNull(root.child);
+        assertEquals("attr_value", root.child.attr);
+        assertEquals("text", root.child.el);
     }
 
     // [dataformat-xml#306]
-    @JacksonTestFailureExpected
     @Test
     public void testIssue306NoCtor() throws Exception
     {
         final String XML = "<ROOT><CHILD attr='attr_value'>text</CHILD></ROOT>";
         RootWithoutConstructor rootNoCtor = MAPPER.readValue(XML, RootWithoutConstructor.class);
         assertNotNull(rootNoCtor);
+        assertNotNull(rootNoCtor.child);
+        assertEquals("attr_value", rootNoCtor.child.attr);
+        assertEquals("text", rootNoCtor.child.el);
     }
 }

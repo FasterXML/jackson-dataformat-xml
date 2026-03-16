@@ -12,6 +12,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
  (fix by Christopher M))
+#306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
+ (reported by Eduard W)
+ (fix by Christopher M)
 #517: XML wrapper doesn't work with java records
  (reported by Josip A)
  (fix by Christopher M)
