@@ -37,6 +37,22 @@ public class XmlValueInstantiators
         _cfgNameForTextValue = nameForTextValue;
     }
 
+    static class XmlDelegatingInstantiator extends ValueInstantiator.Delegating {
+        private static final long serialVersionUID = 1L;
+
+        private final SettableBeanProperty[] _renamedCreatorProps;
+
+        public XmlDelegatingInstantiator(ValueInstantiator delegate, SettableBeanProperty[] renamedCreatorProps) {
+            super(delegate);
+            this._renamedCreatorProps = renamedCreatorProps;
+        }
+
+        @Override
+        public SettableBeanProperty[] getFromObjectArguments(DeserializationConfig config) {
+            return _renamedCreatorProps;
+        }
+    }
+
     @Override
     public ValueInstantiator modifyValueInstantiator(DeserializationConfig config,
             BeanDescription.Supplier beanDescRef, ValueInstantiator defaultInstantiator)
@@ -45,6 +61,8 @@ public class XmlValueInstantiators
         if (creatorProps == null || creatorProps.length == 0) {
             return defaultInstantiator;
         }
+
+        SettableBeanProperty[] renamedCreatorProps = Arrays.copyOf(creatorProps, creatorProps.length);
 
         // Build a map of original-property-name -> new-name for renames that
         // updateProperties() will perform on the property definitions.
@@ -58,8 +76,9 @@ public class XmlValueInstantiators
             }
         }
 
-        for (int i = 0, len = creatorProps.length; i < len; ++i) {
-            SettableBeanProperty prop = creatorProps[i];
+        boolean hasRenames = false;
+        for (int i = 0, len = renamedCreatorProps.length; i < len; ++i) {
+            SettableBeanProperty prop = renamedCreatorProps[i];
             if (prop == null) {
                 continue;
             }
@@ -69,7 +88,8 @@ public class XmlValueInstantiators
             JacksonXmlText textAnn = prop.getAnnotation(JacksonXmlText.class);
             if (textAnn != null && textAnn.value()) {
                 if (!_cfgNameForTextValue.equals(propName)) {
-                    creatorProps[i] = prop.withSimpleName(_cfgNameForTextValue);
+                    renamedCreatorProps[i] = prop.withSimpleName(_cfgNameForTextValue);
+                    hasRenames = true;
                 }
                 continue;
             }
@@ -77,10 +97,14 @@ public class XmlValueInstantiators
             // Second check: rename map from property definitions
             String newName = renames.get(propName);
             if (newName != null && !newName.equals(propName)) {
-                creatorProps[i] = prop.withSimpleName(newName);
+                renamedCreatorProps[i] = prop.withSimpleName(newName);
+                hasRenames = true;
             }
         }
-        return defaultInstantiator;
+
+        return hasRenames ?
+                new XmlDelegatingInstantiator(defaultInstantiator, renamedCreatorProps)
+                : defaultInstantiator;
     }
 
     private boolean _hasXmlTextCreatorParam(SettableBeanProperty[] creatorProps)
@@ -110,8 +134,7 @@ public class XmlValueInstantiators
         Map<String, String> renames = Collections.emptyMap();
 
         for (BeanPropertyDefinition propDef : beanDescRef.get().findProperties()) {
-            AnnotatedMember member = propDef.getPrimaryMember();
-
+            final AnnotatedMember member = propDef.getPrimaryMember();
             final String origName = propDef.getName();
 
             // Check @JacksonXmlText
