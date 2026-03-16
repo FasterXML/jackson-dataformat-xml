@@ -48,10 +48,22 @@ public class XmlBeanSerializerModifier
             bpw.setInternalSetting(XmlBeanSerializerBase.KEY_XML_INFO,
             		new XmlInfo(isAttribute, ns, isText, isCData));
 
-            // Actually: if we have a Collection type, easiest place to add wrapping would be here...
-            //  or: let's also allow wrapping of "untyped" (Object): assuming it is a dynamically
-            //   typed Collection...
-            if (!TypeUtil.isIndexedType(bpw.getType())) {
+            // If we have a Collection/array type, the easiest place to add wrapping is here.
+            // [dataformat-xml#8]: also allow wrapping of "untyped" (Object): assuming it may
+            // be a dynamically typed Collection at runtime. Use dynamic wrapping so that
+            // wrapping is only applied when runtime value is actually a Collection.
+            final JavaType propType = bpw.getType();
+            final boolean dynamicWrapping;
+
+            if (TypeUtil.isIndexedType(propType)) {
+                dynamicWrapping = false;
+            } else if (propType.isJavaLangObject()
+                    // [dataformat-xml#8]: for Object-typed properties, only wrap standard
+                    // BeanPropertyWriters; skip virtual properties (e.g. @JsonAppend)
+                    // and other custom subclasses whose get() won't survive wrapping
+                    && bpw.getClass() == BeanPropertyWriter.class) {
+                dynamicWrapping = true;
+            } else {
                 continue;
             }
             PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
@@ -66,7 +78,10 @@ public class XmlBeanSerializerModifier
             if (localName == null || localName.length() == 0) {
                 wrapperName = wrappedName;
             }
-            beanProperties.set(i, new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName));
+            // [dataformat-xml#8]: for Object-typed properties, use dynamic wrapping
+            // that checks at runtime if the value is actually a Collection
+            beanProperties.set(i,
+                    new XmlBeanPropertyWriter(bpw, wrapperName, wrappedName, dynamicWrapping));
         }
         return beanProperties;
     }

@@ -10,18 +10,20 @@ public class TypeUtil
      */
     public static boolean isIndexedType(JavaType type)
     {
-        Class<?> cls = type.getRawClass();
         // 25-Mar-2024, tatu [dataformat-xml#646]: Need to support Iterable too
-        if (type.isContainerType() || type.isIterationType() || cls == Iterable.class) {
-            // One special case; byte[] will be serialized as base64-encoded String, not real array, so:
-            // (actually, ditto for char[]; thought to be a String)
-            if (cls == byte[].class || cls == char[].class) {
-                return false;
-            }
+        if (type.isContainerType() || type.isIterationType() || type.hasRawClass(Iterable.class)) {
             // Also, should not add wrapping for Maps
             // [dataformat-xml#220]: nor map-like (Scala Map) types
             if (type.isMapLikeType()) {
                 return false;
+            }
+            if (type.isArrayType()) {
+                // Other special cases; byte[] will be serialized as base64-encoded String,
+                // not real array, so...
+                // (actually, ditto for char[]; thought to be a String)
+                if (type.hasRawClass(byte[].class) || type.hasRawClass(char[].class)) {
+                    return false;
+                }
             }
             return true;
         }
