@@ -43,6 +43,11 @@ Eduard Wirch (@ewirch)
  * Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
   (3.2.0)
 
+Lon Varscsak (@lonvarscsak)
+ * Reported #449: Trouble dealing with JacksonXMLText if properties are present or
+   if element is in a collection
+  (3.2.0)
+
 Jiri Mikulasek (@jimirocks)
  * Reported #455: Can't deserialize list in JsonSubtype when type property is visible
   (3.2.0)
@@ -54,6 +59,10 @@ Josip Antoliš (@Antolius)
 Vitor Pamplona (@vitorpamplona)
  * Reported #525: Order of XML Properties trigger different behaviors with
   polymorphic nested objects
+  (3.2.0)
+
+Alessandro Arcangeli (@aarcangeli)
+ * Reported #565: Blank text is ignored in `@JacksonXmlText`
   (3.2.0)
 
 Severin Kistler (@kistlers)
