@@ -41,11 +41,15 @@ Version: 3.x (for earlier see VERSION-2.x)
   `java.util.Map`) fails
  (reported by Severin K)
  (fix by Christopher M)
+#665: `@JacksonXmlProperty` appears to behave differently than
+  `@JsonProperty` when used on java records
+ (reported by Alex O)
+ (fix by @cowtowncoder, w/ Claude code)
 #735: Java Record with `@JacksonXmlText` stopped working with 2.18
  (reported by @akastyka))
  (fix by Christopher M)
 #762: Unwrapping lists does not work inside `@JsonUnwrapped`
- (reported by Simon C) 
+ (reported by Simon C)
  (fix by @cowtowncoder, w/ Claude code)
 #767: Unwrapped lists cannot be deserialized when using
   `JsonTypeInfo.As.EXISTING_PROPERTY`

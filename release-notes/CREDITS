@@ -61,6 +61,11 @@ Severin Kistler (@kistlers)
    `java.util.Map`) fails
   (3.2.0)
 
+Alex Olson (@alexkolson)
+ * Reported #665: `@JacksonXmlProperty` appears to behave differently than
+   `@JsonProperty` when used on java records
+  (3.2.0)
+
 Simon Cockx (@SimonCockx)
  * Reported #762: Unwrapping lists does not work inside `@JsonUnwrapped`
   (3.2.0)

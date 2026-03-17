@@ -26,7 +26,7 @@ public class JacksonXmlAnnotationIntrospector
     @SuppressWarnings("unchecked")
     private final static Class<? extends Annotation>[] ANNOTATIONS_TO_INFER_XML_PROP =
             (Class<? extends Annotation>[]) new Class<?>[] {
-        JacksonXmlText.class, JacksonXmlElementWrapper.class
+        JacksonXmlProperty.class, JacksonXmlText.class, JacksonXmlElementWrapper.class
     };
 
     /**
@@ -243,7 +243,13 @@ public class JacksonXmlAnnotationIntrospector
     {
         JacksonXmlProperty pann = _findAnnotation(a, JacksonXmlProperty.class);
         if (pann != null) {
-            return PropertyName.construct(pann.localName(), pann.namespace());
+            // [dataformat-xml#665]: empty localName should not produce an
+            //   empty-string PropertyName (causes "Duplicate creator property"
+            //   on records); return null so that the implicit name is used.
+            String localName = pann.localName();
+            if (localName != null && !localName.isEmpty()) {
+                return PropertyName.construct(localName, pann.namespace());
+            }
         }
         return null;
     }
