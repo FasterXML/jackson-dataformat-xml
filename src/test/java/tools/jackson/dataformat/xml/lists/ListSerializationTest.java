@@ -11,6 +11,9 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListSerializationTest extends XmlTestUtil
@@ -48,7 +51,28 @@ public class ListSerializationTest extends XmlTestUtil
             }
         }
     }
-   
+
+    // [dataformat-xml#55]
+    static class AnnotationWrapper55 {
+        @JacksonXmlElementWrapper(localName = "Points", useWrapping = true)
+        @JsonProperty("Point")
+        List<Point55> points = new ArrayList<Point55>();
+
+        public List<Point55> getPoints() {
+            return points;
+        }
+    }
+
+    @JsonPropertyOrder({"x", "y"})
+    static class Point55 {
+        public int x, y;
+
+        public Point55() { }
+        public Point55(int x, int y) { this.x = x;
+            this.y = y;
+        }
+    }
+
     /*
     /**********************************************************
     /* Unit tests
@@ -87,5 +111,19 @@ public class ListSerializationTest extends XmlTestUtil
                 +"<strings><text>b</text></strings>"
                 +"<strings><text>c</text></strings>"
                 +"</stringList></StringListBean>", xml);
+    }
+
+    // [dataformat-xml#55]
+    @Test
+    public void testAnnotationSharing55() throws Exception
+    {
+        AnnotationWrapper55 input = new AnnotationWrapper55();
+        input.points.add(new Point55(1, 2));
+        String xml = MAPPER.writeValueAsString(input);
+
+        assertEquals("<AnnotationWrapper55><Points><Point><x>1</x><y>2</y></Point></Points></AnnotationWrapper55>", xml);
+
+        AnnotationWrapper55 result = MAPPER.readValue(xml, AnnotationWrapper55.class);
+        assertEquals(1, result.points.size());
     }
 }

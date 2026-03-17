@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import jakarta.xml.bind.annotation.XmlElement;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import tools.jackson.core.type.TypeReference;
+
+import tools.jackson.databind.SerializationFeature;
 
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.*;
@@ -54,6 +58,26 @@ public class EmptyListDeserTest extends XmlTestUtil
         // is default but just for readability
         @JacksonXmlElementWrapper(useWrapping = true)
         public List<Channel460> channels;
+    }
+
+    // [dataformat-xml#103]
+    static class Order103  {
+        @JacksonXmlElementWrapper(localName = "line_items")
+        @JacksonXmlProperty(localName = "item")
+        private List<ListItem103> line_items;
+    }
+
+    static class ListItem103 {
+        public int id;
+
+        public ListItem103(int id) { this.id = id; }
+    }
+
+    // [dataformat-xml#129]
+    static class ListValues129 {
+        @XmlElement(name = "value", required = true)
+        @JacksonXmlElementWrapper(useWrapping=false)
+        public List<String> value;
     }
 
     /*
@@ -137,5 +161,41 @@ public class EmptyListDeserTest extends XmlTestUtil
         ChannelSet460 set = MAPPER.readValue(input, ChannelSet460.class);
         assertEquals(0, set.channels.size(),
                 "List should be empty");
+    }
+
+    // [dataformat-xml#103]
+    @Test
+    public void testEmptyWrappedList103() throws Exception
+    {
+        XmlMapper mapper = xmlMapper(true);
+        String xml = mapper.writeValueAsString(new Order103());
+        assertEquals("<Order103/>", xml);
+    }
+
+    // [dataformat-xml#129]
+    @Test
+    public void testListWithEmptyCData129() throws Exception
+    {
+        _testListWithEmptyCData129(" ");
+        _testListWithEmptyCData129("");
+    }
+
+    private void _testListWithEmptyCData129(String cdata) throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .build();
+        ListValues129 result = mapper.readValue("<root>\n"
+                + "<value>A</value>\n"
+                + "<value>"+cdata+"</value>\n"
+                + "<value>C</value>\n"
+                + "</root>", ListValues129.class);
+
+        List<String> values = result.value;
+
+        assertEquals(3, values.size());
+        assertEquals("A", values.get(0));
+        assertEquals(cdata, values.get(1));
+        assertEquals("C", values.get(2));
     }
 }

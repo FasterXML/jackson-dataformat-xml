@@ -1,13 +1,18 @@
 package tools.jackson.dataformat.xml.lists;
 
-import java.util.List;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,7 +33,68 @@ public class NestedUnwrappedListsTest extends XmlTestUtil
     }
 
     static class VehicleActivity {
-        public String recordedAtTime;    
+        public String recordedAtTime;
+    }
+
+    // [dataformat-xml#86]
+    @JsonRootName("test")
+    public static class Issue86 {
+
+      @JacksonXmlProperty(localName = "id", isAttribute = true)
+      public String id;
+
+      @JacksonXmlElementWrapper(useWrapping = false)
+      @JacksonXmlProperty(localName = "test")
+      public List<Issue86> children;
+
+      public Issue86() {}
+
+      public Issue86(final String id, final List<Issue86> children) {
+        this.id = id;
+        this.children = children;
+      }
+
+      @Override
+      public boolean equals(final Object other) {
+          if (other == this) return true;
+          if (other == null) return false;
+
+          if (!(other instanceof Issue86)) {
+              return false;
+          }
+
+          final Issue86 otherIssue86 = (Issue86) other;
+          return Objects.equals(id, otherIssue86.id)
+                 && Objects.deepEquals(children, otherIssue86.children);
+      }
+
+      @Override
+      public String toString() {
+          StringBuilder sb = new StringBuilder();
+          sb.append("{id='").append(id)
+              .append("', children=").append(children)
+              .append('}');
+          return sb.toString();
+      }
+    }
+
+    // [dataformat-xml#180]
+    static class Records180 {
+        @JacksonXmlElementWrapper(useWrapping=false)
+        public List<Record180> records = new ArrayList<Record180>();
+    }
+
+    static class Record180 {
+        @JacksonXmlElementWrapper(useWrapping=false)
+        public List<Field180> fields = new ArrayList<Field180>();
+    }
+
+    static class Field180 {
+        @JacksonXmlProperty(isAttribute=true)
+        public String name;
+
+        protected Field180() { }
+        public Field180(String n) { name = n; }
     }
 
     /*
@@ -190,5 +256,60 @@ public class NestedUnwrappedListsTest extends XmlTestUtil
         assertNotNull(del.vehicleActivity);
         assertEquals(1, del.vehicleActivity.size());
         assertEquals("2012-09-12T09:28:07.536-04:00", del.vehicleActivity.get(0).recordedAtTime);
+    }
+
+    // [dataformat-xml#86]
+    @Test
+    public void testNestedSelfReferential86() throws Exception
+    {
+        final String sourceIndented =
+            "<test id=\"0\">\n" +
+                "<test id=\"0.1\">\n" +
+                    "<test id=\"0.1.1\"/>\n" +
+                "</test>\n" +
+                "<test id=\"0.2\"/>\n" +
+                "<test id=\"0.3\">\n" +
+                    "<test id=\"0.3.1\"/>\n" +
+                "</test>\n" +
+            "</test>";
+        final String sourceCompact = sourceIndented.replaceAll("\n", "");
+        final Issue86 before = new Issue86("0",
+            Arrays.asList(new Issue86("0.1",
+                    Arrays.asList(new Issue86("0.1.1", null))),
+                new Issue86("0.2", null),
+                new Issue86("0.3",
+                    Arrays.asList(
+                        new Issue86("0.3.1", null)))));
+
+        final XmlMapper mapper = XmlMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(Include.NON_NULL))
+                .build();
+        final String xml = mapper.writeValueAsString(before);
+        assertEquals(sourceCompact, xml);
+
+        final Issue86 after = mapper.readValue(sourceIndented, Issue86.class);
+        assertEquals(before, after);
+    }
+
+    // [dataformat-xml#180]
+    @Test
+    public void testNestedUnwrappedLists180() throws Exception
+    {
+        String xml =
+"<Records180>\n"
++"<records></records>\n"
++"  <records>\n"
++"   <fields name='b'/>\n"
++"  </records>\n"
++"</Records180>\n"
+;
+        XmlMapper plainMapper = new XmlMapper();
+        Records180 result = plainMapper.readValue(xml, Records180.class);
+        assertNotNull(result.records);
+        assertEquals(2, result.records.size());
+        assertNotNull(result.records.get(1));
+        assertEquals(1, result.records.get(1).fields.size());
+        assertEquals("b", result.records.get(1).fields.get(0).name);
+        assertNotNull(result.records.get(0));
     }
 }

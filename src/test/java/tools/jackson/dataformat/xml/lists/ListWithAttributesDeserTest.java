@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.lists;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -120,6 +121,33 @@ public class ListWithAttributesDeserTest extends XmlTestUtil
         public void setAnother(String s) {
             another = s;
         }
+    }
+
+    // [dataformat-xml#101]
+    @JsonRootName("root")
+    @JsonPropertyOrder({ "unwrapped", "name" })
+    static class Root101 {
+        @JacksonXmlProperty(localName = "unwrapped")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<UnwrappedElement101> unwrapped;
+
+        public String name;
+    }
+
+    @JsonPropertyOrder({ "id", "type" })
+    static class UnwrappedElement101 {
+        public UnwrappedElement101() {}
+
+        public UnwrappedElement101(String id, String type) {
+            this.id = id;
+            this.type = type;
+        }
+
+        @JacksonXmlProperty(isAttribute = true)
+        public String id;
+
+        @JacksonXmlProperty(isAttribute = true)
+        public String type;
     }
 
     /*
@@ -260,5 +288,29 @@ public class ListWithAttributesDeserTest extends XmlTestUtil
         assertEquals("stuff", many.ones.get(0).another);
         assertEquals("foo2", many.ones.get(1).value);
         assertEquals("stuff2", many.ones.get(1).another);
+    }
+
+    // [dataformat-xml#101]
+    @Test
+    public void testWithTwoAttributes101() throws Exception
+    {
+        final String EXP = "<root>"
+                +"<unwrapped id=\"1\" type=\"string\"/>"
+                +"<unwrapped id=\"2\" type=\"string\"/>"
+                +"<name>test</name>"
+                +"</root>";
+        Root101 rootOb = new Root101();
+        rootOb.unwrapped = Arrays.asList(
+                new UnwrappedElement101("1", "string"),
+                new UnwrappedElement101("2", "string")
+        );
+        rootOb.name = "test";
+
+        String xml = MAPPER.writeValueAsString(rootOb);
+        assertEquals(EXP, xml);
+
+        Root101 result = MAPPER.readValue(xml, Root101.class);
+        assertNotNull(result);
+        assertEquals(rootOb.name, result.name);
     }
 }

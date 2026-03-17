@@ -8,8 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.*;
 
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.*;
@@ -196,6 +200,153 @@ public class ListDeserializationTest extends XmlTestUtil
         public Integer end;
         @JsonProperty("Price")
         public BigDecimal price;
+    }
+
+    // [dataformat-xml#76]
+    static final class Value76 {
+        @XmlElement(name = "v")
+        public String v;
+
+        public String getV() { return v; }
+        public void setV(final String v) { this.v = v; }
+    }
+
+    @JsonFormat(shape=JsonFormat.Shape.POJO)
+    @SuppressWarnings("serial")
+    static final class Values76 extends java.util.LinkedList<Value76>
+    {
+        @XmlAttribute(name = "type")
+        private String type;
+
+        @JacksonXmlElementWrapper(localName = "value", useWrapping = false)
+        @JacksonXmlProperty(localName = "value")
+        List<Value76> values = new ArrayList<Value76>();
+
+        String getType() { return type; }
+
+        void setType(final String type) { this.type = type; }
+
+        List<Value76> getValues() { return values; }
+
+        void setValues(final List<Value76> values) { this.values = values; }
+    }
+
+    // [dataformat-xml#393]
+    @JsonRootName("prices")
+    static class Prices393 {
+        private List<Price393> price = new ArrayList<Price393>();
+
+        public void setPrice(List<Price393> price) {
+            this.price = price;
+        }
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<Price393> getPrice() {
+            return this.price;
+        }
+    }
+
+    static class Price393 {
+        private String price;
+        private String num;
+
+        protected Price393() { }
+        public Price393(String p, String n) {
+            price = p;
+            num = n;
+        }
+
+        public void setPrice(String price) {
+            this.price = price;
+        }
+
+        public String getPrice() {
+            return this.price;
+        }
+
+        public void setNum(String num) {
+            this.num = num;
+        }
+
+        public String getNum() {
+            return this.num;
+        }
+    }
+
+    // [dataformat-xml#399]
+    static class Main399 {
+        @JacksonXmlProperty(localName = "test")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        List<Test399> list = new ArrayList<Test399>();
+    }
+
+    static class Test399 {
+        @JacksonXmlProperty(localName = "test")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        List<Test399> list = new ArrayList<Test399>();
+    }
+
+    // [dataformat-xml#646]
+    @JsonRootName("parent")
+    @JsonDeserialize(builder = Parent646.Builder.class)
+    static class Parent646 {
+        private final List<Child646> children;
+
+        Parent646(List<Child646> children) {
+            this.children = children;
+        }
+
+        @JsonProperty("child")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<Child646> getChildren() {
+            return children;
+        }
+
+        static class Builder {
+            private final List<Child646> children = new ArrayList<>();
+
+            @JsonProperty("child")
+            @JacksonXmlElementWrapper(useWrapping = false)
+            public Builder children(Iterable<Child646> children) {
+                for (Child646 c : children) {
+                    this.children.add(c);
+                }
+                return this;
+            }
+
+            public Parent646 build() {
+                return new Parent646(children);
+            }
+        }
+    }
+
+    @JsonRootName("child")
+    @JsonDeserialize(builder = Child646.Builder.class)
+    static class Child646 {
+        private final String id;
+
+        public Child646(String id) {
+            this.id = id;
+        }
+
+        @JsonProperty("id")
+        public String getId() {
+            return id;
+        }
+
+        static class Builder {
+            private String id;
+
+            @JsonProperty("id")
+            public Builder id(String id) {
+                this.id = id;
+                return this;
+            }
+
+            public Child646 build() {
+                return new Child646(id);
+            }
+        }
     }
 
     /*
@@ -436,5 +587,75 @@ System.out.println("List -> "+MAPPER.writeValueAsString(foo));
         Price433 price = p.price.get(0);
         assertEquals(Integer.valueOf(99), price.end);
         assertEquals(new BigDecimal("2.53"), price.price);
+    }
+
+    // [dataformat-xml#76]
+    @Test
+    public void testCollection76() throws Exception {
+        final Values76 values = new XmlMapper().readValue("<values type=\"array\">" +
+                "  <value><v>c</v></value>" +
+                "  <value><v>d</v></value>" +
+                "</values>",
+                Values76.class);
+        assertEquals(2, values.getValues().size(), 2);
+        assertEquals("c", values.getValues().get(0).getV());
+        assertEquals("d", values.getValues().get(1).getV());
+
+        assertEquals("array", values.getType());
+    }
+
+    // [dataformat-xml#393]
+    @Test
+    public void testDeser393() throws Exception
+    {
+        String content =
+                "<prices>\n"
+                + " <price>\n"
+                + "   <num>100</num>\n"
+                + "   <price>7.0</price>\n"
+                + " </price>\n"
+                + " <price>\n"
+                + "   <num>100</num>\n"
+                + "   <price>4.0</price>\n"
+                + " </price>"
+                + "</prices>\n";
+        Prices393 result = MAPPER.readValue(content, Prices393.class);
+        assertNotNull(result);
+        assertNotNull(result.getPrice());
+        assertEquals(2, result.getPrice().size());
+    }
+
+    // [dataformat-xml#399]
+    @Test
+    public void testIssue399() throws Exception {
+        final String XML =
+"<Main399>\n" +
+"    <test>\n" +
+"        <test>\n" +
+"            <test>\n" +
+"            </test>\n" +
+"        </test>\n" +
+"    </test>\n" +
+"    <test>\n" +
+"    </test>\n" +
+"</Main399>";
+        Main399 main = MAPPER.readValue(XML, Main399.class);
+        assertNotNull(main);
+        assertNotNull(main.list);
+        assertEquals(2, main.list.size());
+        assertNotNull(main.list.get(0));
+        assertNotNull(main.list.get(0).list);
+        assertEquals(1, main.list.get(0).list.size());
+        assertNotNull(main.list.get(1));
+    }
+
+    // [dataformat-xml#646]
+    @Test
+    public void testIssue646() throws Exception {
+        final String XML = "<parent><child><id>1</id></child></parent>";
+        Parent646 parent = MAPPER.readValue(XML, Parent646.class);
+        assertNotNull(parent);
+        assertNotNull(parent.getChildren());
+        assertEquals(1, parent.getChildren().size());
     }
 }
