@@ -139,10 +139,14 @@ public class XmlTokenBuffer extends TokenBuffer
         }
 
         private boolean _shouldWrap(String name) {
-            if (_namesToWrap == null) return false;
+            if (_namesToWrap == null) {
+                return false;
+            }
             if (_caseInsensitive) {
                 for (String n : _namesToWrap) {
-                    if (n.equalsIgnoreCase(name)) return true;
+                    if (n.equalsIgnoreCase(name)) {
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -335,7 +339,8 @@ public class XmlTokenBuffer extends TokenBuffer
                 _wrapState = STATE_NORMAL;
                 _virtualToken = JsonToken.END_ARRAY;
                 return JsonToken.END_ARRAY;
-            } else if (t == JsonToken.PROPERTY_NAME) {
+            }
+            if (t == JsonToken.PROPERTY_NAME) {
                 String name = delegate.currentName();
                 if (_matchesWrapName(name)) {
                     // Same collection element - skip the duplicate field name,
@@ -354,7 +359,8 @@ public class XmlTokenBuffer extends TokenBuffer
                 _virtualToken = JsonToken.END_ARRAY;
                 _virtualName = null;
                 return JsonToken.END_ARRAY;
-            } else if (t == JsonToken.END_OBJECT) {
+            }
+            if (t == JsonToken.END_OBJECT) {
                 // End of containing object - end array, save END_OBJECT as pending
                 _pendingToken = t;
                 _pendingName = null;
@@ -363,14 +369,13 @@ public class XmlTokenBuffer extends TokenBuffer
                 _virtualToken = JsonToken.END_ARRAY;
                 _virtualName = null;
                 return JsonToken.END_ARRAY;
-            } else {
-                // Other tokens (shouldn't normally happen at depth 0 in wrapping,
-                // but handle gracefully)
-                if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
-                    _wrapDepth++;
-                }
-                return t;
             }
+            // Other tokens (shouldn't normally happen at depth 0 in wrapping,
+            // but handle gracefully)
+            if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
+                _wrapDepth++;
+            }
+            return t;
         }
 
         private boolean _matchesWrapName(String name) {
