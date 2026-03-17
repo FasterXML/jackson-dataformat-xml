@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.ser;
 
 import org.junit.jupiter.api.Test;
 
@@ -8,9 +8,8 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 // For [dataformat-xml#27]
 public class ConflictingGetters27Test extends XmlTestUtil
@@ -40,7 +39,8 @@ public class ConflictingGetters27Test extends XmlTestUtil
         public void setBeanOther(BeanInfo[] beanOther) {
             this.beanOther = beanOther;
         }
-    }    
+    }
+
     static class BeanInfo {
         public String name;
 
@@ -54,21 +54,40 @@ public class ConflictingGetters27Test extends XmlTestUtil
     /**********************************************************************
      */
 
-    // [dataformat-xml#27]
-    @JacksonTestFailureExpected
+    private final XmlMapper MAPPER = new XmlMapper();
+
+    // [dataformat-xml#27]: Serialization
     @Test
-    public void testIssue27() throws Exception
+    public void testIssue27Serialize() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
-
         Bean bean = new Bean();
-        BeanInfo beanInfo = new BeanInfo("name");
-        BeanInfo beanOther = new BeanInfo("name");
-        bean.setBeanInfo(new BeanInfo[] { beanInfo });
-        bean.setBeanOther(new BeanInfo[] { beanOther });
+        bean.setBeanInfo(new BeanInfo[] { new BeanInfo("name1") });
+        bean.setBeanOther(new BeanInfo[] { new BeanInfo("name2") });
 
-        String json = mapper.writeValueAsString(bean);
-        assertNotNull(json);
-//        System.out.println(output);
+        String xml = MAPPER.writeValueAsString(bean);
+        assertNotNull(xml);
+        assertTrue(xml.contains("<beanInfo>"));
+        assertTrue(xml.contains("<beanOther>"));
+        assertTrue(xml.contains("<item>"));
+    }
+
+    // [dataformat-xml#27]: Roundtrip
+    @Test
+    public void testIssue27Roundtrip() throws Exception
+    {
+        Bean bean = new Bean();
+        bean.setBeanInfo(new BeanInfo[] { new BeanInfo("name1") });
+        bean.setBeanOther(new BeanInfo[] { new BeanInfo("name2") });
+
+        String xml = MAPPER.writeValueAsString(bean);
+        Bean result = MAPPER.readValue(xml, Bean.class);
+
+        assertNotNull(result);
+        assertNotNull(result.beanInfo);
+        assertNotNull(result.beanOther);
+        assertEquals(1, result.beanInfo.length);
+        assertEquals(1, result.beanOther.length);
+        assertEquals("name1", result.beanInfo[0].name);
+        assertEquals("name2", result.beanOther[0].name);
     }
 }

@@ -6,6 +6,7 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.introspect.AnnotatedMember;
 import tools.jackson.databind.ser.*;
 import tools.jackson.databind.ser.bean.BeanSerializerBase;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.util.AnnotationUtil;
 import tools.jackson.dataformat.xml.util.TypeUtil;
 import tools.jackson.dataformat.xml.util.XmlInfo;
@@ -66,7 +67,14 @@ public class XmlBeanSerializerModifier
             } else {
                 continue;
             }
-            PropertyName wrappedName = PropertyName.construct(bpw.getName(), ns);
+            // [dataformat-xml#27]: Get inner element name from @JacksonXmlProperty
+            // if available, since property name may have been set to wrapper name
+            // to avoid conflicts during bean introspection
+            JacksonXmlProperty xmlProp = member.getAnnotation(JacksonXmlProperty.class);
+            String innerName = (xmlProp != null
+                    && xmlProp.localName() != null && !xmlProp.localName().isEmpty())
+                    ? xmlProp.localName() : bpw.getName();
+            PropertyName wrappedName = PropertyName.construct(innerName, ns);
             PropertyName wrapperName = bpw.getWrapperName();
 
             // first things first: no wrapping?

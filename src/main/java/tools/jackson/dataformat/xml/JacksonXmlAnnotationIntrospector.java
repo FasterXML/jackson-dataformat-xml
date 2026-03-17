@@ -248,6 +248,16 @@ public class JacksonXmlAnnotationIntrospector
             //   on records); return null so that the implicit name is used.
             String localName = pann.localName();
             if (localName != null && !localName.isEmpty()) {
+                // [dataformat-xml#27]: If @JacksonXmlElementWrapper has explicit
+                //   name, use wrapper name as property identity to avoid conflicts
+                //   when multiple properties share the same inner element name.
+                JacksonXmlElementWrapper w = _findAnnotation(a, JacksonXmlElementWrapper.class);
+                if (w != null && w.useWrapping()) {
+                    String wrapperName = w.localName();
+                    if (wrapperName != null && !wrapperName.isEmpty()) {
+                        return PropertyName.construct(wrapperName, w.namespace());
+                    }
+                }
                 return PropertyName.construct(localName, pann.namespace());
             }
         }

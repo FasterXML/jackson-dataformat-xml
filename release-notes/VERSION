@@ -9,6 +9,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 #8: Serialization of `List` incorrect if property declared as plain `java.lang.Object`
  (fix by @cowtowncoder, w/ Claude code)
+#27: `@JacksonXmlElementWrapper` conflicting getter/setter definitions for property
+ (reported by @n00bman)
+ (fix by @cowtowncoder, w/ Claude code)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
  (fix by Christopher M))

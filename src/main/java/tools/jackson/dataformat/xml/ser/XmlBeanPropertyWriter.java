@@ -181,7 +181,9 @@ public class XmlBeanPropertyWriter
         if (xmlGen != null) {
             xmlGen.startWrappedValue(_wrapperQName, _wrappedQName);
         }
-        g.writeName(_name);
+        // [dataformat-xml#27]: Use wrapped name (inner element name), not property
+        // name which may be the wrapper name after introspector conflict resolution
+        g.writeName(_wrappedQName.getLocalPart());
         if (_typeSerializer == null) {
             ser.serialize(value, g, ctxt);
         } else {
