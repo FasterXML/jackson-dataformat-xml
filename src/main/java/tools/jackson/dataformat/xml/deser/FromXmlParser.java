@@ -290,25 +290,14 @@ public class FromXmlParser
         //   problems with Lists-in-Lists properties
         // 12-May-2020, tatu: But as per [dataformat-xml#86] NOT for root element
         //   (would still like to know why work-around needed ever, but...)
+        // 15-Mar-2026, tatu: [dataformat-xml#455] Relax the parent-root check when
+        //   we're at an element's PROPERTY_NAME (_mayBeLeaf distinguishes elements
+        //   from attributes). This handles polymorphic type resolution where the type
+        //   deserializer consumed properties before wrapping was set up, so we need
+        //   to wrap the current element retroactively.
         if (!_streamReadContext.inRoot()
-                 && !_streamReadContext.getParent().inRoot()) {
-            String name = _xmlTokens.getLocalName();
-            if ((name != null) && namesToWrap.contains(name)) {
-//System.out.println("REPEAT from addVirtualWrapping() for '"+name+"'");
-                _xmlTokens.repeatStartElement();
-            }
-        }
-        // 15-Mar-2026, tatu: [dataformat-xml#455] Handle case where wrapping is
-        //   configured after the first matching element's PROPERTY_NAME was already
-        //   emitted (happens during polymorphic type resolution where the type
-        //   deserializer consumed properties before wrapping was set up).
-        //   In this case, the root check above would have skipped repeatStartElement,
-        //   but we still need to wrap the current element retroactively.
-        //   NOTE: must also check _mayBeLeaf to ensure we're at an XML element
-        //   (not an attribute) since repeatStartElement requires XML_START_ELEMENT state.
-        else if (!_streamReadContext.inRoot()
-                && _currToken == JsonToken.PROPERTY_NAME
-                && _mayBeLeaf) {
+                && (!_streamReadContext.getParent().inRoot()
+                        || (_currToken == JsonToken.PROPERTY_NAME && _mayBeLeaf))) {
             String name = _xmlTokens.getLocalName();
             if ((name != null) && namesToWrap.contains(name)) {
                 _xmlTokens.repeatStartElement();
