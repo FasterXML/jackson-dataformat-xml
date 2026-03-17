@@ -643,10 +643,13 @@ public class FromXmlParser
 
                     if (token == XmlTokenStream.XML_END_ELEMENT) {
                         if (_streamReadContext.inArray()) {
-                            if (XmlTokenStream._allWs(_currText)) {
-                                // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
-                                //    expose as empty Object, not null (or, worse, as used to
-                                //    be done, by swallowing the token)
+                            // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
+                            //    expose as empty Object, not null (or, worse, as used to
+                            //    be done, by swallowing the token)
+                            // 17-Mar-2026, tatu: [dataformat-xml#565] Only treat truly
+                            //    empty (null/"") text as empty Object; whitespace-only text
+                            //    is valid content and must be preserved.
+                            if (_currText == null || _currText.isEmpty()) {
                                 _nextToken = JsonToken.END_OBJECT;
                                 _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                                 return _updateToken(JsonToken.START_OBJECT);
@@ -675,13 +678,17 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                         _nextIsLeadingMixed = true;
                         _nextToken = JsonToken.PROPERTY_NAME;
                         return _updateToken(JsonToken.START_OBJECT);
-                    } else if (XmlTokenStream._allWs(_currText)) {
+                    // 17-Mar-2026, tatu: [dataformat-xml#565] Only skip truly
+                    //    empty text, not whitespace-only (which is valid content)
+                    } else if (_currText == null || _currText.isEmpty()) {
                         token = _nextToken();
                         continue;
                     }
                 } else if (_streamReadContext.inArray()) {
                     // [dataformat-xml#319] Aaaaand for Arrays too
-                    if (XmlTokenStream._allWs(_currText)) {
+                    // 17-Mar-2026, tatu: [dataformat-xml#565] Only skip truly
+                    //    empty text, not whitespace-only (which is valid content)
+                    if (_currText == null || _currText.isEmpty()) {
                         token = _nextToken();
                         continue;
                     }

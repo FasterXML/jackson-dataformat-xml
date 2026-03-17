@@ -23,6 +23,10 @@ Version: 3.x (for earlier see VERSION-2.x)
   custom `TypeIdResolver`
  (reported by @ankagar)
  (fix by @cowtowncoder, w/ Claude code)
+#449: Trouble dealing with JacksonXMLText if properties are present or
+  if element is in a collection
+ (reported by Lon V)
+ (fix by @cowtowncoder, w/ Claude code)
 #455: Can't deserialize list in JsonSubtype when type property is visible
  (reported by Jiri M)
  (fix by @cowtowncoder, w/ Claude code)
@@ -32,6 +36,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #525: Order of XML Properties trigger different behaviors with
   polymorphic nested objects
  (reported by Vitor P)
+ (fix by @cowtowncoder, w/ Claude code)
+#565: Blank text is ignored in `@JacksonXmlText`
+ (reported by Alessandro A)
  (fix by @cowtowncoder, w/ Claude code)
 #567: First element in unwrapped XML array is ignored during
   deserialization to base class
