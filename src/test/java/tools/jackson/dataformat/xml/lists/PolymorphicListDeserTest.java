@@ -169,6 +169,30 @@ public class PolymorphicListDeserTest extends XmlTestUtil
         }
     }
 
+    // [dataformat-xml#767]
+    @JsonTypeInfo(
+            use = JsonTypeInfo.Id.NAME,
+            include = JsonTypeInfo.As.EXISTING_PROPERTY,
+            property = "type")
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = MyType767.class, name = "myType"),
+    })
+    interface IMyType767 { }
+
+    static class MyType767 implements IMyType767 {
+        public final String stringValue;
+        public final String type = "myType";
+        public final Collection<String> typeNames;
+
+        @JsonCreator
+        public MyType767(
+                @JsonProperty("stringValue") String stringValue,
+                @JsonProperty("typeNames") Collection<String> typeNames) {
+            this.stringValue = stringValue;
+            this.typeNames = typeNames;
+        }
+    }
+
     // [dataformat-xml#567]
     @JsonRootName("wrapper")
     static class Wrapper567 extends Base567 {
@@ -318,6 +342,26 @@ public class PolymorphicListDeserTest extends XmlTestUtil
         assertNotNull(result);
         assertEquals(MyType490.class, result.getClass());
         MyType490 typedResult = (MyType490) result;
+        assertEquals(Arrays.asList("type1", "type2"), typedResult.typeNames);
+    }
+
+    // [dataformat-xml#767]: Like #490, but with EXISTING_PROPERTY
+    @Test
+    public void testPolymorphicUnwrappedListExistingProperty767() throws Exception
+    {
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .defaultUseWrapper(false).build();
+
+        List<String> typeNames = new ArrayList<>();
+        typeNames.add("type1");
+        typeNames.add("type2");
+        MyType767 input = new MyType767("hello", typeNames);
+        String doc = xmlMapper.writeValueAsString(input);
+        IMyType767 result = xmlMapper.readValue(doc, IMyType767.class);
+
+        assertNotNull(result);
+        assertEquals(MyType767.class, result.getClass());
+        MyType767 typedResult = (MyType767) result;
         assertEquals(Arrays.asList("type1", "type2"), typedResult.typeNames);
     }
 

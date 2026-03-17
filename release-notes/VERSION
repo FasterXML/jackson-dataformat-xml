@@ -47,6 +47,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 #762: Unwrapping lists does not work inside `@JsonUnwrapped`
  (reported by Simon C) 
  (fix by @cowtowncoder, w/ Claude code)
+#767: Unwrapped lists cannot be deserialized when using
+  `JsonTypeInfo.As.EXISTING_PROPERTY`
+ (reported by Veit-Hendrik S)
+ (fix by @cowtowncoder, w/ Claude code)
 #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
  (reported by Charles M)
  (fix by Christopher M)
