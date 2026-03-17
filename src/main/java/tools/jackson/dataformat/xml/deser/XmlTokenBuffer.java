@@ -321,9 +321,9 @@ public class XmlTokenBuffer extends TokenBuffer
                 _virtualName = null;
                 JsonToken t = delegate.nextToken();
                 if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
-                    _wrapDepth++;
+                    ++_wrapDepth;
                 } else if (t == JsonToken.END_OBJECT || t == JsonToken.END_ARRAY) {
-                    _wrapDepth--;
+                    --_wrapDepth;
                 }
                 return t;
             }
@@ -347,7 +347,7 @@ public class XmlTokenBuffer extends TokenBuffer
                     // return the value token directly
                     t = delegate.nextToken();
                     if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
-                        _wrapDepth++;
+                        ++_wrapDepth;
                     }
                     return t;
                 }
@@ -373,7 +373,7 @@ public class XmlTokenBuffer extends TokenBuffer
             // Other tokens (shouldn't normally happen at depth 0 in wrapping,
             // but handle gracefully)
             if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
-                _wrapDepth++;
+                ++_wrapDepth;
             }
             return t;
         }
