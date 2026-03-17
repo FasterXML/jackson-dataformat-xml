@@ -12,6 +12,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
  (fix by Christopher M))
+#299: `@JsonUnwrapped` with a `@JacksonXmlElementWrapper(useWrapping=false)`
+  on a collection fails reading from XML
+ (reported by @jmsjr)
+ (fix by @cowtowncoder, w/ Claude code)
 #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
  (reported by Eduard W)
  (fix by Christopher M)
@@ -40,6 +44,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #735: Java Record with `@JacksonXmlText` stopped working with 2.18
  (reported by @akastyka))
  (fix by Christopher M)
+#762: Unwrapping lists does not work inside `@JsonUnwrapped`
+ (reported by Simon C) 
+ (fix by @cowtowncoder, w/ Claude code)
 #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
  (reported by Charles M)
  (fix by Christopher M)

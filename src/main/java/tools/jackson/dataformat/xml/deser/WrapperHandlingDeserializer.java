@@ -59,9 +59,13 @@ public class WrapperHandlingDeserializer
 
     @Override
     protected ValueDeserializer<?> newDelegatingInstance(ValueDeserializer<?> newDelegatee0) {
-        // default not enough, as we may need to create a new wrapping deserializer
-        // even if delegatee does not change
-        throw new IllegalStateException("Internal error: should never get called");
+        // [dataformat-xml#762]: need to support creating new instance when delegatee
+        // changes, e.g. when @JsonUnwrapped triggers creation of unwrapping deserializer
+        if (!(newDelegatee0 instanceof BeanDeserializerBase newDelegatee)) {
+            throw new IllegalArgumentException("Cannot change delegate to be of type "
+                    +newDelegatee0.getClass().getName());
+        }
+        return new WrapperHandlingDeserializer(newDelegatee, _namesToWrap);
     }
 
     @Override
