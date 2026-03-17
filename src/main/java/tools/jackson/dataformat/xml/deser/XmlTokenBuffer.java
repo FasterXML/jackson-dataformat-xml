@@ -88,6 +88,12 @@ public class XmlTokenBuffer extends TokenBuffer
     static class ElementWrappableParser extends JsonParserDelegate
         implements ElementWrappable
     {
+        // State machine constants
+        private static final int STATE_NORMAL = 0;
+        private static final int STATE_EMIT_START_ARRAY = 1;
+        private static final int STATE_WRAPPING = 2;
+        private static final int STATE_EMIT_PENDING = 3;
+
         protected final ElementWrappable _wrappable;
 
         // Virtual wrapping configuration
@@ -100,12 +106,6 @@ public class XmlTokenBuffer extends TokenBuffer
          * need wrapping. Set when {@link #addVirtualWrapping} is called.
          */
         protected boolean _localWrapping;
-
-        // State machine constants
-        private static final int STATE_NORMAL = 0;
-        private static final int STATE_EMIT_START_ARRAY = 1;
-        private static final int STATE_WRAPPING = 2;
-        private static final int STATE_EMIT_PENDING = 3;
 
         private int _wrapState = STATE_NORMAL;
         private String _currentWrapName;
