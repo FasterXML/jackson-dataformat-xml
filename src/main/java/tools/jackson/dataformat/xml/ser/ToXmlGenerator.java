@@ -90,6 +90,18 @@ public class ToXmlGenerator
      */
     protected XmlNameProcessor _nameProcessor;
 
+    /**
+     * Name used for pseudo-properties used to represent XML text segments
+     * (which may occur within elements that also have attributes or child
+     * elements): default value is empty String ({@code ""}).
+     *<p>
+     * Needed to recognize and handle such properties during serialization:
+     * see [dataformat-xml#629] for details.
+     *
+     * @since 3.2
+     */
+    protected final String _cfgNameForTextElement;
+
     /*
     /**********************************************************************
     /* XML Output state
@@ -149,6 +161,17 @@ public class ToXmlGenerator
             int streamWriteFeatures, int xmlFeatures,
             XMLStreamWriter sw, XmlPrettyPrinter pp, XmlNameProcessor nameProcessor)
     {
+        this(writeCtxt, ioCtxt, streamWriteFeatures, xmlFeatures, sw, pp, nameProcessor, "");
+    }
+
+    /**
+     * @since 2.19
+     */
+    public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
+            int streamWriteFeatures, int xmlFeatures,
+            XMLStreamWriter sw, XmlPrettyPrinter pp, XmlNameProcessor nameProcessor,
+            String nameForTextElement)
+    {
         super(writeCtxt, ioCtxt, streamWriteFeatures);
         _formatFeatures = xmlFeatures;
         _originalXmlWriter = sw;
@@ -159,6 +182,7 @@ public class ToXmlGenerator
                 ? DupDetector.rootDetector(this) : null;
         _streamWriteContext = SimpleStreamWriteContext.createRootContext(dups);
         _nameProcessor = nameProcessor;
+        _cfgNameForTextElement = nameForTextElement;
     }
 
     /**
@@ -438,12 +462,18 @@ public class ToXmlGenerator
             setNextName(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                     "type", "xsi"));
             setNextIsAttribute(true);
-        } else if (name.isEmpty()) {
-            // [dataformat-xml#629]: Empty name is used as the "unnamed text property"
-            //   marker (FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY) for XML text content
-            //   within elements that also have attributes. Write as unwrapped text, not
-            //   as an element with empty name (which would produce invalid "<>...</>").
+        } else if (name.equals(_cfgNameForTextElement)) {
+            // [dataformat-xml#629]: Name matching the "unnamed text property" marker
+            //   (FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY, default "") represents
+            //   XML text content within elements that also have attributes or child
+            //   elements. Write as unwrapped text, not as an element (which would
+            //   produce invalid XML like "<>...</>" for the default empty name).
             _nextIsUnwrapped = true;
+            // Must still ensure _nextName is non-null so value-write methods
+            // don't throw (they check _nextName == null before checkNextIsUnwrapped)
+            if (_nextName == null) {
+                _nextName = new QName(_cfgNameForTextElement);
+            }
         } else {
             // Should this ever get called?
             ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();

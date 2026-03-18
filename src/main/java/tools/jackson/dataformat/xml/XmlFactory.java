@@ -423,7 +423,8 @@ public class XmlFactory
                 writeCtxt.getFormatWriteFeatures(_formatWriteFeatures),
                 sw,
                 _xmlPrettyPrinter(writeCtxt),
-                _nameProcessor);
+                _nameProcessor,
+                _cfgNameForTextElement);
     }
 
     /*

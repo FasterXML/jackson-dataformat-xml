@@ -108,4 +108,24 @@ public class AnySetterNestedXml629Test extends XmlTestUtil
         assertFalse(xml.contains("<>"), "Output contains empty tags: " + xml);
         assertFalse(xml.contains("</>"), "Output contains empty closing tags: " + xml);
     }
+
+    // [dataformat-xml#629]: Verify text-element key works when it appears first
+    //   in the Map (edge case: _nextName could be null at that point)
+    @Test
+    public void testAnySetterTextKeyFirstInMap() throws Exception
+    {
+        PojoWith629 pojo = new PojoWith629();
+        pojo.id = "1";
+        // Construct a Map where the empty key (text element) appears first
+        LinkedHashMap<String, Object> inner = new LinkedHashMap<>();
+        inner.put("", "textval");
+        inner.put("attr", "aval");
+        pojo.others.put("elem", inner);
+
+        String xml = MAPPER.writeValueAsString(pojo);
+        assertFalse(xml.contains("<>"), "Output contains empty tags: " + xml);
+        assertFalse(xml.contains("</>"), "Output contains empty closing tags: " + xml);
+        assertTrue(xml.contains("textval"), "Text content missing: " + xml);
+        assertTrue(xml.contains("<attr>aval</attr>"), "Attribute-turned-element missing: " + xml);
+    }
 }
