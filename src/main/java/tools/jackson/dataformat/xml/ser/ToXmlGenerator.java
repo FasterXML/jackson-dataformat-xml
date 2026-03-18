@@ -72,6 +72,18 @@ public class ToXmlGenerator
      */
     protected final boolean _stax2Emulation;
 
+    /**
+     * Name used for pseudo-properties used to represent XML text segments
+     * (which may occur within elements that also have attributes or child
+     * elements): default value is empty String ({@code ""}).
+     *<p>
+     * Needed to recognize and handle such properties during serialization:
+     * see [dataformat-xml#629] for details.
+     *
+     * @since 3.2
+     */
+    protected final String _cfgNameForTextElement;
+
     /*
     /**********************************************************************
     /* Logical output state
@@ -89,18 +101,6 @@ public class ToXmlGenerator
      * @since 2.14
      */
     protected XmlNameProcessor _nameProcessor;
-
-    /**
-     * Name used for pseudo-properties used to represent XML text segments
-     * (which may occur within elements that also have attributes or child
-     * elements): default value is empty String ({@code ""}).
-     *<p>
-     * Needed to recognize and handle such properties during serialization:
-     * see [dataformat-xml#629] for details.
-     *
-     * @since 3.2
-     */
-    protected final String _cfgNameForTextElement;
 
     /*
     /**********************************************************************
@@ -157,6 +157,10 @@ public class ToXmlGenerator
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.2
+     */
+    @Deprecated // @since 3.2
     public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
             int streamWriteFeatures, int xmlFeatures,
             XMLStreamWriter sw, XmlPrettyPrinter pp, XmlNameProcessor nameProcessor)
@@ -165,7 +169,7 @@ public class ToXmlGenerator
     }
 
     /**
-     * @since 2.19
+     * @since 3.2
      */
     public ToXmlGenerator(ObjectWriteContext writeCtxt, IOContext ioCtxt,
             int streamWriteFeatures, int xmlFeatures,
