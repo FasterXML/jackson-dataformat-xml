@@ -26,7 +26,10 @@ public interface XmlAnnotationIntrospector
      *
      * @since 3.2
      */
-    public String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann);
+    default String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann) {
+        return null;
+    }
+
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
