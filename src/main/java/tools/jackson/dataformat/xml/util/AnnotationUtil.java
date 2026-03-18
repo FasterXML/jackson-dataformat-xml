@@ -4,7 +4,6 @@ import tools.jackson.databind.AnnotationIntrospector;
 import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.AnnotatedMember;
-import tools.jackson.dataformat.xml.XmlAnnotationIntrospector;
 
 public class AnnotationUtil
 {
@@ -74,8 +73,8 @@ public class AnnotationUtil
             AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof XmlAnnotationIntrospector) {
-                PropertyName name = ((XmlAnnotationIntrospector) intr).findXmlPropertyInnerName(config, prop);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                PropertyName name = ((AnnotationIntrospector.XmlExtensions) intr).findXmlPropertyInnerName(config, prop);
                 if (name != null) {
                     return name;
                 }

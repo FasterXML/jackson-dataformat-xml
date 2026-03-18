@@ -13,24 +13,6 @@ import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
 public interface XmlAnnotationIntrospector
     extends AnnotationIntrospector.XmlExtensions
 {
-    // [dataformat-xml#27]
-    /**
-     * Method for finding the fully-qualified inner element name specified via
-     * {@code @JacksonXmlProperty} on a property accessor.
-     * Used to recover the inner element name for wrapped collections when
-     * the property name has been set to the wrapper name.
-     *
-     * @param config Configuration settings in effect
-     * @param ann Annotated entity to introspect
-     *
-     * @return Inner element name if explicitly specified; null otherwise.
-     *
-     * @since 3.2
-     */
-    default PropertyName findXmlPropertyInnerName(MapperConfig<?> config, Annotated ann) {
-        return null;
-    }
-
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -113,12 +95,10 @@ public interface XmlAnnotationIntrospector
         @Override
         public PropertyName findXmlPropertyInnerName(MapperConfig<?> config, Annotated ann)
         {
-            PropertyName value = null;
-            if (_xmlPrimary instanceof XmlAnnotationIntrospector) {
-                value = ((XmlAnnotationIntrospector) _xmlPrimary).findXmlPropertyInnerName(config, ann);
-            }
-            if ((value == null) && (_xmlSecondary instanceof XmlAnnotationIntrospector)) {
-                value = ((XmlAnnotationIntrospector) _xmlSecondary).findXmlPropertyInnerName(config, ann);
+            PropertyName value = (_xmlPrimary == null) ? null
+                    : _xmlPrimary.findXmlPropertyInnerName(config, ann);
+            if ((value == null) && (_xmlSecondary != null)) {
+                value = _xmlSecondary.findXmlPropertyInnerName(config, ann);
             }
             return value;
         }
