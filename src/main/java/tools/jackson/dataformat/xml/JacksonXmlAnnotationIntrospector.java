@@ -144,6 +144,20 @@ public class JacksonXmlAnnotationIntrospector
         return ns1;
     }
 
+    // [dataformat-xml#27]
+    @Override
+    public String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann)
+    {
+        JacksonXmlProperty pann = _findAnnotation(ann, JacksonXmlProperty.class);
+        if (pann != null) {
+            String localName = pann.localName();
+            if (localName != null && !localName.isEmpty()) {
+                return localName;
+            }
+        }
+        return null;
+    }
+
     /* 30-Mar-2023, tatu: Although issue [dataformat-xml#578] requires override
      *   in 2.x for this method, same problem does NOT affect 3.0.
      *   This because we replace default AnnotationIntrospector, instead of

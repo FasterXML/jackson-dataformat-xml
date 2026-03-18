@@ -12,6 +12,21 @@ import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
 public interface XmlAnnotationIntrospector
     extends AnnotationIntrospector.XmlExtensions
 {
+    // [dataformat-xml#27]
+    /**
+     * Method for finding the inner element local name specified via
+     * {@code @JacksonXmlProperty(localName=...)} on a property accessor.
+     * Used to recover the inner element name for wrapped collections when
+     * the property name has been set to the wrapper name.
+     *
+     * @param config Configuration settings in effect
+     * @param ann Annotated entity to introspect
+     *
+     * @return Inner element local name if explicitly specified; null otherwise.
+     *
+     * @since 3.2
+     */
+    public String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann);
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -86,6 +101,20 @@ public interface XmlAnnotationIntrospector
             Boolean value = (_xmlPrimary == null) ? null : _xmlPrimary.isOutputAsCData(config, ann);
             if ((value == null) && (_xmlSecondary != null)) {
                 value = _xmlSecondary.isOutputAsCData(config, ann);
+            }
+            return value;
+        }
+
+        // [dataformat-xml#27]
+        @Override
+        public String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann)
+        {
+            String value = null;
+            if (_xmlPrimary instanceof XmlAnnotationIntrospector) {
+                value = ((XmlAnnotationIntrospector) _xmlPrimary).findXmlPropertyLocalName(config, ann);
+            }
+            if ((value == null) && (_xmlSecondary instanceof XmlAnnotationIntrospector)) {
+                value = ((XmlAnnotationIntrospector) _xmlSecondary).findXmlPropertyLocalName(config, ann);
             }
             return value;
         }
