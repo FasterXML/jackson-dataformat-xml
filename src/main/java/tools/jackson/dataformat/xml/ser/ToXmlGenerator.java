@@ -84,6 +84,15 @@ public class ToXmlGenerator
      */
     protected final String _cfgNameForTextElement;
 
+    /**
+     * Pre-computed {@link QName} for {@link #_cfgNameForTextElement}, used
+     * as a placeholder when the text element name is encountered in
+     * {@link #writeName(String)} to ensure {@link #_nextName} is non-null.
+     *
+     * @since 3.2
+     */
+    protected final QName _textElementQName;
+
     /*
     /**********************************************************************
     /* Logical output state
@@ -187,6 +196,7 @@ public class ToXmlGenerator
         _streamWriteContext = SimpleStreamWriteContext.createRootContext(dups);
         _nameProcessor = nameProcessor;
         _cfgNameForTextElement = nameForTextElement;
+        _textElementQName = new QName(nameForTextElement);
     }
 
     /**
@@ -476,7 +486,7 @@ public class ToXmlGenerator
             // Must still ensure _nextName is non-null so value-write methods
             // don't throw (they check _nextName == null before checkNextIsUnwrapped)
             if (_nextName == null) {
-                _nextName = new QName(_cfgNameForTextElement);
+                _nextName = _textElementQName;
             }
         } else {
             // Should this ever get called?
