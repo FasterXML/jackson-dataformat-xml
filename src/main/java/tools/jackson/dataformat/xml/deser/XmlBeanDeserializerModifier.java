@@ -5,6 +5,7 @@ import java.util.*;
 import tools.jackson.databind.*;
 import tools.jackson.databind.deser.*;
 import tools.jackson.databind.deser.bean.BeanDeserializerBase;
+import tools.jackson.databind.deser.std.DelegatingDeserializer;
 import tools.jackson.databind.introspect.AnnotatedMember;
 import tools.jackson.databind.introspect.BeanPropertyDefinition;
 import tools.jackson.dataformat.xml.util.AnnotationUtil;
@@ -82,16 +83,31 @@ public class XmlBeanDeserializerModifier
     public ValueDeserializer<?> modifyDeserializer(DeserializationConfig config,
             BeanDescription.Supplier beanDescRef, ValueDeserializer<?> deser0)
     {
-        if (!(deser0 instanceof BeanDeserializerBase)) {
-            return deser0;
+        if (deser0 instanceof BeanDeserializerBase) {
+            return _modifyBeanDeserializer(config, (BeanDeserializerBase) deser0);
         }
+        // [dataformat-xml#334]: If a user's DeserializerModifier has wrapped the
+        //   BeanDeserializer in a DelegatingDeserializer, unwrap to find the
+        //   underlying BeanDeserializerBase, process it, and rebuild the chain.
+        if (deser0 instanceof DelegatingDeserializer) {
+            return _modifyThroughDelegation(config, (DelegatingDeserializer) deser0);
+        }
+        return deser0;
+    }
+
+    /**
+     * Core modification logic extracted so it can be applied both to direct
+     * {@link BeanDeserializerBase} instances and to ones found inside
+     * {@link DelegatingDeserializer} wrappers.
+     */
+    private ValueDeserializer<?> _modifyBeanDeserializer(DeserializationConfig config,
+            BeanDeserializerBase deser)
+    {
         /* 17-Aug-2013, tatu: One important special case first: if we have one "XML Text"
          * property, it may be exposed as VALUE_STRING token (depending on whether any attribute
          * values are exposed): and to deserialize from that, we need special handling unless POJO
          * has appropriate single-string creator method.
          */
-        BeanDeserializerBase deser = (BeanDeserializerBase) deser0;
-
         // Heuristics are bit tricky; but for now let's assume that if POJO
         // can already work with VALUE_STRING, it's ok and doesn't need extra support
         ValueInstantiator inst = deser.getValueInstantiator();
@@ -108,6 +124,31 @@ public class XmlBeanDeserializerModifier
             }
         }
         return new WrapperHandlingDeserializer(deser);
+    }
+
+    /**
+     * Recursively walks a {@link DelegatingDeserializer} chain to find a
+     * {@link BeanDeserializerBase} at the bottom, applies XML-specific
+     * modifications (wrapper handling / XML text), and rebuilds the delegation
+     * chain from the inside out so no intermediate delegators are lost.
+     */
+    private ValueDeserializer<?> _modifyThroughDelegation(DeserializationConfig config,
+            DelegatingDeserializer deser)
+    {
+        ValueDeserializer<?> delegatee = deser.getDelegatee();
+        ValueDeserializer<?> modifiedDelegatee;
+        if (delegatee instanceof BeanDeserializerBase) {
+            modifiedDelegatee = _modifyBeanDeserializer(config, (BeanDeserializerBase) delegatee);
+        } else if (delegatee instanceof DelegatingDeserializer) {
+            modifiedDelegatee = _modifyThroughDelegation(config, (DelegatingDeserializer) delegatee);
+        } else {
+            // Delegatee is not a type we can handle
+            return deser;
+        }
+        if (modifiedDelegatee != delegatee) {
+            return deser.replaceDelegatee(modifiedDelegatee);
+        }
+        return deser;
     }
 
     private SettableBeanProperty _findSoleTextProp(DeserializationConfig config,
