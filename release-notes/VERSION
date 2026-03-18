@@ -18,6 +18,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 #192: Two wrapped lists with items of same name conflict
  (reported by @TeemuStenhammar)
  (fix by @cowtowncoder, w/ Claude code)
+#248: `@JacksonXmlProperty` with attributes raises an exception when used
+  with `@JsonIdentityInfo`
+ (reported by Tobias M)
+ (fix by @cowtowncoder, w/ Claude code)
 #299: `@JsonUnwrapped` with a `@JacksonXmlElementWrapper(useWrapping=false)`
   on a collection fails reading from XML
  (reported by @jmsjr)
