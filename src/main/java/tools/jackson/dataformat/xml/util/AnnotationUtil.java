@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.util;
 
 import tools.jackson.databind.AnnotationIntrospector;
+import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.AnnotatedMember;
 import tools.jackson.dataformat.xml.XmlAnnotationIntrospector;
@@ -68,13 +69,13 @@ public class AnnotationUtil
     }
 
     // [dataformat-xml#27]
-    public static String findXmlPropertyLocalName(MapperConfig<?> config,
+    public static PropertyName findXmlPropertyInnerName(MapperConfig<?> config,
             AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
             if (intr instanceof XmlAnnotationIntrospector) {
-                String name = ((XmlAnnotationIntrospector) intr).findXmlPropertyLocalName(config, prop);
+                PropertyName name = ((XmlAnnotationIntrospector) intr).findXmlPropertyInnerName(config, prop);
                 if (name != null) {
                     return name;
                 }

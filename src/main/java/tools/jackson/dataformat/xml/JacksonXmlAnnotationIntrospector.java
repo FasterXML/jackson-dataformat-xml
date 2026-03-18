@@ -146,13 +146,13 @@ public class JacksonXmlAnnotationIntrospector
 
     // [dataformat-xml#27]
     @Override
-    public String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann)
+    public PropertyName findXmlPropertyInnerName(MapperConfig<?> config, Annotated ann)
     {
         JacksonXmlProperty pann = _findAnnotation(ann, JacksonXmlProperty.class);
         if (pann != null) {
             String localName = pann.localName();
             if (localName != null && !localName.isEmpty()) {
-                return localName;
+                return PropertyName.construct(localName, pann.namespace());
             }
         }
         return null;

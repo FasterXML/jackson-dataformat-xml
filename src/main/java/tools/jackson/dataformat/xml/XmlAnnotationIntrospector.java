@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml;
 
 import tools.jackson.databind.AnnotationIntrospector;
+import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.Annotated;
 import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
@@ -14,19 +15,19 @@ public interface XmlAnnotationIntrospector
 {
     // [dataformat-xml#27]
     /**
-     * Method for finding the inner element local name specified via
-     * {@code @JacksonXmlProperty(localName=...)} on a property accessor.
+     * Method for finding the fully-qualified inner element name specified via
+     * {@code @JacksonXmlProperty} on a property accessor.
      * Used to recover the inner element name for wrapped collections when
      * the property name has been set to the wrapper name.
      *
      * @param config Configuration settings in effect
      * @param ann Annotated entity to introspect
      *
-     * @return Inner element local name if explicitly specified; null otherwise.
+     * @return Inner element name if explicitly specified; null otherwise.
      *
      * @since 3.2
      */
-    default String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann) {
+    default PropertyName findXmlPropertyInnerName(MapperConfig<?> config, Annotated ann) {
         return null;
     }
 
@@ -110,14 +111,14 @@ public interface XmlAnnotationIntrospector
 
         // [dataformat-xml#27]
         @Override
-        public String findXmlPropertyLocalName(MapperConfig<?> config, Annotated ann)
+        public PropertyName findXmlPropertyInnerName(MapperConfig<?> config, Annotated ann)
         {
-            String value = null;
+            PropertyName value = null;
             if (_xmlPrimary instanceof XmlAnnotationIntrospector) {
-                value = ((XmlAnnotationIntrospector) _xmlPrimary).findXmlPropertyLocalName(config, ann);
+                value = ((XmlAnnotationIntrospector) _xmlPrimary).findXmlPropertyInnerName(config, ann);
             }
             if ((value == null) && (_xmlSecondary instanceof XmlAnnotationIntrospector)) {
-                value = ((XmlAnnotationIntrospector) _xmlSecondary).findXmlPropertyLocalName(config, ann);
+                value = ((XmlAnnotationIntrospector) _xmlSecondary).findXmlPropertyInnerName(config, ann);
             }
             return value;
         }
