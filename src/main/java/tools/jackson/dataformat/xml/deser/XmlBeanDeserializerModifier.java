@@ -81,21 +81,22 @@ public class XmlBeanDeserializerModifier
 
     @Override
     public ValueDeserializer<?> modifyDeserializer(DeserializationConfig config,
-            BeanDescription.Supplier beanDescRef, ValueDeserializer<?> deser0)
+            BeanDescription.Supplier beanDescRef, ValueDeserializer<?> deser)
     {
-        if (deser0 instanceof BeanDeserializerBase) {
-            return _modifyBeanDeserializer(config, (BeanDeserializerBase) deser0);
+        if (deser instanceof BeanDeserializerBase bdb) {
+            return _modifyBeanDeserializer(config, bdb);
         }
         // [dataformat-xml#334]: If a user's DeserializerModifier has wrapped the
         //   BeanDeserializer in a DelegatingDeserializer, unwrap to find the
         //   underlying BeanDeserializerBase, process it, and rebuild the chain.
-        if (deser0 instanceof DelegatingDeserializer) {
-            return _modifyThroughDelegation(config, (DelegatingDeserializer) deser0);
+        if (deser instanceof DelegatingDeserializer dd) {
+            return _modifyThroughDelegation(config, dd);
         }
-        return deser0;
+        return deser;
     }
 
-    private ValueDeserializer<?> _modifyBeanDeserializer(DeserializationConfig config,
+    // @since 3.2.0
+    protected ValueDeserializer<?> _modifyBeanDeserializer(DeserializationConfig config,
             BeanDeserializerBase deser)
     {
         /* 17-Aug-2013, tatu: One important special case first: if we have one "XML Text"
@@ -121,15 +122,16 @@ public class XmlBeanDeserializerModifier
         return new WrapperHandlingDeserializer(deser);
     }
 
-    private ValueDeserializer<?> _modifyThroughDelegation(DeserializationConfig config,
+    // @since 3.2.0
+    protected ValueDeserializer<?> _modifyThroughDelegation(DeserializationConfig config,
             DelegatingDeserializer deser)
     {
         ValueDeserializer<?> delegatee = deser.getDelegatee();
         ValueDeserializer<?> modifiedDelegatee;
-        if (delegatee instanceof BeanDeserializerBase) {
-            modifiedDelegatee = _modifyBeanDeserializer(config, (BeanDeserializerBase) delegatee);
-        } else if (delegatee instanceof DelegatingDeserializer) {
-            modifiedDelegatee = _modifyThroughDelegation(config, (DelegatingDeserializer) delegatee);
+        if (delegatee instanceof BeanDeserializerBase bdb) {
+            modifiedDelegatee = _modifyBeanDeserializer(config, bdb);
+        } else if (delegatee instanceof DelegatingDeserializer dd) {
+            modifiedDelegatee = _modifyThroughDelegation(config, dd);
         } else {
             // Delegatee is not a type we can handle
             return deser;
