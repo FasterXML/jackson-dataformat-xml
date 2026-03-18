@@ -95,11 +95,6 @@ public class XmlBeanDeserializerModifier
         return deser0;
     }
 
-    /**
-     * Core modification logic extracted so it can be applied both to direct
-     * {@link BeanDeserializerBase} instances and to ones found inside
-     * {@link DelegatingDeserializer} wrappers.
-     */
     private ValueDeserializer<?> _modifyBeanDeserializer(DeserializationConfig config,
             BeanDeserializerBase deser)
     {
@@ -126,12 +121,6 @@ public class XmlBeanDeserializerModifier
         return new WrapperHandlingDeserializer(deser);
     }
 
-    /**
-     * Recursively walks a {@link DelegatingDeserializer} chain to find a
-     * {@link BeanDeserializerBase} at the bottom, applies XML-specific
-     * modifications (wrapper handling / XML text), and rebuilds the delegation
-     * chain from the inside out so no intermediate delegators are lost.
-     */
     private ValueDeserializer<?> _modifyThroughDelegation(DeserializationConfig config,
             DelegatingDeserializer deser)
     {

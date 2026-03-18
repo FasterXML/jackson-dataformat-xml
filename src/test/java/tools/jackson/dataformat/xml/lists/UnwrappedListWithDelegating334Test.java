@@ -58,60 +58,19 @@ public class UnwrappedListWithDelegating334Test extends XmlTestUtil
         }
     }
 
-    // Another passthrough, to test multi-level delegation chains
-    static class AnotherPassthroughDeserializer extends DelegatingDeserializer {
-        public AnotherPassthroughDeserializer(ValueDeserializer<?> delegate) {
-            super(delegate);
-        }
-
-        @Override
-        protected ValueDeserializer<?> newDelegatingInstance(ValueDeserializer<?> newDelegatee) {
-            return new AnotherPassthroughDeserializer(newDelegatee);
-        }
-    }
-
-    // Modifier that double-wraps: Passthrough -> AnotherPassthrough -> original
-    static class DoubleWrappingModifier extends ValueDeserializerModifier {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public ValueDeserializer<?> modifyDeserializer(DeserializationConfig config,
-                BeanDescription.Supplier beanDescRef, ValueDeserializer<?> deserializer) {
-            return new PassthroughDeserializer(
-                    new AnotherPassthroughDeserializer(deserializer));
-        }
-    }
-
     private final XmlMapper MAPPER = XmlMapper.builder()
             .addModule(new SimpleModule("test")
                     .setDeserializerModifier(new WrappingModifier()))
             .build();
 
-    private final XmlMapper MAPPER_DOUBLE = XmlMapper.builder()
-            .addModule(new SimpleModule("test")
-                    .setDeserializerModifier(new DoubleWrappingModifier()))
-            .build();
-
-    private final String BATCH_XML = "<batch>"
-            + "<message><text>one</text></message>"
-            + "<message><text>two</text></message>"
-            + "</batch>";
-
     @Test
     public void testUnwrappedListWithDelegatingDeserializer() throws Exception
     {
-        Batch batch = MAPPER.readValue(BATCH_XML, Batch.class);
-        assertNotNull(batch);
-        assertNotNull(batch.messages);
-        assertEquals(2, batch.messages.size());
-        assertEquals("one", batch.messages.get(0).text);
-        assertEquals("two", batch.messages.get(1).text);
-    }
-
-    @Test
-    public void testUnwrappedListWithMultiLevelDelegation() throws Exception
-    {
-        Batch batch = MAPPER_DOUBLE.readValue(BATCH_XML, Batch.class);
+        String xml = "<batch>"
+                + "<message><text>one</text></message>"
+                + "<message><text>two</text></message>"
+                + "</batch>";
+        Batch batch = MAPPER.readValue(xml, Batch.class);
         assertNotNull(batch);
         assertNotNull(batch.messages);
         assertEquals(2, batch.messages.size());

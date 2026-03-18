@@ -43,6 +43,10 @@ Eduard Wirch (@ewirch)
  * Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
   (3.2.0)
 
+Ruven Chu (@Chubacca)
+ * Reported #334: `@JacksonXmlElementWrapper(useWrapping=false)` fails when using
+   a `DeserializerModifier` that delegates
+  
 Lon Varscsak (@lonvarscsak)
  * Reported #449: Trouble dealing with JacksonXMLText if properties are present or
    if element is in a collection

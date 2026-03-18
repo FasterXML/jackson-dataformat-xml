@@ -22,6 +22,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
  (reported by Eduard W)
  (fix by Christopher M)
+#334: `@JacksonXmlElementWrapper(useWrapping=false)` fails when using
+  a `DeserializerModifier` that delegates
+ (reported by Ruven C)
+ (fix by @cowtowncoder, w/ Claude code)
 #426: `InvalidTypeIdException` when parsing XML to POJO containing nested `List<>`,
   custom `TypeIdResolver`
  (reported by @ankagar)
