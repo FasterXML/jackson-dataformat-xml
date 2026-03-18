@@ -263,28 +263,7 @@ public class JacksonXmlAnnotationIntrospector
 
     protected PropertyName _findXmlName(Annotated a)
     {
-        // First: check for explicit inner element name from
-        // @JacksonXmlProperty or @JsonProperty
-        PropertyName innerName = null;
-        JacksonXmlProperty pann = _findAnnotation(a, JacksonXmlProperty.class);
-        if (pann != null) {
-            // [dataformat-xml#665]: empty localName should not produce an
-            //   empty-string PropertyName (causes "Duplicate creator property"
-            //   on records); return null so that the implicit name is used.
-            String localName = pann.localName();
-            if (localName != null && !localName.isEmpty()) {
-                innerName = PropertyName.construct(localName, pann.namespace());
-            }
-        }
-        if (innerName == null) {
-            JsonProperty jprop = _findAnnotation(a, JsonProperty.class);
-            if (jprop != null) {
-                String localName = jprop.value();
-                if (localName != null && !localName.isEmpty()) {
-                    innerName = PropertyName.construct(localName, jprop.namespace());
-                }
-            }
-        }
+        PropertyName innerName = findXmlPropertyInnerName(null, a);
         if (innerName == null) {
             return null;
         }

@@ -54,7 +54,7 @@ public class ConflictingGetters27Test extends XmlTestUtil
     /**********************************************************************
      */
 
-    private final XmlMapper MAPPER = new XmlMapper();
+    private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#27]: Serialization
     @Test

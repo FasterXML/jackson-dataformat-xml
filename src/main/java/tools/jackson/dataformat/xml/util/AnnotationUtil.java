@@ -67,7 +67,10 @@ public class AnnotationUtil
         return null;
     }
 
-    // [dataformat-xml#27]
+    // For [dataformat-xml#27]
+    /**
+     * @since 3.2
+     */
     public static PropertyName findXmlPropertyInnerName(MapperConfig<?> config,
             AnnotationIntrospector ai,
             AnnotatedMember prop)
