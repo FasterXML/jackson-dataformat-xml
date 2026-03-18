@@ -438,6 +438,12 @@ public class ToXmlGenerator
             setNextName(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                     "type", "xsi"));
             setNextIsAttribute(true);
+        } else if (name.isEmpty()) {
+            // [dataformat-xml#629]: Empty name is used as the "unnamed text property"
+            //   marker (FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY) for XML text content
+            //   within elements that also have attributes. Write as unwrapped text, not
+            //   as an element with empty name (which would produce invalid "<>...</>").
+            _nextIsUnwrapped = true;
         } else {
             // Should this ever get called?
             ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();

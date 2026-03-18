@@ -55,6 +55,9 @@ Version: 3.x (for earlier see VERSION-2.x)
   `java.util.Map`) fails
  (reported by Severin K)
  (fix by Christopher M)
+#629: `@JsonAnySetter` mangles nested xml Elements and Attributes during serialization
+ (reported by James D)
+ (fix by @cowtowncoder, w/ Claude code)
 #665: `@JacksonXmlProperty` appears to behave differently than
   `@JsonProperty` when used on java records
  (reported by Alex O)
