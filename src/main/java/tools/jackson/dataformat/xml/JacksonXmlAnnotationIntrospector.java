@@ -155,6 +155,14 @@ public class JacksonXmlAnnotationIntrospector
                 return PropertyName.construct(localName, pann.namespace());
             }
         }
+        // Also check @JsonProperty as it is commonly used for inner element names
+        JsonProperty jprop = _findAnnotation(ann, JsonProperty.class);
+        if (jprop != null) {
+            String localName = jprop.value();
+            if (localName != null && !localName.isEmpty()) {
+                return PropertyName.construct(localName, jprop.namespace());
+            }
+        }
         return null;
     }
 
@@ -255,6 +263,9 @@ public class JacksonXmlAnnotationIntrospector
 
     protected PropertyName _findXmlName(Annotated a)
     {
+        // First: check for explicit inner element name from
+        // @JacksonXmlProperty or @JsonProperty
+        PropertyName innerName = null;
         JacksonXmlProperty pann = _findAnnotation(a, JacksonXmlProperty.class);
         if (pann != null) {
             // [dataformat-xml#665]: empty localName should not produce an
@@ -262,19 +273,31 @@ public class JacksonXmlAnnotationIntrospector
             //   on records); return null so that the implicit name is used.
             String localName = pann.localName();
             if (localName != null && !localName.isEmpty()) {
-                // [dataformat-xml#27]: If @JacksonXmlElementWrapper has explicit
-                //   name, use wrapper name as property identity to avoid conflicts
-                //   when multiple properties share the same inner element name.
-                JacksonXmlElementWrapper w = _findAnnotation(a, JacksonXmlElementWrapper.class);
-                if (w != null && w.useWrapping()) {
-                    String wrapperName = w.localName();
-                    if (wrapperName != null && !wrapperName.isEmpty()) {
-                        return PropertyName.construct(wrapperName, w.namespace());
-                    }
-                }
-                return PropertyName.construct(localName, pann.namespace());
+                innerName = PropertyName.construct(localName, pann.namespace());
             }
         }
-        return null;
+        if (innerName == null) {
+            JsonProperty jprop = _findAnnotation(a, JsonProperty.class);
+            if (jprop != null) {
+                String localName = jprop.value();
+                if (localName != null && !localName.isEmpty()) {
+                    innerName = PropertyName.construct(localName, jprop.namespace());
+                }
+            }
+        }
+        if (innerName == null) {
+            return null;
+        }
+        // [dataformat-xml#27]: If @JacksonXmlElementWrapper has explicit
+        //   name, use wrapper name as property identity to avoid conflicts
+        //   when multiple properties share the same inner element name.
+        JacksonXmlElementWrapper w = _findAnnotation(a, JacksonXmlElementWrapper.class);
+        if (w != null && w.useWrapping()) {
+            String wrapperName = w.localName();
+            if (wrapperName != null && !wrapperName.isEmpty()) {
+                return PropertyName.construct(wrapperName, w.namespace());
+            }
+        }
+        return innerName;
     }
 }
