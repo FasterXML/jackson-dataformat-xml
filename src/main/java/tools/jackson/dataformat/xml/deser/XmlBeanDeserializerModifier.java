@@ -124,7 +124,7 @@ public class XmlBeanDeserializerModifier
             // WrapperHandlingDeserializer so it can handle this case.
             SettableBeanProperty textPropAny = _findTextProp(deser.properties());
             if (textPropAny != null) {
-                return new WrapperHandlingDeserializer(deser, textPropAny);
+                return new WrapperHandlingDeserializer(deser, null, textPropAny);
             }
         }
         return new WrapperHandlingDeserializer(deser);

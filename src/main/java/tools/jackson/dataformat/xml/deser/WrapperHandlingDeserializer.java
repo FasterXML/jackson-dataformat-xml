@@ -65,18 +65,6 @@ public class WrapperHandlingDeserializer
     }
 
     /**
-     * [dataformat-xml#608] Constructor that accepts a text property for handling
-     * VALUE_STRING tokens when bean has {@code @JacksonXmlText} plus other element properties.
-     *
-     * @since 3.2
-     */
-    public WrapperHandlingDeserializer(BeanDeserializerBase delegate,
-            SettableBeanProperty xmlTextProperty)
-    {
-        this(delegate, null, xmlTextProperty);
-    }
-
-    /**
      * @since 3.2
      */
     public WrapperHandlingDeserializer(BeanDeserializerBase delegate, Set<String> namesToWrap,
