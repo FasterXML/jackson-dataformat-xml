@@ -162,6 +162,20 @@ public class IterationType302Test extends XmlTestUtil
             OBJECT_MAPPER.writeValueAsString(wrapper));
     }
 
+    // [dataformat-xml#329] : Jackson ignores JacksonXmlElementWrapper on Stream
+    @Test
+    public void testStreamWrapperSerialization329() throws Exception {
+        StreamWrapper329 wrapper = new StreamWrapper329();
+        wrapper.setData(Stream.of("a", "b"));
+
+        assertEquals(
+            "<StreamWrapper329><elements>" +
+                "<element>a</element>" +
+                "<element>b</element>" +
+                "</elements></StreamWrapper329>",
+            OBJECT_MAPPER.writeValueAsString(wrapper));
+    }
+
     // [dataformat-xml#148]
     @Test
     public void testIteratorSerialization() throws Exception {
