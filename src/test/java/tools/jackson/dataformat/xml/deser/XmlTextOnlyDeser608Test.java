@@ -1,9 +1,12 @@
 package tools.jackson.dataformat.xml.deser;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
@@ -34,6 +37,15 @@ public class XmlTextOnlyDeser608Test extends XmlTestUtil
 
     // Has only @JacksonXmlText, no other properties
     static class Plain608 {
+        @JacksonXmlText
+        public String text;
+    }
+
+    // Has @JacksonXmlText AND an unwrapped list (needs both text + wrapper handling)
+    static class WithList608 {
+        @JacksonXmlElementWrapper(useWrapping = false)
+        public List<String> item;
+
         @JacksonXmlText
         public String text;
     }
@@ -72,4 +84,16 @@ public class XmlTextOnlyDeser608Test extends XmlTestUtil
         assertNull(result.nested.reallyNotHere);
         assertEquals("The text node.", result.nested.text);
     }
+
+    // [dataformat-xml#608]: text-only with unwrapped list — verifies that
+    // wrapper handling still works alongside VALUE_STRING text handling
+    @Test
+    public void testTextWithUnwrappedListTextOnly608() throws Exception {
+        String xml = "<WithList608>Just text.</WithList608>";
+        WithList608 result = MAPPER.readValue(xml, WithList608.class);
+        assertNotNull(result);
+        assertEquals("Just text.", result.text);
+        assertNull(result.item);
+    }
+
 }
