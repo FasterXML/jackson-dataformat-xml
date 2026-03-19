@@ -42,6 +42,9 @@ public class Issue627NullListTest extends XmlTestUtil
         assertNull(a.getChildren());
 
         String xml = mapper.writeValueAsString(a);
+        assertTrue(xml.contains("xsi:nil=\"true\""),
+                "Null list should serialize with xsi:nil");
+
         Parent b = mapper.readValue(xml, Parent.class);
 
         assertNull(b.getChildren(),
