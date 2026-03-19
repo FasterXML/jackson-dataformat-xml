@@ -587,7 +587,6 @@ public class FromXmlParser
                 final boolean xsiNil = _xmlTokens.hasXsiNil();
                 token = _nextToken();
                 if (xsiNil) {
-                    _mayBeLeaf = false;
                     _streamReadContext.valueStarted();
                     return _updateToken(JsonToken.VALUE_NULL);
                 }

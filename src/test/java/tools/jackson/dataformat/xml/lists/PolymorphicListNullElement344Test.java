@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.*;
 
 import tools.jackson.databind.*;
-import tools.jackson.databind.cfg.MapperBuilder;
 import tools.jackson.dataformat.xml.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,5 +95,30 @@ public class PolymorphicListNullElement344Test extends XmlTestUtil
         assertNotNull(result.details);
         assertEquals(1, result.details.size());
         assertNull(result.details.get(0));
+    }
+
+    // [dataformat-xml#344]: multiple consecutive nulls in polymorphic list.
+    // First null exercises _mayBeLeaf + END_ELEMENT path (fix site 1+3),
+    // second null exercises inArray() path (fix site 2).
+    @Test
+    public void testMultipleNullsInPolymorphicList() throws Exception
+    {
+        XmlMapper mapper = new XmlMapper();
+
+        Master344 master = new Master344();
+        master.details.add(null);
+        master.details.add(null);
+        master.details.add(new Detail344("third"));
+
+        String xml = mapper.writeValueAsString(master);
+        Master344 result = mapper.readValue(xml, Master344.class);
+
+        assertNotNull(result);
+        assertNotNull(result.details);
+        assertEquals(3, result.details.size());
+        assertNull(result.details.get(0));
+        assertNull(result.details.get(1));
+        assertNotNull(result.details.get(2));
+        assertEquals("third", result.details.get(2).value);
     }
 }
