@@ -113,15 +113,11 @@ public class XmlBeanDeserializerModifier
         //    coercion.
         // 30-Apr-2020, tatu: Complication from [dataformat-xml#318] as we now
         //    have a delegate too...
+        // [dataformat-xml#608]: relaxed from earlier check that required all
+        // non-text properties to be attributes; now handles beans with
+        // @JacksonXmlText alongside other element properties too.
         if (!inst.canCreateFromString()) {
-            SettableBeanProperty textProp = _findSoleTextProp(config, deser.properties());
-            if (textProp != null) {
-                return new XmlTextDeserializer(deser, textProp);
-            }
-            // [dataformat-xml#608]: Even if there are other element properties alongside
-            // @JacksonXmlText, we still need to handle VALUE_STRING tokens when XML contains
-            // only text content (no child elements).
-            textProp = _findTextProp(deser.properties());
+            SettableBeanProperty textProp = _findTextProp(deser.properties());
             if (textProp != null) {
                 return new XmlTextDeserializer(deser, textProp);
             }
@@ -149,40 +145,12 @@ public class XmlBeanDeserializerModifier
         return deser;
     }
 
-    private SettableBeanProperty _findSoleTextProp(DeserializationConfig config,
-            Iterator<SettableBeanProperty> propIt)
-    {
-        final AnnotationIntrospector ai = config.getAnnotationIntrospector();
-        SettableBeanProperty textProp = null;
-        while (propIt.hasNext()) {
-            SettableBeanProperty prop = propIt.next();
-            AnnotatedMember m = prop.getMember();
-            if (m != null) {
-                // Ok, let's use a simple check: we should have renamed it earlier so:
-                PropertyName n = prop.getFullName();
-                if (_cfgNameForTextValue.equals(n.getSimpleName())) {
-                    // should we verify we only got one?
-                    textProp = prop;
-                    continue;
-                }
-                // as-attribute are ok as well
-                Boolean b = AnnotationUtil.findIsAttributeAnnotation(config, ai, m);
-                if (b != null && b.booleanValue()) {
-                    continue;
-                }
-            }
-            // Otherwise, it's something else; no go
-            return null;
-        }
-        return textProp;
-    }
-
     /**
-     * Like {@link #_findSoleTextProp} but does not require all other properties
-     * to be attributes. Used for [dataformat-xml#608] where we need to find the
-     * text property even when other element properties exist.
-     *
-     * @since 3.2
+     * Find the {@code @JacksonXmlText} property (renamed to {@code _cfgNameForTextValue}
+     * by {@link #updateProperties}) if one exists.
+     *<p>
+     * NOTE: before [dataformat-xml#608] fix, this method also required all non-text
+     * properties to be attributes; relaxed to allow element properties too.
      */
     private SettableBeanProperty _findTextProp(Iterator<SettableBeanProperty> propIt)
     {

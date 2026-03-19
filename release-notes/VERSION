@@ -62,6 +62,9 @@ Version: 3.x (for earlier see VERSION-2.x)
   deserialization to base class
  (reported by @tetradon)
  (fix by @cowtowncoder, w/ Claude code)
+#608: Jackson fails to instantiate class when only text node is present
+ (reported by @codemonstur)
+ (fix by @cowtowncoder, w/ Claude code)
 #615: Deserialization of Xml with `@JacksonXmlText` using `@JsonCreator` (into
   `java.util.Map`) fails
  (reported by Severin K)
