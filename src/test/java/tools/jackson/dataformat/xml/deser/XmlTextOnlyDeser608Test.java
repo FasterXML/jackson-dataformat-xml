@@ -1,4 +1,4 @@
-package tools.jackson.dataformat.xml.tofix;
+package tools.jackson.dataformat.xml.deser;
 
 import org.junit.jupiter.api.Test;
 
@@ -6,7 +6,6 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
-import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -62,10 +61,8 @@ public class XmlTextOnlyDeser608Test extends XmlTestUtil
         assertEquals("The text node.", result.plain.text);
     }
 
-    // Fails: nested type has @JacksonXmlText plus other element properties,
-    // but XML only contains text (no child elements). Jackson incorrectly
-    // tries String-argument constructor instead of object deserialization.
-    @JacksonTestFailureExpected
+    // [dataformat-xml#608]: nested type has @JacksonXmlText plus other element
+    // properties, but XML only contains text (no child elements).
     @Test
     public void testNestedWithOnlyText608() throws Exception {
         String xml = "<Root608><nested>The text node.</nested></Root608>";

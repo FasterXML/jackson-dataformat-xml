@@ -118,6 +118,14 @@ public class XmlBeanDeserializerModifier
             if (textProp != null) {
                 return new XmlTextDeserializer(deser, textProp);
             }
+            // [dataformat-xml#608]: Even if there are other element properties alongside
+            // @JacksonXmlText, we still need to handle VALUE_STRING tokens when XML contains
+            // only text content (no child elements). Pass text property to
+            // WrapperHandlingDeserializer so it can handle this case.
+            SettableBeanProperty textPropAny = _findTextProp(config, deser.properties());
+            if (textPropAny != null) {
+                return new WrapperHandlingDeserializer(deser, textPropAny);
+            }
         }
         return new WrapperHandlingDeserializer(deser);
     }
@@ -168,5 +176,25 @@ public class XmlBeanDeserializerModifier
             return null;
         }
         return textProp;
+    }
+
+    /**
+     * Like {@link #_findSoleTextProp} but does not require all other properties
+     * to be attributes. Used for [dataformat-xml#608] where we need to find the
+     * text property even when other element properties exist.
+     *
+     * @since 3.2
+     */
+    private SettableBeanProperty _findTextProp(DeserializationConfig config,
+            Iterator<SettableBeanProperty> propIt)
+    {
+        while (propIt.hasNext()) {
+            SettableBeanProperty prop = propIt.next();
+            PropertyName n = prop.getFullName();
+            if (_cfgNameForTextValue.equals(n.getSimpleName())) {
+                return prop;
+            }
+        }
+        return null;
     }
 }
