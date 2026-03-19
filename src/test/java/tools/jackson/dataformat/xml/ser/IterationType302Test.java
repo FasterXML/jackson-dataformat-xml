@@ -168,11 +168,11 @@ public class IterationType302Test extends XmlTestUtil
         StreamWrapper329 wrapper = new StreamWrapper329();
         wrapper.setData(Stream.of("a", "b"));
 
-        assertEquals(
-            "<StreamWrapper329><elements>" +
-                "<element>a</element>" +
-                "<element>b</element>" +
-                "</elements></StreamWrapper329>",
+        assertEquals("""
+                <StreamWrapper329><elements>\
+                <element>a</element>\
+                <element>b</element>\
+                </elements></StreamWrapper329>""",
             OBJECT_MAPPER.writeValueAsString(wrapper));
     }
 
