@@ -38,6 +38,18 @@ public class XmlTextOnlyDeser608Test extends XmlTestUtil
         public String text;
     }
 
+    // Has @JacksonXmlText with mix of attributes and element properties
+    static class Mixed608 {
+        @JacksonXmlProperty(isAttribute = true)
+        public String attr;
+
+        @JacksonXmlProperty(isAttribute = false)
+        public String elem;
+
+        @JacksonXmlText
+        public String text;
+    }
+
     private final ObjectMapper MAPPER = newMapper();
 
     // Works: nested has both a child element and text content
@@ -71,5 +83,27 @@ public class XmlTextOnlyDeser608Test extends XmlTestUtil
         assertNull(result.nested.other);
         assertNull(result.nested.reallyNotHere);
         assertEquals("The text node.", result.nested.text);
+    }
+
+    // [dataformat-xml#608]: mixed attributes + elements + text, text-only XML
+    @Test
+    public void testMixedTextOnly608() throws Exception {
+        String xml = "<Mixed608>The text node.</Mixed608>";
+        Mixed608 result = MAPPER.readValue(xml, Mixed608.class);
+        assertNotNull(result);
+        assertNull(result.attr);
+        assertNull(result.elem);
+        assertEquals("The text node.", result.text);
+    }
+
+    // [dataformat-xml#608]: mixed attributes + elements + text, with attribute present
+    @Test
+    public void testMixedWithAttrAndText608() throws Exception {
+        String xml = "<Mixed608 attr=\"v\">The text node.</Mixed608>";
+        Mixed608 result = MAPPER.readValue(xml, Mixed608.class);
+        assertNotNull(result);
+        assertEquals("v", result.attr);
+        assertNull(result.elem);
+        assertEquals("The text node.", result.text);
     }
 }
