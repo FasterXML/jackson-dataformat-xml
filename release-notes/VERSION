@@ -69,6 +69,10 @@ Version: 3.x (for earlier see VERSION-2.x)
   `java.util.Map`) fails
  (reported by Severin K)
  (fix by Christopher M)
+#627: Disabling wrapper on list (`defaultUseWrapper = false`) does not
+  serialize/deserialize `null` lists as expected
+  (reported by Tom K)
+ (fix by @cowtowncoder, w/ Claude code)
 #629: `@JsonAnySetter` mangles nested xml Elements and Attributes during serialization
  (reported by James D)
  (fix by @cowtowncoder, w/ Claude code)
