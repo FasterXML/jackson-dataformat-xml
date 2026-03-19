@@ -6,7 +6,6 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.JsonToken;
 import tools.jackson.core.util.JsonParserDelegate;
-import tools.jackson.databind.util.TokenBuffer;
 
 import tools.jackson.databind.*;
 import tools.jackson.databind.deser.*;
@@ -33,22 +32,7 @@ public class WrapperHandlingDeserializer
 
     // @since 2.12
     protected final boolean _caseInsensitive;
-
-    /**
-     * [dataformat-xml#608] Optional "XML Text" property for handling VALUE_STRING
-     * tokens when the bean has {@code @JacksonXmlText} alongside other element properties.
-     *
-     * @since 3.2
-     */
-    protected final SettableBeanProperty _xmlTextProperty;
-
-    /**
-     * @since 3.2
-     */
-    protected final int _xmlTextPropertyIndex;
-
-    protected final ValueInstantiator _valueInstantiator;
-
+    
     /*
     /**********************************************************************
     /* Construction
@@ -56,27 +40,15 @@ public class WrapperHandlingDeserializer
      */
 
     public WrapperHandlingDeserializer(BeanDeserializerBase delegate) {
-        this(delegate, (Set<String>) null, null);
+        this(delegate, null);
     }
 
     public WrapperHandlingDeserializer(BeanDeserializerBase delegate, Set<String> namesToWrap)
-    {
-        this(delegate, namesToWrap, null);
-    }
-
-    /**
-     * @since 3.2
-     */
-    public WrapperHandlingDeserializer(BeanDeserializerBase delegate, Set<String> namesToWrap,
-            SettableBeanProperty xmlTextProperty)
     {
         super(delegate);
         _namesToWrap = namesToWrap;
         _type = delegate.getValueType();
         _caseInsensitive = delegate.isCaseInsensitive();
-        _xmlTextProperty = xmlTextProperty;
-        _xmlTextPropertyIndex = (xmlTextProperty != null) ? xmlTextProperty.getPropertyIndex() : -1;
-        _valueInstantiator = delegate.getValueInstantiator();
     }
 
     /*
@@ -93,7 +65,7 @@ public class WrapperHandlingDeserializer
             throw new IllegalArgumentException("Cannot change delegate to be of type "
                     +newDelegatee0.getClass().getName());
         }
-        return new WrapperHandlingDeserializer(newDelegatee, _namesToWrap, _xmlTextProperty);
+        return new WrapperHandlingDeserializer(newDelegatee, _namesToWrap);
     }
 
     @Override
@@ -106,11 +78,7 @@ public class WrapperHandlingDeserializer
         }
         ValueDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee, property, vt);
         BeanDeserializerBase newDelegatee = _verifyDeserType(del);
-
-        // [dataformat-xml#608] Re-resolve text property from contextualized delegatee
-        SettableBeanProperty newTextProp = (_xmlTextPropertyIndex >= 0)
-                ? newDelegatee.findProperty(_xmlTextPropertyIndex) : null;
-
+        
         // Let's go through the properties now...
         Iterator<SettableBeanProperty> it = newDelegatee.properties();
         HashSet<String> unwrappedNames = null;
@@ -136,19 +104,12 @@ public class WrapperHandlingDeserializer
                 unwrappedNames.add(alias.getSimpleName());
             }
         }
-        // If nothing to take care of, just return the delegatee...
-        if (unwrappedNames == null && newTextProp == null) {
+        // Ok: if nothing to take care of, just return the delegatee...
+        if (unwrappedNames == null) {
             return newDelegatee;
         }
-        // If nothing changed, return this instance as-is
-        if (newDelegatee == _delegatee
-                && Objects.equals(unwrappedNames, _namesToWrap)
-                && newTextProp == _xmlTextProperty) {
-            return this;
-        }
         // Otherwise, create the thing that can deal with virtual wrapping
-        // and/or text property handling
-        return new WrapperHandlingDeserializer(newDelegatee, unwrappedNames, newTextProp);
+        return new WrapperHandlingDeserializer(newDelegatee, unwrappedNames);
     }
 
     /*
@@ -160,10 +121,6 @@ public class WrapperHandlingDeserializer
     @Override
     public Object deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException
     {
-        // [dataformat-xml#608]: Handle VALUE_STRING when we have a text property
-        if (_xmlTextProperty != null && p.currentToken() == JsonToken.VALUE_STRING) {
-            return _deserializeFromXmlText(p, ctxt);
-        }
         _configureParser(p);
         return _delegatee.deserialize(p,  ctxt);
     }
@@ -173,11 +130,6 @@ public class WrapperHandlingDeserializer
     public Object deserialize(JsonParser p, DeserializationContext ctxt, Object intoValue)
         throws JacksonException
     {
-        // [dataformat-xml#608]: Handle VALUE_STRING when we have a text property
-        if (_xmlTextProperty != null && p.currentToken() == JsonToken.VALUE_STRING) {
-            _xmlTextProperty.deserializeAndSet(p, ctxt, intoValue);
-            return intoValue;
-        }
         _configureParser(p);
         return ((ValueDeserializer<Object>)_delegatee).deserialize(p, ctxt, intoValue);
     }
@@ -195,34 +147,6 @@ public class WrapperHandlingDeserializer
     /* Internal methods
     /**********************************************************************
      */
-
-    /**
-     * [dataformat-xml#608]: When the parser sees a bare VALUE_STRING but the target type
-     * is a bean with {@code @JacksonXmlText} plus other element properties, create the
-     * bean and set the text property.
-     *
-     * @since 3.2
-     */
-    private Object _deserializeFromXmlText(JsonParser p, DeserializationContext ctxt)
-        throws JacksonException
-    {
-        if (_valueInstantiator.canCreateUsingDefault()) {
-            Object bean = _valueInstantiator.createUsingDefault(ctxt);
-            _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
-            return bean;
-        }
-        // No default constructor (e.g. records): synthesize object tokens
-        // so the delegate can use property-based creators
-        try (TokenBuffer tb = ctxt.bufferForInputBuffering(p)) {
-            tb.writeStartObject();
-            tb.writeName(_xmlTextProperty.getName());
-            tb.writeString(p.getString());
-            tb.writeEndObject();
-            try (JsonParser syntheticParser = tb.asParserOnFirstToken(ctxt, p)) {
-                return _delegatee.deserialize(syntheticParser, ctxt);
-            }
-        }
-    }
 
     @SuppressWarnings("resource")
     protected final void _configureParser(JsonParser p) throws JacksonException

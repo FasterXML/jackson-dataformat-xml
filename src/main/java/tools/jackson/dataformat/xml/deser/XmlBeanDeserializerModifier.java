@@ -120,11 +120,10 @@ public class XmlBeanDeserializerModifier
             }
             // [dataformat-xml#608]: Even if there are other element properties alongside
             // @JacksonXmlText, we still need to handle VALUE_STRING tokens when XML contains
-            // only text content (no child elements). Pass text property to
-            // WrapperHandlingDeserializer so it can handle this case.
-            SettableBeanProperty textPropAny = _findTextProp(deser.properties());
-            if (textPropAny != null) {
-                return new WrapperHandlingDeserializer(deser, null, textPropAny);
+            // only text content (no child elements).
+            textProp = _findTextProp(deser.properties());
+            if (textProp != null) {
+                return new XmlTextDeserializer(deser, textProp);
             }
         }
         return new WrapperHandlingDeserializer(deser);
