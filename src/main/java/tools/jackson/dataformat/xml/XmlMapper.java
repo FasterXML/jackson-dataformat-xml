@@ -107,6 +107,9 @@ public class XmlMapper extends ObjectMapper
                 .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
             _coercionConfigs.findOrCreateCoercion(LogicalType.Boolean)
                 .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+            // 18-Mar-2026, tatu: [dataformat-xml#561] Same for Date/Time types
+            _coercionConfigs.findOrCreateCoercion(LogicalType.DateTime)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
         }
 
         @Override

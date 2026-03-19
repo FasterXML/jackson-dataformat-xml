@@ -51,6 +51,10 @@ Version: 3.x (for earlier see VERSION-2.x)
   polymorphic nested objects
  (reported by Vitor P)
  (fix by @cowtowncoder, w/ Claude code)
+#561: Deserializing empty timestamp fields to `null` value doesn't
+  work (instead becomes "empty", Epoch time)
+ (reported by @silvestr85)
+ (fix by @cowtowncoder, w/ Claude code)
 #565: Blank text is ignored in `@JacksonXmlText`
  (reported by Alessandro A)
  (fix by @cowtowncoder, w/ Claude code)
