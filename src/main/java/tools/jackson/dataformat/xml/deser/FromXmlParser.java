@@ -110,6 +110,14 @@ public class FromXmlParser
      */
     protected boolean _nextIsLeadingMixed;
 
+    /**
+     * [dataformat-xml#344]: Flag set when a START_ELEMENT with xsi:nil is encountered
+     * in the {@code _mayBeLeaf} path. When true, the subsequent END_ELEMENT should
+     * produce {@code VALUE_NULL} instead of the empty-Object ({@code START_OBJECT}/{@code END_OBJECT})
+     * pattern from [dataformat-xml#180].
+     */
+    protected boolean _nextIsNullXsiNil;
+
     /*
     /**********************************************************************
     /* Parsing state, parsed values
@@ -560,6 +568,10 @@ public class FromXmlParser
         while (token == XmlTokenStream.XML_START_ELEMENT) {
             // If we thought we might get leaf, no such luck
             if (_mayBeLeaf) {
+                // [dataformat-xml#344]: Record xsi:nil on the child element so that
+                //   the subsequent END_ELEMENT handler can produce VALUE_NULL instead of
+                //   the START_OBJECT/END_OBJECT empty-Object pattern from #180.
+                _nextIsNullXsiNil = _xmlTokens.hasXsiNil();
                 // leave _mayBeLeaf set, as we start a new context
                 _nextToken = JsonToken.PROPERTY_NAME;
                 _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
@@ -568,7 +580,17 @@ public class FromXmlParser
             if (_streamReadContext.inArray()) {
                 // Yup: in array, so this element could be verified; but it won't be
                 // reported anyway, and we need to process following event.
+                // [dataformat-xml#344]: Check for xsi:nil BEFORE consuming the element;
+                //   if found, produce VALUE_NULL directly instead of falling through to
+                //   the #180 empty-Object handling (START_OBJECT/END_OBJECT) which breaks
+                //   polymorphic type resolution.
+                final boolean xsiNil = _xmlTokens.hasXsiNil();
                 token = _nextToken();
+                if (xsiNil) {
+                    _mayBeLeaf = false;
+                    _streamReadContext.valueStarted();
+                    return _updateToken(JsonToken.VALUE_NULL);
+                }
                 _mayBeLeaf = true;
                 continue;
             }
@@ -600,12 +622,22 @@ public class FromXmlParser
                 if (_mayBeLeaf) {
                     _mayBeLeaf = false;
                     if (_streamReadContext.inArray()) {
+                        // [dataformat-xml#344]: if the element had xsi:nil, produce
+                        //   VALUE_NULL directly — polymorphic type resolvers cannot handle
+                        //   the empty START_OBJECT/END_OBJECT from #180.
+                        if (_nextIsNullXsiNil) {
+                            _nextIsNullXsiNil = false;
+                            _streamReadContext.valueStarted();
+                            return _updateToken(JsonToken.VALUE_NULL);
+                        }
                         // 06-Jan-2015, tatu: as per [dataformat-xml#180], need to
                         //    expose as empty Object, not null
                         _nextToken = JsonToken.END_OBJECT;
                         _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
                         return _updateToken(JsonToken.START_OBJECT);
                     }
+                    // [dataformat-xml#344]: clear flag in non-array path too
+                    _nextIsNullXsiNil = false;
                     // 07-Sep-2019, tatu: for [dataformat-xml#353], must NOT return second null
                     if (_currToken != JsonToken.VALUE_NULL) {
                         // 13-May-2020, tatu: [dataformat-xml#397]: advance `index`
