@@ -136,10 +136,15 @@ public class WrapperHandlingDeserializer
                 unwrappedNames.add(alias.getSimpleName());
             }
         }
-        // Ok: if nothing to take care of, and no text property to handle,
-        // just return the delegatee...
+        // If nothing to take care of, just return the delegatee...
         if (unwrappedNames == null && newTextProp == null) {
             return newDelegatee;
+        }
+        // If nothing changed, return this instance as-is
+        if (newDelegatee == _delegatee
+                && Objects.equals(unwrappedNames, _namesToWrap)
+                && newTextProp == _xmlTextProperty) {
+            return this;
         }
         // Otherwise, create the thing that can deal with virtual wrapping
         // and/or text property handling
