@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -278,6 +279,24 @@ public class FromXmlParser
      */
     public XMLStreamReader getStaxReader() {
         return _xmlTokens.getXmlReader();
+    }
+
+    /**
+     * Accessor for the qualified name ({@link QName}) of the root XML element,
+     * including local name, namespace URI and prefix. Unlike accessing
+     * the underlying Stax reader directly, this value is stable regardless
+     * of how far parsing has advanced.
+     *<p>
+     * NOTE: the local name and namespace URI are post-{@link XmlNameProcessor}
+     * decoding (matching what Jackson databind sees), while the prefix is the
+     * raw value from the XML source.
+     *
+     * @return Qualified name of the root element
+     *
+     * @since 3.2
+     */
+    public QName getRootElementName() {
+        return _xmlTokens.getRootName();
     }
 
     /*

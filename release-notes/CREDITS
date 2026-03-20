@@ -61,6 +61,11 @@ Jiri Mikulasek (@jimirocks)
  * Reported #455: Can't deserialize list in JsonSubtype when type property is visible
   (3.2.0)
 
+Sam Kruglov (@Sam-Kruglov)
+ * Reported #496: Root name missing when root element has no attributes (add
+   `FromXmlParser.getRootElementName()`)
+  (3.2.0)
+
 Josip Antoliš (@Antolius)
  * Reported #517: XML wrapper doesn't work with java records
   (3.2.0)
