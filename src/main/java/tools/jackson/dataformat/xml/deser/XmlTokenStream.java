@@ -119,14 +119,14 @@ public class XmlTokenStream
      * Root element's local name, saved during {@link #initialize()} so it
      * remains accessible even after the stream has advanced past it.
      *
-     * @since 2.19
+     * @since 3.2
      */
     protected String _rootLocalName;
 
     /**
      * Root element's namespace URI, saved during {@link #initialize()}.
      *
-     * @since 2.19
+     * @since 3.2
      */
     protected String _rootNamespaceURI;
 
@@ -350,7 +350,7 @@ public class XmlTokenStream
      *
      * @return Local name of the root element
      *
-     * @since 2.19
+     * @since 3.2
      */
     public String getRootLocalName() { return _rootLocalName; }
 
@@ -360,7 +360,7 @@ public class XmlTokenStream
      *
      * @return Namespace URI of the root element
      *
-     * @since 2.19
+     * @since 3.2
      */
     public String getRootNamespaceURI() { return _rootNamespaceURI; }
 

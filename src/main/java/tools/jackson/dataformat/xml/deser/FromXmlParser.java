@@ -287,7 +287,7 @@ public class FromXmlParser
      *
      * @return Local name of the root element
      *
-     * @since 2.19
+     * @since 3.2
      */
     public String getRootElementLocalName() {
         return _xmlTokens.getRootLocalName();
@@ -300,7 +300,7 @@ public class FromXmlParser
      *
      * @return Namespace URI of the root element
      *
-     * @since 2.19
+     * @since 3.2
      */
     public String getRootElementNamespaceURI() {
         return _xmlTokens.getRootNamespaceURI();
