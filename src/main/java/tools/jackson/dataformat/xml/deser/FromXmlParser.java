@@ -115,6 +115,8 @@ public class FromXmlParser
      * in the {@code _mayBeLeaf} path. When true, the subsequent END_ELEMENT should
      * produce {@code VALUE_NULL} instead of the empty-Object ({@code START_OBJECT}/{@code END_OBJECT})
      * pattern from [dataformat-xml#180].
+     *
+     * @since 3.2
      */
     protected boolean _nextIsNullXsiNil;
 
@@ -128,7 +130,7 @@ public class FromXmlParser
      * ByteArrayBuilder is needed if 'getBinaryValue' is called. If so,
      * we better reuse it for remainder of content.
      */
-    protected ByteArrayBuilder _byteArrayBuilder = null;
+    protected ByteArrayBuilder _byteArrayBuilder;
 
     /**
      * We will hold on to decoded binary data, for duration of
