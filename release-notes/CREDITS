@@ -62,7 +62,8 @@ Jiri Mikulasek (@jimirocks)
   (3.2.0)
 
 Sam Kruglov (@Sam-Kruglov)
- * Reported #496: Root name missing when root element has no attributes
+ * Reported #496: Root name missing when root element has no attributes (add
+   `FromXmlParser.getRootElementName()`)
   (3.2.0)
 
 Josip Antoliš (@Antolius)
