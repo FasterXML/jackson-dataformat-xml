@@ -3,6 +3,7 @@ package tools.jackson.dataformat.xml.deser;
 import java.io.IOException;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.*;
 
 import org.codehaus.stax2.XMLStreamLocation2;
@@ -116,19 +117,13 @@ public class XmlTokenStream
     protected String _namespaceURI;
 
     /**
-     * Root element's local name, saved during {@link #initialize()} so it
-     * remains accessible even after the stream has advanced past it.
+     * Root element's qualified name (namespace URI, local name, prefix),
+     * saved during {@link #initialize()} so it remains accessible even
+     * after the stream has advanced past it.
      *
      * @since 3.2
      */
-    protected String _rootLocalName;
-
-    /**
-     * Root element's namespace URI, saved during {@link #initialize()}.
-     *
-     * @since 3.2
-     */
-    protected String _rootNamespaceURI;
+    protected QName _rootName;
 
     /**
      * Current text value for TEXT_VALUE returned
@@ -206,10 +201,11 @@ public class XmlTokenStream
                     +XMLStreamConstants.START_ELEMENT+"), instead got "+_xmlReader.getEventType());
         }
         _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
+        // [dataformat-xml#496] Save root element name (with prefix) before stream advances
+        String rootPrefix = _xmlReader.getPrefix();
         _decodeElementName(_xmlReader.getNamespaceURI(), _xmlReader.getLocalName());
-        // [dataformat-xml#496] Save root element name before stream advances
-        _rootLocalName = _localName;
-        _rootNamespaceURI = _namespaceURI;
+        _rootName = new QName(_namespaceURI, _localName,
+                (rootPrefix == null) ? "" : rootPrefix);
 
         // 02-Jul-2020, tatu: Two choices: if child elements OR attributes, expose
         //    as Object value; otherwise expose as Text
@@ -344,25 +340,16 @@ public class XmlTokenStream
     public String getNamespaceURI() { return _namespaceURI; }
 
     /**
-     * Accessor for the local name of the root XML element, as determined
-     * during stream initialization. Unlike {@link #getLocalName()}, this
-     * value does not change as the stream advances.
+     * Accessor for the qualified name of the root XML element (local name,
+     * namespace URI, prefix), as determined during stream initialization.
+     * Unlike {@link #getLocalName()}, this value does not change as the
+     * stream advances.
      *
-     * @return Local name of the root element
-     *
-     * @since 3.2
-     */
-    public String getRootLocalName() { return _rootLocalName; }
-
-    /**
-     * Accessor for the namespace URI of the root XML element, as determined
-     * during stream initialization.
-     *
-     * @return Namespace URI of the root element
+     * @return Qualified name of the root element
      *
      * @since 3.2
      */
-    public String getRootNamespaceURI() { return _rootNamespaceURI; }
+    public QName getRootName() { return _rootName; }
 
     public boolean hasXsiNil() {
         return _xsiNilFound;

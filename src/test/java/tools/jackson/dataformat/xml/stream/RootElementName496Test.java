@@ -1,5 +1,7 @@
 package tools.jackson.dataformat.xml.stream;
 
+import javax.xml.namespace.QName;
+
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.*;
@@ -18,9 +20,9 @@ public class RootElementName496Test extends XmlTestUtil
 {
     @JsonDeserialize(using = RootNameDeserializer.class)
     static class RootNameHolder {
-        public String rootName;
+        public QName rootName;
 
-        RootNameHolder(String rootName) {
+        RootNameHolder(QName rootName) {
             this.rootName = rootName;
         }
     }
@@ -29,7 +31,7 @@ public class RootElementName496Test extends XmlTestUtil
         @Override
         public RootNameHolder deserialize(JsonParser p, DeserializationContext ctxt)
         {
-            String rootName = ((FromXmlParser) p).getRootElementLocalName();
+            QName rootName = ((FromXmlParser) p).getRootElementName();
             // consume the rest
             while (p.nextToken() != null) { }
             return new RootNameHolder(rootName);
@@ -44,7 +46,7 @@ public class RootElementName496Test extends XmlTestUtil
     {
         RootNameHolder result = MAPPER.readValue(
                 "<root><field>value</field></root>", RootNameHolder.class);
-        assertEquals("root", result.rootName);
+        assertEquals("root", result.rootName.getLocalPart());
     }
 
     // [dataformat-xml#496]: root name accessible with attributes
@@ -53,7 +55,7 @@ public class RootElementName496Test extends XmlTestUtil
     {
         RootNameHolder result = MAPPER.readValue(
                 "<root foo='bar'><field>value</field></root>", RootNameHolder.class);
-        assertEquals("root", result.rootName);
+        assertEquals("root", result.rootName.getLocalPart());
     }
 
     // [dataformat-xml#496]: verify via parser directly, stable across full parse
@@ -62,11 +64,12 @@ public class RootElementName496Test extends XmlTestUtil
     {
         try (JsonParser p = MAPPER.createParser("<myRoot><child>text</child></myRoot>")) {
             FromXmlParser xp = (FromXmlParser) p;
-            assertEquals("myRoot", xp.getRootElementLocalName());
+            QName rootName = xp.getRootElementName();
+            assertEquals("myRoot", rootName.getLocalPart());
             // Advance past all tokens
             while (p.nextToken() != null) { }
             // Still accessible after parsing
-            assertEquals("myRoot", xp.getRootElementLocalName());
+            assertEquals("myRoot", xp.getRootElementName().getLocalPart());
         }
     }
 
@@ -76,7 +79,7 @@ public class RootElementName496Test extends XmlTestUtil
     {
         try (JsonParser p = MAPPER.createParser("<emptyRoot/>")) {
             FromXmlParser xp = (FromXmlParser) p;
-            assertEquals("emptyRoot", xp.getRootElementLocalName());
+            assertEquals("emptyRoot", xp.getRootElementName().getLocalPart());
         }
     }
 
@@ -86,19 +89,35 @@ public class RootElementName496Test extends XmlTestUtil
     {
         try (JsonParser p = MAPPER.createParser("<textRoot>hello</textRoot>")) {
             FromXmlParser xp = (FromXmlParser) p;
-            assertEquals("textRoot", xp.getRootElementLocalName());
+            assertEquals("textRoot", xp.getRootElementName().getLocalPart());
         }
     }
 
-    // [dataformat-xml#496]: root with namespace
+    // [dataformat-xml#496]: root with namespace — verify all QName components
     @Test
     public void testRootNameWithNamespace() throws Exception
     {
         try (JsonParser p = MAPPER.createParser(
                 "<ns:root xmlns:ns='http://example.com'><ns:child>val</ns:child></ns:root>")) {
             FromXmlParser xp = (FromXmlParser) p;
-            assertEquals("root", xp.getRootElementLocalName());
-            assertEquals("http://example.com", xp.getRootElementNamespaceURI());
+            QName rootName = xp.getRootElementName();
+            assertEquals("root", rootName.getLocalPart());
+            assertEquals("http://example.com", rootName.getNamespaceURI());
+            assertEquals("ns", rootName.getPrefix());
+        }
+    }
+
+    // [dataformat-xml#496]: root with default namespace (no prefix)
+    @Test
+    public void testRootNameWithDefaultNamespace() throws Exception
+    {
+        try (JsonParser p = MAPPER.createParser(
+                "<root xmlns='http://example.com'><child>val</child></root>")) {
+            FromXmlParser xp = (FromXmlParser) p;
+            QName rootName = xp.getRootElementName();
+            assertEquals("root", rootName.getLocalPart());
+            assertEquals("http://example.com", rootName.getNamespaceURI());
+            assertEquals("", rootName.getPrefix());
         }
     }
 
@@ -108,6 +127,6 @@ public class RootElementName496Test extends XmlTestUtil
     {
         RootNameHolder result = MAPPER.readValue(
                 "<document><a>1</a><b>2</b><c>3</c></document>", RootNameHolder.class);
-        assertEquals("document", result.rootName);
+        assertEquals("document", result.rootName.getLocalPart());
     }
 }
