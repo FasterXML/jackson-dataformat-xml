@@ -36,7 +36,7 @@ public class XmlBeanDeserializerModifier
     {
         final AnnotationIntrospector intr = config.getAnnotationIntrospector();
         int changed = 0;
-        
+
         for (int i = 0, propCount = propDefs.size(); i < propCount; ++i) {
             BeanPropertyDefinition prop = propDefs.get(i);
             AnnotatedMember acc = prop.getPrimaryMember();
@@ -51,7 +51,31 @@ public class XmlBeanDeserializerModifier
              */
             Boolean b = AnnotationUtil.findIsTextAnnotation(config, intr, acc);
             if (b != null && b.booleanValue()) {
-                // unwrapped properties will appear as 'unnamed' (empty String)
+                // [dataformat-xml#559] For records with JAXB @XmlValue: the annotation
+                // introspector may rename the property (e.g. to "value"), causing a
+                // property definition split where the constructor parameter ends up in
+                // a separate property under the original Java name. If we detect this
+                // split, rename the constructor-parameter property to the text value
+                // name and remove this (getter-only) one.
+                String memberName = acc.getName();
+                if (!memberName.equals(prop.getName())) {
+                    int splitIdx = _findSplitProperty(propDefs, memberName, i);
+                    if (splitIdx >= 0) {
+                        // make copy-on-write as necessary
+                        if (changed == 0) {
+                            propDefs = new ArrayList<>(propDefs);
+                        }
+                        ++changed;
+                        // Rename the split counterpart (which has the constructor param)
+                        propDefs.set(splitIdx, propDefs.get(splitIdx).withSimpleName(_cfgNameForTextValue));
+                        // Remove this getter-only property definition
+                        propDefs.remove(i);
+                        --propCount;
+                        --i; // re-examine this index
+                        continue;
+                    }
+                }
+                // Default: just rename this property
                 BeanPropertyDefinition newProp = prop.withSimpleName(_cfgNameForTextValue);
                 if (newProp != prop) {
                     propDefs.set(i, newProp);
@@ -60,7 +84,7 @@ public class XmlBeanDeserializerModifier
             }
             // second: do we need to handle wrapping (for Lists)?
             PropertyName wrapperName = prop.getWrapperName();
-            
+
             if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 String localName = wrapperName.getSimpleName();
                 if ((localName != null && localName.length() > 0)
@@ -77,6 +101,27 @@ public class XmlBeanDeserializerModifier
             }
         }
         return propDefs;
+    }
+
+    /**
+     * [dataformat-xml#559] Find a property definition that was split from the isText
+     * property due to annotation-introspector-driven renaming (e.g. JAXB @XmlValue
+     * assigning implicit name "value" while the constructor param keeps the Java name).
+     *
+     * @param memberName Java member name of the isText property's primary member
+     * @param excludeIdx index to skip (the isText property itself)
+     * @return index of the split counterpart, or -1 if not found
+     */
+    private int _findSplitProperty(List<BeanPropertyDefinition> propDefs,
+            String memberName, int excludeIdx)
+    {
+        for (int j = 0, len = propDefs.size(); j < len; ++j) {
+            if (j == excludeIdx) continue;
+            if (memberName.equals(propDefs.get(j).getName())) {
+                return j;
+            }
+        }
+        return -1;
     }
 
     @Override
