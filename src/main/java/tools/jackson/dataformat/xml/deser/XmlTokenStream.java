@@ -116,6 +116,21 @@ public class XmlTokenStream
     protected String _namespaceURI;
 
     /**
+     * Root element's local name, saved during {@link #initialize()} so it
+     * remains accessible even after the stream has advanced past it.
+     *
+     * @since 2.19
+     */
+    protected String _rootLocalName;
+
+    /**
+     * Root element's namespace URI, saved during {@link #initialize()}.
+     *
+     * @since 2.19
+     */
+    protected String _rootNamespaceURI;
+
+    /**
      * Current text value for TEXT_VALUE returned
      */
     protected String _textValue;
@@ -192,6 +207,9 @@ public class XmlTokenStream
         }
         _checkXsiAttributes(); // sets _attributeCount, _nextAttributeIndex
         _decodeElementName(_xmlReader.getNamespaceURI(), _xmlReader.getLocalName());
+        // [dataformat-xml#496] Save root element name before stream advances
+        _rootLocalName = _localName;
+        _rootNamespaceURI = _namespaceURI;
 
         // 02-Jul-2020, tatu: Two choices: if child elements OR attributes, expose
         //    as Object value; otherwise expose as Text
@@ -324,6 +342,27 @@ public class XmlTokenStream
     public String getLocalName() { return _localName; }
 
     public String getNamespaceURI() { return _namespaceURI; }
+
+    /**
+     * Accessor for the local name of the root XML element, as determined
+     * during stream initialization. Unlike {@link #getLocalName()}, this
+     * value does not change as the stream advances.
+     *
+     * @return Local name of the root element
+     *
+     * @since 2.19
+     */
+    public String getRootLocalName() { return _rootLocalName; }
+
+    /**
+     * Accessor for the namespace URI of the root XML element, as determined
+     * during stream initialization.
+     *
+     * @return Namespace URI of the root element
+     *
+     * @since 2.19
+     */
+    public String getRootNamespaceURI() { return _rootNamespaceURI; }
 
     public boolean hasXsiNil() {
         return _xsiNilFound;

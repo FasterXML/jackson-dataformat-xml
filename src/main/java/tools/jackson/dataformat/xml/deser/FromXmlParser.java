@@ -280,6 +280,32 @@ public class FromXmlParser
         return _xmlTokens.getXmlReader();
     }
 
+    /**
+     * Accessor for the local name of the root XML element. Unlike accessing
+     * the underlying Stax reader directly, this value is stable regardless
+     * of how far parsing has advanced.
+     *
+     * @return Local name of the root element
+     *
+     * @since 2.19
+     */
+    public String getRootElementLocalName() {
+        return _xmlTokens.getRootLocalName();
+    }
+
+    /**
+     * Accessor for the namespace URI of the root XML element. Unlike accessing
+     * the underlying Stax reader directly, this value is stable regardless
+     * of how far parsing has advanced.
+     *
+     * @return Namespace URI of the root element
+     *
+     * @since 2.19
+     */
+    public String getRootElementNamespaceURI() {
+        return _xmlTokens.getRootNamespaceURI();
+    }
+
     /*
     /**********************************************************************
     /* ElementWrappable implementation
