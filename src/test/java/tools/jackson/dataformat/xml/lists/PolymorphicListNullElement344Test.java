@@ -34,20 +34,20 @@ public class PolymorphicListNullElement344Test extends XmlTestUtil
         public Detail344(String v) { value = v; }
     }
 
+    private final XmlMapper MAPPER = newMapper();
+    
     // [dataformat-xml#344]: null element in polymorphic list, round-trip
     @Test
     public void testNullInPolymorphicListRoundTrip() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
-
         Master344 master = new Master344();
         master.details.add(new Detail344("first"));
         master.details.add(null);
         master.details.add(new Detail344("third"));
 
-        String xml = mapper.writeValueAsString(master);
+        String xml = MAPPER.writeValueAsString(master);
 
-        Master344 result = mapper.readValue(xml, Master344.class);
+        Master344 result = MAPPER.readValue(xml, Master344.class);
 
         assertNotNull(result);
         assertNotNull(result.details);
@@ -63,15 +63,13 @@ public class PolymorphicListNullElement344Test extends XmlTestUtil
     @Test
     public void testNullInPolymorphicListFromXsiNil() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
-
         String xml = "<Master344>"
                 + "<details>"
                 + "<details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
                 + "</details>"
                 + "</Master344>";
 
-        Master344 result = mapper.readValue(xml, Master344.class);
+        Master344 result = MAPPER.readValue(xml, Master344.class);
 
         assertNotNull(result);
         assertNotNull(result.details);
@@ -83,13 +81,11 @@ public class PolymorphicListNullElement344Test extends XmlTestUtil
     @Test
     public void testOnlyNullsInPolymorphicList() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
-
         Master344 master = new Master344();
         master.details.add(null);
 
-        String xml = mapper.writeValueAsString(master);
-        Master344 result = mapper.readValue(xml, Master344.class);
+        String xml = MAPPER.writeValueAsString(master);
+        Master344 result = MAPPER.readValue(xml, Master344.class);
 
         assertNotNull(result);
         assertNotNull(result.details);
@@ -103,15 +99,13 @@ public class PolymorphicListNullElement344Test extends XmlTestUtil
     @Test
     public void testMultipleNullsInPolymorphicList() throws Exception
     {
-        XmlMapper mapper = new XmlMapper();
-
         Master344 master = new Master344();
         master.details.add(null);
         master.details.add(null);
         master.details.add(new Detail344("third"));
 
-        String xml = mapper.writeValueAsString(master);
-        Master344 result = mapper.readValue(xml, Master344.class);
+        String xml = MAPPER.writeValueAsString(master);
+        Master344 result = MAPPER.readValue(xml, Master344.class);
 
         assertNotNull(result);
         assertNotNull(result.details);
