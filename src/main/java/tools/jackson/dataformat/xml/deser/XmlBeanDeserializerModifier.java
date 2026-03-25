@@ -44,15 +44,14 @@ public class XmlBeanDeserializerModifier
             if (acc == null) {
                 continue;
             }
-            /* First: handle "as text"? Such properties
-             * are exposed as values of 'unnamed' fields; so one way to
-             * map them is to rename property to have name ""... (and
-             * hope this does not break other parts...)
-             */
+            // First: handle "as text"? Such properties are exposed as values of 'unnamed'
+            // properties; so one way to map them is to rename property to have special
+            // name (and hope this does not break other parts...)
             Boolean b = AnnotationUtil.findIsTextAnnotation(config, intr, acc);
             if (b != null && b.booleanValue()) {
                 BeanPropertyDefinition newProp = prop.withSimpleName(_cfgNameForTextValue);
                 if (newProp != prop) {
+                    // 24-Mar-2026, tatu: Create defensive copy
                     if (changed == 0) {
                         propDefs = new ArrayList<>(propDefs);
                     }
@@ -70,7 +69,7 @@ public class XmlBeanDeserializerModifier
                         && !localName.equals(prop.getName())) {
                     // make copy-on-write as necessary
                     if (changed == 0) {
-                        propDefs = new ArrayList<BeanPropertyDefinition>(propDefs);
+                        propDefs = new ArrayList<>(propDefs);
                     }
                     ++changed;
                     propDefs.set(i, prop.withSimpleName(localName));
