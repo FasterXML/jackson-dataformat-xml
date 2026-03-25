@@ -9,8 +9,9 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
+
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 // [dataformat-xml#565] Whitespace-only text content ignored with @JacksonXmlText
 public class XmlTextWhitespace565Test extends XmlTestUtil
 {
-    @JacksonXmlRootElement(localName = "replacements")
+    @JsonRootName("replacements")
     static class ClangFormatResponse {
         @JacksonXmlProperty(localName = "replacement")
         @JacksonXmlElementWrapper(useWrapping = false)

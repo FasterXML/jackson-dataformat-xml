@@ -47,9 +47,9 @@ public class XmlTokenBufferTest extends XmlTestUtil
             assertToken(JsonToken.START_ARRAY, p.nextToken());
             assertTrue(p.isExpectedStartArrayToken());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("a", p.getText());
+            assertEquals("a", p.getString());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("b", p.getText());
+            assertEquals("b", p.getString());
             assertToken(JsonToken.END_ARRAY, p.nextToken());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
@@ -125,13 +125,13 @@ public class XmlTokenBufferTest extends XmlTestUtil
             assertEquals("item", p.currentName());
             assertToken(JsonToken.START_ARRAY, p.nextToken());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("a", p.getText());
+            assertEquals("a", p.getString());
             assertToken(JsonToken.END_ARRAY, p.nextToken());
             // non-wrapped property follows
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("other", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("b", p.getText());
+            assertEquals("b", p.getString());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
         }
@@ -157,14 +157,14 @@ public class XmlTokenBufferTest extends XmlTestUtil
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("other", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("x", p.getText());
+            assertEquals("x", p.getString());
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("item", p.currentName());
             assertToken(JsonToken.START_ARRAY, p.nextToken());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("a", p.getText());
+            assertEquals("a", p.getString());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("b", p.getText());
+            assertEquals("b", p.getString());
             assertToken(JsonToken.END_ARRAY, p.nextToken());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
@@ -201,18 +201,18 @@ public class XmlTokenBufferTest extends XmlTestUtil
             assertEquals("a", p.currentName());
             assertToken(JsonToken.START_ARRAY, p.nextToken());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("1", p.getText());
+            assertEquals("1", p.getString());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("2", p.getText());
+            assertEquals("2", p.getString());
             assertToken(JsonToken.END_ARRAY, p.nextToken());
             // second wrapped: b
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("b", p.currentName());
             assertToken(JsonToken.START_ARRAY, p.nextToken());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("3", p.getText());
+            assertEquals("3", p.getString());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("4", p.getText());
+            assertEquals("4", p.getString());
             assertToken(JsonToken.END_ARRAY, p.nextToken());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
@@ -242,9 +242,9 @@ public class XmlTokenBufferTest extends XmlTestUtil
             assertEquals("Item", p.currentName());
             assertToken(JsonToken.START_ARRAY, p.nextToken());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("a", p.getText());
+            assertEquals("a", p.getString());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("b", p.getText());
+            assertEquals("b", p.getString());
             assertToken(JsonToken.END_ARRAY, p.nextToken());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
@@ -274,11 +274,11 @@ public class XmlTokenBufferTest extends XmlTestUtil
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("x", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("1", p.getText());
+            assertEquals("1", p.getString());
             assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
             assertEquals("y", p.currentName());
             assertToken(JsonToken.VALUE_STRING, p.nextToken());
-            assertEquals("2", p.getText());
+            assertEquals("2", p.getString());
             assertToken(JsonToken.END_OBJECT, p.nextToken());
             assertNull(p.nextToken());
         }
@@ -303,11 +303,11 @@ public class XmlTokenBufferTest extends XmlTestUtil
         assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
         assertEquals("item", p.currentName());
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
-        assertEquals("a", p.getText());
+        assertEquals("a", p.getString());
         assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
         assertEquals("item", p.currentName());
         assertToken(JsonToken.VALUE_STRING, p.nextToken());
-        assertEquals("b", p.getText());
+        assertEquals("b", p.getString());
         assertToken(JsonToken.END_OBJECT, p.nextToken());
         assertNull(p.nextToken());
         p.close();

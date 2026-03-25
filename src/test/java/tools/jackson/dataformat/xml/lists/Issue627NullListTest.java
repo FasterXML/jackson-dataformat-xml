@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class Issue627NullListTest extends XmlTestUtil
 {
-    @JacksonXmlRootElement(localName = "Parent")
+    @JsonRootName("Parent")
     static class Parent {
         private List<Child> children;
 
