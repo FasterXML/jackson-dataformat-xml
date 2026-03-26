@@ -261,6 +261,10 @@ public class FromXmlParser
         return XML_READ_CAPABILITIES;
     }
 
+    // @since 3.2
+    @Override
+    public boolean willInternPropertyNames() { return false; }
+
     /*
     /**********************************************************************
     /* Extended API, access to some internal components
