@@ -66,6 +66,11 @@ Sam Kruglov (@Sam-Kruglov)
    `FromXmlParser.getRootElementName()`)
   (3.2.0)
 
+Alexios Pantavos (@AlexiosP)
+ * Reported #514: Deserialisation to polymorphic class using `JsonTypeInfo.Id.DEDUCTION`
+  and `@JacksonXmlElementWrapper` annotation fails
+  (3.2.0)
+
 Josip Antoliš (@Antolius)
  * Reported #517: XML wrapper doesn't work with java records
   (3.2.0)
