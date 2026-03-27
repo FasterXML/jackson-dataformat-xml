@@ -14,9 +14,10 @@ public class XmlTypeResolverProvider
 {
     private static final long serialVersionUID = 3L;
 
-    @Override
+    @Override // @since 3.2
     protected TypeResolverBuilder<?> _constructStdTypeResolverBuilder(MapperConfig<?> config,
-            JsonTypeInfo.Value typeInfo, JavaType baseType) {
-        return new XmlTypeResolverBuilder(typeInfo);
+            JsonTypeInfo.Value typeInfo, JavaType baseType,
+            JavaType detectedBaseType) {
+        return new XmlTypeResolverBuilder(typeInfo, detectedBaseType);
     }
 }

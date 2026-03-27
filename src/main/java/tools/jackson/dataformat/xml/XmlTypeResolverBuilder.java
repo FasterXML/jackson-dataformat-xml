@@ -27,9 +27,10 @@ import tools.jackson.dataformat.xml.util.StaxUtil;
  */
 public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
 {
-    public XmlTypeResolverBuilder(JsonTypeInfo.Value typeInfo)
+    public XmlTypeResolverBuilder(JsonTypeInfo.Value typeInfo,
+            JavaType detectedBaseType)
     {
-        super(typeInfo);
+        super(typeInfo, detectedBaseType);
     }
 
     @Override
