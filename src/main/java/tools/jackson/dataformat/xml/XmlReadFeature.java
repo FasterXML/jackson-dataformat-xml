@@ -55,6 +55,24 @@ public enum XmlReadFeature implements FormatFeature
      */
     PROCESS_XSI_NIL(true),
 
+    /**
+     * Feature that controls whether XML Schema Instance (XSI) namespace attributes
+     * other than {@code xsi:nil} and {@code xsi:type} (which have their own handling
+     * via {@link #PROCESS_XSI_NIL} and {@link #AUTO_DETECT_XSI_TYPE}) are silently
+     * skipped during deserialization. Attributes affected include {@code xsi:schemaLocation}
+     * and {@code xsi:noNamespaceSchemaLocation}.
+     *<p>
+     * When enabled, these attributes are ignored and will not cause
+     * {@code UnrecognizedPropertyException}. When disabled (default), they are
+     * exposed as regular attributes and may require matching POJO properties
+     * or {@code DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES} to be disabled.
+     *<p>
+     * Default setting is {@code false}.
+     *
+     * @since 3.2
+     */
+    SKIP_UNKNOWN_XSI_ATTRIBUTES(false),
+
     ;
 
     private final boolean _defaultState;
