@@ -41,6 +41,8 @@ Version: 3.x (for earlier see VERSION-2.x)
   custom `TypeIdResolver`
  (reported by @ankagar)
  (fix by @cowtowncoder, w/ Claude code)
+#448: Allow use of `@JsonRawValue` without wrapping element
+ (reported by Florian K)
 #449: Trouble dealing with JacksonXMLText if properties are present or
   if element is in a collection
  (reported by Lon V)

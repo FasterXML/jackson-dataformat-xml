@@ -54,7 +54,12 @@ Eduard Wirch (@ewirch)
 Ruven Chu (@Chubacca)
  * Reported #334: `@JacksonXmlElementWrapper(useWrapping=false)` fails when using
    a `DeserializerModifier` that delegates
-  
+  (3.2.0)
+
+Florian Krauthan (@fkrauthan)
+ * Reported #448: Allow use of `@JsonRawValue` without wrapping element
+  (3.2.0)
+
 Lon Varscsak (@lonvarscsak)
  * Reported #449: Trouble dealing with JacksonXMLText if properties are present or
    if element is in a collection
