@@ -73,6 +73,22 @@ public enum XmlReadFeature implements FormatFeature
      */
     SKIP_UNKNOWN_XSI_ATTRIBUTES(false),
 
+    /**
+     * Feature that controls whether the local name of the root XML element is
+     * verified against the expected root name during deserialization. The expected
+     * root name is determined from {@code @JsonRootName}, {@code @JacksonXmlRootElement},
+     * or the simple class name of the target type (in that priority order).
+     *<p>
+     * When enabled, a mismatch between the actual root element name and the expected
+     * name will result in a {@link tools.jackson.databind.exc.MismatchedInputException}.
+     * When disabled (the default), any root element name is accepted.
+     *<p>
+     * Default setting is {@code false}.
+     *
+     * @since 3.2
+     */
+    ENFORCE_ROOT_ELEMENT_NAME(false),
+
     ;
 
     private final boolean _defaultState;

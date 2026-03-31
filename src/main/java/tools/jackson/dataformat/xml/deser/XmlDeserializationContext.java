@@ -1,5 +1,7 @@
 package tools.jackson.dataformat.xml.deser;
 
+import javax.xml.namespace.QName;
+
 import tools.jackson.core.FormatSchema;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.TokenStreamFactory;
@@ -10,8 +12,11 @@ import tools.jackson.databind.*;
 import tools.jackson.databind.deser.DeserializationContextExt;
 import tools.jackson.databind.deser.DeserializerCache;
 import tools.jackson.databind.deser.DeserializerFactory;
+import tools.jackson.databind.util.ClassUtil;
 import tools.jackson.databind.util.TokenBuffer;
 import tools.jackson.dataformat.xml.XmlFactory;
+import tools.jackson.dataformat.xml.XmlReadFeature;
+import tools.jackson.dataformat.xml.util.XmlRootNameLookup;
 
 /**
  * XML-specific {@link DeserializationContext} needed to override certain
@@ -22,13 +27,17 @@ public class XmlDeserializationContext
 {
     private final String _xmlTextElementName;
 
+    protected final XmlRootNameLookup _rootNameLookup;
+
     public XmlDeserializationContext(TokenStreamFactory tsf,
             DeserializerFactory deserializerFactory, DeserializerCache cache,
             DeserializationConfig config, FormatSchema schema,
-            InjectableValues values) {
+            InjectableValues values,
+            XmlRootNameLookup rootNameLookup) {
         super(tsf, deserializerFactory, cache,
                 config, schema, values);
         _xmlTextElementName = ((XmlFactory) tsf).getXMLTextElementName();
+        _rootNameLookup = rootNameLookup;
     }
 
     /*
@@ -42,6 +51,11 @@ public class XmlDeserializationContext
             ValueDeserializer<Object> deser, Object valueToUpdate)
         throws JacksonException
     {
+        // [dataformat-xml#247]: Verify root element name if feature enabled
+        if (p instanceof FromXmlParser) {
+            _verifyRootElementName((FromXmlParser) p, valueType);
+        }
+
         // 18-Sep-2021, tatu: Complicated mess; with 2.12, had [dataformat-xml#374]
         //    to disable handling. With 2.13, via [dataformat-xml#485] undid this change
         if (_config.useRootWrapping()) {
@@ -94,5 +108,37 @@ public class XmlDeserializationContext
     @Override
     public TokenBuffer bufferForInputBuffering(JsonParser p) {
         return XmlTokenBuffer.xmlBufferForInputBuffering(p, this);
+    }
+
+    /*
+    /**********************************************************
+    /* Internal methods
+    /**********************************************************
+     */
+
+    /**
+     * Helper method for [dataformat-xml#247]: verify that the root element name
+     * matches the expected name when {@link XmlReadFeature#ENFORCE_ROOT_ELEMENT_NAME}
+     * is enabled.
+     */
+    protected void _verifyRootElementName(FromXmlParser xp, JavaType valueType)
+        throws JacksonException
+    {
+        if (!xp.isEnabled(XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME)) {
+            return;
+        }
+        QName rootName = xp.getRootElementName();
+        if (rootName == null) {
+            return;
+        }
+        String actualName = rootName.getLocalPart();
+        QName expectedQName = _rootNameLookup.findRootName(this, valueType);
+        String expectedName = expectedQName.getLocalPart();
+
+        if (!expectedName.equals(actualName)) {
+            reportPropertyInputMismatch(valueType, actualName,
+                    "Root name \"%s\" does not match expected (\"%s\") for type %s",
+                    actualName, expectedName, ClassUtil.getTypeDescription(valueType));
+        }
     }
 }
