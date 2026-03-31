@@ -27,6 +27,9 @@ public class XmlDeserializationContext
 {
     private final String _xmlTextElementName;
 
+    /**
+     * @since 3.2
+     */
     protected final XmlRootNameLookup _rootNameLookup;
 
     public XmlDeserializationContext(TokenStreamFactory tsf,
@@ -52,8 +55,9 @@ public class XmlDeserializationContext
         throws JacksonException
     {
         // [dataformat-xml#247]: Verify root element name if feature enabled
-        if (p instanceof FromXmlParser) {
-            _verifyRootElementName((FromXmlParser) p, valueType);
+        if (p instanceof FromXmlParser xp
+                && xp.isEnabled(XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME)) {
+            _verifyRootElementName(xp, valueType);
         }
 
         // 18-Sep-2021, tatu: Complicated mess; with 2.12, had [dataformat-xml#374]
@@ -120,13 +124,12 @@ public class XmlDeserializationContext
      * Helper method for [dataformat-xml#247]: verify that the root element name
      * matches the expected name when {@link XmlReadFeature#ENFORCE_ROOT_ELEMENT_NAME}
      * is enabled.
+     *
+     * @since 3.2
      */
     protected void _verifyRootElementName(FromXmlParser xp, JavaType valueType)
         throws JacksonException
     {
-        if (!xp.isEnabled(XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME)) {
-            return;
-        }
         QName rootName = xp.getRootElementName();
         if (rootName == null) {
             return;
