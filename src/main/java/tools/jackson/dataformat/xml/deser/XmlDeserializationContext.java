@@ -44,9 +44,9 @@ public class XmlDeserializationContext
     }
 
     /*
-    /**********************************************************
+    /**********************************************************************
     /* Overrides we need
-    /**********************************************************
+    /**********************************************************************
      */
 
     @Override
@@ -115,9 +115,9 @@ public class XmlDeserializationContext
     }
 
     /*
-    /**********************************************************
-    /* Internal methods
-    /**********************************************************
+    /**********************************************************************
+    /* Internal helper methods
+    /**********************************************************************
      */
 
     /**
@@ -143,5 +143,23 @@ public class XmlDeserializationContext
                     "Root name \"%s\" does not match expected (\"%s\") for type %s",
                     actualName, expectedName, ClassUtil.getTypeDescription(valueType));
         }
+
+        // Also verify namespace URI: must match both ways (unexpected namespace
+        // present, or expected namespace missing)
+        String expectedNs = expectedQName.getNamespaceURI();
+        String actualNs = rootName.getNamespaceURI();
+        boolean expectedEmpty = (expectedNs == null || expectedNs.isEmpty());
+        boolean actualEmpty = (actualNs == null || actualNs.isEmpty());
+
+        if (expectedEmpty != actualEmpty || (!expectedEmpty && !expectedNs.equals(actualNs))) {
+            reportPropertyInputMismatch(valueType, actualName,
+                    "Root namespace \"%s\" does not match expected (\"%s\") for type %s",
+                    _nsDesc(actualNs), _nsDesc(expectedNs),
+                    ClassUtil.getTypeDescription(valueType));
+        }
+    }
+
+    private static String _nsDesc(String ns) {
+        return (ns == null || ns.isEmpty()) ? "" : ns;
     }
 }

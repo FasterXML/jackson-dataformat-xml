@@ -34,6 +34,11 @@ public class RootElementNameValidation247Test extends XmlTestUtil
         public int value;
     }
 
+    @JacksonXmlRootElement(localName = "NsRoot", namespace = "http://example.com/test")
+    static class NamespacedRoot {
+        public int value;
+    }
+
     private final XmlMapper ENFORCING_MAPPER = XmlMapper.builder()
             .enable(XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME)
             .build();
@@ -118,5 +123,59 @@ public class RootElementNameValidation247Test extends XmlTestUtil
     {
         assertThrows(DatabindException.class, () ->
             ENFORCING_MAPPER.readValue("<Wrong/>", Root.class));
+    }
+
+    // Namespace URI verification: matching namespace should pass
+    @Test
+    public void testMatchingNamespaceSucceeds() throws Exception
+    {
+        NamespacedRoot root = ENFORCING_MAPPER.readValue(
+                "<ns:NsRoot xmlns:ns=\"http://example.com/test\"><ns:value>42</ns:value></ns:NsRoot>",
+                NamespacedRoot.class);
+        assertEquals(42, root.value);
+    }
+
+    // Namespace URI verification: wrong namespace should fail
+    @Test
+    public void testMismatchedNamespaceFails() throws Exception
+    {
+        DatabindException e = assertThrows(DatabindException.class, () ->
+            ENFORCING_MAPPER.readValue(
+                    "<ns:NsRoot xmlns:ns=\"http://example.com/wrong\"><ns:value>42</ns:value></ns:NsRoot>",
+                    NamespacedRoot.class));
+        verifyException(e, "Root namespace");
+        verifyException(e, "http://example.com/wrong");
+        verifyException(e, "http://example.com/test");
+    }
+
+    // No namespace in XML when one is expected should fail
+    @Test
+    public void testMissingNamespaceFails() throws Exception
+    {
+        DatabindException e = assertThrows(DatabindException.class, () ->
+            ENFORCING_MAPPER.readValue(
+                    "<NsRoot><value>42</value></NsRoot>",
+                    NamespacedRoot.class));
+        verifyException(e, "Root namespace");
+    }
+
+    // Unexpected namespace in XML when none is expected should fail
+    @Test
+    public void testUnexpectedNamespaceFails() throws Exception
+    {
+        DatabindException e = assertThrows(DatabindException.class, () ->
+            ENFORCING_MAPPER.readValue(
+                    "<ns:Root xmlns:ns=\"http://example.com/unexpected\"><ns:value>42</ns:value></ns:Root>",
+                    Root.class));
+        verifyException(e, "Root namespace");
+    }
+
+    // No namespace expected, none present should pass
+    @Test
+    public void testNoNamespaceExpectedNonePresentSucceeds() throws Exception
+    {
+        Root root = ENFORCING_MAPPER.readValue(
+                "<Root><value>42</value></Root>", Root.class);
+        assertEquals(42, root.value);
     }
 }
