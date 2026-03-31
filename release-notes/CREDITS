@@ -39,6 +39,11 @@ Christopher McVay (@mcvayc)
  * Fixed #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
   (3.2.0)
 
+Leonard Meyer (@LeonardMeyer)
+ * Reported #247: `@JacksonXmlRootElement` does not enforce the local name during
+  deserialization (add `XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME`)
+  (3.2.0)
+
 Tobias M (@lightbringer)
  * Reported #248: `@JacksonXmlProperty` with attributes raises an exception
    when used with `@JsonIdentityInfo`

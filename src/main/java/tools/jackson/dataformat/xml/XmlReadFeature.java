@@ -43,6 +43,24 @@ public enum XmlReadFeature implements FormatFeature
     EMPTY_ELEMENT_AS_NULL(false),
 
     /**
+     * Feature that controls whether the name of the root XML element is
+     * verified against the expected root name during deserialization. The expected
+     * root name is determined from {@code @JsonRootName}, {@code @JacksonXmlRootElement},
+     * or the simple class name of the target type (in that priority order).
+     *<p>
+     * When enabled, a mismatch between the actual root element name and the expected
+     * name will result in a {@link tools.jackson.databind.exc.MismatchedInputException}.
+     * When disabled (the default), any root element name is accepted.
+     * Note that Fully-Qualified Names (FQN) comparison is used: that is, both local name
+     * and namespace URI must match.
+     *<p>
+     * Default setting is {@code false} for backwards-compatibility.
+     *
+     * @since 3.2
+     */
+    ENFORCE_ROOT_ELEMENT_NAME(false),
+
+    /**
      * Feature that indicates whether XML Schema Instance attribute
      * {@code xsi:nil} will be processed automatically -- to indicate {@code null}
      * values -- or not.
@@ -72,22 +90,6 @@ public enum XmlReadFeature implements FormatFeature
      * @since 3.2
      */
     SKIP_UNKNOWN_XSI_ATTRIBUTES(false),
-
-    /**
-     * Feature that controls whether the local name of the root XML element is
-     * verified against the expected root name during deserialization. The expected
-     * root name is determined from {@code @JsonRootName}, {@code @JacksonXmlRootElement},
-     * or the simple class name of the target type (in that priority order).
-     *<p>
-     * When enabled, a mismatch between the actual root element name and the expected
-     * name will result in a {@link tools.jackson.databind.exc.MismatchedInputException}.
-     * When disabled (the default), any root element name is accepted.
-     *<p>
-     * Default setting is {@code false}.
-     *
-     * @since 3.2
-     */
-    ENFORCE_ROOT_ELEMENT_NAME(false),
 
     ;
 
