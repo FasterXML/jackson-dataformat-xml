@@ -475,7 +475,6 @@ public class XmlMapper extends ObjectMapper
         return _serializationConfig.hasFormatFeature(f);
     }
 
-
     /*
     /**********************************************************************
     /* XML-specific access
