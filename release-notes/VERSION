@@ -114,6 +114,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 #802: Serialization with Polymorphisme and `EXTERNAL_PROPERTY` = duplicate property
  (reported by @ Adrien-dev25 )
  (fix by @cowtowncoder, w/ Claude code)
+#845: Implement `JsonGenerator` methods `writeComment()` and `canWriteComments()`
+ (implemented by @cowtowncoder, w/ Claude code)
 
 3.1.1 (27-Mar-2026)
 

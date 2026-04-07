@@ -908,6 +908,30 @@ public class ToXmlGenerator
     
     /*
     /**********************************************************************
+    /* Output method implementations, comments
+    /**********************************************************************
+     */
+
+    @Override
+    public boolean canWriteComments() { return true; }
+
+    @Override
+    public JsonGenerator writeComment(String comment) throws JacksonException
+    {
+        try {
+            if (comment != null) {
+                _xmlWriter.writeComment(comment);
+            } else {
+                _xmlWriter.writeSpace("\n");
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsWriteException(e, this);
+        }
+        return this;
+    }
+
+    /*
+    /**********************************************************************
     /* Output method implementations, base64-encoded binary
     /**********************************************************************
      */

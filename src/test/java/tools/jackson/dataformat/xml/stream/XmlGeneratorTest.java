@@ -12,6 +12,7 @@ import tools.jackson.dataformat.xml.XmlWriteFeature;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmlGeneratorTest extends XmlTestUtil
 {
@@ -311,5 +312,53 @@ public class XmlGeneratorTest extends XmlTestUtil
         // one more thing: remove that annoying 'xmlns' decl, if it's there:
         xml = removeSjsxpNamespace(xml);
         assertEquals("<root attr=\"value\"/>", xml);
+    }
+
+    // [dataformat-xml#845]
+    @Test
+    public void testCanWriteComments() throws Exception
+    {
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        assertTrue(gen.canWriteComments());
+        // Need to write something to avoid empty document error on close
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeEndObject();
+        gen.close();
+    }
+
+    // [dataformat-xml#845]
+    @Test
+    public void testWriteCommentInObject() throws Exception
+    {
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeComment("a comment");
+        gen.writeName("elem");
+        gen.writeString("value");
+        gen.writeEndObject();
+        gen.close();
+        String xml = removeSjsxpNamespace(out.toString());
+        assertEquals("<root><!--a comment--><elem>value</elem></root>", xml);
+    }
+
+    // [dataformat-xml#845]
+    @Test
+    public void testWriteCommentNullWritesEmptyLine() throws Exception
+    {
+        StringWriter out = new StringWriter();
+        ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out);
+        gen.setNextName(new QName("root"));
+        gen.writeStartObject();
+        gen.writeComment(null);
+        gen.writeName("elem");
+        gen.writeString("value");
+        gen.writeEndObject();
+        gen.close();
+        String xml = removeSjsxpNamespace(out.toString());
+        assertEquals("<root>\n<elem>value</elem></root>", xml);
     }
 }
