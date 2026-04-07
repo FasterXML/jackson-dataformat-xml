@@ -253,21 +253,30 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
-    /* Overridden output state handling methods
+    /* Overrides: capability introspection
     /**********************************************************************
      */
+
+    @Override // @since 3.2
+    public boolean canWriteComments() { return true; }
+
+    // Base class impl fine:
+    //@Override public boolean canWriteObjectId() { return false; }
+
+    // Base class impl fine:
+    //@Override public boolean canOmitProperties() { return true; }
+
+    // Base class impl fine:
+    //@Override public boolean canWriteTypeId() { return false; }
+
+    @Override
+    public boolean has(StreamWriteCapability capability) {
+        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES.isEnabled(capability);
+    }
     
     @Override
-    public final TokenStreamContext streamWriteContext() { return _streamWriteContext; }
-
-    @Override
-    public final Object currentValue() {
-        return _streamWriteContext.currentValue();
-    }
-
-    @Override
-    public final void assignCurrentValue(Object v) {
-        _streamWriteContext.assignCurrentValue(v);
+    public JacksonFeatureSet<StreamWriteCapability> streamWriteCapabilities() {
+        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES;
     }
 
     /*
@@ -299,6 +308,25 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
+    /* Overridden output state handling methods
+    /**********************************************************************
+     */
+    
+    @Override
+    public final TokenStreamContext streamWriteContext() { return _streamWriteContext; }
+
+    @Override
+    public final Object currentValue() {
+        return _streamWriteContext.currentValue();
+    }
+
+    @Override
+    public final void assignCurrentValue(Object v) {
+        _streamWriteContext.assignCurrentValue(v);
+    }
+    
+    /*
+    /**********************************************************************
     /* Extended API, configuration
     /**********************************************************************
      */
@@ -314,16 +342,6 @@ public class ToXmlGenerator
             _formatFeatures &= ~f.getMask();
         }
         return this;
-    }
-
-    @Override
-    public boolean has(StreamWriteCapability capability) {
-        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES.isEnabled(capability);
-    }
-    
-    @Override
-    public JacksonFeatureSet<StreamWriteCapability> streamWriteCapabilities() {
-        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES;
     }
 
     public boolean inRoot() {
@@ -912,10 +930,7 @@ public class ToXmlGenerator
     /**********************************************************************
      */
 
-    @Override
-    public boolean canWriteComments() { return true; }
-
-    @Override
+    @Override // @since 3.2
     public JsonGenerator writeComment(String comment) throws JacksonException
     {
         try {
