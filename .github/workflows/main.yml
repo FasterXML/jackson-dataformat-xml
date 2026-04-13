@@ -63,7 +63,7 @@ jobs:
         flags: unittests
     - name: Upload coverage report as artifact
       if: ${{ matrix.release_build && github.event_name != 'pull_request' }}
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: jacoco-report
         path: target/site/jacoco/jacoco.csv
@@ -166,7 +166,7 @@ jobs:
         echo "$COMMENT_BODY" > pr-comment/comment-body.txt
     - name: Upload PR comment
       if: ${{ matrix.release_build && github.event_name == 'pull_request' }}
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: pr-comment
         path: pr-comment/
