@@ -15,6 +15,17 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
 
     // [dataformat-xml#150]: DTD writing
     @Test
+    public void testDTDWithOnlyRootElement() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .setDTD("StringBean", null, null, null));
+        assertEquals(a2q("<!DOCTYPE StringBean>"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    @Test
     public void testDTDWithPublicId() throws Exception
     {
         ObjectWriter w = MAPPER.writer().with(
