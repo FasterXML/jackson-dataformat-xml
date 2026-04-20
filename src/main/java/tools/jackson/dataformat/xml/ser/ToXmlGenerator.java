@@ -106,6 +106,14 @@ public class ToXmlGenerator
      */
     protected List<XmlPrologDirective> _prologDirectives;
 
+    /**
+     * Whether linefeed ("pretty-printing") enabled between directives
+     * in Document prolog.
+     *
+     * @since 3.2
+     */
+    protected boolean _lfBetweenPrologDirectives;
+
     /*
     /**********************************************************************
     /* Logical output state
@@ -219,6 +227,22 @@ public class ToXmlGenerator
      */
 
     /**
+     * Method called by {@link XmlGeneratorInitializer} to inject
+     * necessary configuration.
+     *
+     * @since 3.2
+     */
+    public void initProlog(boolean lfBetweenPrologDirectives,
+            List<XmlPrologDirective> directives)
+    {
+        if (_initialized) { // sanity check
+            _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
+        }
+        _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
+        _prologDirectives = directives;
+    }
+
+    /**
      * Method called by {@link XmlSerializationContext} before writing any output,
      * to optionally output XML declaration and other before-root-element
      * nodes (DOCTYPE, processing instructions)
@@ -242,7 +266,7 @@ public class ToXmlGenerator
                     _xmlWriter.writeStartDocument(encoding, xmlVersion);
                 }
                 // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
-                if (_xmlPrettyPrinter != null) {
+                if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
                     _prologLinefeed();
                 }
             }
@@ -255,7 +279,9 @@ public class ToXmlGenerator
                 for (XmlPrologDirective d : _prologDirectives) {
                     d.write(this, _xmlWriter);
                     // Add linefeed separators b/w directives
-                    _prologLinefeed();
+                    if (_lfBetweenPrologDirectives) {
+                        _prologLinefeed();
+                    }
                 }
             }
 
@@ -274,20 +300,6 @@ public class ToXmlGenerator
                 _xmlWriter.writeSpace("\n");
             }
         }
-    }
-
-    /**
-     * Method called by {@link XmlGeneratorInitializer} to inject
-     * necessary configuration.
-     *
-     * @since 3.2
-     */
-    public void initProlog(List<XmlPrologDirective> directives)
-    {
-        if (_initialized) { // sanity check
-            _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
-        }
-        _prologDirectives = directives;
     }
 
     /*

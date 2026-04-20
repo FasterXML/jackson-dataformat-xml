@@ -73,8 +73,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                         .addDTD("StringBean", "system", "http://foo.bar", null));
         // XML declaration is emitted with single quotes, DOCTYPE with double quotes,
         // so cannot use a2q() on the whole string here.
-        // NOTE: no lf for legacy case
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?>"
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
                 +"<!DOCTYPE StringBean PUBLIC \"http://foo.bar\" \"system\">\n"
                 +"<StringBean><text>test</text></StringBean>",
                 w.writeValueAsString(new StringBean("test")));
@@ -118,8 +117,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 new XmlGeneratorInitializer()
                         .addComment("Hello"));
         // XML declaration is emitted with single quotes, so cannot use a2q() here.
-        // NOTE: no lf for legacy case
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?>"
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
                 +"<!--Hello-->\n"
                 +"<StringBean><text>test</text></StringBean>",
                 w.writeValueAsString(new StringBean("test")));
@@ -190,6 +188,27 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                         .addComment(null));
         assertEquals(a2q("<!---->\n"
                 +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // [dataformat-xml#849]: verify `linefeedsBetweenPrologDirectives(false)`
+    // suppresses both the post-declaration lf and inter-directive lfs
+    @Test
+    public void testLinefeedsBetweenPrologDirectivesDisabled() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
+                .build();
+        ObjectWriter w = mapper.writer().with(
+                new XmlGeneratorInitializer()
+                        .linefeedsBetweenPrologDirectives(false)
+                        .addDTD("StringBean", null, null, null)
+                        .addComment("squished"));
+        // XML declaration uses single quotes, DOCTYPE uses double, so cannot use a2q().
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>"
+                +"<!DOCTYPE StringBean>"
+                +"<!--squished-->"
+                +"<StringBean><text>test</text></StringBean>",
                 w.writeValueAsString(new StringBean("test")));
     }
 

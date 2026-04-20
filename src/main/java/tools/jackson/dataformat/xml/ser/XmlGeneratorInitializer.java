@@ -29,13 +29,28 @@ public class XmlGeneratorInitializer
 {
     protected List<XmlPrologDirective> _directives;
 
+    protected boolean _addLfBetweenPrologDirectives = true;
+
     protected boolean _hasDTD;
 
     @Override
     public void initialize(SerializationConfig config, JsonGenerator g) throws JacksonException {
         if (g instanceof ToXmlGenerator xg) {
-            xg.initProlog(_directives);
+            xg.initProlog(_addLfBetweenPrologDirectives, _directives);
         }
+    }
+
+    /**
+     * Method to change whether line-feeds are to be added between Prolog directives
+     * or not: default being they are (enabled).
+     *
+     * @param addLFs Whether line-feeds are to be added or not (default: {@code true})
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer linefeedsBetweenPrologDirectives(boolean addLFs) {
+        _addLfBetweenPrologDirectives = addLFs;
+        return this;
     }
 
     /**
