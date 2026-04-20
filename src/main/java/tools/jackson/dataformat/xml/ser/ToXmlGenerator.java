@@ -230,12 +230,10 @@ public class ToXmlGenerator
         }
         _initialized = true;
         try {
-            boolean xmlDeclWritten;
+            final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
+            if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
 
-            if (XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures)
-                    || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-
-                String xmlVersion = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures) ? "1.1" : "1.0";
+                String xmlVersion = xml11Decl ? "1.1" : "1.0";
                 String encoding = "UTF-8";
 
                 if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
@@ -243,13 +241,10 @@ public class ToXmlGenerator
                 } else {
                     _xmlWriter.writeStartDocument(encoding, xmlVersion);
                 }
-                xmlDeclWritten = true;
                 // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
                 if (_xmlPrettyPrinter != null) {
                     _prologLinefeed();
                 }
-            } else {
-                xmlDeclWritten = false;
             }
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
