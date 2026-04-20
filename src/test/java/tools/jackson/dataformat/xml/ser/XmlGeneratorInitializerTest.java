@@ -40,8 +40,9 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .withDTD("StringBean", "system", null, "<!ELEMENT root (#PCDATA)>"));
-        assertEquals(a2q("<!DOCTYPE StringBean SYSTEM 'system' [<!ELEMENT root (#PCDATA)>]>"
+                        .withDTD("StringBean", "system", "http://foo.bar", "<!ELEMENT root (#PCDATA)>"));
+        assertEquals(a2q("<!DOCTYPE StringBean PUBLIC 'http://foo.bar' 'system' "
+                +"[<!ELEMENT root (#PCDATA)>]>"
                 +"<StringBean><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
     }
