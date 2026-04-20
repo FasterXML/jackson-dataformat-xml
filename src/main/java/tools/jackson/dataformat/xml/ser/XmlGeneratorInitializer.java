@@ -29,13 +29,13 @@ public class XmlGeneratorInitializer
         }
     }
 
-    public XmlGeneratorInitializer withDTD(String rootName,
+    public XmlGeneratorInitializer setDTD(String rootName,
             String systemId, String publicId,
             String internalSubset) {
-        return withDTD(new DTD(rootName, systemId, publicId, internalSubset));
+        return setDTD(new DTD(rootName, systemId, publicId, internalSubset));
     }
 
-    public XmlGeneratorInitializer withDTD(DTD dtd) {
+    public XmlGeneratorInitializer setDTD(DTD dtd) {
         _dtd = dtd;
         return this;
     }

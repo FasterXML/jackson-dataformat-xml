@@ -100,6 +100,8 @@ public class ToXmlGenerator
      */
 
     /**
+     * Document Type Declaration to write, if any; {@code null} if none.
+     *
      * @since 3.2
      */
     protected DTD _dtd;

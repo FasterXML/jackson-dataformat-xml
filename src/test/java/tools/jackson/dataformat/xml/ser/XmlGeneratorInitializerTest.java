@@ -19,7 +19,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .withDTD("StringBean", "system", "http://foo.bar", ""));
+                        .setDTD("StringBean", "system", "http://foo.bar", ""));
         assertEquals(a2q("<!DOCTYPE StringBean PUBLIC 'http://foo.bar' 'system'>"
                 +"<StringBean><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
@@ -30,7 +30,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .withDTD("StringBean", "system", "", null));
+                        .setDTD("StringBean", "system", "", null));
         assertEquals(a2q("<!DOCTYPE StringBean SYSTEM 'system'>"
                 +"<StringBean><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
@@ -41,7 +41,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .withDTD("StringBean", "system", "http://foo.bar", "<!ELEMENT root (#PCDATA)>"));
+                        .setDTD("StringBean", "system", "http://foo.bar", "<!ELEMENT root (#PCDATA)>"));
         assertEquals(a2q("<!DOCTYPE StringBean PUBLIC 'http://foo.bar' 'system' "
                 +"[<!ELEMENT root (#PCDATA)>]>"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -54,7 +54,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         try {
             /*ObjectWriter w =*/ MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                    .withDTD("", null, null, null));
+                    .setDTD("", null, null, null));
             fail("Should not pass");
         } catch (IllegalArgumentException e) {
             verifyException(e, "Illegal argument for 'rootName': must be");
