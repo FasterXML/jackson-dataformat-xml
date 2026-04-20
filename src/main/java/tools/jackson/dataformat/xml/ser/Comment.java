@@ -25,5 +25,4 @@ public record Comment(String content)
     public void write(ToXmlGenerator xmlGen, XMLStreamWriter2 sw) throws XMLStreamException {
         sw.writeComment(content);
     }
-    
 }

@@ -281,7 +281,7 @@ public class ToXmlGenerator
             }
         }
     }
-    
+
     /**
      * Method called by {@link XmlGeneratorInitializer} to inject
      * necessary configuration.

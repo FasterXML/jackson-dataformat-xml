@@ -41,10 +41,10 @@ public class XmlGeneratorInitializer
     /**
      * Method for adding XML comment; to be written in position added
      * with respective to other directives
-     * (but always after XML Declaration which most come before any other output;
+     * (but always after XML Declaration which must come before any other output;
      * and before Document Root element)
      *
-     * @param commentContent (option) Comment content to include
+     * @param commentContent (optional) Comment content to include
      *
      * @return This initializer for call chaining
      */
@@ -73,7 +73,7 @@ public class XmlGeneratorInitializer
     /**
      * Method for adding Document Type Declaration (DTD) directive; to
      * be written in position added with respective to other directives
-     * (but always after XML Declaration which most come before any other output;
+     * (but always after XML Declaration which must come before any other output;
      * and before Document Root element)
      *
      * @param dtd DTD to write

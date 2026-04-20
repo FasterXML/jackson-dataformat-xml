@@ -106,5 +106,90 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 w.writeValueAsString(new StringBean("test")));
     }
 
+    // Verify ordering: XML declaration must come before Comment
+    @Test
+    public void testCommentWithXmlDeclaration() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
+                .build();
+        ObjectWriter w = mapper.writer().with(
+                new XmlGeneratorInitializer()
+                        .addComment("Hello"));
+        // XML declaration is emitted with single quotes, so cannot use a2q() here.
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
+                +"<!--Hello-->\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Verify "position added" ordering contract: Comment registered before DTD
+    @Test
+    public void testCommentBeforeDTD() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addComment("before dtd")
+                        .addDTD("StringBean", null, null, null));
+        assertEquals(a2q("<!--before dtd-->\n"
+                +"<!DOCTYPE StringBean>\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Verify "position added" ordering contract: DTD registered before Comment
+    @Test
+    public void testDTDBeforeComment() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addDTD("StringBean", null, null, null)
+                        .addComment("after dtd"));
+        assertEquals(a2q("<!DOCTYPE StringBean>\n"
+                +"<!--after dtd-->\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Ensure multiple comments are all written (no accidental dedup)
+    @Test
+    public void testMultipleComments() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addComment("first")
+                        .addComment("second")
+                        .addComment("third"));
+        assertEquals(a2q("<!--first-->\n"
+                +"<!--second-->\n"
+                +"<!--third-->\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Empty-string content is accepted and produces an empty comment
+    @Test
+    public void testEmptyComment() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addComment(""));
+        assertEquals(a2q("<!---->\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Null content is coerced to empty by Comment(String) constructor
+    @Test
+    public void testNullComment() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addComment(null));
+        assertEquals(a2q("<!---->\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
     // // Other tests
 }
