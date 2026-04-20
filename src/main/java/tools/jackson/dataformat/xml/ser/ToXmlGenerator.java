@@ -217,7 +217,7 @@ public class ToXmlGenerator
     /* Life-cycle, initialization
     /**********************************************************************
      */
-    
+
     /**
      * Method called by {@link XmlSerializationContext} before writing any output,
      * to optionally output XML declaration and other before-root-element

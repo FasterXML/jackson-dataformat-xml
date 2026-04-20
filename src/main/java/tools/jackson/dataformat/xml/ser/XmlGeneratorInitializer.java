@@ -14,6 +14,8 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
  * <li>Document Type Declarations (DTD); that is "&lt;!DOCTYPE>" directive 
  *  </li>
  * </ul>
+ *<p>
+ * NOTE: instances are mutable, not thread-safe.
  *
  * @since 3.2
  */
