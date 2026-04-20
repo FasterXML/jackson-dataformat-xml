@@ -95,6 +95,17 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
+    /* Initializer-injected configuration (3.2)
+    /**********************************************************************
+     */
+
+    /**
+     * @since 3.2
+     */
+    protected DTD _dtd;
+
+    /*
+    /**********************************************************************
     /* Logical output state
     /**********************************************************************
      */
@@ -153,7 +164,7 @@ public class ToXmlGenerator
      * To support proper serialization of arrays it is necessary to keep
      * stack of element names, so that we can "revert" to earlier 
      */
-    protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
+    protected LinkedList<QName> _elementNameStack = new LinkedList<>();
 
     /**
      * Reusable internal value object
@@ -162,7 +173,7 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
-    /* Life-cycle
+    /* Life-cycle, construction
     /**********************************************************************
      */
 
@@ -199,9 +210,16 @@ public class ToXmlGenerator
         _textElementQName = new QName(nameForTextElement);
     }
 
+    /*
+    /**********************************************************************
+    /* Life-cycle, initialization
+    /**********************************************************************
+     */
+    
     /**
-     * Method called before writing any other output, to optionally
-     * output XML declaration.
+     * Method called by {@link XmlSerializationContext} before writing any output,
+     * to optionally output XML declaration and other before-root-element
+     * nodes (DOCTYPE, processing instructions)
      */
     public void initGenerator() throws JacksonException
     {
@@ -238,9 +256,30 @@ public class ToXmlGenerator
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             }
+
+            // 19-Apr-2026, tatu: [dataformat-xml#150] Allow outputting DTD
+            if (_dtd != null) {
+                _xmlWriter.writeDTD(_dtd.rootName(), _dtd.systemId(), _dtd.publicId(),
+                        _dtd.internalSubset());
+            }
+
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
         }
+    }
+
+    /**
+     * Method called by {@link XmlGeneratorInitializer} to inject
+     * necessary configuration.
+     *
+     * @since 3.2
+     */
+    public void initConfig(DTD dtd)
+    {
+        if (_initialized) { // sanity check
+            _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
+        }
+        _dtd = dtd;
     }
 
     /*

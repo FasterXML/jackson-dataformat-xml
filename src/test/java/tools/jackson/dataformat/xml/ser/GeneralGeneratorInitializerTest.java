@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 // Test to ensure that XML module supports
 // [https://github.com/FasterXML/jackson-databind/issues/5860] (GeneratorInitializer
 // abstraction)
-public class GeneratorInitializerTest extends XmlTestUtil
+public class GeneralGeneratorInitializerTest extends XmlTestUtil
 {
     private final GeneratorInitializer ISO_8859_INITIALIZER = (config, gen) -> {
         ToXmlGenerator xmlGen = (ToXmlGenerator) gen;

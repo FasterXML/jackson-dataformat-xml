@@ -15,6 +15,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
  (fix by Christopher M))
+#150: Allow specifying DOCTYPE declaration (`<!DOCTYPE root ...>`) to write
+ (requested by Stefan W)
+ (fix by @cowtowncoder)
 #192: Two wrapped lists with items of same name conflict
  (reported by @TeemuStenhammar)
  (fix by @cowtowncoder, w/ Claude code)
