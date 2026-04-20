@@ -244,13 +244,12 @@ public class ToXmlGenerator
                     _xmlWriter.writeStartDocument(encoding, xmlVersion);
                 }
                 xmlDeclWritten = true;
+                // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
+                if (_xmlPrettyPrinter != null) {
+                    _prologLinefeed();
+                }
             } else {
                 xmlDeclWritten = false;
-            }
-
-            // as per [dataformat-xml#172], try adding indentation
-            if (xmlDeclWritten) {
-                _prologLinefeed();
             }
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);

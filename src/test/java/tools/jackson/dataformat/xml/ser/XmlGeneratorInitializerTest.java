@@ -73,7 +73,8 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                         .addDTD("StringBean", "system", "http://foo.bar", null));
         // XML declaration is emitted with single quotes, DOCTYPE with double quotes,
         // so cannot use a2q() on the whole string here.
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
+        // NOTE: no lf for legacy case
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>"
                 +"<!DOCTYPE StringBean PUBLIC \"http://foo.bar\" \"system\">\n"
                 +"<StringBean><text>test</text></StringBean>",
                 w.writeValueAsString(new StringBean("test")));
@@ -117,7 +118,8 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 new XmlGeneratorInitializer()
                         .addComment("Hello"));
         // XML declaration is emitted with single quotes, so cannot use a2q() here.
-        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
+        // NOTE: no lf for legacy case
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>"
                 +"<!--Hello-->\n"
                 +"<StringBean><text>test</text></StringBean>",
                 w.writeValueAsString(new StringBean("test")));
