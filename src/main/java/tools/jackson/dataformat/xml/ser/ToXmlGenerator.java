@@ -104,8 +104,8 @@ public class ToXmlGenerator
      *
      * @since 3.2
      */
-     protected List<XmlPrologDirective> _prologDirectives;
-    
+    protected List<XmlPrologDirective> _prologDirectives;
+
     /*
     /**********************************************************************
     /* Logical output state
