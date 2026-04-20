@@ -22,7 +22,7 @@ public record DTD(String rootName,
 
     static String _nonEmptyNonNull(String prop, String str) {
         if (str == null || str.isEmpty()) {
-            throw new IllegalArgumentException("Illegal argument for `%s`: must be non-empty String"
+            throw new IllegalArgumentException("Illegal argument for '%s': must be non-empty String"
                     .formatted(prop));
         }
         return str;

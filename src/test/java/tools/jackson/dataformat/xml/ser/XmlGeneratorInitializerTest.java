@@ -7,6 +7,7 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class XmlGeneratorInitializerTest extends XmlTestUtil
 {
@@ -18,7 +19,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .withDTD("StringBean", "system", "http://foo.bar", null));
+                        .withDTD("StringBean", "system", "http://foo.bar", ""));
         assertEquals(a2q("<!DOCTYPE StringBean PUBLIC 'http://foo.bar' 'system'>"
                 +"<StringBean><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
@@ -29,7 +30,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     {
         ObjectWriter w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .withDTD("StringBean", "system", null, null));
+                        .withDTD("StringBean", "system", "", null));
         assertEquals(a2q("<!DOCTYPE StringBean SYSTEM 'system'>"
                 +"<StringBean><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
@@ -46,4 +47,19 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 +"<StringBean><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
     }
+
+    @Test
+    public void testDTDInvalidNoRoot() throws Exception
+    {
+        try {
+            /*ObjectWriter w =*/ MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                    .withDTD("", null, null, null));
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'rootName': must be");
+        }
+    }
+
+    // Other tests
 }
