@@ -16,7 +16,9 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
  * {@link ObjectWriter#with(GeneratorInitializer)}.
  * It allows output of various document-level things such as
  *<ul>
- * <li>Document Type Declarations (DTD); that is "&lt;!DOCTYPE>" directive 
+ * <li>Document Type Declarations (DTD); that is "&lt;!DOCTYPE>" directive
+ *  </li>
+ * <li>XML Comments (in Document prolog, before the root element)
  *  </li>
  * </ul>
  *<p>

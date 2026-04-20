@@ -266,6 +266,7 @@ public class ToXmlGenerator
                     _xmlWriter.writeStartDocument(encoding, xmlVersion);
                 }
                 // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
+                //    OR _lfBetweenPrologDirectives passed by initializer
                 if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
                     _prologLinefeed();
                 }
