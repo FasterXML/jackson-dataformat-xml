@@ -249,11 +249,8 @@ public class ToXmlGenerator
             }
 
             // as per [dataformat-xml#172], try adding indentation
-            if (xmlDeclWritten && (_xmlPrettyPrinter != null)) {
-                // ... but only if it is likely to succeed:
-                if (!_stax2Emulation) {
-                    _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
-                }
+            if (xmlDeclWritten) {
+                _prologLinefeed();
             }
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
@@ -263,6 +260,8 @@ public class ToXmlGenerator
             if (_prologDirectives != null) {
                 for (XmlPrologDirective d : _prologDirectives) {
                     d.write(this, _xmlWriter);
+                    // Add linefeed separators b/w directives
+                    _prologLinefeed();
                 }
             }
 
@@ -271,6 +270,18 @@ public class ToXmlGenerator
         }
     }
 
+    // @since 3.2
+    private void _prologLinefeed() throws XMLStreamException
+    {
+        if (!_stax2Emulation) {
+            if (_xmlPrettyPrinter != null) {
+                _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
+            } else {
+                _xmlWriter.writeSpace("\n");
+            }
+        }
+    }
+    
     /**
      * Method called by {@link XmlGeneratorInitializer} to inject
      * necessary configuration.

@@ -39,6 +39,20 @@ public class XmlGeneratorInitializer
     }
 
     /**
+     * Method for adding XML comment; to be written in position added
+     * with respective to other directives
+     * (but always after XML Declaration which most come before any other output;
+     * and before Document Root element)
+     *
+     * @param commentContent (option) Comment content to include
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addComment(String commentContent) {
+        return _add(new Comment(commentContent));
+    }
+
+    /**
      * Convenience method that constructs {@link DTD} out of arguments
      * and calls {@link #addDTD(DTD)}.
      *
@@ -57,10 +71,10 @@ public class XmlGeneratorInitializer
     }
 
     /**
-     * Method for adding Document Type Declaration (DTD) directive; to write
-     * in order added with respective to other directives (but always after
-     * XML Declaration which most come before any other output; and before
-     * Document Root element)
+     * Method for adding Document Type Declaration (DTD) directive; to
+     * be written in position added with respective to other directives
+     * (but always after XML Declaration which most come before any other output;
+     * and before Document Root element)
      *
      * @param dtd DTD to write
      *
