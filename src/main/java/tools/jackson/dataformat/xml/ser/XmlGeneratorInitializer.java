@@ -1,7 +1,12 @@
 package tools.jackson.dataformat.xml.ser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.exc.StreamWriteException;
+
 import tools.jackson.databind.*;
 import tools.jackson.databind.cfg.GeneratorInitializer;
 
@@ -22,12 +27,14 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
 public class XmlGeneratorInitializer
     implements GeneratorInitializer
 {
-    protected DTD _dtd;
+    protected List<XmlPrologDirective> _directives;
+
+    protected boolean _hasDTD;
 
     @Override
     public void initialize(SerializationConfig config, JsonGenerator g) throws JacksonException {
         if (g instanceof ToXmlGenerator xg) {
-            xg.initConfig(_dtd);
+            xg.initProlog(_directives);
         }
     }
 
@@ -60,7 +67,18 @@ public class XmlGeneratorInitializer
      * @return This initializer for call chaining
      */
     public XmlGeneratorInitializer addDTD(DTD dtd) {
-        _dtd = dtd;
+        if (_hasDTD) {
+            throw new StreamWriteException(null, "Cannot add another `DTD`, initializer already has one");
+        }
+        _hasDTD = true;
+        return _add(dtd);
+    }
+
+    protected XmlGeneratorInitializer _add(XmlPrologDirective d) {
+        if (_directives == null) {
+            _directives = new ArrayList<>();
+        }
+        _directives.add(d);
         return this;
     }
 }

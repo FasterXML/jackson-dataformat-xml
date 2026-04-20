@@ -13,7 +13,13 @@ import org.codehaus.stax2.XMLStreamWriter2;
 public interface XmlPrologDirective
 {
     /**
-     * Method to call to actually write out the directive.
+     * Method to call to actually write out the directive using given
+     * {@link XMLStreamWriter2}. {@link ToXmlGenerator} is only passed
+     * in case access to configuration was needed.
+     *
+     * @param xmlGen Generator that called this method: MUST NOT call
+     *   its output methods, only to be used for configuration access
+     *   @param sw Writer to use for actual output of XML event
      */
     public void write(ToXmlGenerator xmlGen, XMLStreamWriter2 sw)
         throws XMLStreamException;

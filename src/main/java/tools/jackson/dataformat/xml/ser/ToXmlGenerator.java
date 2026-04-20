@@ -100,12 +100,12 @@ public class ToXmlGenerator
      */
 
     /**
-     * Document Type Declaration to write, if any; {@code null} if none.
+     * XML directives (DTD, Comments, PIs) to write, if any.
      *
      * @since 3.2
      */
-    protected DTD _dtd;
-
+     protected List<XmlPrologDirective> _prologDirectives;
+    
     /*
     /**********************************************************************
     /* Logical output state
@@ -260,8 +260,10 @@ public class ToXmlGenerator
             }
 
             // 19-Apr-2026, tatu: [dataformat-xml#150] Allow outputting DTD
-            if (_dtd != null) {
-                _dtd.write(this, _xmlWriter);
+            if (_prologDirectives != null) {
+                for (XmlPrologDirective d : _prologDirectives) {
+                    d.write(this, _xmlWriter);
+                }
             }
 
         } catch (XMLStreamException e) {
@@ -275,12 +277,12 @@ public class ToXmlGenerator
      *
      * @since 3.2
      */
-    public void initConfig(DTD dtd)
+    public void initProlog(List<XmlPrologDirective> directives)
     {
         if (_initialized) { // sanity check
             _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
         }
-        _dtd = dtd;
+        _prologDirectives = directives;
     }
 
     /*
