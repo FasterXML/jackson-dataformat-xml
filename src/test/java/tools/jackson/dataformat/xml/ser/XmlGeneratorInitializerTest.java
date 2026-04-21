@@ -212,5 +212,34 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 w.writeValueAsString(new StringBean("test")));
     }
 
+    // // [dataformat-xml#452]: PI writing -- ok cases
+
+    @Test
+    public void testSimplePIs() throws Exception
+    {
+        ObjectWriter w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addPI("target", "data"));
+        assertEquals(a2q("<?target data?>\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+
+        // Then empty/null
+        final String EXP_WITH_NO_DATA = a2q("<?target?>\n"
+                +"<StringBean><text>test</text></StringBean>");
+
+        w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addPI("target", ""));
+        assertEquals(EXP_WITH_NO_DATA,
+                w.writeValueAsString(new StringBean("test")));
+
+        w = MAPPER.writer().with(
+                new XmlGeneratorInitializer()
+                        .addPI("target", ""));
+        assertEquals(EXP_WITH_NO_DATA,
+                w.writeValueAsString(new StringBean("test")));
+    }
+    
     // // Other tests
 }
