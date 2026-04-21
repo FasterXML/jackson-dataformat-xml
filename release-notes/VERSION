@@ -44,10 +44,6 @@ Version: 3.x (for earlier see VERSION-2.x)
   namespace (with new `XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES`)
  (requested by Eduard W)
  (fix by @cowtowncoder, w/ Claude code)
-#425: Allow adding `<?xml-stylesheet ...>` declarations (Processing
-  Instructions)
- (requested by Ondrej Z)
- (fix by @cowtowncoder)
 #426: `InvalidTypeIdException` when parsing XML to POJO containing nested `List<>`,
   custom `TypeIdResolver`
  (reported by @ankagar)
@@ -58,6 +54,10 @@ Version: 3.x (for earlier see VERSION-2.x)
   if element is in a collection
  (reported by Lon V)
  (fix by @cowtowncoder, w/ Claude code)
+#452: Allow adding `<?xml-stylesheet ...>` declarations (Processing
+  Instructions)
+ (requested by Ondrej Z)
+ (fix by @cowtowncoder)
 #455: Can't deserialize list in JsonSubtype when type property is visible
  (reported by Jiri M)
  (fix by @cowtowncoder, w/ Claude code)
