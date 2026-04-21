@@ -19,8 +19,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testDTDWithOnlyRootElement() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addDTD("StringBean", null, null, null));
         assertEquals(a2q("<!DOCTYPE StringBean>\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -30,8 +29,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testDTDWithPublicId() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addDTD("StringBean", "system", "http://foo.bar", ""));
         assertEquals(a2q("<!DOCTYPE StringBean PUBLIC 'http://foo.bar' 'system'>\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -41,8 +39,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testDTDWithSystemIdOnly() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addDTD("StringBean", "system", "", null));
         assertEquals(a2q("<!DOCTYPE StringBean SYSTEM 'system'>\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -52,8 +49,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testDTDWithInternalSubset() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addDTD("StringBean", "system", "http://foo.bar", "<!ELEMENT root (#PCDATA)>"));
         assertEquals(a2q("<!DOCTYPE StringBean PUBLIC 'http://foo.bar' 'system' "
                 +"[<!ELEMENT root (#PCDATA)>]>\n"
@@ -68,8 +64,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         XmlMapper mapper = XmlMapper.builder()
                 .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
                 .build();
-        ObjectWriter w = mapper.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
                         .addDTD("StringBean", "system", "http://foo.bar", null));
         // XML declaration is emitted with single quotes, DOCTYPE with double quotes,
         // so cannot use a2q() on the whole string here.
@@ -84,8 +79,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     public void testDTDInvalidNoRoot() throws Exception
     {
         try {
-            /*ObjectWriter w =*/ MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+            /*ObjectWriter w =*/ _writer(new XmlGeneratorInitializer()
                     .addDTD("", null, null, null));
             fail("Should not pass");
         } catch (IllegalArgumentException e) {
@@ -98,8 +92,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testSimpleComment() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addComment("Comment content!"));
         assertEquals(a2q("<!--Comment content!-->\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -113,8 +106,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         XmlMapper mapper = XmlMapper.builder()
                 .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
                 .build();
-        ObjectWriter w = mapper.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
                         .addComment("Hello"));
         // XML declaration is emitted with single quotes, so cannot use a2q() here.
         assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
@@ -127,8 +119,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testCommentBeforeDTD() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addComment("before dtd")
                         .addDTD("StringBean", null, null, null));
         assertEquals(a2q("<!--before dtd-->\n"
@@ -141,8 +132,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testDTDBeforeComment() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addDTD("StringBean", null, null, null)
                         .addComment("after dtd"));
         assertEquals(a2q("<!DOCTYPE StringBean>\n"
@@ -155,8 +145,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testMultipleComments() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addComment("first")
                         .addComment("second")
                         .addComment("third"));
@@ -171,8 +160,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testEmptyComment() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addComment(""));
         assertEquals(a2q("<!---->\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -183,8 +171,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testNullComment() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addComment(null));
         assertEquals(a2q("<!---->\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -199,8 +186,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         XmlMapper mapper = XmlMapper.builder()
                 .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
                 .build();
-        ObjectWriter w = mapper.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
                         .linefeedsBetweenPrologDirectives(false)
                         .addDTD("StringBean", null, null, null)
                         .addComment("squished"));
@@ -217,8 +203,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
     @Test
     public void testSimplePIs() throws Exception
     {
-        ObjectWriter w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
                         .addPI("target", "data"));
         assertEquals(a2q("<?target data?>\n"
                 +"<StringBean><text>test</text></StringBean>"),
@@ -228,18 +213,105 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         final String EXP_WITH_NO_DATA = a2q("<?target?>\n"
                 +"<StringBean><text>test</text></StringBean>");
 
-        w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        w = _writer(new XmlGeneratorInitializer()
                         .addPI("target", ""));
         assertEquals(EXP_WITH_NO_DATA,
                 w.writeValueAsString(new StringBean("test")));
 
-        w = MAPPER.writer().with(
-                new XmlGeneratorInitializer()
+        w = _writer(new XmlGeneratorInitializer()
                         .addPI("target", null));
         assertEquals(EXP_WITH_NO_DATA,
                 w.writeValueAsString(new StringBean("test")));
     }
-    
+
+    // Ensure multiple PIs are all written in insertion order
+    @Test
+    public void testMultiplePIs() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addPI("xml-stylesheet", "type=\"text/xsl\" href=\"style.xsl\"")
+                        .addPI("target2", "data2"));
+        assertEquals(a2q("<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n"
+                +"<?target2 data2?>\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Verify ordering: XML declaration must come before PI
+    @Test
+    public void testPIWithXmlDeclaration() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
+                .build();
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
+                        .addPI("target", "data"));
+        // XML declaration is emitted with single quotes, so cannot use a2q() here.
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
+                +"<?target data?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Verify "position added" ordering contract: Comment before PI
+    @Test
+    public void testCommentBeforePI() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addComment("before pi")
+                        .addPI("target", "data"));
+        assertEquals(a2q("<!--before pi-->\n"
+                +"<?target data?>\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Verify "position added" ordering contract: PI before Comment
+    @Test
+    public void testPIBeforeComment() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addPI("target", "data")
+                        .addComment("after pi"));
+        assertEquals(a2q("<?target data?>\n"
+                +"<!--after pi-->\n"
+                +"<StringBean><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // // [dataformat-xml#452]: PI writing -- failing cases
+
+    @Test
+    public void testInvalidPINullTarget() throws Exception
+    {
+        try {
+            /*ObjectWriter w =*/ _writer(new XmlGeneratorInitializer()
+                    .addPI(null, "data"));
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'target': must be");
+        }
+    }
+
+    @Test
+    public void testInvalidPIEmptyTarget() throws Exception
+    {
+        try {
+            /*ObjectWriter w =*/ _writer(new XmlGeneratorInitializer()
+                    .addPI("", "data"));
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'target': must be");
+        }
+    }
+
     // // Other tests
+
+    private ObjectWriter _writer(XmlGeneratorInitializer initializer) {
+        return _writer(MAPPER, initializer);
+    }
+
+    private ObjectWriter _writer(XmlMapper mapper, XmlGeneratorInitializer initializer) {
+        return mapper.writer().with(initializer);
+    }
 }

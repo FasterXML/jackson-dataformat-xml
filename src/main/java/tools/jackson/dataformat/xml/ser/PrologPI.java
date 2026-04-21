@@ -8,8 +8,8 @@ import tools.jackson.dataformat.xml.util.ArgUtil;
 
 /**
  * Value container to represent XML Processing Instruction (PI)
- * within Prolog  part of the Document (before XML Root element,
- * after XML  declaration if one written),
+ * within Prolog part of the Document (before XML Root element,
+ * after XML declaration if one written),
  * to be written using {@link XmlGeneratorInitializer}.
  *
  * @since 3.2

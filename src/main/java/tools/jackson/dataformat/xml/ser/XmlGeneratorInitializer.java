@@ -123,7 +123,7 @@ public class XmlGeneratorInitializer
     public XmlGeneratorInitializer addPI(String target, String data) {
         return _add(new PrologPI(target, data));
     }
-    
+
     protected XmlGeneratorInitializer _add(PrologDirective d) {
         if (_directives == null) {
             _directives = new ArrayList<>();
