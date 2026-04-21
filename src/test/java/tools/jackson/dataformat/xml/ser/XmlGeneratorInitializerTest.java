@@ -236,7 +236,7 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
 
         w = MAPPER.writer().with(
                 new XmlGeneratorInitializer()
-                        .addPI("target", ""));
+                        .addPI("target", null));
         assertEquals(EXP_WITH_NO_DATA,
                 w.writeValueAsString(new StringBean("test")));
     }

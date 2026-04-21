@@ -18,7 +18,9 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
  *<ul>
  * <li>Document Type Declarations (DTD); that is "&lt;!DOCTYPE>" directive
  *  </li>
- * <li>XML Comments (in Document prolog, before the root element)
+ * <li>Comments (in Document prolog, before the root element)
+ *  </li>
+ * <li>Processing Instructions (PIs; in Document prolog, before the root element)
  *  </li>
  * </ul>
  *<p>
@@ -57,7 +59,7 @@ public class XmlGeneratorInitializer
 
     /**
      * Method for adding XML comment; to be written at position added
-     * with respective to other directives
+     * relative to other directives
      * (but always after XML Declaration which must come before any other output;
      * and before Document Root element)
      *
@@ -89,7 +91,7 @@ public class XmlGeneratorInitializer
 
     /**
      * Method for adding Document Type Declaration (DTD) directive; to
-     * be written at position added with respective to other directives
+     * be written at position added relative to other directives
      * (but always after XML Declaration which must come before any other output;
      * and before Document Root element)
      *
@@ -107,7 +109,7 @@ public class XmlGeneratorInitializer
 
     /**
      * Method for adding XML Processing Instruction (PI); to be written at
-     * position added with respective to other directives
+     * position added relative to other directives
      * (but always after XML Declaration which must come before any other output;
      * and before Document Root element)
      *
