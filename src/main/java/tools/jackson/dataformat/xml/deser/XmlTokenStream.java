@@ -79,6 +79,9 @@ public class XmlTokenStream
 
     protected final boolean _cfgProcessXsiType;
 
+    // [dataformat-xml#358]
+    protected final boolean _cfgSkipUnknownXsiAttributes;
+
     protected XmlNameProcessor _nameProcessor;
 
     /*
@@ -183,6 +186,7 @@ public class XmlTokenStream
         _formatFeatures = formatFeatures;
         _cfgProcessXsiNil = XmlReadFeature.PROCESS_XSI_NIL.enabledIn(_formatFeatures);
         _cfgProcessXsiType = XmlReadFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures);
+        _cfgSkipUnknownXsiAttributes = XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES.enabledIn(_formatFeatures);
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
@@ -486,6 +490,23 @@ public class XmlTokenStream
                 _xmlReader.skipElement();
 //System.out.println(" XmlTokenStream._next(): Got xsi:nil, skipping element");
                 return _handleEndElement();
+            }
+            // [dataformat-xml#358]: Optionally skip XSI namespace attributes other
+            //   than "type" (handled by _decodeAttributeName) and "nil" (when xsi:nil
+            //   processing is disabled, it should be exposed as a regular attribute)
+            if (_cfgSkipUnknownXsiAttributes) {
+                while (_nextAttributeIndex < _attributeCount) {
+                    final String attrNs = _xmlReader.getAttributeNamespace(_nextAttributeIndex);
+                    if (XSI_NAMESPACE.equals(attrNs)) {
+                        final String localName = _xmlReader.getAttributeLocalName(_nextAttributeIndex);
+                        if (!"type".equals(localName)
+                                && !(!_cfgProcessXsiNil && "nil".equals(localName))) {
+                            ++_nextAttributeIndex;
+                            continue;
+                        }
+                    }
+                    break;
+                }
             }
             if (_nextAttributeIndex < _attributeCount) {
 //System.out.println(" XmlTokenStream._next(): Got attr(s)!");

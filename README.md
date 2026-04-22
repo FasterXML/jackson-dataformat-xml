@@ -24,21 +24,21 @@ Specifically:
 | Type | Status |
 | ---- | ------ |
 | Build (CI) | [![Build (github)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml/badge.svg)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml) |
-| Artifact | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
+| Artifact | [![Maven Central](https://img.shields.io/maven-central/v/tools.jackson.dataformat/jackson-dataformat-xml.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/tools.jackson.dataformat/jackson-dataformat-xml) |
 | OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
-| Javadocs | [![Javadoc](https://javadoc.io/badge/com.fasterxml.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/com.fasterxml.jackson.dataformat/jackson-dataformat-xml) |
+| Javadocs | [![Javadoc](https://javadoc.io/badge/tools.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/tools.jackson.dataformat/jackson-dataformat-xml) |
 | Code coverage (2.19) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.19)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.19) |
 | OpenSSF Score | [![OpenSSF  Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/jackson-dataformat-xml/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
 | Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
 
 ## Branches
 
-`master` branch is for developing the next major Jackson version -- 3.0 -- but there
-are active maintenance branches in which much of development happens:
+`3.x` branch is for developing the next major Jackson version -- 3.2 -- but there
+are active maintenance branches for LTS releases:
 
-* `2.19` is for developing the next minor 2.x version
-* `2.18` is for backported fixes to include in 2.18.x patch versions
-* `2.17` is for backported fixes to include in 2.17.x patch versions
+* `3.1`
+* `2.21`
+* `2.18`
 
 Older branches are usually not changed but are available for historic reasons.
 All released versions have matching git tags (`jackson-dataformat-xml-2.17.1`).
@@ -49,6 +49,24 @@ All modules are licensed under [Apache License 2.0](http://www.apache.org/licens
 
 ## Maven dependency
 
+To use Jackson 3.x compatible version of this extension on Maven-based projects, use following dependency:
+
+Maven:
+```xml
+<dependency>
+  <groupId>tools.jackson.dataformat</groupId>
+  <artifactId>jackson-dataformat-xml</artifactId>
+  <version>3.1.1</version>
+</dependency>
+```
+
+Gradle:
+```groovy
+dependencies {
+    implementation 'tools.jackson.dataformat:jackson-dataformat-xml:3.1.1'
+}
+```
+
 To use Jackson 2.x compatible version of this extension on Maven-based projects, use following dependency:
 
 Maven:
@@ -56,14 +74,14 @@ Maven:
 <dependency>
   <groupId>com.fasterxml.jackson.dataformat</groupId>
   <artifactId>jackson-dataformat-xml</artifactId>
-  <version>2.18.1</version>
+  <version>2.21.2</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
 dependencies {
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.21.2'
 }
 ```
 

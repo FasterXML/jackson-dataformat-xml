@@ -95,6 +95,27 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
+    /* Initializer-injected configuration (3.2)
+    /**********************************************************************
+     */
+
+    /**
+     * XML directives (DTD, Comments, PIs) to write, if any.
+     *
+     * @since 3.2
+     */
+    protected List<PrologDirective> _prologDirectives;
+
+    /**
+     * Whether linefeed ("pretty-printing") enabled between directives
+     * in Document prolog.
+     *
+     * @since 3.2
+     */
+    protected boolean _lfBetweenPrologDirectives;
+
+    /*
+    /**********************************************************************
     /* Logical output state
     /**********************************************************************
      */
@@ -153,7 +174,7 @@ public class ToXmlGenerator
      * To support proper serialization of arrays it is necessary to keep
      * stack of element names, so that we can "revert" to earlier 
      */
-    protected LinkedList<QName> _elementNameStack = new LinkedList<QName>();
+    protected LinkedList<QName> _elementNameStack = new LinkedList<>();
 
     /**
      * Reusable internal value object
@@ -162,7 +183,7 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
-    /* Life-cycle
+    /* Life-cycle, construction
     /**********************************************************************
      */
 
@@ -199,9 +220,32 @@ public class ToXmlGenerator
         _textElementQName = new QName(nameForTextElement);
     }
 
+    /*
+    /**********************************************************************
+    /* Life-cycle, initialization
+    /**********************************************************************
+     */
+
     /**
-     * Method called before writing any other output, to optionally
-     * output XML declaration.
+     * Method called by {@link XmlGeneratorInitializer} to inject
+     * necessary configuration.
+     *
+     * @since 3.2
+     */
+    public void initProlog(boolean lfBetweenPrologDirectives,
+            List<PrologDirective> directives)
+    {
+        if (_initialized) { // sanity check
+            _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
+        }
+        _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
+        _prologDirectives = directives;
+    }
+
+    /**
+     * Method called by {@link XmlSerializationContext} before writing any output,
+     * to optionally output XML declaration and other before-root-element
+     * nodes (DOCTYPE, processing instructions)
      */
     public void initGenerator() throws JacksonException
     {
@@ -210,12 +254,10 @@ public class ToXmlGenerator
         }
         _initialized = true;
         try {
-            boolean xmlDeclWritten;
+            final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
+            if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
 
-            if (XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures)
-                    || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-
-                String xmlVersion = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures) ? "1.1" : "1.0";
+                String xmlVersion = xml11Decl ? "1.1" : "1.0";
                 String encoding = "UTF-8";
 
                 if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
@@ -223,23 +265,41 @@ public class ToXmlGenerator
                 } else {
                     _xmlWriter.writeStartDocument(encoding, xmlVersion);
                 }
-                xmlDeclWritten = true;
-            } else {
-                xmlDeclWritten = false;
-            }
-
-            // as per [dataformat-xml#172], try adding indentation
-            if (xmlDeclWritten && (_xmlPrettyPrinter != null)) {
-                // ... but only if it is likely to succeed:
-                if (!_stax2Emulation) {
-                    _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
+                // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
+                //    OR _lfBetweenPrologDirectives passed by initializer
+                if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
+                    _prologLinefeed();
                 }
             }
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             }
+
+            // 19-Apr-2026, tatu: [dataformat-xml#150] Allow outputting DTD
+            if (_prologDirectives != null) {
+                for (PrologDirective d : _prologDirectives) {
+                    d.write(this, _xmlWriter);
+                    // Add linefeed separators b/w directives
+                    if (_lfBetweenPrologDirectives) {
+                        _prologLinefeed();
+                    }
+                }
+            }
+
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
+        }
+    }
+
+    // @since 3.2
+    private void _prologLinefeed() throws XMLStreamException
+    {
+        if (!_stax2Emulation) {
+            if (_xmlPrettyPrinter != null) {
+                _xmlPrettyPrinter.writePrologLinefeed(_xmlWriter);
+            } else {
+                _xmlWriter.writeSpace("\n");
+            }
         }
     }
 
@@ -249,25 +309,35 @@ public class ToXmlGenerator
     /**********************************************************************
      */
 
-    @Override public Version version() { return PackageVersion.VERSION; }
+    @Override
+    public Version version() { return PackageVersion.VERSION; }
 
     /*
     /**********************************************************************
-    /* Overridden output state handling methods
+    /* Overrides: capability introspection
     /**********************************************************************
      */
-    
-    @Override
-    public final TokenStreamContext streamWriteContext() { return _streamWriteContext; }
+
+    @Override // @since 3.2
+    public boolean canWriteComments() { return true; }
+
+    // Base class impl fine:
+    //@Override public boolean canWriteObjectId() { return false; }
+
+    // Base class impl fine:
+    //@Override public boolean canOmitProperties() { return true; }
+
+    // Base class impl fine:
+    //@Override public boolean canWriteTypeId() { return false; }
 
     @Override
-    public final Object currentValue() {
-        return _streamWriteContext.currentValue();
+    public boolean has(StreamWriteCapability capability) {
+        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES.isEnabled(capability);
     }
 
     @Override
-    public final void assignCurrentValue(Object v) {
-        _streamWriteContext.assignCurrentValue(v);
+    public JacksonFeatureSet<StreamWriteCapability> streamWriteCapabilities() {
+        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES;
     }
 
     /*
@@ -299,6 +369,25 @@ public class ToXmlGenerator
 
     /*
     /**********************************************************************
+    /* Overridden output state handling methods
+    /**********************************************************************
+     */
+    
+    @Override
+    public final TokenStreamContext streamWriteContext() { return _streamWriteContext; }
+
+    @Override
+    public final Object currentValue() {
+        return _streamWriteContext.currentValue();
+    }
+
+    @Override
+    public final void assignCurrentValue(Object v) {
+        _streamWriteContext.assignCurrentValue(v);
+    }
+    
+    /*
+    /**********************************************************************
     /* Extended API, configuration
     /**********************************************************************
      */
@@ -314,16 +403,6 @@ public class ToXmlGenerator
             _formatFeatures &= ~f.getMask();
         }
         return this;
-    }
-
-    @Override
-    public boolean has(StreamWriteCapability capability) {
-        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES.isEnabled(capability);
-    }
-    
-    @Override
-    public JacksonFeatureSet<StreamWriteCapability> streamWriteCapabilities() {
-        return DEFAULT_TEXTUAL_WRITE_CAPABILITIES;
     }
 
     public boolean inRoot() {
@@ -628,13 +707,25 @@ public class ToXmlGenerator
         if (_nextName == null) {
             handleMissingName();
         }
+        // 20-Apr-2026, tatu: special handling for Root Element...
+        final boolean isRoot = _elementNameStack.isEmpty();
         // Need to keep track of names to make Lists work correctly
         _elementNameStack.addLast(_nextName);
         try {
-            _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+            if (isRoot) {
+                _handleStartRootObject(_nextName);
+            } else {
+                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+            }
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
         }
+    }
+
+    // @since 3.2
+    protected void _handleStartRootObject(QName rootElemName) throws XMLStreamException {
+        // !!! TODO: special handling
+        _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
     }
     
     // note: public just because pretty printer needs to make a callback
@@ -906,6 +997,27 @@ public class ToXmlGenerator
         return writeRaw(String.valueOf(c));
     }
     
+    /*
+    /**********************************************************************
+    /* Output method implementations, comments
+    /**********************************************************************
+     */
+
+    @Override // @since 3.2
+    public JsonGenerator writeComment(String comment) throws JacksonException
+    {
+        try {
+            if (comment != null) {
+                _xmlWriter.writeComment(comment);
+            } else {
+                _xmlWriter.writeSpace("\n");
+            }
+        } catch (XMLStreamException e) {
+            StaxUtil.throwAsWriteException(e, this);
+        }
+        return this;
+    }
+
     /*
     /**********************************************************************
     /* Output method implementations, base64-encoded binary

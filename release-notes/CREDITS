@@ -39,6 +39,15 @@ Christopher McVay (@mcvayc)
  * Fixed #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
   (3.2.0)
 
+Stefan Walter (@marvin9000)
+ * Requested #150: Allow specifying DOCTYPE declaration (`<!DOCTYPE root ...>`) to write
+  (3.2.0)
+
+Leonard Meyer (@LeonardMeyer)
+ * Reported #247: `@JacksonXmlRootElement` does not enforce the local name during
+  deserialization (add `XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME`)
+  (3.2.0)
+
 Tobias M (@lightbringer)
  * Reported #248: `@JacksonXmlProperty` with attributes raises an exception
    when used with `@JsonIdentityInfo`
@@ -47,14 +56,27 @@ Tobias M (@lightbringer)
 Eduard Wirch (@ewirch)
  * Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
   (3.2.0)
+ * Requested #358: Allow skipping attributes from the `http://www.w3.org/2001/XMLSchema-instance`
+   namespace (with new `XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES`)
+  (3.2.0)
 
 Ruven Chu (@Chubacca)
  * Reported #334: `@JacksonXmlElementWrapper(useWrapping=false)` fails when using
    a `DeserializerModifier` that delegates
-  
+  (3.2.0)
+
+Florian Krauthan (@fkrauthan)
+ * Reported #448: Allow use of `@JsonRawValue` without wrapping element
+  (3.2.0)
+
 Lon Varscsak (@lonvarscsak)
  * Reported #449: Trouble dealing with JacksonXMLText if properties are present or
    if element is in a collection
+  (3.2.0)
+
+Ondrej Zizka (@OndraZizka)
+ * Requested #452: Allow adding `<?xml-stylesheet ...>` declarations (Processing
+   Instructions)
   (3.2.0)
 
 Jiri Mikulasek (@jimirocks)

@@ -15,8 +15,15 @@ Version: 3.x (for earlier see VERSION-2.x)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
  (fix by Christopher M))
+#150: Allow specifying DOCTYPE declaration (`<!DOCTYPE root ...>`) to write
+ (requested by Stefan W)
+ (fix by @cowtowncoder)
 #192: Two wrapped lists with items of same name conflict
  (reported by @TeemuStenhammar)
+ (fix by @cowtowncoder, w/ Claude code)
+#247: `@JacksonXmlRootElement` does not enforce the local name during
+  deserialization (add `XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME`)
+ (reported by Leonard M)
  (fix by @cowtowncoder, w/ Claude code)
 #248: `@JacksonXmlProperty` with attributes raises an exception when used
   with `@JsonIdentityInfo`
@@ -33,14 +40,24 @@ Version: 3.x (for earlier see VERSION-2.x)
   a `DeserializerModifier` that delegates
  (reported by Ruven C)
  (fix by @cowtowncoder, w/ Claude code)
+#358: Allow skipping attributes from the `http://www.w3.org/2001/XMLSchema-instance`
+  namespace (with new `XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES`)
+ (requested by Eduard W)
+ (fix by @cowtowncoder, w/ Claude code)
 #426: `InvalidTypeIdException` when parsing XML to POJO containing nested `List<>`,
   custom `TypeIdResolver`
  (reported by @ankagar)
  (fix by @cowtowncoder, w/ Claude code)
+#448: Allow use of `@JsonRawValue` without wrapping element
+ (reported by Florian K)
 #449: Trouble dealing with JacksonXMLText if properties are present or
   if element is in a collection
  (reported by Lon V)
  (fix by @cowtowncoder, w/ Claude code)
+#452: Allow adding `<?xml-stylesheet ...>` declarations (Processing
+  Instructions)
+ (requested by Ondrej Z)
+ (fix by @cowtowncoder)
 #455: Can't deserialize list in JsonSubtype when type property is visible
  (reported by Jiri M)
  (fix by @cowtowncoder, w/ Claude code)
@@ -104,6 +121,19 @@ Version: 3.x (for earlier see VERSION-2.x)
 #802: Serialization with Polymorphisme and `EXTERNAL_PROPERTY` = duplicate property
  (reported by @ Adrien-dev25 )
  (fix by @cowtowncoder, w/ Claude code)
+#845: Implement `JsonGenerator` methods `writeComment()` and `canWriteComments()`
+ (implemented by @cowtowncoder, w/ Claude code)
+#849: Allow writing Comments in Document Prolog (before root element)
+ (implemented by @cowtowncoder)
+#853: `InvalidDefinitionException` on classes using
+  `@JacksonXmlElementWrapper` and `@JacksonXmlProperty`
+ (reported by @soc)
+ (fix by @cowtowncoder, w/ Claude code)
+
+3.1.2 (11-Apr-2026)
+3.1.1 (27-Mar-2026)
+
+No changes since 3.1.0
 
 3.1.0 (23-Feb-2026)
 

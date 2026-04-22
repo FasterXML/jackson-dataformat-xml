@@ -43,6 +43,24 @@ public enum XmlReadFeature implements FormatFeature
     EMPTY_ELEMENT_AS_NULL(false),
 
     /**
+     * Feature that controls whether the name of the root XML element is
+     * verified against the expected root name during deserialization. The expected
+     * root name is determined from {@code @JsonRootName}, {@code @JacksonXmlRootElement},
+     * or the simple class name of the target type (in that priority order).
+     *<p>
+     * When enabled, a mismatch between the actual root element name and the expected
+     * name will result in a {@link tools.jackson.databind.exc.MismatchedInputException}.
+     * When disabled (the default), any root element name is accepted.
+     * Note that Fully-Qualified Names (FQN) comparison is used: that is, both local name
+     * and namespace URI must match.
+     *<p>
+     * Default setting is {@code false} for backwards-compatibility.
+     *
+     * @since 3.2
+     */
+    ENFORCE_ROOT_ELEMENT_NAME(false),
+
+    /**
      * Feature that indicates whether XML Schema Instance attribute
      * {@code xsi:nil} will be processed automatically -- to indicate {@code null}
      * values -- or not.
@@ -54,6 +72,24 @@ public enum XmlReadFeature implements FormatFeature
      * Default setting is {@code true}.
      */
     PROCESS_XSI_NIL(true),
+
+    /**
+     * Feature that controls whether XML Schema Instance (XSI) namespace attributes
+     * other than {@code xsi:nil} and {@code xsi:type} (which have their own handling
+     * via {@link #PROCESS_XSI_NIL} and {@link #AUTO_DETECT_XSI_TYPE}) are silently
+     * skipped during deserialization. Attributes affected include {@code xsi:schemaLocation}
+     * and {@code xsi:noNamespaceSchemaLocation}.
+     *<p>
+     * When enabled, these attributes are ignored and will not cause
+     * {@code UnrecognizedPropertyException}. When disabled (default), they are
+     * exposed as regular attributes and may require matching POJO properties
+     * or {@code DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES} to be disabled.
+     *<p>
+     * Default setting is {@code false}.
+     *
+     * @since 3.2
+     */
+    SKIP_UNKNOWN_XSI_ATTRIBUTES(false),
 
     ;
 

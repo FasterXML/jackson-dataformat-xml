@@ -8,10 +8,10 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.testutil.failure.JacksonTestFailureExpected;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-// for:
+
+// Tests for lack of support for {@code JsonTypeInfo.As.WRAPPER_ARRAY}.
 //
 // [dataformat-xml#4]
 // [dataformat-xml#9] (enums)
@@ -34,6 +34,19 @@ public class PolymorphicIssue4Test extends XmlTestUtil
         public SubTypeWithClassProperty(String s) { name = s; }
     }
     */
+
+    static enum TestEnum { A, B, C; }
+
+    static class UntypedEnumBean
+    {
+       @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="__type")
+// this would actually work:
+//        @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+        public Object value;
+
+        public UntypedEnumBean() { }
+        public UntypedEnumBean(TestEnum v) { value = v; }
+    }
 
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.WRAPPER_ARRAY)
     static class BaseTypeWithClassArray { }
@@ -100,5 +113,24 @@ public class PolymorphicIssue4Test extends XmlTestUtil
         assertNotNull(result);
         assertEquals(SubTypeWithClassArray.class, result.wrapped.getClass());
         assertEquals("Foobar", ((SubTypeWithClassArray) result.wrapped).name);
+    }
+
+    // [dataformat-xml#9]
+    @JacksonTestFailureExpected
+    @Test
+    public void testUntypedEnum() throws Exception
+    {
+        String xml = MAPPER.writeValueAsString(new UntypedEnumBean(TestEnum.B));
+
+        UntypedEnumBean result = MAPPER.readValue(xml, UntypedEnumBean.class);
+        assertNotNull(result);
+        assertNotNull(result.value);
+        Object ob = result.value;
+
+        if (TestEnum.class != ob.getClass()) {
+            fail("Failed to deserialize TestEnum (got "+ob.getClass().getName()+") from: "+xml);
+        }
+
+        assertEquals(TestEnum.B, result.value);
     }
 }

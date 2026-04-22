@@ -475,7 +475,6 @@ public class XmlMapper extends ObjectMapper
         return _serializationConfig.hasFormatFeature(f);
     }
 
-
     /*
     /**********************************************************************
     /* XML-specific access
@@ -497,7 +496,8 @@ public class XmlMapper extends ObjectMapper
      */
     public ToXmlGenerator createGenerator(XMLStreamWriter w) throws IOException {
         SerializationContextExt prov = _serializationContext(serializationConfig());
-        return tokenStreamFactory().createGenerator(prov, w);
+        return (ToXmlGenerator) _initializeGenerator(
+                tokenStreamFactory().createGenerator(prov, w));
     }
 
     /**
