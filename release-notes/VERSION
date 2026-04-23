@@ -21,6 +21,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #192: Two wrapped lists with items of same name conflict
  (reported by @TeemuStenhammar)
  (fix by @cowtowncoder, w/ Claude code)
+#207: Allow custom prefixes for Namespaces
+ (requested by Joachim L)
+ (fix by @cowtowncoder, w/ Claude code)
 #247: `@JacksonXmlRootElement` does not enforce the local name during
   deserialization (add `XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME`)
  (reported by Leonard M)
@@ -75,6 +78,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 #525: Order of XML Properties trigger different behaviors with
   polymorphic nested objects
  (reported by Vitor P)
+ (fix by @cowtowncoder, w/ Claude code)
+#541: Allow specifying URI of the default namespace for root element
  (fix by @cowtowncoder, w/ Claude code)
 #561: Deserializing empty timestamp fields to `null` value doesn't
   work (instead becomes "empty", Epoch time)
