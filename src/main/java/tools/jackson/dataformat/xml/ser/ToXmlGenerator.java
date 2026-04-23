@@ -100,6 +100,13 @@ public class ToXmlGenerator
      */
 
     /**
+     * Custom XML declaration to write (if not {@code null}).
+     *
+     * @since 3.2
+     */
+    protected XmlDeclaration _xmlDeclaration;
+
+    /**
      * Namespace bindings to add, if any.
      *
      * @since 3.2
@@ -240,13 +247,15 @@ public class ToXmlGenerator
      *
      * @since 3.2
      */
-    public void initDocument(boolean lfBetweenPrologDirectives,
+    public void initDocument(XmlDeclaration xmlDeclaration,
+            boolean lfBetweenPrologDirectives,
             List<PrologDirective> directives,
             List<NamespaceBinding> nsBindings)
     {
         if (_initialized) { // sanity check
             _reportError("Internal error: cannot call `initDocument()` after generator already initialized");
         }
+        _xmlDeclaration = xmlDeclaration;
         _namespaceBindings = nsBindings;
         _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
         _prologDirectives = directives;
@@ -264,23 +273,31 @@ public class ToXmlGenerator
         }
         _initialized = true;
         try {
-            final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
-            if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-
-                String xmlVersion = xml11Decl ? "1.1" : "1.0";
-                String encoding = "UTF-8";
-
-                if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
-                    _xmlWriter.writeStartDocument(xmlVersion, encoding, true);
-                } else {
-                    _xmlWriter.writeStartDocument(encoding, xmlVersion);
-                }
-                // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
-                //    OR _lfBetweenPrologDirectives passed by initializer
-                if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
+            if (_xmlDeclaration != null) {
+                _xmlDeclaration.write(this, _xmlWriter);
+                if (_lfBetweenPrologDirectives) {
                     _prologLinefeed();
                 }
+            } else {
+                final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
+                if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
+    
+                    String xmlVersion = xml11Decl ? "1.1" : "1.0";
+                    String encoding = "UTF-8";
+    
+                    if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
+                        _xmlWriter.writeStartDocument(xmlVersion, encoding, true);
+                    } else {
+                        _xmlWriter.writeStartDocument(encoding, xmlVersion);
+                    }
+                    // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
+                    //    OR _lfBetweenPrologDirectives passed by initializer
+                    if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
+                        _prologLinefeed();
+                    }
+                }
             }
+            
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             }

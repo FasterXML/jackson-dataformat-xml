@@ -41,6 +41,11 @@ public class XmlGeneratorInitializer
      */
     protected List<NamespaceBinding> _namespaceBindings;
 
+    /**
+     * Custom XML declaration to write.
+     */
+    protected XmlDeclaration _xmlDeclaration;
+
     protected boolean _addLfBetweenPrologDirectives = true;
 
     protected boolean _hasDTD;
@@ -48,7 +53,8 @@ public class XmlGeneratorInitializer
     @Override
     public void initialize(SerializationConfig config, JsonGenerator g) throws JacksonException {
         if (g instanceof ToXmlGenerator xg) {
-            xg.initDocument(_addLfBetweenPrologDirectives, _directives,
+            xg.initDocument(_xmlDeclaration,
+                    _addLfBetweenPrologDirectives, _directives,
                     _namespaceBindings);
         }
     }
@@ -163,6 +169,44 @@ public class XmlGeneratorInitializer
             _namespaceBindings = new ArrayList<>();
         }
         _namespaceBindings.add(new NamespaceBinding(prefix, namespaceURI));
+        return this;
+    }
+
+    /**
+     * Method for specifying custom XML declaration to write.
+     *
+     * @param version XML version: either "1.0" or "1.1"
+     * @param encoding {@code encoding} content will be encoded in: usually "UTF-8"
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addXmlDeclaration(String version, String encoding) {
+        return addXmlDeclaration(new XmlDeclaration(version, encoding, null));
+    }
+
+    /**
+     * Method for specifying custom XML declaration to write.
+     *
+     * @param version XML version: either "1.0" or "1.1"
+     * @param encoding {@code encoding} content will be encoded in: usually "UTF-8"
+     * @param standalone {@code standalone} pseudo-attribute value to write
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addXmlDeclaration(String version, String encoding,
+            boolean standalone) {
+        return addXmlDeclaration(new XmlDeclaration(version, encoding, standalone));
+    }
+
+    /**
+     * Method for specifying custom XML declaration to write.
+     *
+     * @param xmlDeclaration declaration to write
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addXmlDeclaration(XmlDeclaration xmlDeclaration) {
+        _xmlDeclaration = xmlDeclaration;
         return this;
     }
 
