@@ -2,16 +2,33 @@ package tools.jackson.dataformat.xml.ser;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import tools.jackson.databind.ObjectWriter;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class XmlGeneratorInitializerTest extends XmlTestUtil
 {
+    // For [dataformat-xml#207]: namespace prefix binding
+    @JsonRootName("Ingredients")
+    static class Ingredients {
+        public String eggs = "12";
+        @JacksonXmlProperty(namespace = "urn:produce:fruit")
+        public String bananas = "6";
+    }
+
+    @JsonRootName("Root")
+    static class NsAttrBean {
+        @JacksonXmlProperty(isAttribute = true, namespace = "urn:attr:x", localName = "lang")
+        public String lang = "en";
+    }
+
     private final XmlMapper MAPPER = newMapper();
 
     // // [dataformat-xml#150]: DTD writing -- ok cases
@@ -302,6 +319,122 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
             fail("Should not pass");
         } catch (IllegalArgumentException e) {
             verifyException(e, "Illegal argument for 'target': must be");
+        }
+    }
+
+    // // [dataformat-xml#207]: namespace prefix bindings
+
+    // Without binding, Woodstox emits a synthetic "wstxns1" prefix; with
+    // `addNamespace(prefix, uri)` the generator should use the caller-supplied prefix
+    //
+    // NOTE: somewhat fragile since its Woodstox-specific
+    @Test
+    public void testNamespacePrefixBinding() throws Exception
+    {
+        // Without binding: auto-generated prefix (sanity baseline)
+        assertEquals(a2q("<Ingredients>"
+                +"<wstxns1:bananas xmlns:wstxns1='urn:produce:fruit'>6</wstxns1:bananas>"
+                +"<eggs>12</eggs>"
+                +"</Ingredients>"),
+                MAPPER.writeValueAsString(new Ingredients()));
+
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addNamespace("fruit", "urn:produce:fruit"));
+        assertEquals(a2q("<Ingredients>"
+                +"<fruit:bananas xmlns:fruit='urn:produce:fruit'>6</fruit:bananas>"
+                +"<eggs>12</eggs>"
+                +"</Ingredients>"),
+                w.writeValueAsString(new Ingredients()));
+    }
+
+    // `addDefaultNamespace(uri)` binds URI as the (unprefixed) default namespace
+    @Test
+    public void testDefaultNamespaceBinding() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addDefaultNamespace("urn:produce:fruit"));
+        assertEquals(a2q("<Ingredients>"
+                +"<bananas xmlns='urn:produce:fruit'>6</bananas>"
+                +"<eggs>12</eggs>"
+                +"</Ingredients>"),
+                w.writeValueAsString(new Ingredients()));
+    }
+
+    // Empty prefix must behave identically to `addDefaultNamespace(uri)` (per ArgUtil.emptyToNull)
+    @Test
+    public void testNamespacePrefixEmptyTreatedAsDefault() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addNamespace("", "urn:produce:fruit"));
+        assertEquals(a2q("<Ingredients>"
+                +"<bananas xmlns='urn:produce:fruit'>6</bananas>"
+                +"<eggs>12</eggs>"
+                +"</Ingredients>"),
+                w.writeValueAsString(new Ingredients()));
+    }
+
+    // Multiple bindings can be registered; only those actually referenced should appear in output
+    @Test
+    public void testMultipleNamespaceBindings() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addNamespace("fruit", "urn:produce:fruit")
+                .addNamespace("veg", "urn:produce:veg"));
+        assertEquals(a2q("<Ingredients>"
+                +"<fruit:bananas xmlns:fruit='urn:produce:fruit'>6</fruit:bananas>"
+                +"<eggs>12</eggs>"
+                +"</Ingredients>"),
+                w.writeValueAsString(new Ingredients()));
+    }
+
+    // Namespace binding should also apply to attributes (prefix moves to root element)
+    @Test
+    public void testNamespacePrefixBindingOnAttribute() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addNamespace("x", "urn:attr:x"));
+        assertEquals(a2q("<Root xmlns:x='urn:attr:x' x:lang='en'/>"),
+                w.writeValueAsString(new NsAttrBean()));
+    }
+
+    // Registering a namespace URI that isn't referenced by any written
+    // element/attribute should not affect output
+    @Test
+    public void testUnusedNamespaceBindingHasNoEffect() throws Exception
+    {
+        final String EXPECTED = MAPPER.writeValueAsString(new Ingredients());
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addNamespace("unused", "urn:nobody:cares"));
+        assertEquals(EXPECTED, w.writeValueAsString(new Ingredients()));
+    }
+
+    // // [dataformat-xml#207]: namespace binding -- failing cases
+
+    @Test
+    public void testInvalidNamespaceBindings() throws Exception
+    {
+        try {
+            new XmlGeneratorInitializer().addNamespace("p", null);
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'namespaceURI': must be");
+        }
+        try {
+            new XmlGeneratorInitializer().addNamespace("p", "");
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'namespaceURI': must be");
+        }
+    }
+
+    @Test
+    public void testInvalidDefaultNamespaceNullURI() throws Exception
+    {
+        try {
+            new XmlGeneratorInitializer().addDefaultNamespace(null);
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'namespaceURI': must be");
         }
     }
 
