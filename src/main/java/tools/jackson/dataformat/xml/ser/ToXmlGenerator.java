@@ -104,6 +104,13 @@ public class ToXmlGenerator
      *
      * @since 3.2
      */
+    protected List<NamespaceBinding> _namespaceBindings;
+
+    /**
+     * XML directives (DTD, Comments, PIs) to write, if any.
+     *
+     * @since 3.2
+     */
     protected List<PrologDirective> _prologDirectives;
 
     /**
@@ -228,16 +235,19 @@ public class ToXmlGenerator
 
     /**
      * Method called by {@link XmlGeneratorInitializer} to inject
-     * necessary configuration.
+     * necessary configuration like Prolog Directives and namespace
+     * bindings.
      *
      * @since 3.2
      */
-    public void initProlog(boolean lfBetweenPrologDirectives,
-            List<PrologDirective> directives)
+    public void initDocument(boolean lfBetweenPrologDirectives,
+            List<PrologDirective> directives,
+            List<NamespaceBinding> nsBindings)
     {
         if (_initialized) { // sanity check
             _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
         }
+        _namespaceBindings = nsBindings;
         _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
         _prologDirectives = directives;
     }
@@ -285,7 +295,11 @@ public class ToXmlGenerator
                     }
                 }
             }
-
+            if (_namespaceBindings != null) {
+                for (NamespaceBinding ns : _namespaceBindings) {
+                    ns.write(this, _xmlWriter);
+                }
+            }
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
         }

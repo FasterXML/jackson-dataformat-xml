@@ -2,6 +2,7 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -31,7 +32,16 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
 public class XmlGeneratorInitializer
     implements GeneratorInitializer
 {
+    /**
+     * Prolog Directives to pass for generator to write.
+     */
     protected List<PrologDirective> _directives;
+
+    /**
+     * Namespace bindings (prefix to URL) to register with
+     * generator.
+     */
+    protected List<NamespaceBinding> _namespaceBindings;
 
     protected boolean _addLfBetweenPrologDirectives = true;
 
@@ -40,7 +50,8 @@ public class XmlGeneratorInitializer
     @Override
     public void initialize(SerializationConfig config, JsonGenerator g) throws JacksonException {
         if (g instanceof ToXmlGenerator xg) {
-            xg.initProlog(_addLfBetweenPrologDirectives, _directives);
+            xg.initDocument(_addLfBetweenPrologDirectives, _directives,
+                    _namespaceBindings);
         }
     }
 
@@ -122,6 +133,39 @@ public class XmlGeneratorInitializer
      */
     public XmlGeneratorInitializer addPI(String target, String data) {
         return _add(new PrologPI(target, data));
+    }
+
+    /**
+     * Method for specifying namespace URI to preferentially bind to the
+     * "default namespace" (one used when element has no prefix).
+     * This will guide underlying generator to add necessary
+     * declarations when actually writing elements with matching
+     * namespace URI.
+     *
+     * @param namespaceURI URI of the default namespace
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addDefaultNamespace(String namespaceURI) {
+        return addNamespace(null, namespaceURI);
+    }
+
+    /**
+     * Method for adding a mapping (binding) between given prefix and matching
+     * namespace URI. This will guide underlying generator to add necessary
+     * declarations when actually writing namespaced attributes and elements.
+     *
+     * @param prefix Prefix to use for namespace
+     * @param namespaceURI URI of the namespace
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addNamespace(String prefix, String namespaceURI) {
+        if (_namespaceBindings == null) {
+            _namespaceBindings = new ArrayList<>();
+        }
+        _namespaceBindings.add(new NamespaceBinding(prefix, namespaceURI));
+        return this;
     }
 
     protected XmlGeneratorInitializer _add(PrologDirective d) {
