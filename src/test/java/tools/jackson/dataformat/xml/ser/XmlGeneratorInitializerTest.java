@@ -29,6 +29,21 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         public String lang = "en";
     }
 
+    // Root element in its own namespace
+    @JsonRootName(value = "Root", namespace = "urn:ns:root")
+    static class RootNsBean {
+        public String value = "v";
+    }
+
+    // Root element in its own namespace, plus an attribute on the root
+    // in a *different* namespace
+    @JsonRootName(value = "Root", namespace = "urn:ns:root")
+    static class RootNsWithAttrBean {
+        @JacksonXmlProperty(isAttribute = true, namespace = "urn:ns:attr", localName = "id")
+        public String id = "42";
+        public String value = "v";
+    }
+
     private final XmlMapper MAPPER = newMapper();
 
     // // [dataformat-xml#150]: DTD writing -- ok cases
@@ -406,6 +421,50 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         ObjectWriter w = _writer(new XmlGeneratorInitializer()
                 .addNamespace("unused", "urn:nobody:cares"));
         assertEquals(EXPECTED, w.writeValueAsString(new Ingredients()));
+    }
+
+    // Root element's own namespace can be bound as the default namespace
+    // (Jackson's root-element serializer prefers default-namespace form regardless,
+    // so this just verifies the binding does not interfere)
+    @Test
+    public void testRootElementDefaultNamespaceBinding() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addDefaultNamespace("urn:ns:root"));
+        assertEquals(a2q("<Root xmlns='urn:ns:root'><value xmlns=''>v</value></Root>"),
+                w.writeValueAsString(new RootNsBean()));
+    }
+
+    // An attribute on the root element, in a namespace, should honor the bound prefix
+    @Test
+    public void testRootElementAttributeNamespaceBinding() throws Exception
+    {
+        // Without binding: Woodstox assigns wstxns1 (sanity baseline)
+        assertEquals(a2q("<Root xmlns='urn:ns:root' xmlns:wstxns1='urn:ns:attr' wstxns1:id='42'>"
+                +"<value xmlns=''>v</value>"
+                +"</Root>"),
+                MAPPER.writeValueAsString(new RootNsWithAttrBean()));
+
+        // With binding: caller-supplied prefix is used
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addNamespace("a", "urn:ns:attr"));
+        assertEquals(a2q("<Root xmlns='urn:ns:root' xmlns:a='urn:ns:attr' a:id='42'>"
+                +"<value xmlns=''>v</value>"
+                +"</Root>"),
+                w.writeValueAsString(new RootNsWithAttrBean()));
+    }
+
+    // Bindings for root namespace AND root attribute namespace can coexist
+    @Test
+    public void testRootElementAndAttributeBindingsCombined() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addDefaultNamespace("urn:ns:root")
+                        .addNamespace("a", "urn:ns:attr"));
+        assertEquals(a2q("<Root xmlns='urn:ns:root' xmlns:a='urn:ns:attr' a:id='42'>"
+                +"<value xmlns=''>v</value>"
+                +"</Root>"),
+                w.writeValueAsString(new RootNsWithAttrBean()));
     }
 
     // // [dataformat-xml#207]: namespace binding -- failing cases
