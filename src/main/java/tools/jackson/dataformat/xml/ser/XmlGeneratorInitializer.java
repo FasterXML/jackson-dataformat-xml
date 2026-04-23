@@ -2,7 +2,6 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -38,8 +37,7 @@ public class XmlGeneratorInitializer
     protected List<PrologDirective> _directives;
 
     /**
-     * Namespace bindings (prefix to URL) to register with
-     * generator.
+     * Namespace bindings (prefix to URI) to register with generator.
      */
     protected List<NamespaceBinding> _namespaceBindings;
 

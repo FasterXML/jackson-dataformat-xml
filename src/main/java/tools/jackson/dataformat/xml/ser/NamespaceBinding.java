@@ -33,8 +33,4 @@ public class NamespaceBinding
             sw.setPrefix(_prefix, _namespaceURI);
         }
     }
-
-    public boolean isDefaultNamespace() {
-        return _prefix == null;
-    }
 }

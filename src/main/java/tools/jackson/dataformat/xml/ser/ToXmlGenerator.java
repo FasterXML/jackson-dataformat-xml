@@ -100,7 +100,7 @@ public class ToXmlGenerator
      */
 
     /**
-     * XML directives (DTD, Comments, PIs) to write, if any.
+     * Namespace bindings to add, if any.
      *
      * @since 3.2
      */
@@ -245,7 +245,7 @@ public class ToXmlGenerator
             List<NamespaceBinding> nsBindings)
     {
         if (_initialized) { // sanity check
-            _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
+            _reportError("Internal error: cannot call `initDocument()` after generator already initialized");
         }
         _namespaceBindings = nsBindings;
         _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
