@@ -2,12 +2,16 @@ package tools.jackson.dataformat.xml.ser;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.ObjectWriter;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +46,14 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         @JacksonXmlProperty(isAttribute = true, namespace = "urn:ns:attr", localName = "id")
         public String id = "42";
         public String value = "v";
+    }
+
+    // Collection field in a namespace, with wrapper and item elements both namespaced
+    @JsonRootName("Box")
+    static class FruitBox {
+        @JacksonXmlElementWrapper(namespace = "urn:produce:fruit", localName = "fruits")
+        @JacksonXmlProperty(namespace = "urn:produce:fruit", localName = "fruit")
+        public List<String> fruits = Arrays.asList("apple", "banana", "cherry");
     }
 
     private final XmlMapper MAPPER = newMapper();
@@ -465,6 +477,46 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 +"<value xmlns=''>v</value>"
                 +"</Root>"),
                 w.writeValueAsString(new RootNsWithAttrBean()));
+    }
+
+    // Collection of namespaced items under a namespaced wrapper: binding should be
+    // declared once on the wrapper element and inherited by every item
+    @Test
+    public void testNamespaceBindingOnCollection() throws Exception
+    {
+        // Without binding: auto-generated prefix (sanity baseline)
+        assertEquals(a2q("<Box>"
+                +"<wstxns1:fruits xmlns:wstxns1='urn:produce:fruit'>"
+                +"<wstxns1:fruit>apple</wstxns1:fruit>"
+                +"<wstxns1:fruit>banana</wstxns1:fruit>"
+                +"<wstxns1:fruit>cherry</wstxns1:fruit>"
+                +"</wstxns1:fruits>"
+                +"</Box>"),
+                MAPPER.writeValueAsString(new FruitBox()));
+
+        // With prefix binding: declared once on the wrapper, inherited by items
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                .addNamespace("f", "urn:produce:fruit"));
+        assertEquals(a2q("<Box>"
+                +"<f:fruits xmlns:f='urn:produce:fruit'>"
+                +"<f:fruit>apple</f:fruit>"
+                +"<f:fruit>banana</f:fruit>"
+                +"<f:fruit>cherry</f:fruit>"
+                +"</f:fruits>"
+                +"</Box>"),
+                w.writeValueAsString(new FruitBox()));
+
+        // With default namespace binding: wrapper uses unprefixed xmlns, items inherit
+        w = _writer(new XmlGeneratorInitializer()
+                .addDefaultNamespace("urn:produce:fruit"));
+        assertEquals(a2q("<Box>"
+                +"<fruits xmlns='urn:produce:fruit'>"
+                +"<fruit>apple</fruit>"
+                +"<fruit>banana</fruit>"
+                +"<fruit>cherry</fruit>"
+                +"</fruits>"
+                +"</Box>"),
+                w.writeValueAsString(new FruitBox()));
     }
 
     // // [dataformat-xml#207]: namespace binding -- failing cases
