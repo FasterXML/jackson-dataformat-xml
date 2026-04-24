@@ -28,11 +28,14 @@ public class XmlDeclaration
 
     @Override
     public void write(ToXmlGenerator xmlGen, XMLStreamWriter2 sw) throws XMLStreamException {
+        // NOTE: Stax `writeStartDocument` overloads use differing argument
+        // orders -- 2-arg form is (encoding, version) but 3-arg standalone
+        // form is (version, encoding, standAlone).
         if (_standalone == null) {
             if (_encoding == null) {
                 sw.writeStartDocument(_version);
             } else {
-                sw.writeStartDocument(_version, _encoding);
+                sw.writeStartDocument(_encoding, _version);
             }
         } else {
             String encoding = (_encoding == null) ? "UTF-8" : _encoding;

@@ -549,6 +549,99 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         }
     }
 
+    // // [dataformat-xml#315]: custom XML Declarations
+
+    // Main #315 use case: declare a non-UTF-8 encoding
+    @Test
+    public void testCustomXmlDeclarationWithIso8859Encoding() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.0", "ISO-8859-1"));
+        assertEquals("<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // XML 1.1 via new API
+    @Test
+    public void testCustomXmlDeclarationXml11() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.1", "UTF-8"));
+        assertEquals("<?xml version='1.1' encoding='UTF-8'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // standalone='yes' via new API
+    @Test
+    public void testCustomXmlDeclarationStandaloneYes() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.0", "UTF-8", true));
+        assertEquals("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // standalone='no' via new API
+    @Test
+    public void testCustomXmlDeclarationStandaloneNo() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.0", "UTF-8", false));
+        assertEquals("<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // When a custom declaration is registered, legacy XmlWriteFeature flags
+    // that would otherwise emit a declaration must be ignored (precedence).
+    @Test
+    public void testCustomXmlDeclarationOverridesFeatures() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
+                .configure(XmlWriteFeature.WRITE_XML_1_1, true)
+                .configure(XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION, true)
+                .build();
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.0", "ISO-8859-1"));
+        // No standalone, no "1.1": initializer fully replaces feature-driven output
+        assertEquals("<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Verify prolog ordering: custom declaration, then DTD
+    @Test
+    public void testCustomXmlDeclarationBeforeDTD() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.0", "ISO-8859-1")
+                        .addDTD("StringBean", "system", "http://foo.bar", null));
+        // XML declaration is emitted with single quotes, DOCTYPE with double quotes,
+        // so cannot use a2q() on the whole string here.
+        assertEquals("<?xml version='1.0' encoding='ISO-8859-1'?>\n"
+                +"<!DOCTYPE StringBean PUBLIC \"http://foo.bar\" \"system\">\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Second addXmlDeclaration() call must fail, matching addDTD() semantics
+    @Test
+    public void testDuplicateXmlDeclarationFails() throws Exception
+    {
+        XmlGeneratorInitializer init = new XmlGeneratorInitializer()
+                .addXmlDeclaration("1.0", "UTF-8");
+        try {
+            init.addXmlDeclaration("1.1", "ISO-8859-1");
+            fail("Should not pass");
+        } catch (Exception e) {
+            verifyException(e, "Cannot add another XML Declaration");
+        }
+    }
+
     // // Other tests
 
     private ObjectWriter _writer(XmlGeneratorInitializer initializer) {

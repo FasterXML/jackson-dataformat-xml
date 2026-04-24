@@ -281,10 +281,9 @@ public class ToXmlGenerator
             } else {
                 final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
                 if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-    
                     String xmlVersion = xml11Decl ? "1.1" : "1.0";
                     String encoding = "UTF-8";
-    
+
                     if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
                         _xmlWriter.writeStartDocument(xmlVersion, encoding, true);
                     } else {
@@ -297,7 +296,7 @@ public class ToXmlGenerator
                     }
                 }
             }
-            
+
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             }
