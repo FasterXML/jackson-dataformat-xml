@@ -121,7 +121,10 @@ public class XmlBeanDeserializerModifier
         if (!inst.canCreateFromString()) {
             SettableBeanProperty textProp = _findTextProp(deser.properties());
             if (textProp != null) {
-                return new XmlTextDeserializer(deser, textProp);
+                // Compose with WrapperHandlingDeserializer so unwrapped collection
+                // properties alongside @JacksonXmlText still get virtual wrapping.
+                return new XmlTextDeserializer(new WrapperHandlingDeserializer(deser),
+                        deser, textProp.getPropertyIndex());
             }
         }
         return new WrapperHandlingDeserializer(deser);
