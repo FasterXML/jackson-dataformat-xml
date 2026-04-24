@@ -275,6 +275,10 @@ public class ToXmlGenerator
         try {
             if (_xmlDeclaration != null) {
                 _xmlDeclaration.write(this, _xmlWriter);
+                // Unlike the legacy branch below, the custom-declaration path
+                // intentionally respects only `_lfBetweenPrologDirectives` and
+                // does not force a linefeed when a pretty-printer is active:
+                // caller opted into explicit control via `XmlGeneratorInitializer`.
                 if (_lfBetweenPrologDirectives) {
                     _prologLinefeed();
                 }
