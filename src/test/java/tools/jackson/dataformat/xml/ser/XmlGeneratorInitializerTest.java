@@ -642,6 +642,43 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         }
     }
 
+    // Exercise the addXmlDeclaration(XmlDeclaration) overload directly
+    @Test
+    public void testCustomXmlDeclarationPreconstructed() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration(new XmlDeclaration("1.1", "ISO-8859-1", Boolean.TRUE)));
+        assertEquals("<?xml version='1.1' encoding='ISO-8859-1' standalone='yes'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Combined non-UTF-8 encoding + standalone (exercises the 3-arg Stax path)
+    @Test
+    public void testCustomXmlDeclarationEncodingAndStandalone() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addXmlDeclaration("1.0", "ISO-8859-1", true));
+        assertEquals("<?xml version='1.0' encoding='ISO-8859-1' standalone='yes'?>\n"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // `linefeedsBetweenPrologDirectives(false)` must suppress the LF after a
+    // custom declaration, matching behavior with the legacy feature path
+    @Test
+    public void testCustomXmlDeclarationNoLinefeeds() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .linefeedsBetweenPrologDirectives(false)
+                        .addXmlDeclaration("1.0", "ISO-8859-1")
+                        .addDTD("StringBean", null, null, null));
+        assertEquals("<?xml version='1.0' encoding='ISO-8859-1'?>"
+                +"<!DOCTYPE StringBean>"
+                +"<StringBean><text>test</text></StringBean>",
+                w.writeValueAsString(new StringBean("test")));
+    }
+
     // // Other tests
 
     private ObjectWriter _writer(XmlGeneratorInitializer initializer) {
