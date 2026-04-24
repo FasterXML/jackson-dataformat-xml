@@ -39,6 +39,12 @@ public class XmlTextDeserializer
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.2; no longer used internally. Use
+     *   {@link #XmlTextDeserializer(ValueDeserializer, BeanDeserializerBase, int)}
+     *   so the deserializer can compose with {@link WrapperHandlingDeserializer}.
+     */
+    @Deprecated
     public XmlTextDeserializer(BeanDeserializerBase delegate, SettableBeanProperty prop)
     {
         super(delegate);
@@ -47,6 +53,12 @@ public class XmlTextDeserializer
         _valueInstantiator = delegate.getValueInstantiator();
     }
 
+    /**
+     * @deprecated Since 3.2; no longer used internally. Use
+     *   {@link #XmlTextDeserializer(ValueDeserializer, BeanDeserializerBase, int)}
+     *   so the deserializer can compose with {@link WrapperHandlingDeserializer}.
+     */
+    @Deprecated
     public XmlTextDeserializer(BeanDeserializerBase delegate, int textPropIndex)
     {
         super(delegate);
@@ -63,7 +75,7 @@ public class XmlTextDeserializer
      *
      * @since 3.2
      */
-    protected XmlTextDeserializer(ValueDeserializer<?> delegate,
+    public XmlTextDeserializer(ValueDeserializer<?> delegate,
             BeanDeserializerBase inner, int textPropIndex)
     {
         super(delegate);
