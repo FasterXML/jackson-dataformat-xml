@@ -57,6 +57,11 @@ Tobias M (@lightbringer)
    when used with `@JsonIdentityInfo`
   (3.2.0)
 
+Cassio Mazzochi Molin (@cassiomolin)
+ * Requested #315: Allow specifying encodings other than UTF-8 in
+   XML declaration written
+  (3.2.0)
+
 Eduard Wirch (@ewirch)
  * Reported #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
   (3.2.0)

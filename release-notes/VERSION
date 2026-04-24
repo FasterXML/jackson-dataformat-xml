@@ -39,6 +39,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
  (reported by Eduard W)
  (fix by Christopher M)
+#315: Allow specifying encodings other than UTF-8 in XML declaration written
+ (requested by Cassio M-M)
+ (fix by @cowtowncoder, w/ Claude code)
 #334: `@JacksonXmlElementWrapper(useWrapping=false)` fails when using
   a `DeserializerModifier` that delegates
  (reported by Ruven C)
