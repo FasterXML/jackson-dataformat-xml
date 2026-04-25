@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import tools.jackson.core.exc.StreamWriteException;
+import tools.jackson.databind.DatabindException;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
@@ -30,7 +30,7 @@ public class MultidimArray556Test extends XmlTestUtil
         try {
             MAPPER.writeValueAsString(new boolean[][] { { true }, { false } });
             fail("Should not pass: nested arrays must be rejected");
-        } catch (StreamWriteException e) {
+        } catch (DatabindException e) {
             verifyException(e, "does not support nested arrays");
         }
     }
@@ -44,7 +44,7 @@ public class MultidimArray556Test extends XmlTestUtil
         try {
             MAPPER.writeValueAsString(nested);
             fail("Should not pass: nested Collections must be rejected");
-        } catch (StreamWriteException e) {
+        } catch (DatabindException e) {
             verifyException(e, "does not support nested arrays");
         }
     }
