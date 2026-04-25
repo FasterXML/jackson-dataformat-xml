@@ -107,6 +107,27 @@ public enum XmlWriteFeature implements FormatFeature
      * it was {@code false} (disabled)in Jackson 2.x.
      */
     WRITE_XML_SCHEMA_CONFORMING_FLOATS(true),
+
+    /**
+     * Feature that determines whether attempt to serialize a directly nested
+     * array, {@link java.util.Collection} or {@link java.util.Map} (i.e. an
+     * array/Collection/Map whose immediate parent is also an array/Collection
+     * — without an intermediate POJO) should fail with an exception (true)
+     * or be allowed (false) — knowing that, when allowed, the resulting XML
+     * cannot represent the nested structure and the inner dimension will be
+     * silently flattened into the outer one.
+     *<p>
+     * "Natural-style" XML has no canonical representation for an unnamed
+     * nested array, so a clean round-trip is not possible without an
+     * intermediate POJO wrapper.
+     *<p>
+     * Default setting is {@code true} (enabled): nested arrays cause an
+     * exception. Disabling restores the legacy Jackson 2.x behavior of
+     * silently flattening dimensions.
+     *<p>
+     * See <a href="https://github.com/FasterXML/jackson-dataformat-xml/issues/556">#556</a>.
+     */
+    FAIL_ON_NESTED_ARRAYS(true),
     ;
 
     private final boolean _defaultState;
