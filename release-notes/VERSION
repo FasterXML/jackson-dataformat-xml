@@ -84,6 +84,9 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @cowtowncoder, w/ Claude code)
 #541: Allow specifying URI of the default namespace for root element
  (fix by @cowtowncoder, w/ Claude code)
+#556: `XmlMapper` does not support multi-dimensional arrays
+ (reported by @schwarfl)
+ (fix by @cowtowncoder, w/ Claude code)
 #561: Deserializing empty timestamp fields to `null` value doesn't
   work (instead becomes "empty", Epoch time)
  (reported by @silvestr85)

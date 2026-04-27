@@ -672,7 +672,7 @@ public class ToXmlGenerator
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartArray(this);
         } else {
-            // nothing to do here; no-operation
+            // nothing to do here; no-op
         }
         return this;
     }
@@ -680,6 +680,8 @@ public class ToXmlGenerator
     // [dataformat-xml#556]: nested arrays/Collections/Maps cannot be expressed
     // in natural-style XML without an intermediate POJO. Fail fast (when the
     // feature is enabled) instead of silently flattening dimensions.
+    //
+    // @since 3.2
     private void _verifyNotNestedArray() throws JacksonException
     {
         if (_streamWriteContext.inArray()
