@@ -53,11 +53,10 @@ public class MultidimArray556Test extends XmlTestUtil
     @Test
     public void testLegacyFlatteningWhenFeatureDisabled() throws Exception
     {
-        XmlMapper mapper = XmlMapper.builder()
-                .disable(XmlWriteFeature.FAIL_ON_NESTED_ARRAYS)
-                .build();
-        String xml = mapper.writeValueAsString(new boolean[][] { { true }, { false } });
-        assertNotNull(xml);
+        String xml = MAPPER.writer()
+                .without(XmlWriteFeature.FAIL_ON_NESTED_ARRAYS)
+                .writeValueAsString(new boolean[][] { { true }, { false } });
+        assertEquals("<booleans><item>true</item><item>false</item></booleans>", xml);
     }
 
     // Eventual goal: a 2D array should round-trip with proper nesting.
