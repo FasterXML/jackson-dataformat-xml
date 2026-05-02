@@ -844,6 +844,8 @@ _currText);
      * [dataformat-xml#484]: deliver the next synthetic root-wrap token, or
      * return {@code null} when the wrap state machine has nothing pending and
      * the caller should fall through to standard token logic.
+     *
+     * @since 3.2
      */
     private JsonToken _nextRootWrapToken()
     {
