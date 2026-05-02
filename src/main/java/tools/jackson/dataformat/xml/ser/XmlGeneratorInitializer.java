@@ -194,10 +194,7 @@ public class XmlGeneratorInitializer
      * content from the value being serialized.
      *<p>
      * Typical use case is adding XML Schema instance attributes such as
-     * {@code xsi:schemaLocation} or {@code xsi:noNamespaceSchemaLocation};
-     * for those, the {@code xsi} prefix should also be bound via
-     * {@link #addNamespace(String, String)} (or
-     * {@link XmlWriteFeature#AUTO_DETECT_XSI_TYPE}).
+     * {@code xsi:schemaLocation} or {@code xsi:noNamespaceSchemaLocation}.
      *<p>
      * NOTE: root attributes are only emitted when the root value being
      * serialized produces a structured (object) start element; scalar
@@ -220,11 +217,11 @@ public class XmlGeneratorInitializer
 
     /**
      * Convenience overload of {@link #addRootAttribute(QName, String)} for
-     * adding an unnamespaced attribute by local name.
+     * adding non-namespaced attribute by local name.
      *
-     * @param localName Attribute local name (must be non-empty); treated as
-     *   an unnamespaced name (no prefix, no namespace URI)
-     * @param value Attribute value (null is coerced to empty String)
+     * @param localName Attribute local name (must be non-empty) in default
+     *   namespace (one with URI of "")
+     * @param value Attribute value (if {@code null}, coerced to empty String)
      *
      * @return This initializer for call chaining
      *
