@@ -91,6 +91,52 @@ public enum XmlReadFeature implements FormatFeature
      */
     SKIP_UNKNOWN_XSI_ATTRIBUTES(false),
 
+    /**
+     * Feature that, when enabled, exposes the XML root element as an extra
+     * outer Object wrapper whose single property is named after the root
+     * element's local name. This preserves the root name in the resulting
+     * token stream (and therefore in {@code JsonNode}, {@code Map}, etc.),
+     * which is otherwise discarded.
+     *<p>
+     * Example: with this feature enabled,
+     *<pre>
+     *   &lt;root&gt;&lt;value&gt;3&lt;/value&gt;&lt;/root&gt;
+     *</pre>
+     * is exposed as token stream equivalent to
+     *<pre>
+     *   { "root" : { "value" : "3" } }
+     *</pre>
+     * instead of the default
+     *<pre>
+     *   { "value" : "3" }
+     *</pre>
+     * The wrapper is purely a token-stream-level addition; the body is exposed
+     * exactly as it would be without wrap. Roots that the parser would otherwise
+     * expose as {@code null} ({@code xsi:nil} or, with
+     * {@link #EMPTY_ELEMENT_AS_NULL} enabled, empty elements) become
+     * {@code { "root" : null }}.
+     *<p>
+     * Designed to pair with {@link XmlWriteFeature#UNWRAP_ROOT_OBJECT_NODE}
+     * to allow lossless round-tripping of root element name via the Tree
+     * Model ({@code JsonNode}) and {@code Map} bindings.
+     *<p>
+     * Notes:
+     *<ul>
+     * <li>The wrapper key uses the root element's <em>local name only</em>;
+     *   namespace URI is not encoded into the key (consistent with how
+     *   child element names are exposed throughout this parser). The full
+     *   {@link javax.xml.namespace.QName} of the root remains accessible
+     *   via {@code FromXmlParser.getRootElementName()}.</li>
+     * <li>This feature modifies the token stream, so it affects all
+     *   bindings (POJO, {@code Map}, {@code JsonNode}), not just Tree Model.</li>
+     *</ul>
+     *<p>
+     * Default setting is {@code false} for backwards-compatibility.
+     *
+     * @since 3.2
+     */
+    WRAP_ROOT_ELEMENT_NAME(false),
+
     ;
 
     private final boolean _defaultState;

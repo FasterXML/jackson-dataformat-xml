@@ -69,6 +69,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #455: Can't deserialize list in JsonSubtype when type property is visible
  (reported by Jiri M)
  (fix by @cowtowncoder, w/ Claude code)
+#484: Add `FromXmlParser.Feature.WRAP_ROOT_ELEMENT_NAME` to allow
+  lossless round-trip via Tree Model
+ (fix by @cowtowncoder, w/ Claude code)
 #496: Root name missing when root element has no attributes (add
   `FromXmlParser.getRootElementName()`)
  (reported by Sam K)

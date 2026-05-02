@@ -121,6 +121,30 @@ public class FromXmlParser
      */
     protected boolean _nextIsNullXsiNil;
 
+    // // // [dataformat-xml#484] Root-element wrap state machine. When
+    // // // {@link XmlReadFeature#WRAP_ROOT_ELEMENT_NAME} is enabled, the parser
+    // // // synthesizes an extra outer Object whose single property is the root
+    // // // element local name. {@code _rootWrapStage} drives the synthetic tokens.
+
+    /** Wrap inactive: feature off, or wrapper already fully delivered. */
+    private static final int WRAP_INACTIVE = 0;
+    /** Next call emits the synthetic outer START_OBJECT. */
+    private static final int WRAP_PENDING_OUTER_START = 1;
+    /** Next call emits the synthetic PROPERTY_NAME (root local name). */
+    private static final int WRAP_PENDING_NAME = 2;
+    /** Wrapper open over an Object body: emit synthetic END_OBJECT when stream reaches XML_END. */
+    private static final int WRAP_OPEN_OBJECT = 3;
+    /** Wrapper open over a scalar/null body: queued in {@code _nextToken}; transition to PENDING_OUTER_END after delivery. */
+    private static final int WRAP_OPEN_SCALAR = 4;
+    /** Next call emits the synthetic outer END_OBJECT (scalar/null body case). */
+    private static final int WRAP_PENDING_OUTER_END = 5;
+
+    /**
+     * Stage of the root-element wrap state machine; see WRAP_* constants above.
+     * @since 3.2
+     */
+    protected int _rootWrapStage = WRAP_INACTIVE;
+
     /*
     /**********************************************************************
     /* Parsing state, parsed values
@@ -207,6 +231,7 @@ public class FromXmlParser
 
         // 04-Jan-2019, tatu: Root-level nulls need slightly specific handling;
         //    changed in 2.10.2
+        final boolean wrapRoot = isEnabled(XmlReadFeature.WRAP_ROOT_ELEMENT_NAME);
         if (_xmlTokens.hasXsiNil()) {
             _nextToken = JsonToken.VALUE_NULL;
             // 21-Apr-2025, tatu: [dataformat-xml#714] Must "flush" the stream
@@ -216,7 +241,12 @@ public class FromXmlParser
             case XmlTokenStream.XML_START_ELEMENT:
             // Removed from 2.14:
             // case XmlTokenStream.XML_DELAYED_START_ELEMENT:
-                _nextToken = JsonToken.START_OBJECT;
+                // [dataformat-xml#484]: in wrap mode, suppress queuing the
+                // (inner) START_OBJECT here; the wrap state machine queues it
+                // explicitly after delivering outer START + PROPERTY_NAME.
+                if (!wrapRoot) {
+                    _nextToken = JsonToken.START_OBJECT;
+                }
                 break;
             case XmlTokenStream.XML_ROOT_TEXT:
                 _currText = _xmlTokens.getText();
@@ -231,6 +261,10 @@ public class FromXmlParser
             default:
                 _reportError("Internal problem: invalid starting state (%s)", _xmlTokens._currentStateDesc());
             }
+        }
+        // [dataformat-xml#484]: activate wrap state machine if feature enabled
+        if (wrapRoot) {
+            _rootWrapStage = WRAP_PENDING_OUTER_START;
         }
     }
 
@@ -553,6 +587,14 @@ public class FromXmlParser
         _binaryValue = null;
         _numTypesValid = NR_UNKNOWN;
 //System.out.println("FromXmlParser.nextToken0: _nextToken = "+_nextToken);
+        // [dataformat-xml#484]: deliver synthetic root-wrap tokens before normal flow
+        if (_rootWrapStage != WRAP_INACTIVE) {
+            JsonToken wrap = _nextRootWrapToken();
+            if (wrap != null) {
+                return wrap;
+            }
+            // Otherwise: stage advanced to WRAP_OPEN_OBJECT/SCALAR; fall through to standard logic.
+        }
         if (_nextToken != null) {
             final JsonToken t = _updateToken(_nextToken);
             _nextToken = null;
@@ -583,6 +625,10 @@ public class FromXmlParser
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index` anyway; not
                 //    used for Object contexts, updated automatically by "createChildXxxContext"
                 _streamReadContext.valueStarted();
+                // [dataformat-xml#484]: scalar/null body delivered — queue closing END_OBJECT
+                if (_rootWrapStage == WRAP_OPEN_SCALAR) {
+                    _rootWrapStage = WRAP_PENDING_OUTER_END;
+                }
             }
             return t;
         }
@@ -774,10 +820,49 @@ _currText);
                 _nextToken = JsonToken.VALUE_STRING;
                 return _updateToken(JsonToken.PROPERTY_NAME);
             case XmlTokenStream.XML_END:
+                // [dataformat-xml#484]: close the synthetic root wrapper before EOF
+                if (_rootWrapStage == WRAP_OPEN_OBJECT) {
+                    _rootWrapStage = WRAP_INACTIVE;
+                    _streamReadContext = _streamReadContext.getParent();
+                    return _updateToken(JsonToken.END_OBJECT);
+                }
                 return _updateTokenToNull();
             default:
                 return _internalErrorUnknownToken(token);
             }
+        }
+    }
+
+    /**
+     * [dataformat-xml#484]: deliver the next synthetic root-wrap token, or
+     * return {@code null} when the wrap state machine has nothing pending and
+     * the caller should fall through to standard token logic.
+     */
+    private JsonToken _nextRootWrapToken()
+    {
+        switch (_rootWrapStage) {
+        case WRAP_PENDING_OUTER_START:
+            _rootWrapStage = WRAP_PENDING_NAME;
+            _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
+            return _updateToken(JsonToken.START_OBJECT);
+        case WRAP_PENDING_NAME:
+            // Object body case: queue inner START_OBJECT for normal flow to consume.
+            // Scalar/null body case: _nextToken already holds the value.
+            if (_nextToken == null) {
+                _nextToken = JsonToken.START_OBJECT;
+                _rootWrapStage = WRAP_OPEN_OBJECT;
+            } else {
+                _rootWrapStage = WRAP_OPEN_SCALAR;
+            }
+            _streamReadContext.setCurrentName(_xmlTokens.getRootName().getLocalPart());
+            return _updateToken(JsonToken.PROPERTY_NAME);
+        case WRAP_PENDING_OUTER_END:
+            _rootWrapStage = WRAP_INACTIVE;
+            _streamReadContext = _streamReadContext.getParent();
+            return _updateToken(JsonToken.END_OBJECT);
+        default:
+            // WRAP_OPEN_OBJECT / WRAP_OPEN_SCALAR — caller should fall through.
+            return null;
         }
     }
 
@@ -804,6 +889,11 @@ _currText);
     @Override
     public String nextStringValue() throws JacksonException
     {
+        // [dataformat-xml#484]: wrapper tokens are not String-valued; route
+        // through nextToken() to keep wrap-state advancement in one place.
+        if (_rootWrapStage != WRAP_INACTIVE) {
+            return (nextToken() == JsonToken.VALUE_STRING) ? _currText : null;
+        }
         _binaryValue = null;
         if (_nextToken != null) {
             final JsonToken t = _updateToken(_nextToken);
