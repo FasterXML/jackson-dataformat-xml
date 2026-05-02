@@ -121,10 +121,16 @@ public class FromXmlParser
      */
     protected boolean _nextIsNullXsiNil;
 
-    // // // [dataformat-xml#484] Root-element wrap state machine. When
-    // // // {@link XmlReadFeature#WRAP_ROOT_ELEMENT_NAME} is enabled, the parser
-    // // // synthesizes an extra outer Object whose single property is the root
-    // // // element local name. {@code _rootWrapStage} drives the synthetic tokens.
+    /*
+    /**********************************************************************
+    /* Parsing state, optional root element wrapping (3.2)
+    /**********************************************************************
+     */
+    
+    // [dataformat-xml#484] Root-element wrap state machine. When
+    // {@link XmlReadFeature#WRAP_ROOT_ELEMENT_NAME} is enabled, the parser
+    // synthesizes an extra outer Object whose single property is the root
+    // element local name. {@code _rootWrapStage} drives the synthetic tokens.
 
     /** Wrap inactive: feature off, or wrapper already fully delivered. */
     private static final int WRAP_INACTIVE = 0;
@@ -141,6 +147,7 @@ public class FromXmlParser
 
     /**
      * Stage of the root-element wrap state machine; see WRAP_* constants above.
+     *
      * @since 3.2
      */
     protected int _rootWrapStage = WRAP_INACTIVE;
