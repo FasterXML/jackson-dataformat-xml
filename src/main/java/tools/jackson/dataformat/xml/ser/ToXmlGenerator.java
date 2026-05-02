@@ -121,6 +121,13 @@ public class ToXmlGenerator
     protected List<PrologDirective> _prologDirectives;
 
     /**
+     * Attributes to add to the root element, if any.
+     *
+     * @since 3.2
+     */
+    protected List<RootAttribute> _rootAttributes;
+
+    /**
      * Whether linefeed ("pretty-printing") enabled between directives
      * in Document prolog.
      *
@@ -250,7 +257,8 @@ public class ToXmlGenerator
     public void initDocument(XmlDeclaration xmlDeclaration,
             boolean lfBetweenPrologDirectives,
             List<PrologDirective> directives,
-            List<NamespaceBinding> nsBindings)
+            List<NamespaceBinding> nsBindings,
+            List<RootAttribute> rootAttributes)
     {
         if (_initialized) { // sanity check
             _reportError("Internal error: cannot call `initDocument()` after generator already initialized");
@@ -259,6 +267,7 @@ public class ToXmlGenerator
         _namespaceBindings = nsBindings;
         _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
         _prologDirectives = directives;
+        _rootAttributes = rootAttributes;
     }
 
     /**
@@ -775,8 +784,13 @@ public class ToXmlGenerator
 
     // @since 3.2
     protected void _handleStartRootObject(QName rootElemName) throws XMLStreamException {
-        // !!! TODO: special handling
-        _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+        _xmlWriter.writeStartElement(rootElemName.getNamespaceURI(), rootElemName.getLocalPart());
+        // [dataformat-xml#90]: emit caller-registered root attributes (e.g. xsi:schemaLocation)
+        if (_rootAttributes != null) {
+            for (RootAttribute attr : _rootAttributes) {
+                attr.write(this, _xmlWriter);
+            }
+        }
     }
     
     // note: public just because pretty printer needs to make a callback

@@ -12,6 +12,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 #27: `@JacksonXmlElementWrapper` conflicting getter/setter definitions for property
  (reported by @n00bman)
  (fix by @cowtowncoder, w/ Claude code)
+#90: Add support for adding attributes to output for root element
+ (fix by @cowtowncoder, w/ Claude code)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
  (fix by Christopher M))

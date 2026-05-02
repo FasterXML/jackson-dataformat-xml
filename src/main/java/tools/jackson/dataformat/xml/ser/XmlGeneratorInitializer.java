@@ -3,6 +3,8 @@ package tools.jackson.dataformat.xml.ser;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.exc.StreamWriteException;
@@ -48,6 +50,13 @@ public class XmlGeneratorInitializer
     protected List<NamespaceBinding> _namespaceBindings;
 
     /**
+     * Attributes to add to root element (if any).
+     *
+     * @since 3.2
+     */
+    protected List<RootAttribute> _rootAttributes;
+
+    /**
      * Custom XML declaration to write.
      */
     protected XmlDeclaration _xmlDeclaration;
@@ -61,7 +70,7 @@ public class XmlGeneratorInitializer
         if (g instanceof ToXmlGenerator xg) {
             xg.initDocument(_xmlDeclaration,
                     _addLfBetweenPrologDirectives, _directives,
-                    _namespaceBindings);
+                    _namespaceBindings, _rootAttributes);
         }
     }
 
@@ -176,6 +185,53 @@ public class XmlGeneratorInitializer
         }
         _namespaceBindings.add(new NamespaceBinding(prefix, namespaceURI));
         return this;
+    }
+
+    /**
+     * Method for adding an attribute to be written on the root element of
+     * the output document. Attributes are emitted in the order added,
+     * after the root element's start tag is written and before any
+     * content from the value being serialized.
+     *<p>
+     * Typical use case is adding XML Schema instance attributes such as
+     * {@code xsi:schemaLocation} or {@code xsi:noNamespaceSchemaLocation};
+     * for those, the {@code xsi} prefix should also be bound via
+     * {@link #addNamespace(String, String)} (or
+     * {@link XmlWriteFeature#AUTO_DETECT_XSI_TYPE}).
+     *<p>
+     * NOTE: root attributes are only emitted when the root value being
+     * serialized produces a structured (object) start element; scalar
+     * root values do not currently get root attributes attached.
+     *
+     * @param name Attribute name (with optional namespace and prefix)
+     * @param value Attribute value (null is coerced to empty String)
+     *
+     * @return This initializer for call chaining
+     *
+     * @since 3.2
+     */
+    public XmlGeneratorInitializer addRootAttribute(QName name, String value) {
+        if (_rootAttributes == null) {
+            _rootAttributes = new ArrayList<>();
+        }
+        _rootAttributes.add(new RootAttribute(name, value));
+        return this;
+    }
+
+    /**
+     * Convenience overload of {@link #addRootAttribute(QName, String)} for
+     * adding an unnamespaced attribute by local name.
+     *
+     * @param localName Attribute local name (must be non-empty); treated as
+     *   an unnamespaced name (no prefix, no namespace URI)
+     * @param value Attribute value (null is coerced to empty String)
+     *
+     * @return This initializer for call chaining
+     *
+     * @since 3.2
+     */
+    public XmlGeneratorInitializer addRootAttribute(String localName, String value) {
+        return addRootAttribute(new QName(localName), value);
     }
 
     /**

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.ObjectWriter;
@@ -677,6 +679,133 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                 +"<!DOCTYPE StringBean>"
                 +"<StringBean><text>test</text></StringBean>",
                 w.writeValueAsString(new StringBean("test")));
+    }
+
+    // // [dataformat-xml#90]: root element attributes -- ok cases
+
+    private static final String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
+
+    // Simple unnamespaced attribute via String overload
+    @Test
+    public void testRootAttributeUnnamespaced() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addRootAttribute("version", "1"));
+        assertEquals(a2q("<StringBean version='1'><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Use case from issue: xsi:noNamespaceSchemaLocation
+    @Test
+    public void testRootAttributeNoNamespaceSchemaLocation() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", XSI_NS)
+                        .addRootAttribute(new QName(XSI_NS, "noNamespaceSchemaLocation", "xsi"),
+                                "testUser.xsd"));
+        assertEquals(a2q("<StringBean xmlns:xsi='" + XSI_NS + "'"
+                +" xsi:noNamespaceSchemaLocation='testUser.xsd'>"
+                +"<text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Use case from issue: xsi:schemaLocation
+    @Test
+    public void testRootAttributeSchemaLocation() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", XSI_NS)
+                        .addRootAttribute(new QName(XSI_NS, "schemaLocation", "xsi"),
+                                "urn:foo testUser.xsd"));
+        assertEquals(a2q("<StringBean xmlns:xsi='" + XSI_NS + "'"
+                +" xsi:schemaLocation='urn:foo testUser.xsd'>"
+                +"<text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Multiple attributes preserve insertion order
+    @Test
+    public void testMultipleRootAttributes() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addRootAttribute("a", "1")
+                        .addRootAttribute("b", "2")
+                        .addRootAttribute("c", "3"));
+        assertEquals(a2q("<StringBean a='1' b='2' c='3'><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Empty value is permitted (XML allows attr="")
+    @Test
+    public void testRootAttributeEmptyValue() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addRootAttribute("flag", ""));
+        assertEquals(a2q("<StringBean flag=''><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Null value is coerced to empty (matches PrologComment convention)
+    @Test
+    public void testRootAttributeNullValueCoercedToEmpty() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addRootAttribute("flag", null));
+        assertEquals(a2q("<StringBean flag=''><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Combine with XML declaration + comment (prolog) and a root attribute
+    @Test
+    public void testRootAttributeWithPrologDirectives() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .configure(XmlWriteFeature.WRITE_XML_DECLARATION, true)
+                .build();
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
+                        .addComment("hello")
+                        .addRootAttribute("version", "1"));
+        // XML declaration uses single quotes; rest matches a2q
+        assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n"
+                +"<!--hello-->\n"
+                +a2q("<StringBean version='1'><text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // // [dataformat-xml#90]: root element attributes -- failing cases
+
+    @Test
+    public void testRootAttributeNullQName() throws Exception
+    {
+        try {
+            new XmlGeneratorInitializer().addRootAttribute((QName) null, "v");
+            fail("Should not pass");
+        } catch (NullPointerException e) {
+            verifyException(e, "name");
+        }
+    }
+
+    @Test
+    public void testRootAttributeNullStringName() throws Exception
+    {
+        // QName(String) throws IllegalArgumentException on null per JDK spec
+        try {
+            new XmlGeneratorInitializer().addRootAttribute((String) null, "v");
+            fail("Should not pass");
+        } catch (IllegalArgumentException | NullPointerException e) {
+            // either is acceptable -- delegated to QName(String)
+        }
+    }
+
+    @Test
+    public void testRootAttributeEmptyStringName() throws Exception
+    {
+        try {
+            new XmlGeneratorInitializer().addRootAttribute("", "v");
+            fail("Should not pass");
+        } catch (IllegalArgumentException e) {
+            verifyException(e, "Illegal argument for 'name.localPart': must be");
+        }
     }
 
     // // Other tests
