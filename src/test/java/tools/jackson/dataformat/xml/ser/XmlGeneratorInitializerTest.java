@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.ObjectWriter;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
@@ -48,6 +49,13 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
         @JacksonXmlProperty(isAttribute = true, namespace = "urn:ns:attr", localName = "id")
         public String id = "42";
         public String value = "v";
+    }
+
+    // Plain root POJO with its own (unnamespaced) attribute property
+    @JsonRootName("Bean")
+    static class OwnAttrBean {
+        @JacksonXmlProperty(isAttribute = true) public String id = "42";
+        public String text = "t";
     }
 
     // Collection field in a namespace, with wrapper and item elements both namespaced
@@ -753,6 +761,66 @@ public class XmlGeneratorInitializerTest extends XmlTestUtil
                         .addRootAttribute("flag", null));
         assertEquals(a2q("<StringBean flag=''><text>test</text></StringBean>"),
                 w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Pretty-printed output: root attribute appears on the start tag,
+    // content is indented as usual (verifies pretty-printer routes through
+    // _handleStartRootObject correctly).
+    @Test
+    public void testRootAttributeWithPrettyPrinter() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .build();
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
+                        .addRootAttribute("version", "1"));
+        assertEquals(a2q("<StringBean version='1'>\n"
+                +"  <text>test</text>\n"
+                +"</StringBean>\n"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // AUTO_DETECT_XSI_TYPE alone is sufficient to bind the `xsi` prefix
+    // (no explicit addNamespace("xsi", ...) needed) for xsi:* root attributes.
+    @Test
+    public void testRootAttributeWithAutoDetectXsiType() throws Exception
+    {
+        XmlMapper mapper = XmlMapper.builder()
+                .configure(XmlWriteFeature.AUTO_DETECT_XSI_TYPE, true)
+                .build();
+        ObjectWriter w = _writer(mapper, new XmlGeneratorInitializer()
+                        .addRootAttribute(new QName(XSI_NS, "schemaLocation", "xsi"),
+                                "urn:foo testUser.xsd"));
+        assertEquals(a2q("<StringBean xmlns:xsi='" + XSI_NS + "'"
+                +" xsi:schemaLocation='urn:foo testUser.xsd'>"
+                +"<text>test</text></StringBean>"),
+                w.writeValueAsString(new StringBean("test")));
+    }
+
+    // Root POJO that already has its own attribute property: caller-registered
+    // root attribute is emitted before the POJO's own attribute. Both must appear.
+    @Test
+    public void testRootAttributeWithPojoAttributeProperty() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addRootAttribute("version", "1"));
+        assertEquals(a2q("<Bean version='1' id='42'><text>t</text></Bean>"),
+                w.writeValueAsString(new OwnAttrBean()));
+    }
+
+    // Issue's canonical example: namespaced root + xsi:noNamespaceSchemaLocation.
+    @Test
+    public void testRootAttributeOnNamespacedRoot() throws Exception
+    {
+        ObjectWriter w = _writer(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", XSI_NS)
+                        .addRootAttribute(new QName(XSI_NS, "noNamespaceSchemaLocation", "xsi"),
+                                "testUser.xsd"));
+        assertEquals(a2q("<Root xmlns='urn:ns:root'"
+                +" xmlns:xsi='" + XSI_NS + "'"
+                +" xsi:noNamespaceSchemaLocation='testUser.xsd'>"
+                +"<value xmlns=''>v</value></Root>"),
+                w.writeValueAsString(new RootNsBean()));
     }
 
     // Combine with XML declaration + comment (prolog) and a root attribute
