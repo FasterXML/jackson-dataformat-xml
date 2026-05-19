@@ -735,9 +735,12 @@ public class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
             } else if (checkNextIsUnwrapped()) {
+                // Woodstox 7.2.0 change: writeRaw does not close pending start element; force it
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text);
                 _xmlWriter.writeEndElement();
             }
@@ -762,9 +765,11 @@ public class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text.substring(offset, offset + len));
             } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
                 _xmlWriter.writeEndElement();
             }
@@ -788,9 +793,11 @@ public class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
             } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
                 _xmlWriter.writeEndElement();
             }
@@ -813,6 +820,8 @@ public class ToXmlGenerator
             _reportUnimplementedStax2("writeRaw");
         }
         try {
+            // Woodstox 7.2.0 regression: writeRaw does not close pending start element; force it
+            _xmlWriter.writeCharacters("");
             _xmlWriter.writeRaw(text);
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
@@ -828,6 +837,7 @@ public class ToXmlGenerator
             _reportUnimplementedStax2("writeRaw");
         }
         try {
+            _xmlWriter.writeCharacters("");
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
@@ -843,6 +853,7 @@ public class ToXmlGenerator
             _reportUnimplementedStax2("writeRaw");
         }
         try {
+            _xmlWriter.writeCharacters("");
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);

@@ -461,6 +461,8 @@ public class DefaultXmlPrettyPrinter
     public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException
     {
         // 06-Dec-2015, tatu: Alternatively could try calling `writeSpace()`...
+        // Woodstox 7.2.0 regression: writeRaw does not close pending start element; force it
+        sw.writeCharacters("");
         sw.writeRaw(_newLine);
     }
 
@@ -501,6 +503,8 @@ public class DefaultXmlPrettyPrinter
         public void writeIndentation(XMLStreamWriter2 sw, int level)
             throws XMLStreamException
         {
+            // Woodstox 7.2.0 regression: writeRaw does not close pending start element; force it
+            sw.writeCharacters("");
             sw.writeRaw(" ");
         }
 
@@ -531,10 +535,12 @@ public class DefaultXmlPrettyPrinter
         @Override
         public void writeIndentation(XMLStreamWriter2 sw, int level) throws XMLStreamException
         {
+            // Woodstox 7.2.0 regression: writeRaw does not close pending start element; force it
+            sw.writeCharacters("");
             sw.writeRaw(_newLine);
             level += level; // 2 spaces per level
             while (level > SPACE_COUNT) { // should never happen but...
-            	sw.writeRaw(SPACES, 0, SPACE_COUNT); 
+            	sw.writeRaw(SPACES, 0, SPACE_COUNT);
                 level -= SPACES.length;
             }
             sw.writeRaw(SPACES, 0, level);
