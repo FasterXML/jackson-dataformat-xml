@@ -1,11 +1,11 @@
 ## Overview
 
 This projects contains [Jackson](../../../jackson) extension component for
-reading and writing [XML](http://en.wikipedia.org/wiki/Xml) encoded data.
+reading and writing [XML](https://en.wikipedia.org/wiki/XML) encoded data.
 
-Further, the goal is to emulate how [JAXB](http://en.wikipedia.org/wiki/JAXB) data-binding works
+Further, the goal is to emulate how [JAXB](https://en.wikipedia.org/wiki/JAXB) data-binding works
 with "Code-first" approach (no support is added for "Schema-first" approach).
-Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-modules-base/tree/master/jaxb);
+Support for JAXB annotations is provided by [JAXB annotation module](https://github.com/FasterXML/jackson-modules-base/tree/3.x/jaxb);
 this module provides low-level abstractions (`XmlParser`, `ToXmlGenerator`, `XmlFactory`) as well as a small number of higher level
 overrides needed to make data-binding work.
 
@@ -24,12 +24,12 @@ Specifically:
 | Type | Status |
 | ---- | ------ |
 | Build (CI) | [![Build (github)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml/badge.svg)](https://github.com/FasterXML/jackson-dataformat-xml/actions/workflows/main.yml) |
-| Artifact | [![Maven Central](https://img.shields.io/maven-central/v/tools.jackson.dataformat/jackson-dataformat-xml.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/tools.jackson.dataformat/jackson-dataformat-xml) |
-| OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
-| Javadocs | [![Javadoc](https://javadoc.io/badge/tools.jackson.dataformat/jackson-dataformat-xml.svg)](http://www.javadoc.io/doc/tools.jackson.dataformat/jackson-dataformat-xml) |
-| Code coverage (2.19) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.19)](https://codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.19) |
-| OpenSSF Score | [![OpenSSF  Scorecard](https://api.securityscorecards.dev/projects/github.com/FasterXML/jackson-dataformat-xml/badge)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
-| Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:jackson-dataformat-xml) |
+| Artifact | [![Maven Central](https://img.shields.io/maven-metadata/v.svg?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Ftools%2Fjackson%2Fdataformat%2Fjackson-dataformat-xml%2Fmaven-metadata.xml&label=Maven%20Central)](https://central.sonatype.com/artifact/tools.jackson.dataformat/jackson-dataformat-xml) |
+| OSS Sponsorship | [![Tidelift](https://tidelift.com/badges/package/maven/com.fasterxml.jackson.dataformat:jackson-dataformat-xml)](https://www.sonarsource.com/solutions/security/?tidelift=tidelift-redirect&utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=readme) |
+| Javadocs | [![Javadoc](https://img.shields.io/badge/javadoc-3.1.3-brightgreen.svg)](https://www.javadoc.io/doc/tools.jackson.dataformat/jackson-dataformat-xml) |
+| Code coverage (2.19) | [![codecov.io](https://codecov.io/github/FasterXML/jackson-dataformat-xml/coverage.svg?branch=2.19)](https://app.codecov.io/github/FasterXML/jackson-dataformat-xml?branch=2.19) |
+| OpenSSF Score | [![OpenSSF  Scorecard](https://img.shields.io/ossf-scorecard/github.com/FasterXML/jackson-dataformat-xml?label=openssf+scorecard&style=flat)](https://securityscorecards.dev/viewer/?uri=github.com/FasterXML/jackson-dataformat-xml) |
+| Fuzzing | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/jackson-dataformat-xml.svg)](https://issues.oss-fuzz.com/issues?q=proj:jackson-dataformat-xml) |
 
 ## Branches
 
@@ -45,7 +45,7 @@ All released versions have matching git tags (`jackson-dataformat-xml-2.17.1`).
 
 ## License
 
-All modules are licensed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt).
+All modules are licensed under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt).
 
 ## Maven dependency
 
@@ -148,7 +148,7 @@ XmlMapper mapper = new XmlMapper(xf); // there are other overloads too
 ```
 
 For configurable properties, you may want to check out
-[Configuring Woodstox XML parser](https://medium.com/@cowtowncoder/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
+[Configuring Woodstox XML parser](https://cowtowncoder.medium.com/configuring-woodstox-xml-parser-woodstox-specific-properties-1ce5030a5173)
 
 As the well as the Woodstox properties specified above, you can also call [WstxInputFactory#getConfig()](https://javadoc.io/doc/com.fasterxml.woodstox/woodstox-core/latest/com/ctc/wstx/stax/WstxInputFactory.html#getConfig--)
 and modify the [ReaderConfig](https://javadoc.io/doc/com.fasterxml.woodstox/woodstox-core/latest/com/ctc/wstx/api/ReaderConfig.html).
@@ -305,11 +305,11 @@ Jackson components are supported by the Jackson community through mailing lists,
 
 Available as part of the Tidelift Subscription.
 
-The maintainers of `jackson-dataformat-xml` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://tidelift.com/subscription/pkg/maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml?utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
+The maintainers of `jackson-dataformat-xml` and thousands of other packages are working with Tidelift to deliver commercial support and maintenance for the open source dependencies you use to build your applications. Save time, reduce risk, and improve code health, while paying the maintainers of the exact dependencies you use. [Learn more.](https://www.sonarsource.com/solutions/security/?tidelift=tidelift-redirect&utm_source=maven-com-fasterxml-jackson-dataformat-jackson-dataformat-xml&utm_medium=referral&utm_campaign=enterprise&utm_term=repo)
 
 -----
 
 # See Also
 
 * XML module [wiki page](../../wiki) for more information
-* Using XML with [DropWizard](https://github.com/dropwizard/dropwizard)? Check out [this extension](https://github.com/yunspace/dropwizard-xml)!
+* Using XML with [DropWizard](https://github.com/dropwizard/dropwizard)? Check out [this extension](https://github.com/mrserverless/dropwizard-xml)!
