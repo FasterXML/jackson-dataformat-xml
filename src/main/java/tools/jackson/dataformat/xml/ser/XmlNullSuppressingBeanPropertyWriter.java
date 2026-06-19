@@ -37,4 +37,9 @@ public class XmlNullSuppressingBeanPropertyWriter
         }
         super.serializeAsProperty(bean, g, ctxt);
     }
+
+    // NOTE: intentionally do NOT override `serializeAsElement()` (used for Array/tabular
+    // shape, e.g. `@JsonFormat(shape = ARRAY)`): there, null entries are positional and
+    // must be written (as `null`), not suppressed -- otherwise following entries would
+    // shift. Only the Object-shape `serializeAsProperty()` path suppresses nulls here.
 }
