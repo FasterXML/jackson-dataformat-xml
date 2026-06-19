@@ -16,7 +16,7 @@ import tools.jackson.databind.ser.BeanPropertyWriter;
  * collection containing a single null element (see [dataformat-xml#871]), so for null
  * collections we omit the element instead.
  *
- * @since 3.2
+ * @since 3.2.1
  */
 public class XmlNullSuppressingBeanPropertyWriter
     extends BeanPropertyWriter
