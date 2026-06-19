@@ -677,12 +677,14 @@ public class FromXmlParser
             // Ok: virtual wrapping can be done by simply repeating current START_ELEMENT.
             // Couple of ways to do it; but start by making _xmlTokens replay the thing...
             if (_streamReadContext.shouldWrap(name)) {
-                // [dataformat-xml#627]: But if xsi:nil="true" found, do NOT wrap —
-                // let the normal xsi:nil handling produce VALUE_NULL for the property
-                // instead of creating a list with one empty element.
-                if (!_xmlTokens.hasXsiNil()) {
-                    _xmlTokens.repeatStartElement();
-                }
+                // [dataformat-xml#871]: Always repeat the START_ELEMENT to form the
+                // virtual array wrapper. An `xsi:nil="true"` on the element means a
+                // single null *element* within the collection (handled by the in-array
+                // xsi:nil case below), NOT that the whole collection is null.
+                // (Earlier #627 attempt skipped wrapping on xsi:nil, but that made
+                // valid `<e xsi:nil="true"/>` collection items wrongly read as null
+                // collections and silently dropped leading null elements.)
+                _xmlTokens.repeatStartElement();
             }
 
             _mayBeLeaf = true;

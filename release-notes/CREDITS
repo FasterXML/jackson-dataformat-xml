@@ -147,3 +147,8 @@ Veit-Hendrik Schlenker (@vhschlenker)
 Charles Moulliard (@cmoulliard)
  * Reported #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
   (3.2.0)
+
+Christian Beikov (@beikov)
+ * Reported #871: `XmlMapper` regression in 3.2.0: `xsi:nil` collection element on
+   unwrapped collection wrongly read as null collection
+  (3.3.0)
