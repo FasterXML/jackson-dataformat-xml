@@ -2,6 +2,8 @@ package tools.jackson.dataformat.xml.ser;
 
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.annotation.JsonApplyView;
+
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.*;
 import tools.jackson.databind.ser.*;
@@ -184,13 +186,27 @@ public class XmlBeanPropertyWriter
         // [dataformat-xml#27]: Use wrapped name (inner element name), not property
         // name which may be the wrapper name after introspector conflict resolution
         g.writeName(_wrappedQName.getLocalPart());
+        // 18-Jun-2026, tatu: Need to apply active View, same as
+        //    `BeanPropertyWriter.serializeAsProperty()` does
+        if (_applyView == null) {
+            _serialize(value, g, ctxt, ser);
+        } else {
+            final ValueSerializer<Object> actualSer = ser;
+            ctxt.withActiveView(_applyView != JsonApplyView.NONE.class ? _applyView : null,
+                    () -> _serialize(value, g, ctxt, actualSer));
+        }
+        if (xmlGen != null) {
+            xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
+        }
+    }
+
+    private void _serialize(Object value, JsonGenerator g, SerializationContext ctxt,
+            ValueSerializer<Object> ser)
+    {
         if (_typeSerializer == null) {
             ser.serialize(value, g, ctxt);
         } else {
             ser.serializeWithType(value, g, ctxt, _typeSerializer);
-        }
-        if (xmlGen != null) {
-            xmlGen.finishWrappedValue(_wrapperQName, _wrappedQName);
         }
     }
 
