@@ -7,7 +7,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 3.3.0 (not yet released)
 
-No changes since 3.2
+#873: Fix handling of `@JsonApplyView`
+ (fix by @cowtowncoder, w/ Claude code)
 
 3.2.1 (not yet released)
 
