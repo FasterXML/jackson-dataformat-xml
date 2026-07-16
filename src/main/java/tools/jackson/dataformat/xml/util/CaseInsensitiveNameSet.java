@@ -19,7 +19,7 @@ public final class CaseInsensitiveNameSet extends AbstractSet<String>
     public static CaseInsensitiveNameSet construct(Set<String> names0) {
         Set<String> namesToMatch = new HashSet<String>(names0);
         for (String name : names0) {
-            namesToMatch.add(name.toLowerCase());
+            namesToMatch.add(name.toLowerCase(Locale.ROOT));
         }
         return new CaseInsensitiveNameSet(namesToMatch);
     }
@@ -30,7 +30,7 @@ public final class CaseInsensitiveNameSet extends AbstractSet<String>
         if (_namesToMatch.contains(key)) {
             return true;
         }
-        final String lc = key.toLowerCase();
+        final String lc = key.toLowerCase(Locale.ROOT);
         return (lc != key) && _namesToMatch.contains(lc);
     }
 
