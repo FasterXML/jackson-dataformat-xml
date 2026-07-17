@@ -128,6 +128,8 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
      * internally (including JDK-deserialization reconstruction in
      * {@code XmlFactory.readResolve()}) applies the same protections and the two
      * can not drift apart.
+     *
+     * @since 3.3
      */
     protected static XMLInputFactory secureXmlInputFactory(XMLInputFactory xmlIn) {
         // as per [dataformat-xml#190], disable external entity expansion by default
