@@ -234,6 +234,10 @@ public class FromXmlParser
         } catch (XMLStreamException e) {
             StaxUtil.throwAsReadException(e, this);
             return;
+        } catch (IllegalArgumentException e) {
+            // Root element name decode can fail the same way as later names when
+            // a base64 XmlNameProcessor is configured; see _nextToken() below.
+            throw new StreamReadException(this, e.getMessage(), e);
         }
 
         // 04-Jan-2019, tatu: Root-level nulls need slightly specific handling;
@@ -1421,6 +1425,13 @@ _currText);
             return _xmlTokens.next();
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, this);
+        } catch (IllegalArgumentException e) {
+            // A configured XmlNameProcessor may reject an element/attribute name
+            // it cannot decode: the base64 variants run java.util.Base64 on the
+            // incoming name and let IllegalArgumentException through when it is not
+            // valid base64. Surface as a read problem instead of letting it escape
+            // the parser API, matching getBinaryValue's handling of the same decoder.
+            throw new StreamReadException(this, e.getMessage(), e);
         } catch (IllegalStateException e) {
             // 08-Apr-2021, tatu: Should improve on this, wrt better information
             //   on issue.
