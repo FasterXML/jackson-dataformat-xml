@@ -479,6 +479,8 @@ public class XmlFactory
             sr = _xmlInputFactory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
     }
@@ -492,6 +494,8 @@ public class XmlFactory
             sr = _xmlInputFactory.createXMLStreamReader(r);
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
     }
@@ -514,6 +518,8 @@ public class XmlFactory
             }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
     }
@@ -533,8 +539,23 @@ public class XmlFactory
             }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
+    }
+
+    // Some non-Woodstox Stax implementations (for example SJSXP, [dataformat-xml#618])
+    // parse the XML declaration eagerly while creating the stream reader, and can fail
+    // with unchecked exceptions on malformed input instead of `XMLStreamException`.
+    // Translate to the standard read-exception type so callers see a `JacksonException`
+    // here too, matching how `_initializeXmlReader` already handles the sibling case.
+    private <T> T _reportBadXmlReaderCreation(ArrayIndexOutOfBoundsException e) {
+        throw new StreamReadException(null,
+                "Internal processing error by `XMLInputFactory` of type "
+                +_xmlInputFactory.getClass().getName()
+                +" when creating `XMLStreamReader` (consider using Woodstox instead): "
+                +e.getMessage(), e);
     }
 
     /**
