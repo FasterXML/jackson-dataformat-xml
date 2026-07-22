@@ -3,6 +3,8 @@ package tools.jackson.dataformat.xml;
 import java.util.Base64;
 import java.util.regex.Pattern;
 
+import tools.jackson.core.exc.StreamReadException;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -207,7 +209,7 @@ public final class XmlNameProcessors
             if (name.localPart.startsWith(_prefix)) {
                 String localName = name.localPart;
                 localName = localName.substring(_prefix.length());
-                name.localPart = new String(BASE64_DECODER.decode(localName), UTF_8);
+                name.localPart = _decodeBase64Name(BASE64_DECODER, localName);
             }
         }
     }
@@ -227,7 +229,20 @@ public final class XmlNameProcessors
 
         @Override
         public void decodeName(XmlName name) {
-            name.localPart = new String(BASE64_DECODER.decode(name.localPart), UTF_8);
+            name.localPart = _decodeBase64Name(BASE64_DECODER, name.localPart);
+        }
+    }
+
+    // Base64 decoder throws IllegalArgumentException on malformed input; must
+    // translate into Jackson exception so it does not leak through parser API
+    private static String _decodeBase64Name(Base64.Decoder decoder, String encoded) {
+        try {
+            return new String(decoder.decode(encoded), UTF_8);
+        } catch (IllegalArgumentException e) {
+            throw new StreamReadException(null,
+                    String.format("Failed to decode XML name \"%s\" as Base64: %s",
+                            encoded, e.getMessage()),
+                    e);
         }
     }
 }
