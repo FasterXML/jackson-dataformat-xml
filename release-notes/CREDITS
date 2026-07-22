@@ -152,3 +152,7 @@ Christian Beikov (@beikov)
  * Reported #871: `XmlMapper` regression in 3.2.0: `xsi:nil` collection element on
    unwrapped collection wrongly read as null collection
   (3.3.0)
+
+@Sahana2524
+ * Fixed #879:  Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
+  (3.3.0)
