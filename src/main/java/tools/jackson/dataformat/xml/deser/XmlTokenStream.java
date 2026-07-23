@@ -10,6 +10,7 @@ import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 
 import tools.jackson.core.TokenStreamLocation;
+import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.core.io.ContentReference;
 
 import tools.jackson.dataformat.xml.XmlNameProcessor;
@@ -783,7 +784,7 @@ public class XmlTokenStream
         }
         _nameToDecode.namespace = namespaceURI;
         _nameToDecode.localPart = localName;
-        _nameProcessor.decodeName(_nameToDecode);
+        _decodeName(_nameToDecode);
         _namespaceURI = _nameToDecode.namespace;
         _localName = _nameToDecode.localPart;
     }
@@ -802,9 +803,23 @@ public class XmlTokenStream
         }
         _nameToDecode.namespace = namespaceURI;
         _nameToDecode.localPart = localName;
-        _nameProcessor.decodeName(_nameToDecode);
+        _decodeName(_nameToDecode);
         _namespaceURI = _nameToDecode.namespace;
         _localName = _nameToDecode.localPart;
+    }
+
+    // Name processors (e.g. base64) may reject malformed input with an
+    // IllegalArgumentException; surface it as a located read error rather than
+    // letting a raw runtime exception escape the parser.
+    private void _decodeName(XmlNameProcessor.XmlName name) {
+        try {
+            _nameProcessor.decodeName(name);
+        } catch (IllegalArgumentException e) {
+            throw new StreamReadException(null,
+                    String.format("Failed to decode XML name \"%s\": %s",
+                            name.localPart, e.getMessage()),
+                    getCurrentLocation(), e);
+        }
     }
 
     /**

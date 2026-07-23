@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -133,8 +135,11 @@ public class XmlNameEscapeTest extends XmlTestUtil
         XmlMapper mapper = XmlMapper.builder(
                 xmlFactory(XmlNameProcessors.newBase64Processor())
         ).build();
-        assertThrows(StreamReadException.class, () ->
+        StreamReadException e = assertThrows(StreamReadException.class, () ->
                 mapper.readValue("<root><base64_tag_a>x</base64_tag_a></root>", DTO.class));
+        // and it should be surfaced as a located read error, not with the
+        // unknown/NA sentinel (regression guard for the location being attached)
+        assertNotEquals(TokenStreamLocation.NA, e.getLocation());
     }
 
     @Test
@@ -144,8 +149,9 @@ public class XmlNameEscapeTest extends XmlTestUtil
         XmlMapper mapper = XmlMapper.builder(
                 xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
         ).build();
-        assertThrows(StreamReadException.class, () ->
+        StreamReadException e = assertThrows(StreamReadException.class, () ->
                 mapper.readValue("<a>x</a>", DTO.class));
+        assertNotEquals(TokenStreamLocation.NA, e.getLocation());
     }
 
     protected XmlFactory xmlFactory(XmlNameProcessor proc) {
