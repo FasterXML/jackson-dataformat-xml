@@ -13,6 +13,8 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @Sahana2524)
 #879: Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
  (fix by @Sahana2524)
+#882: Translate base64 name-decode errors to `StreamReadException`
+ (fix by @Sahana2524)
 
 3.2.1 (10-Jul-2026)
 
