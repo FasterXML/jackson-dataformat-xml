@@ -9,6 +9,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 #873: Fix handling of `@JsonApplyView`
  (fix by @cowtowncoder, w/ Claude code)
+#878: Re-apply entity/DTD hardening after JDK deserialization of `XmlFactory`
+ (fix by @Sahana2524)
 #879: Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
  (fix by @Sahana2524)
 

@@ -154,5 +154,8 @@ Christian Beikov (@beikov)
   (3.3.0)
 
 @Sahana2524
- * Fixed #879:  Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
+ * Fixed #878: Re-apply entity/DTD hardening after JDK deserialization of
+   `XmlFactory`
+  (3.3.0)
+ * Fixed #879: Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
   (3.3.0)
