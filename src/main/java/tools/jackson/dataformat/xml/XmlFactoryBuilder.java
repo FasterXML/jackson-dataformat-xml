@@ -119,6 +119,19 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
             // 24-Oct-2022, tatu: as per [dataformat-xml#550] need extra care
             xmlIn = XMLInputFactory.newFactory();
         }
+        return secureXmlInputFactory(xmlIn);
+    }
+
+    /**
+     * Applies the default entity/DTD hardening to a freshly created
+     * {@link XMLInputFactory}. Shared so that any code path building a factory
+     * internally (including JDK-deserialization reconstruction in
+     * {@code XmlFactory.readResolve()}) applies the same protections and the two
+     * can not drift apart.
+     *
+     * @since 3.3
+     */
+    protected static XMLInputFactory secureXmlInputFactory(XMLInputFactory xmlIn) {
         // as per [dataformat-xml#190], disable external entity expansion by default
         xmlIn.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
         // and ditto wrt [dataformat-xml#211], SUPPORT_DTD
