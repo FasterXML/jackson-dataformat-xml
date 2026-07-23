@@ -243,7 +243,7 @@ public class XmlFactory
             // Only the factory class name survives serialization, so we get a bare
             // default instance back: re-apply the entity/DTD hardening the builder
             // would have set, otherwise a securely-built factory comes back with
-            // external entity + DTD processing re-enabled (see [dataformat-xml#190]/#211).
+            // external entity + DTD processing re-enabled (see [dataformat-xml#190], [dataformat-xml#211]).
             inf = XmlFactoryBuilder.secureXmlInputFactory(
                     (XMLInputFactory) Class.forName(_jdkXmlInFactory).getDeclaredConstructor().newInstance());
             outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).getDeclaredConstructor().newInstance();

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 
@@ -33,8 +34,11 @@ public class DTDAfterSerializationTest extends XmlTestUtil
     public void testDTDStaysDisabledAfterRoundtrip() throws Exception
     {
         XmlMapper mapper = jdkRoundtrip(new XmlMapper());
-        // Before the fix the reconstructed factory had DTD/entity processing
-        // re-enabled, so this would expand `&x;` instead of failing.
-        assertThrows(Exception.class, () -> mapper.readValue(ENTITY_XML, Map.class));
+        // Must fail specifically because the parser refuses the DTD-declared
+        // entity (DTD support off), leaving `&x;` unexpanded -- not for some
+        // unrelated binding reason. Before the fix this expanded to "HELLO".
+        StreamReadException e = assertThrows(StreamReadException.class,
+                () -> mapper.readValue(ENTITY_XML, Map.class));
+        verifyException(e, "Undeclared general entity", "entity");
     }
 }
