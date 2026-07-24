@@ -37,16 +37,15 @@ public class AnnotationUtil
             AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
-        if (prop == null) {
-            return null;
-        }
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsAttribute(config, prop);
-                if (b != null) {
-                    return b;
-                }
-           }
+        if (prop != null) {
+            for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                    Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsAttribute(config, prop);
+                    if (b != null) {
+                        return b;
+                    }
+               }
+            }
         }
         return null;
     }
@@ -55,14 +54,13 @@ public class AnnotationUtil
             AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
-        if (prop == null) {
-            return null;
-        }
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsText(config, prop);
-                if (b != null) {
-                    return b;
+        if (prop != null) {
+            for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                    Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsText(config, prop);
+                    if (b != null) {
+                        return b;
+                    }
                 }
             }
         }
@@ -73,14 +71,13 @@ public class AnnotationUtil
             AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
-        if (prop == null) {
-            return null;
-        }
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsCData(config, prop);
-                if (b != null) {
-                    return b;
+        if (prop != null) {
+            for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                    Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsCData(config, prop);
+                    if (b != null) {
+                        return b;
+                    }
                 }
             }
         }
@@ -95,14 +92,13 @@ public class AnnotationUtil
             AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
-        if (prop == null) {
-            return null;
-        }
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                PropertyName name = ((AnnotationIntrospector.XmlExtensions) intr).findXmlPropertyInnerName(config, prop);
-                if (name != null) {
-                    return name;
+        if (prop != null) {
+            for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                    PropertyName name = ((AnnotationIntrospector.XmlExtensions) intr).findXmlPropertyInnerName(config, prop);
+                    if (name != null) {
+                        return name;
+                    }
                 }
             }
         }
