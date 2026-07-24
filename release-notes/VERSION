@@ -9,6 +9,13 @@ Version: 3.x (for earlier see VERSION-2.x)
 
 No changes since 3.2
 
+3.2.2 (not yet released)
+
+#884: `NullPointerException` in `XmlValueInstantiators` for Record with
+  `@JsonIgnore`-annotated getter
+ (reported by @soc)
+ (fix by @cowtowncoder, w/ Claude code)
+
 3.2.1 (10-Jul-2026)
 
 #871: `XmlMapper` regression in 3.2.0: `xsi:nil` collection element on unwrapped
