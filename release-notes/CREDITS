@@ -166,3 +166,5 @@ Christian Beikov (@beikov)
   (3.3.0)
  * Fixed #882: Translate base64 name-decode errors to `StreamReadException`
   (3.3.0)
+ * Fixed #883: Translate `XMLStreamReader` creation errors to `StreamReadException`
+  (3.3.0)

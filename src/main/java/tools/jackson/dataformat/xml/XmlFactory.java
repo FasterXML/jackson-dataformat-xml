@@ -14,6 +14,8 @@ import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.core.exc.StreamWriteException;
 import tools.jackson.core.io.IOContext;
 
+import tools.jackson.databind.util.ClassUtil;
+
 import tools.jackson.dataformat.xml.deser.FromXmlParser;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 import tools.jackson.dataformat.xml.util.StaxUtil;
@@ -484,7 +486,7 @@ public class XmlFactory
             sr = _xmlInputFactory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
@@ -499,7 +501,7 @@ public class XmlFactory
             sr = _xmlInputFactory.createXMLStreamReader(r);
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
@@ -523,7 +525,7 @@ public class XmlFactory
             }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
@@ -544,7 +546,7 @@ public class XmlFactory
             }
         } catch (XMLStreamException e) {
             return StaxUtil.throwAsReadException(e, null);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return _reportBadXmlReaderCreation(e);
         }
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
@@ -555,11 +557,11 @@ public class XmlFactory
     // with unchecked exceptions on malformed input instead of `XMLStreamException`.
     // Translate to the standard read-exception type so callers see a `JacksonException`
     // here too, matching how `_initializeXmlReader` already handles the sibling case.
-    private <T> T _reportBadXmlReaderCreation(ArrayIndexOutOfBoundsException e) {
+    private <T> T _reportBadXmlReaderCreation(Throwable e) {
         throw new StreamReadException(null,
                 "Internal processing error by `XMLInputFactory` of type "
-                +_xmlInputFactory.getClass().getName()
-                +" when creating `XMLStreamReader` (consider using Woodstox instead): "
+                +ClassUtil.classNameOf(_xmlInputFactory)
+                +" when trying to create a parser (consider using Woodstox instead): "
                 +e.getMessage(), e);
     }
 

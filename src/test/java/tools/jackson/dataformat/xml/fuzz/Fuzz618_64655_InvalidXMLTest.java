@@ -7,6 +7,8 @@ import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 // [dataformat-xml#618]: Issues found by OSS-Fuzz (64655 etc)
 public class Fuzz618_64655_InvalidXMLTest extends XmlTestUtil
 {
@@ -38,6 +40,10 @@ public class Fuzz618_64655_InvalidXMLTest extends XmlTestUtil
         byte[] doc = readResource("/data/fuzz-618-"+ix+".xml");
         try {
             MAPPER.readTree(doc);
+            // 24-Jul-2026, tatu: Must not pass silently: without this the test would
+            //    also pass if no exception at all was thrown (which is how the
+            //    `XMLInputFactory` guard went missing in the 3.x port, see #883)
+            fail("Should not pass, invalid XML");
         } catch (StreamReadException e) {
             verifyException(e, errorToMatch);
         }
