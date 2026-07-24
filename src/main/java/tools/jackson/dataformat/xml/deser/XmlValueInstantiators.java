@@ -134,6 +134,13 @@ public class XmlValueInstantiators
 
         for (BeanPropertyDefinition propDef : beanDescRef.get().findProperties()) {
             final AnnotatedMember member = propDef.getPrimaryMember();
+            // 24-Jul-2026, tatu: [dataformat-xml#884] Property definition may have no
+            //    accessors at all (Record with `@JsonIgnore`d getter): if so, nothing
+            //    to rename -- and must match `XmlBeanDeserializerModifier.updateProperties()`
+            //    which also skips such properties
+            if (member == null) {
+                continue;
+            }
             final String origName = propDef.getName();
             String renamed = null;
 

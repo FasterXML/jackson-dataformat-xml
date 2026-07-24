@@ -151,7 +151,12 @@ Charles Moulliard (@cmoulliard)
 Christian Beikov (@beikov)
  * Reported #871: `XmlMapper` regression in 3.2.0: `xsi:nil` collection element on
    unwrapped collection wrongly read as null collection
-  (3.3.0)
+  (3.2.1)
+
+@soc
+ * Reported #884: `NullPointerException` in `XmlValueInstantiators` for Record
+   with `@JsonIgnore`-annotated getter
+  (3.2.2)
 
 @Sahana2524
  * Fixed #878: Re-apply entity/DTD hardening after JDK deserialization of
