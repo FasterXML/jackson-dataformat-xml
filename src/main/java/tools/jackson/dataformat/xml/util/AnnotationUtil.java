@@ -19,14 +19,13 @@ public class AnnotationUtil
             AnnotationIntrospector ai,
             AnnotatedMember prop)
     {
-        if (prop == null) {
-            return null;
-        }
-        for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, prop);
-                if (ns != null) {
-                    return ns;
+        if (prop != null) {
+            for (AnnotationIntrospector intr : ai.allIntrospectors()) {
+                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
+                    String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, prop);
+                    if (ns != null) {
+                        return ns;
+                    }
                 }
             }
         }
@@ -44,7 +43,7 @@ public class AnnotationUtil
                     if (b != null) {
                         return b;
                     }
-               }
+                }
             }
         }
         return null;
