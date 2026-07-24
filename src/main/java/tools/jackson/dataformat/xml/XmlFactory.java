@@ -552,11 +552,15 @@ public class XmlFactory
         return _fromXmlParser(readCtxt, ioCtxt, _initializeXmlReader(sr));
     }
 
-    // Some non-Woodstox Stax implementations (for example SJSXP, [dataformat-xml#618])
-    // parse the XML declaration eagerly while creating the stream reader, and can fail
-    // with unchecked exceptions on malformed input instead of `XMLStreamException`.
-    // Translate to the standard read-exception type so callers see a `JacksonException`
-    // here too, matching how `_initializeXmlReader` already handles the sibling case.
+    // 24-Jul-2026, tatu: [dataformat-xml#883] JDK's built-in Stax implementation (SJSXP)
+    //    has been seen to fail with unchecked exceptions -- instead of the expected
+    //    `XMLStreamException` -- while creating the stream reader. 2.x guards against
+    //    this in `_createParser(byte[])` (added 04-Dec-2023 while working on
+    //    [dataformat-xml#618]) but the check was lost in the 3.x port. Only the `byte[]`
+    //    case has actually been seen in the wild; other overloads guarded for symmetry.
+    //    Translate to standard read-exception type so callers only ever need to catch
+    //    `JacksonException`; same as `Stax2JacksonReaderAdapter.next()` does for the
+    //    `next()`-time SJSXP failures that #618 itself was about.
     private <T> T _reportBadXmlReaderCreation(Throwable e) {
         throw new StreamReadException(null,
                 "Internal processing error by `XMLInputFactory` of type "
