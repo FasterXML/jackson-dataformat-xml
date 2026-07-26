@@ -154,6 +154,42 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertNotEquals(TokenStreamLocation.NA, e.getLocation());
     }
 
+    // A name that is a valid XML name but already starts with the magic prefix has
+    // to be escaped too: decoding keys off that prefix, so writing such a name
+    // through as-is makes it read back as a different name than was written.
+    @Test
+    public void testBase64PrefixedNamesRoundTrip() throws Exception {
+        DTO dto = new DTO();
+
+        // would otherwise read back as "admin"
+        dto.badMap.put("base64_tag_YWRtaW4", "xyz");
+        // valid XML name, but not valid base64 past the prefix
+        dto.badMap.put("base64_tag_hello", "bar");
+        dto.badMap.put("plain", "abc");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        DTO reversed = mapper.readValue(res, DTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    @Test
+    public void testBase64CustomPrefixedNameRoundTrips() throws Exception {
+        DTO dto = new DTO();
+        dto.badMap.put("esc_YWRtaW4", "xyz");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newBase64Processor("esc_"))
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        DTO reversed = mapper.readValue(res, DTO.class);
+        assertEquals(dto, reversed);
+    }
+
     protected XmlFactory xmlFactory(XmlNameProcessor proc) {
         return XmlFactory.builder().xmlNameProcessor(proc).build();
     }

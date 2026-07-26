@@ -118,8 +118,9 @@ public final class XmlNameProcessors
      * </DTO>
      * }</pre>
      *<p>
-     * NOTE: you must ensure that no incoming element or attribute name starts
-     * with {@code prefix}, otherwise decoding will not work.
+     * NOTE: names that already start with {@code prefix} are escaped as well, even
+     * though they are otherwise valid, so that decoding cannot confuse them with
+     * names this processor encoded.
      *
      * @param prefix The prefix to use for name that are escaped
      */
@@ -197,7 +198,12 @@ public final class XmlNameProcessors
 
         @Override
         public void encodeName(XmlName name) {
-            if (!VALID_XML_NAME.matcher(name.localPart).matches()) {
+            // Names already starting with the prefix have to be escaped as well, even
+            // when otherwise valid: decodeName() base64-decodes anything carrying the
+            // prefix, so passing such a name through as-is would decode it into a
+            // different name than was written.
+            if (!VALID_XML_NAME.matcher(name.localPart).matches()
+                    || name.localPart.startsWith(_prefix)) {
                 name.localPart = _prefix + new String(BASE64_ENCODER.encode(name.localPart.getBytes(UTF_8)), UTF_8);
             }
         }
