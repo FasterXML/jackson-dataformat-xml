@@ -519,6 +519,23 @@ public class ToXmlGenerator
     }
     
     /**
+     * Method for running configured {@link XmlNameProcessor} over a name that comes
+     * from content being written (like {@code Map} keys or {@code ObjectNode} property
+     * names), as opposed to statically known POJO property names.
+     * Needed by callers that have to construct the {@link QName} themselves instead
+     * of going through {@link #writeName(String)}.
+     *
+     * @since 3.3
+     */
+    public QName encodeContentName(String namespaceURI, String localName)
+    {
+        _nameToEncode.namespace = (namespaceURI == null) ? "" : namespaceURI;
+        _nameToEncode.localPart = localName;
+        _nameProcessor.encodeName(_nameToEncode);
+        return new QName(_nameToEncode.namespace, _nameToEncode.localPart);
+    }
+
+    /**
      * Methdod called when a structured (collection, array, map) is being
      * output.
      * 
@@ -613,10 +630,7 @@ public class ToXmlGenerator
         } else {
             // Should this ever get called?
             ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-            _nameToEncode.namespace = ns;
-            _nameToEncode.localPart = name;
-            _nameProcessor.encodeName(_nameToEncode);
-            setNextName(new QName(_nameToEncode.namespace, _nameToEncode.localPart));
+            setNextName(encodeContentName(ns, name));
         }
         return this;
     }
