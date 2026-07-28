@@ -18,6 +18,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 #883: Translate `XMLStreamReader` creation errors to `StreamReadException`
   (restores guard lost in 3.x port; see 2.x `_createParser(byte[])` for #618)
  (fix by @Sahana2524)
+#887: Apply `XmlNameProcessor` to unwrapped `ObjectNode` root element name
+ (fix by @Sahana2524)
 
 3.2.2 (not yet released)
 
