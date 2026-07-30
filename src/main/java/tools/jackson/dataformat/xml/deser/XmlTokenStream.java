@@ -103,6 +103,16 @@ public class XmlTokenStream
     protected boolean _xsiNilFound;
 
     /**
+     * Index of the {@code xsi:nil} attribute of the current START_ELEMENT, if
+     * one was found (and {@code xsi:nil} processing is enabled); -1 if none.
+     * Kept so that the marker attribute itself is not exposed as a regular
+     * property no matter which position it occurs in.
+     *
+     * @since 3.3
+     */
+    protected int _xsiNilIndex = -1;
+
+    /**
      * Flag set true if current event is {@code XML_TEXT} and there is START_ELEMENT
      *
      * @since 2.12
@@ -492,6 +502,11 @@ public class XmlTokenStream
 //System.out.println(" XmlTokenStream._next(): Got xsi:nil, skipping element");
                 return _handleEndElement();
             }
+            // [dataformat-xml#354]: the xsi:nil marker itself is never exposed as
+            //   a property when xsi:nil processing is enabled
+            if (_nextAttributeIndex == _xsiNilIndex) {
+                ++_nextAttributeIndex;
+            }
             // [dataformat-xml#358]: Optionally skip XSI namespace attributes other
             //   than "type" (handled by _decodeAttributeName) and "nil" (when xsi:nil
             //   processing is disabled, it should be exposed as a regular attribute)
@@ -746,27 +761,43 @@ public class XmlTokenStream
      * @since 2.10
      */
     private final void _checkXsiAttributes() {
-        int count = _xmlReader.getAttributeCount();
+        final int count = _xmlReader.getAttributeCount();
         _attributeCount = count;
+        _nextAttributeIndex = 0;
+        _xsiNilFound = false;
+        _xsiNilIndex = -1;
 
-        // [dataformat-xml#354]: xsi:nil handling; at first only if first attribute
-        if (count >= 1) {
-            // [dataformat-xml#468]: may disable xsi:nil processing
-            if (_cfgProcessXsiNil
-                     && "nil".equals(_xmlReader.getAttributeLocalName(0))) {
-                if (XSI_NAMESPACE.equals(_xmlReader.getAttributeNamespace(0))) {
-                    // need to skip, regardless of value
-                    _nextAttributeIndex = 1;
-                    // but only mark as nil marker if enabled
-                    _xsiNilFound = "true".equals(_xmlReader.getAttributeValue(0));
+        // [dataformat-xml#354]: xsi:nil handling. Attribute order is not significant
+        // in XML so the marker has to be looked for in any position, not just first
+        // [dataformat-xml#468]: may disable xsi:nil processing
+        if (_cfgProcessXsiNil) {
+            for (int i = 0; i < count; ++i) {
+                if ("nil".equals(_xmlReader.getAttributeLocalName(i))
+                        && XSI_NAMESPACE.equals(_xmlReader.getAttributeNamespace(i))) {
+                    // need to skip the attribute itself, regardless of value
+                    _xsiNilIndex = i;
+                    // but only mark as nil marker if value says so
+                    _xsiNilFound = _isXsiNilTrue(_xmlReader.getAttributeValue(i));
 //System.out.println(" XMLTokenStream._checkXsiAttributes(), _xsiNilFound: "+_xsiNilFound);
                     return;
                 }
             }
         }
+    }
 
-        _nextAttributeIndex = 0;
-        _xsiNilFound = false;
+    /**
+     * {@code xsi:nil} is of type {@code xs:boolean}, whose lexical space is
+     * "true", "false", "1" and "0", with surrounding white space collapsed.
+     * Comparison stays case-sensitive since {@code xs:boolean} is.
+     *
+     * @since 3.3
+     */
+    private static boolean _isXsiNilTrue(String value) {
+        if (value == null) {
+            return false;
+        }
+        final String v = value.trim();
+        return "true".equals(v) || "1".equals(v);
     }
 
     /**
