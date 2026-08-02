@@ -173,3 +173,5 @@ Christian Beikov (@beikov)
  * Fixed #887: Apply `XmlNameProcessor` to unwrapped `ObjectNode` root element
    name
   (3.3.0)
+ * Fixed #888: Honor `xsi:nil` in any attribute position and `xs:boolean` form
+  (3.3.0)

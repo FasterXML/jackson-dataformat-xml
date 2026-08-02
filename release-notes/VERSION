@@ -22,6 +22,8 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @Sahana2524)
 #887: Apply `XmlNameProcessor` to unwrapped `ObjectNode` root element name
  (fix by @Sahana2524)
+#888: Honor `xsi:nil` in any attribute position and `xs:boolean` form
+ (fix by @Sahana2524)
 
 3.2.2 (not yet released)
 
