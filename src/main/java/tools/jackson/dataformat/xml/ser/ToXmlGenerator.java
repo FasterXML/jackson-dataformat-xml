@@ -520,10 +520,11 @@ public class ToXmlGenerator
     
     /**
      * Method for running configured {@link XmlNameProcessor} over a name that comes
-     * from content being written (like {@code Map} keys or {@code ObjectNode} property
-     * names), as opposed to statically known POJO property names.
+     * from content being written (like {@code ObjectNode} property names), as opposed
+     * to statically known POJO property names.
      * Needed by callers that have to construct the {@link QName} themselves instead
-     * of going through {@link #writeName(String)}.
+     * of going through {@link #writeName(String)} (which applies the processor for
+     * names it writes).
      *
      * @since 3.3
      */
@@ -608,7 +609,6 @@ public class ToXmlGenerator
             _reportError("Can not write a property name, expecting a value");
         }
 
-        String ns;
         // 30-Jan-2024, tatu: Surprise!
         if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)
                 && "xsi:type".equals(name)) {
@@ -629,7 +629,7 @@ public class ToXmlGenerator
             }
         } else {
             // Should this ever get called?
-            ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
+            String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
             setNextName(encodeContentName(ns, name));
         }
         return this;
