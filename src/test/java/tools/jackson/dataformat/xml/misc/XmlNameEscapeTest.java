@@ -199,6 +199,19 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertEquals(dto, reversed);
     }
 
+    // Null prefix/replacement would otherwise only blow up deep inside name handling
+    @Test
+    public void testBase64NullPrefixFailsAtConstruction() throws Exception {
+        assertThrows(NullPointerException.class,
+                () -> XmlNameProcessors.newBase64Processor(null));
+    }
+
+    @Test
+    public void testReplacementNullFailsAtConstruction() throws Exception {
+        assertThrows(NullPointerException.class,
+                () -> XmlNameProcessors.newReplacementProcessor(null));
+    }
+
     protected XmlFactory xmlFactory(XmlNameProcessor proc) {
         return XmlFactory.builder().xmlNameProcessor(proc).build();
     }
