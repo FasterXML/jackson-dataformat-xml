@@ -275,8 +275,10 @@ public class XmlSerializationContext extends SerializationContextExt
         Map.Entry<String, JsonNode> entry = root.properties().iterator().next();
         final JsonNode newRoot = entry.getValue();
 
+        // Name comes from content, so has to go through the same XmlNameProcessor
+        // the generator applies to other content-derived names.
         // No namespace associated with JsonNode:
-        _initWithRootName(xgen, new QName(entry.getKey()));
+        _initWithRootName(xgen, xgen.encodeContentName("", entry.getKey()));
         if (ser == null) {
             ser = findTypedValueSerializer(newRoot.getClass(), true);
         }

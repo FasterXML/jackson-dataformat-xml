@@ -168,3 +168,8 @@ Christian Beikov (@beikov)
   (3.3.0)
  * Fixed #883: Translate `XMLStreamReader` creation errors to `StreamReadException`
   (3.3.0)
+ * Fixed #886: Escape names already starting with prefix in `Base64NameProcessor`
+  (3.3.0)
+ * Fixed #887: Apply `XmlNameProcessor` to unwrapped `ObjectNode` root element
+   name
+  (3.3.0)
