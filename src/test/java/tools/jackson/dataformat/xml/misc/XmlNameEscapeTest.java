@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // For [dataformat-xml#531]
 public class XmlNameEscapeTest extends XmlTestUtil
@@ -172,12 +173,18 @@ public class XmlNameEscapeTest extends XmlTestUtil
         ).build();
 
         final String res = mapper.writeValueAsString(dto);
+        // Prefixed names get escaped...
+        assertTrue(res.contains("base64_tag_YmFzZTY0X3RhZ19ZV1J0YVc0"), res);
+        assertTrue(res.contains("base64_tag_YmFzZTY0X3RhZ19oZWxsbw"), res);
+        // ... but ordinary valid names still pass through as-is
+        assertTrue(res.contains("<plain>abc</plain>"), res);
+
         DTO reversed = mapper.readValue(res, DTO.class);
         assertEquals(dto, reversed);
     }
 
     @Test
-    public void testBase64CustomPrefixedNameRoundTrips() throws Exception {
+    public void testBase64CustomPrefixedNameRoundTrip() throws Exception {
         DTO dto = new DTO();
         dto.badMap.put("esc_YWRtaW4", "xyz");
 
@@ -186,6 +193,8 @@ public class XmlNameEscapeTest extends XmlTestUtil
         ).build();
 
         final String res = mapper.writeValueAsString(dto);
+        assertTrue(res.contains("esc_ZXNjX1lXUnRhVzQ"), res);
+
         DTO reversed = mapper.readValue(res, DTO.class);
         assertEquals(dto, reversed);
     }
