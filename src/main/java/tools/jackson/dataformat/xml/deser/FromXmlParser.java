@@ -548,7 +548,7 @@ public class FromXmlParser
                     if (stillLong) {
                         _numberLong = NumberInput.parseLong(text);
                         _numTypesValid = NR_LONG;
-                        _currToken = JsonToken.VALUE_NUMBER_INT;
+                        _updateToken(JsonToken.VALUE_NUMBER_INT);
                         return true;
                     }
                 }
