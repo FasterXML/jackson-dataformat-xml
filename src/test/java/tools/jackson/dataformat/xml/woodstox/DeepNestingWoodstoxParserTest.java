@@ -4,6 +4,7 @@ import com.ctc.wstx.stax.WstxInputFactory;
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.JsonParser;
+import tools.jackson.core.StreamReadConstraints;
 
 import tools.jackson.dataformat.xml.*;
 
@@ -19,6 +20,10 @@ public class DeepNestingWoodstoxParserTest extends XmlTestUtil
         XmlMapper xmlMapper = new XmlMapper(
                 XmlFactory.builder()
                 .xmlInputFactory(wstxInputFactory)
+                // match the raised Stax element-depth limit so the jackson-core
+                // nesting-depth limit does not reject this deliberately deep doc
+                .streamReadConstraints(StreamReadConstraints.builder()
+                        .maxNestingDepth(2000).build())
                 .build());
         final String XML = createDeepNestedDoc(1050);
         try (JsonParser p = xmlMapper.createParser(XML)) {

@@ -15,9 +15,12 @@ public class TokenCountTest extends XmlTestUtil
     final XmlMapper XML_MAPPER;
     {
         final XmlFactory factory = XmlFactory.builder()
-                // token count is only checked when maxTokenCount is set
+                // token count is only checked when maxTokenCount is set;
+                // raise nesting limit so the deep-doc case hits the token-count
+                // limit rather than the (now enforced) nesting-depth limit
                 .streamReadConstraints(StreamReadConstraints.builder()
                         .maxTokenCount(1000)
+                        .maxNestingDepth(2000)
                         .build())
                 .build();
         XML_MAPPER = mapperBuilder(factory).build();
