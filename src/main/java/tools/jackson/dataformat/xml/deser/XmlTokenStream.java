@@ -732,28 +732,36 @@ public class XmlTokenStream
 
         _checkXsiAttributes();
 
+        // Decode the name up front: virtual wrappers store the decoded name
+        // (repeatStartElement uses _localName/_namespaceURI), so with a
+        // configured XmlNameProcessor the match below has to compare the
+        // decoded name too. Otherwise every unwrapped list item fails to match
+        // its own wrapper and each element closes the virtual array, silently
+        // dropping all but the last. The delayed-replay path keeps the raw
+        // name since _handleRepeatElement decodes it again later.
+        _decodeElementName(ns, localName);
+
         // Support for virtual wrapping: in wrapping, may either create a new
         // wrapper scope (if in sub-tree, or matches wrapper element itself),
         // or implicitly close existing scope.
 
         if (_currentWrapper != null) {
-            if (_currentWrapper.matchesWrapper(localName, ns)) {
+            if (_currentWrapper.matchesWrapper(_localName, _namespaceURI)) {
                 _currentWrapper = _currentWrapper.intermediateWrapper();
 //System.out.println(" _initStartElement(): START_ELEMENT ("+localName+") DOES match ["+_currentWrapper+"]: leave/add intermediate");
             } else {
                 // implicit end is more interesting:
 //System.out.println(" _initStartElement(): START_ELEMENT ("+localName+") not matching '"+_localName+"'; add extra XML-END-ELEMENT!");
+                // Restore the (raw) START_ELEMENT to replay after the synthetic END:
+                _nextLocalName = localName;
+                _nextNamespaceURI = ns;
                 _localName = _currentWrapper.getWrapperLocalName();
                 _namespaceURI = _currentWrapper.getWrapperNamespace();
                 _currentWrapper = _currentWrapper.getParent();
-                // Important! We also need to restore the START_ELEMENT, so:
-                _nextLocalName = localName;
-                _nextNamespaceURI = ns;
                 _repeatElement = REPLAY_START_DELAYED;
                 return (_currentState = XML_END_ELEMENT);
             }
         }
-        _decodeElementName(ns, localName);
         return (_currentState = XML_START_ELEMENT);
     }
 
