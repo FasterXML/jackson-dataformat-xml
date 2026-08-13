@@ -24,6 +24,8 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @Sahana2524)
 #888: Honor `xsi:nil` in any attribute position and `xs:boolean` form
  (fix by @Sahana2524)
+#890: Count 19-digit `long` coercion in `isExpectedNumberIntToken()`
+ (fix by @Sahana2524)
 
 3.2.2 (not yet released)
 
