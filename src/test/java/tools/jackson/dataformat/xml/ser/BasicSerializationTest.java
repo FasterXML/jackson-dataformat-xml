@@ -17,7 +17,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("serial")
-public class TestSerialization extends XmlTestUtil
+public class BasicSerializationTest extends XmlTestUtil
 {
     static class StringBean2
     {

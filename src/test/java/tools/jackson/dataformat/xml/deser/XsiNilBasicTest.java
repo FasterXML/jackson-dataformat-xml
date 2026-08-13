@@ -154,6 +154,81 @@ public class XsiNilBasicTest extends XmlTestUtil
                     .readValue(DOC).toString());
     }
 
+    // [dataformat-xml#354]: attribute order is not significant in XML, so the
+    // marker has to be honored wherever it occurs in the attribute list
+    @Test
+    public void testXsiNilAfterOtherAttribute() throws Exception
+    {
+        final ObjectReader r = MAPPER.readerFor(JsonNode.class);
+
+        assertEquals(a2q("{'d':null}"),
+                r.readValue("<e "+XSI_NS_DECL+"><d xsi:nil='true' id='1'/></e>").toString());
+        assertEquals(a2q("{'d':null}"),
+                r.readValue("<e "+XSI_NS_DECL+"><d id='1' xsi:nil='true'/></e>").toString());
+        // and same for an element that has content, not just attributes
+        assertEquals(a2q("{'d':null}"),
+                r.readValue("<e "+XSI_NS_DECL+"><d id='1' xsi:nil='true'>0.25</d></e>").toString());
+    }
+
+    @Test
+    public void testXsiNilAfterOtherAttributeForPojo() throws Exception
+    {
+        DoubleWrapper2 bean = MAPPER.readValue(
+"<DoubleWrapper "+XSI_NS_DECL+">\n"
++"<a id='1' xsi:nil='true'/>\n"
++"<b id='2' xsi:nil='false'>0.25</b>\n"
++"</DoubleWrapper>",
+            DoubleWrapper2.class);
+        assertNotNull(bean);
+        assertNull(bean.a);
+        assertEquals(Double.valueOf(0.25), bean.b);
+    }
+
+    // Marker attribute itself must not be exposed as a property either, no matter
+    // its position; without this, "xsi:nil" leaks in as a property named "nil"
+    @Test
+    public void testXsiNilFalseAfterOtherAttributeNotExposed() throws Exception
+    {
+        final ObjectReader r = MAPPER.readerFor(JsonNode.class);
+
+        assertEquals(a2q("{'d':{'id':'1','':'0.25'}}"),
+                r.readValue("<e "+XSI_NS_DECL+"><d xsi:nil='false' id='1'>0.25</d></e>").toString());
+        assertEquals(a2q("{'d':{'id':'1','':'0.25'}}"),
+                r.readValue("<e "+XSI_NS_DECL+"><d id='1' xsi:nil='false'>0.25</d></e>").toString());
+    }
+
+    // `xsi:nil` is `xs:boolean`, so "1" is as much a nil marker as "true", and
+    // surrounding white space is collapsed before the value is read
+    @Test
+    public void testXsiNilBooleanLexicalForms() throws Exception
+    {
+        final ObjectReader r = MAPPER.readerFor(JsonNode.class);
+
+        for (String nil : new String[] { "true", "1", " true ", "\n1\t" }) {
+            assertEquals(a2q("{'d':null}"),
+                    r.readValue("<e "+XSI_NS_DECL+"><d xsi:nil='"+nil+"'>0.25</d></e>").toString(),
+                    "xsi:nil='"+nil+"' should mark element as null");
+        }
+        // ... but "false"/"0" do not, and neither does a non-boolean value
+        // ("xs:boolean" is case-sensitive, so "TRUE" is not valid)
+        for (String nonNil : new String[] { "false", "0", "TRUE", "yes" }) {
+            assertEquals(a2q("{'d':'0.25'}"),
+                    r.readValue("<e "+XSI_NS_DECL+"><d xsi:nil='"+nonNil+"'>0.25</d></e>").toString(),
+                    "xsi:nil='"+nonNil+"' should not mark element as null");
+        }
+    }
+
+    @Test
+    public void testXsiNilAfterOtherAttributeOnRoot() throws Exception
+    {
+        final ObjectReader r = MAPPER_NO_TRAILING_CHECK.readerFor(JsonNode.class);
+
+        assertEquals("null",
+                r.readValue("<Point "+XSI_NS_DECL+" xsi:nil='true' id='1'/>").toString());
+        assertEquals("null",
+                r.readValue("<Point "+XSI_NS_DECL+" id='1' xsi:nil='true'/>").toString());
+    }
+
     // [dataformat-xml#714]: trailing bogus `JsonToken.END_OBJECT`
     /*
     @Test

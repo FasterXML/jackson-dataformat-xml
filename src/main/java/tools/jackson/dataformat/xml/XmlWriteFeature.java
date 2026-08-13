@@ -12,6 +12,59 @@ import tools.jackson.core.FormatFeature;
 public enum XmlWriteFeature implements FormatFeature
 {
     /**
+     * Feature that enables automatic conversion of logical property
+     * name {@code "xsi:type"} into matching XML name where "type"
+     * is the local name and "xsi" prefix is bound to URI
+     * {@link XMLConstants#W3C_XML_SCHEMA_INSTANCE_NS_URI},
+     * and output is indicated to be done as XML Attribute.
+     * This is mostly desirable for Polymorphic handling where it is difficult
+     * to specify XML Namespace for type identifier
+     *<p>
+     * Default setting is {@code true} (enabled) in Jackson 3.0:
+     * it was {@code false} (disabled)in Jackson 2.x.
+     */
+    AUTO_DETECT_XSI_TYPE(true),
+
+    /**
+     * Feature that determines whether attempt to serialize a directly nested
+     * array or {@link java.util.Collection} (i.e. an
+     * array/Collection whose immediate parent is also an array/Collection
+     * — without an intermediate POJO) should fail with an exception (true)
+     * or be allowed (false) — knowing that, when allowed, the resulting XML
+     * cannot represent the nested structure and the inner dimension will be
+     * silently flattened into the outer one, nor can it be deserialized back.
+     *<p>
+     * "Natural-style" XML has no canonical representation for an unnamed
+     * nested array, so a clean round-trip is not possible without an
+     * intermediate POJO wrapper.
+     *<p>
+     * Default setting is {@code true} (enabled): nested arrays cause an
+     * exception. Disabling restores the legacy behavior of
+     * silently flattening dimensions.
+     *<p>
+     * See <a href="https://github.com/FasterXML/jackson-dataformat-xml/issues/556">#556</a>.
+     *
+     * @since 3.2
+     */
+    FAIL_ON_NESTED_ARRAYS(true),
+
+    /**
+     * Feature that determines writing of root values of type {@code ObjectNode}
+     * ({@code JsonNode} subtype that represents Object content values),
+     * regarding XML output.
+     * If enabled and {@code ObjectNode} has exactly one entry (key/value pair),
+     * then key of that entry is used as the root element name (and value
+     * is written as contents. Otherwise (if feature disabled, or if root
+     * {@code ObjectNode} has any other number of key/value entries,
+     * root element name is determined using normal logic (either explicitly
+     * configured, or {@code ObjectNode} otherwise).
+     *<p>
+     * Default setting is {@code true} (enabled) in Jackson 3.x:
+     * it was {@code false} (disabled)in Jackson 2.x.
+     */
+    UNWRAP_ROOT_OBJECT_NODE(true),
+
+    /**
      * Feature that controls whether XML declaration should be written before
      * when generator is initialized (true) or not (false)
      */
@@ -49,36 +102,6 @@ public enum XmlWriteFeature implements FormatFeature
     WRITE_NULLS_AS_XSI_NIL(true),
 
     /**
-     * Feature that determines writing of root values of type {@code ObjectNode}
-     * ({@code JsonNode} subtype that represents Object content values),
-     * regarding XML output.
-     * If enabled and {@code ObjectNode} has exactly one entry (key/value pair),
-     * then key of that entry is used as the root element name (and value
-     * is written as contents. Otherwise (if feature disabled, or if root
-     * {@code ObjectNode} has any other number of key/value entries,
-     * root element name is determined using normal logic (either explicitly
-     * configured, or {@code ObjectNode} otherwise).
-     *<p>
-     * Default setting is {@code true} (enabled) in Jackson 3.x:
-     * it was {@code false} (disabled)in Jackson 2.x.
-     */
-    UNWRAP_ROOT_OBJECT_NODE(true),
-
-    /**
-     * Feature that enables automatic conversion of logical property
-     * name {@code "xsi:type"} into matching XML name where "type"
-     * is the local name and "xsi" prefix is bound to URI
-     * {@link XMLConstants#W3C_XML_SCHEMA_INSTANCE_NS_URI},
-     * and output is indicated to be done as XML Attribute.
-     * This is mostly desirable for Polymorphic handling where it is difficult
-     * to specify XML Namespace for type identifier
-     *<p>
-     * Default setting is {@code true} (enabled) in Jackson 3.0:
-     * it was {@code false} (disabled)in Jackson 2.x.
-     */
-    AUTO_DETECT_XSI_TYPE(true),
-
-    /**
      * Feature that determines how floating-point infinity values are
      * serialized.
      *<p>
@@ -104,7 +127,7 @@ public enum XmlWriteFeature implements FormatFeature
      * {@link tools.jackson.dataformat.xml.XmlReadFeature}.
      *<p>
      * Default setting is {@code true} (enabled) in Jackson 3.0:
-     * it was {@code false} (disabled)in Jackson 2.x.
+     * it was {@code false} (disabled) in Jackson 2.x.
      */
     WRITE_XML_SCHEMA_CONFORMING_FLOATS(true),
     ;

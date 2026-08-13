@@ -43,6 +43,10 @@ Stefan Walter (@marvin9000)
  * Requested #150: Allow specifying DOCTYPE declaration (`<!DOCTYPE root ...>`) to write
   (3.2.0)
 
+Joachim Lous (@jlous)
+ * Requested #207: Allow custom prefixes for Namespaces
+  (3.2.0)
+
 Leonard Meyer (@LeonardMeyer)
  * Reported #247: `@JacksonXmlRootElement` does not enforce the local name during
   deserialization (add `XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME`)
@@ -51,6 +55,11 @@ Leonard Meyer (@LeonardMeyer)
 Tobias M (@lightbringer)
  * Reported #248: `@JacksonXmlProperty` with attributes raises an exception
    when used with `@JsonIdentityInfo`
+  (3.2.0)
+
+Cassio Mazzochi Molin (@cassiomolin)
+ * Requested #315: Allow specifying encodings other than UTF-8 in
+   XML declaration written
   (3.2.0)
 
 Eduard Wirch (@ewirch)
@@ -138,3 +147,33 @@ Veit-Hendrik Schlenker (@vhschlenker)
 Charles Moulliard (@cmoulliard)
  * Reported #795: `HttpHeader` object (= <httpHeaders>) is not wrapped by the XML `<property>` tag
   (3.2.0)
+
+Christian Beikov (@beikov)
+ * Reported #871: `XmlMapper` regression in 3.2.0: `xsi:nil` collection element on
+   unwrapped collection wrongly read as null collection
+  (3.2.1)
+
+@soc
+ * Reported #884: `NullPointerException` in `XmlValueInstantiators` for Record
+   with `@JsonIgnore`-annotated getter
+  (3.2.2)
+
+@Sahana2524
+ * Fixed #878: Re-apply entity/DTD hardening after JDK deserialization of
+   `XmlFactory`
+  (3.3.0)
+ * Fixed #879: Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
+  (3.3.0)
+ * Fixed #882: Translate base64 name-decode errors to `StreamReadException`
+  (3.3.0)
+ * Fixed #883: Translate `XMLStreamReader` creation errors to `StreamReadException`
+  (3.3.0)
+ * Fixed #886: Escape names already starting with prefix in `Base64NameProcessor`
+  (3.3.0)
+ * Fixed #887: Apply `XmlNameProcessor` to unwrapped `ObjectNode` root element
+   name
+  (3.3.0)
+ * Fixed #888: Honor `xsi:nil` in any attribute position and `xs:boolean` form
+  (3.3.0)
+ * Fixed #890: Count 19-digit `long` coercion in `isExpectedNumberIntToken()`
+  (3.3.0)

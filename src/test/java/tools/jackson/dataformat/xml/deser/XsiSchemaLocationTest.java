@@ -73,6 +73,21 @@ public class XsiSchemaLocationTest extends XmlTestUtil
         assertEquals(42, result.count);
     }
 
+    // Skipping the "unknown" XSI attributes must not take xsi:nil with it:
+    // schema-annotated documents put xsi:schemaLocation first, leaving the
+    // nil marker in a later position
+    @Test
+    public void testXsiNilAfterXsiSchemaLocation() throws Exception
+    {
+        Dto result = MAPPER_SKIP.readValue(
+                "<Dto xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+                + "<value xsi:schemaLocation=\"http://SomeNamespace schema.xsd\""
+                + " xsi:nil=\"true\"/>"
+                + "</Dto>",
+                Dto.class);
+        assertNull(result.value);
+    }
+
     // When feature is disabled (default), XSI attributes should be exposed
     // and bindable to POJO properties
     @Test

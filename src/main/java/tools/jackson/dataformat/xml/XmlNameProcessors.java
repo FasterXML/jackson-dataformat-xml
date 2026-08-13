@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml;
 
 import java.util.Base64;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -118,8 +119,9 @@ public final class XmlNameProcessors
      * </DTO>
      * }</pre>
      *<p>
-     * NOTE: you must ensure that no incoming element or attribute name starts
-     * with {@code prefix}, otherwise decoding will not work.
+     * NOTE: names that already start with {@code prefix} are escaped as well, even
+     * though they are otherwise valid, so that decoding cannot confuse them with
+     * names this processor encoded.
      *
      * @param prefix The prefix to use for name that are escaped
      */
@@ -166,7 +168,9 @@ public final class XmlNameProcessors
         private final String _replacement;
 
         public ReplaceNameProcessor(String replacement) {
-            _replacement = replacement;
+            // Only used as replaceAll() argument, so a null one would otherwise
+            // only fail on the first name written: fail here instead
+            _replacement = Objects.requireNonNull(replacement, "replacement cannot be null");
         }
 
         @Override
@@ -192,12 +196,19 @@ public final class XmlNameProcessors
         private final String _prefix;
 
         public Base64NameProcessor(String prefix) {
-            _prefix = prefix;
+            // Both encodeName() and decodeName() test names against the prefix, so
+            // a null one would only fail deep inside name handling: fail here instead
+            _prefix = Objects.requireNonNull(prefix, "prefix cannot be null");
         }
 
         @Override
         public void encodeName(XmlName name) {
-            if (!VALID_XML_NAME.matcher(name.localPart).matches()) {
+            // Names already starting with the prefix have to be escaped as well, even
+            // when otherwise valid: decodeName() base64-decodes anything carrying the
+            // prefix, so passing such a name through as-is would decode it into a
+            // different name than was written.
+            if (!VALID_XML_NAME.matcher(name.localPart).matches()
+                    || name.localPart.startsWith(_prefix)) {
                 name.localPart = _prefix + new String(BASE64_ENCODER.encode(name.localPart.getBytes(UTF_8)), UTF_8);
             }
         }

@@ -10,7 +10,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestSerializationOrdering extends XmlTestUtil
+public class SerializationOrderingTest extends XmlTestUtil
 {
     @JsonPropertyOrder({"a", "c" })
     static class Bean91 {

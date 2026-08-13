@@ -12,7 +12,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestSerializationAttr extends XmlTestUtil
+public class AttributeSerializationTest extends XmlTestUtil
 {
     static class NsAttrBean
     {
@@ -57,9 +57,9 @@ public class TestSerializationAttr extends XmlTestUtil
     }
 
     /*
-    /**********************************************************
-    /* Unit tests
-    /**********************************************************
+    /**********************************************************************
+    /* Test methods
+    /**********************************************************************
      */
 
     private final XmlMapper XML_MAPPER = newMapper();
@@ -99,7 +99,8 @@ public class TestSerializationAttr extends XmlTestUtil
         values.put("prop1", "val1");
 
         String xml = XML_MAPPER.writeValueAsString(new DynaBean(values));
-        assertEquals("<dynaBean class=\"TestSerializationAttr$DynaBean\"><prop1>val1</prop1></dynaBean>",
+        assertEquals("<dynaBean class=\""+
+                getClass().getSimpleName()+"$DynaBean\"><prop1>val1</prop1></dynaBean>",
                 removeSjsxpNamespace(xml));
     }
 

@@ -13,7 +13,7 @@ import tools.jackson.dataformat.xml.XmlTestUtil;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Base64VariantWriteTest extends XmlTestUtil
+public class Base64VariantSerializationTest extends XmlTestUtil
 {
     public static class BinaryValue {
         public byte[] value;

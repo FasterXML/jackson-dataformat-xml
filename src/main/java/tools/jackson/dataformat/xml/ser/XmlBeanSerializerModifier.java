@@ -77,6 +77,15 @@ public class XmlBeanSerializerModifier
 
             // first things first: no wrapping?
             if (wrapperName == null || wrapperName == PropertyName.NO_NAME) {
+                // [dataformat-xml#627]/[dataformat-xml#871]: For an unwrapped
+                // Collection/array property, a null value must be omitted (as in the
+                // wrapped case below) rather than written as an `xsi:nil` element --
+                // otherwise it is indistinguishable, on read, from a collection holding
+                // a single null element. Only applies to concrete indexed types (not the
+                // dynamic Object-typed case) and only to plain BeanPropertyWriters.
+                if (!dynamicWrapping && bpw.getClass() == BeanPropertyWriter.class) {
+                    beanProperties.set(i, new XmlNullSuppressingBeanPropertyWriter(bpw));
+                }
                 continue;
             }
             // no local name? Just double the wrapped name for wrapper

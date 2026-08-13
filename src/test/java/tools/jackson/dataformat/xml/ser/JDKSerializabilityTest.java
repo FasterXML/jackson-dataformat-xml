@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Unit test related to core [core#31](https://github.com/FasterXML/jackson-core/issues/31)
  * as it relates to XmlFactory.
  */
-public class TestJDKSerializability extends XmlTestUtil
+public class JDKSerializabilityTest extends XmlTestUtil
 {
     @JsonRootName("MyPojo")
     @JsonPropertyOrder({ "x", "y" })

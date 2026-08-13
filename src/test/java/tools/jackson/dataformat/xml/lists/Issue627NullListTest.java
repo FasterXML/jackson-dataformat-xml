@@ -42,8 +42,11 @@ public class Issue627NullListTest extends XmlTestUtil
         assertNull(a.getChildren());
 
         String xml = mapper.writeValueAsString(a);
-        assertTrue(xml.contains("xsi:nil=\"true\""),
-                "Null list should serialize with xsi:nil");
+        // [dataformat-xml#871]: a null unwrapped collection is omitted (not written as
+        // an `xsi:nil` element, which would be ambiguous with a single null element);
+        // consistent with the wrapped-collection case.
+        assertFalse(xml.contains("children"),
+                "Null unwrapped list should be omitted, was: " + xml);
 
         Parent b = mapper.readValue(xml, Parent.class);
 
@@ -86,7 +89,9 @@ public class Issue627NullListTest extends XmlTestUtil
         assertEquals("test", b.getChildren().get(0).getName());
     }
 
-    // Verify deserializing explicit xsi:nil on unwrapped list property
+    // [dataformat-xml#871]: an explicit xsi:nil on an unwrapped collection element
+    // denotes a single null *element* within the collection -- NOT a null collection.
+    // (A null collection is instead omitted on serialization; see round-trip tests above.)
     @Test
     public void testXsiNilUnwrappedListDeser() throws Exception
     {
@@ -97,7 +102,9 @@ public class Issue627NullListTest extends XmlTestUtil
         String xml = "<Parent><children xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/></Parent>";
         Parent b = mapper.readValue(xml, Parent.class);
 
-        assertNull(b.getChildren(),
-                "xsi:nil on unwrapped list element should produce null list");
+        assertNotNull(b.getChildren(),
+                "xsi:nil on unwrapped list element should produce a list with one null element");
+        assertEquals(1, b.getChildren().size());
+        assertNull(b.getChildren().get(0));
     }
 }

@@ -100,11 +100,32 @@ public class ToXmlGenerator
      */
 
     /**
+     * Custom XML declaration to write (if not {@code null}).
+     *
+     * @since 3.2
+     */
+    protected XmlDeclaration _xmlDeclaration;
+
+    /**
+     * Namespace bindings to add, if any.
+     *
+     * @since 3.2
+     */
+    protected List<NamespaceBinding> _namespaceBindings;
+
+    /**
      * XML directives (DTD, Comments, PIs) to write, if any.
      *
      * @since 3.2
      */
     protected List<PrologDirective> _prologDirectives;
+
+    /**
+     * Attributes to add to the root element, if any.
+     *
+     * @since 3.2
+     */
+    protected List<RootAttribute> _rootAttributes;
 
     /**
      * Whether linefeed ("pretty-printing") enabled between directives
@@ -228,18 +249,25 @@ public class ToXmlGenerator
 
     /**
      * Method called by {@link XmlGeneratorInitializer} to inject
-     * necessary configuration.
+     * necessary configuration like Prolog Directives and namespace
+     * bindings.
      *
      * @since 3.2
      */
-    public void initProlog(boolean lfBetweenPrologDirectives,
-            List<PrologDirective> directives)
+    public void initDocument(XmlDeclaration xmlDeclaration,
+            boolean lfBetweenPrologDirectives,
+            List<PrologDirective> directives,
+            List<NamespaceBinding> nsBindings,
+            List<RootAttribute> rootAttributes)
     {
         if (_initialized) { // sanity check
-            _reportError("Internal error: cannot call `initConfig()` after generator already initialized");
+            _reportError("Internal error: cannot call `initDocument()` after generator already initialized");
         }
+        _xmlDeclaration = xmlDeclaration;
+        _namespaceBindings = nsBindings;
         _lfBetweenPrologDirectives = lfBetweenPrologDirectives;
         _prologDirectives = directives;
+        _rootAttributes = rootAttributes;
     }
 
     /**
@@ -254,23 +282,34 @@ public class ToXmlGenerator
         }
         _initialized = true;
         try {
-            final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
-            if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
-
-                String xmlVersion = xml11Decl ? "1.1" : "1.0";
-                String encoding = "UTF-8";
-
-                if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
-                    _xmlWriter.writeStartDocument(xmlVersion, encoding, true);
-                } else {
-                    _xmlWriter.writeStartDocument(encoding, xmlVersion);
-                }
-                // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
-                //    OR _lfBetweenPrologDirectives passed by initializer
-                if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
+            if (_xmlDeclaration != null) {
+                _xmlDeclaration.write(this, _xmlWriter);
+                // Unlike the legacy branch below, the custom-declaration path
+                // intentionally respects only `_lfBetweenPrologDirectives` and
+                // does not force a linefeed when a pretty-printer is active:
+                // caller opted into explicit control via `XmlGeneratorInitializer`.
+                if (_lfBetweenPrologDirectives) {
                     _prologLinefeed();
                 }
+            } else {
+                final boolean xml11Decl = XmlWriteFeature.WRITE_XML_1_1.enabledIn(_formatFeatures);
+                if (xml11Decl || XmlWriteFeature.WRITE_XML_DECLARATION.enabledIn(_formatFeatures)) {
+                    String xmlVersion = xml11Decl ? "1.1" : "1.0";
+                    String encoding = "UTF-8";
+
+                    if (XmlWriteFeature.WRITE_STANDALONE_YES_TO_XML_DECLARATION.enabledIn(_formatFeatures)) {
+                        _xmlWriter.writeStartDocument(xmlVersion, encoding, true);
+                    } else {
+                        _xmlWriter.writeStartDocument(encoding, xmlVersion);
+                    }
+                    // 20-Apr-2026, tatu: for legacy path, only output prolog lf when pretty-printing
+                    //    OR _lfBetweenPrologDirectives passed by initializer
+                    if (_lfBetweenPrologDirectives || _xmlPrettyPrinter != null) {
+                        _prologLinefeed();
+                    }
+                }
             }
+
             if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)) {
                 _xmlWriter.setPrefix("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             }
@@ -285,7 +324,11 @@ public class ToXmlGenerator
                     }
                 }
             }
-
+            if (_namespaceBindings != null) {
+                for (NamespaceBinding ns : _namespaceBindings) {
+                    ns.write(this, _xmlWriter);
+                }
+            }
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
         }
@@ -476,6 +519,24 @@ public class ToXmlGenerator
     }
     
     /**
+     * Method for running configured {@link XmlNameProcessor} over a name that comes
+     * from content being written (like {@code ObjectNode} property names), as opposed
+     * to statically known POJO property names.
+     * Needed by callers that have to construct the {@link QName} themselves instead
+     * of going through {@link #writeName(String)} (which applies the processor for
+     * names it writes).
+     *
+     * @since 3.3
+     */
+    public QName encodeContentName(String namespaceURI, String localName)
+    {
+        _nameToEncode.namespace = (namespaceURI == null) ? "" : namespaceURI;
+        _nameToEncode.localPart = localName;
+        _nameProcessor.encodeName(_nameToEncode);
+        return new QName(_nameToEncode.namespace, _nameToEncode.localPart);
+    }
+
+    /**
      * Methdod called when a structured (collection, array, map) is being
      * output.
      * 
@@ -548,7 +609,6 @@ public class ToXmlGenerator
             _reportError("Can not write a property name, expecting a value");
         }
 
-        String ns;
         // 30-Jan-2024, tatu: Surprise!
         if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)
                 && "xsi:type".equals(name)) {
@@ -569,11 +629,8 @@ public class ToXmlGenerator
             }
         } else {
             // Should this ever get called?
-            ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-            _nameToEncode.namespace = ns;
-            _nameToEncode.localPart = name;
-            _nameProcessor.encodeName(_nameToEncode);
-            setNextName(new QName(_nameToEncode.namespace, _nameToEncode.localPart));
+            String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
+            setNextName(encodeContentName(ns, name));
         }
         return this;
     }
@@ -617,6 +674,7 @@ public class ToXmlGenerator
     public JsonGenerator writeStartArray() throws JacksonException
     {
         _verifyValueWrite("start an array");
+        _verifyNotNestedArray();
         _streamWriteContext = _streamWriteContext.createChildArrayContext(null);
         streamWriteConstraints().validateNestingDepth(_streamWriteContext.getNestingDepth());
         if (_xmlPrettyPrinter != null) {
@@ -626,19 +684,35 @@ public class ToXmlGenerator
         }
         return this;
     }
-    
+
     @Override
     public JsonGenerator writeStartArray(Object currValue) throws JacksonException
     {
         _verifyValueWrite("start an array");
+        _verifyNotNestedArray();
         _streamWriteContext = _streamWriteContext.createChildArrayContext(currValue);
         streamWriteConstraints().validateNestingDepth(_streamWriteContext.getNestingDepth());
         if (_xmlPrettyPrinter != null) {
             _xmlPrettyPrinter.writeStartArray(this);
         } else {
-            // nothing to do here; no-operation
+            // nothing to do here; no-op
         }
         return this;
+    }
+
+    // [dataformat-xml#556]: nested arrays/Collections/Maps cannot be expressed
+    // in natural-style XML without an intermediate POJO. Fail fast (when the
+    // feature is enabled) instead of silently flattening dimensions.
+    //
+    // @since 3.2
+    private void _verifyNotNestedArray() throws JacksonException
+    {
+        if (_streamWriteContext.inArray()
+                && XmlWriteFeature.FAIL_ON_NESTED_ARRAYS.enabledIn(_formatFeatures)) {
+            _reportError("XML format does not support nested arrays/Collections;"
+                    + " wrap inner array in a POJO"
+                    + " (disable XmlWriteFeature.FAIL_ON_NESTED_ARRAYS to allow legacy flattening)");
+        }
     }
 
     @Override
@@ -724,8 +798,13 @@ public class ToXmlGenerator
 
     // @since 3.2
     protected void _handleStartRootObject(QName rootElemName) throws XMLStreamException {
-        // !!! TODO: special handling
-        _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+        _xmlWriter.writeStartElement(rootElemName.getNamespaceURI(), rootElemName.getLocalPart());
+        // [dataformat-xml#90]: emit caller-registered root attributes (e.g. xsi:schemaLocation)
+        if (_rootAttributes != null) {
+            for (RootAttribute attr : _rootAttributes) {
+                attr.write(this, _xmlWriter);
+            }
+        }
     }
     
     // note: public just because pretty printer needs to make a callback
@@ -876,9 +955,12 @@ public class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
             } else if (checkNextIsUnwrapped()) {
+                // Woodstox 7.2.0 change: writeRaw does not close pending start element; force it
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text);
                 _xmlWriter.writeEndElement();
             }
@@ -903,9 +985,11 @@ public class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text.substring(offset, offset + len));
             } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
                 _xmlWriter.writeEndElement();
             }
@@ -929,9 +1013,11 @@ public class ToXmlGenerator
             if (_nextIsAttribute) {
                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
             } else if (checkNextIsUnwrapped()) {
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeRaw(text, offset, len);
                 _xmlWriter.writeEndElement();
             }
@@ -954,6 +1040,8 @@ public class ToXmlGenerator
             _reportUnimplementedStax2("writeRaw");
         }
         try {
+            // Woodstox 7.2.0 change: writeRaw does not close pending start element; force it
+            _xmlWriter.writeCharacters("");
             _xmlWriter.writeRaw(text);
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
@@ -969,6 +1057,7 @@ public class ToXmlGenerator
             _reportUnimplementedStax2("writeRaw");
         }
         try {
+            _xmlWriter.writeCharacters("");
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
@@ -984,6 +1073,7 @@ public class ToXmlGenerator
             _reportUnimplementedStax2("writeRaw");
         }
         try {
+            _xmlWriter.writeCharacters("");
             _xmlWriter.writeRaw(text, offset, len);
         } catch (XMLStreamException e) {
             StaxUtil.throwAsWriteException(e, this);
@@ -1010,6 +1100,8 @@ public class ToXmlGenerator
             if (comment != null) {
                 _xmlWriter.writeComment(comment);
             } else {
+                // Woodstox 7.2.0 regression: writeSpace does not close pending start element; force it
+                _xmlWriter.writeCharacters("");
                 _xmlWriter.writeSpace("\n");
             }
         } catch (XMLStreamException e) {

@@ -8,12 +8,12 @@ import tools.jackson.dataformat.xml.XmlWriteFeature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestXmlDeclaration extends XmlTestUtil
+public class XmlDeclarationTest extends XmlTestUtil
 {
     /*
-    /**********************************************************
-    /* Unit tests
-    /**********************************************************
+    /**********************************************************************
+    /* Test methods
+    /**********************************************************************
      */
     
     @Test

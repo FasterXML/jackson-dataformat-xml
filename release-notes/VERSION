@@ -5,12 +5,51 @@ Version: 3.x (for earlier see VERSION-2.x)
 === Releases === 
 ------------------------------------------------------------------------
 
-3.2.0 (not yet released)
+3.3.0 (not yet released)
+
+#873: Fix handling of `@JsonApplyView`
+ (fix by @cowtowncoder, w/ Claude code)
+#878: Re-apply entity/DTD hardening after JDK deserialization of `XmlFactory`
+ (fix by @Sahana2524)
+#879: Use `Locale.ROOT` for case folding in `CaseInsensitiveNameSet`
+ (fix by @Sahana2524)
+#882: Translate base64 name-decode errors to `StreamReadException`
+ (fix by @Sahana2524)
+#883: Translate `XMLStreamReader` creation errors to `StreamReadException`
+  (restores guard lost in 3.x port; see 2.x `_createParser(byte[])` for #618)
+ (fix by @Sahana2524)
+#886: Escape names already starting with prefix in `Base64NameProcessor`
+ (fix by @Sahana2524)
+#887: Apply `XmlNameProcessor` to unwrapped `ObjectNode` root element name
+ (fix by @Sahana2524)
+#888: Honor `xsi:nil` in any attribute position and `xs:boolean` form
+ (fix by @Sahana2524)
+#890: Count 19-digit `long` coercion in `isExpectedNumberIntToken()`
+ (fix by @Sahana2524)
+
+3.2.2 (not yet released)
+
+#884: `NullPointerException` in `XmlValueInstantiators` for Record with
+  `@JsonIgnore`-annotated getter
+ (reported by @soc)
+ (fix by @cowtowncoder, w/ Claude code)
+
+3.2.1 (10-Jul-2026)
+
+#871: `XmlMapper` regression in 3.2.0: `xsi:nil` collection element on unwrapped
+  collection wrongly read as null collection (instead of collection with one
+  null element); null unwrapped collection now omitted on write
+ (reported by Christian B, @beikov)
+ (fix by @cowtowncoder, w/ Claude code)
+
+3.2.0 (08-Jun-2026)
 
 #8: Serialization of `List` incorrect if property declared as plain `java.lang.Object`
  (fix by @cowtowncoder, w/ Claude code)
 #27: `@JacksonXmlElementWrapper` conflicting getter/setter definitions for property
  (reported by @n00bman)
+ (fix by @cowtowncoder, w/ Claude code)
+#90: Add support for adding attributes to output for root element
  (fix by @cowtowncoder, w/ Claude code)
 #149: `@JacksonXmlElementWrapper` as a `@JsonCreator parameter` not working
  (reported by Dai M)
@@ -20,6 +59,9 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @cowtowncoder)
 #192: Two wrapped lists with items of same name conflict
  (reported by @TeemuStenhammar)
+ (fix by @cowtowncoder, w/ Claude code)
+#207: Allow custom prefixes for Namespaces
+ (requested by Joachim L)
  (fix by @cowtowncoder, w/ Claude code)
 #247: `@JacksonXmlRootElement` does not enforce the local name during
   deserialization (add `XmlReadFeature.ENFORCE_ROOT_ELEMENT_NAME`)
@@ -36,9 +78,15 @@ Version: 3.x (for earlier see VERSION-2.x)
 #306: Can not use `@JacksonXmlText` for Creator property (creator parameter)
  (reported by Eduard W)
  (fix by Christopher M)
+#315: Allow specifying encodings other than UTF-8 in XML declaration written
+ (requested by Cassio M-M)
+ (fix by @cowtowncoder, w/ Claude code)
 #334: `@JacksonXmlElementWrapper(useWrapping=false)` fails when using
   a `DeserializerModifier` that delegates
  (reported by Ruven C)
+ (fix by @cowtowncoder, w/ Claude code)
+#344: Unable to (de)serialize `null` in polymorphic Collection
+ (reported by @miroch41)
  (fix by @cowtowncoder, w/ Claude code)
 #358: Allow skipping attributes from the `http://www.w3.org/2001/XMLSchema-instance`
   namespace (with new `XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES`)
@@ -61,6 +109,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #455: Can't deserialize list in JsonSubtype when type property is visible
  (reported by Jiri M)
  (fix by @cowtowncoder, w/ Claude code)
+#484: Add `FromXmlParser.Feature.WRAP_ROOT_ELEMENT_NAME` to allow
+  lossless round-trip via Tree Model
+ (fix by @cowtowncoder, w/ Claude code)
 #496: Root name missing when root element has no attributes (add
   `FromXmlParser.getRootElementName()`)
  (reported by Sam K)
@@ -75,6 +126,11 @@ Version: 3.x (for earlier see VERSION-2.x)
 #525: Order of XML Properties trigger different behaviors with
   polymorphic nested objects
  (reported by Vitor P)
+ (fix by @cowtowncoder, w/ Claude code)
+#541: Allow specifying URI of the default namespace for root element
+ (fix by @cowtowncoder, w/ Claude code)
+#556: `XmlMapper` does not support multi-dimensional arrays
+ (reported by @schwarfl)
  (fix by @cowtowncoder, w/ Claude code)
 #561: Deserializing empty timestamp fields to `null` value doesn't
   work (instead becomes "empty", Epoch time)
@@ -129,7 +185,19 @@ Version: 3.x (for earlier see VERSION-2.x)
   `@JacksonXmlElementWrapper` and `@JacksonXmlProperty`
  (reported by @soc)
  (fix by @cowtowncoder, w/ Claude code)
+#857: `@JacksonXmlText` with unwrapped Collection property fails to
+  deserialize list (skips virtual wrapping)
+ (fix by @cowtowncoder, w/ Claude code)
 
+3.1.5 (07-Jul-2026)
+
+No changes since 3.1.4
+
+3.1.4 (29-May-2026)
+
+#863: Fix to support Woodstox 7.2.0 (but no dep version bump)
+
+3.1.3 (01-May-2026)
 3.1.2 (11-Apr-2026)
 3.1.1 (27-Mar-2026)
 

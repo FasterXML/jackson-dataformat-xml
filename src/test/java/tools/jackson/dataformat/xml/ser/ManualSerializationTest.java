@@ -13,7 +13,7 @@ import tools.jackson.dataformat.xml.XmlWriteFeature;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestSerializationManual extends XmlTestUtil
+public class ManualSerializationTest extends XmlTestUtil
 {
     public static class Value {
         public int num;

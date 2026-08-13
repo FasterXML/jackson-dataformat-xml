@@ -39,6 +39,12 @@ public class XmlTextDeserializer
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.2; no longer used internally. Use
+     *   {@link #XmlTextDeserializer(ValueDeserializer, BeanDeserializerBase, int)}
+     *   so the deserializer can compose with {@link WrapperHandlingDeserializer}.
+     */
+    @Deprecated
     public XmlTextDeserializer(BeanDeserializerBase delegate, SettableBeanProperty prop)
     {
         super(delegate);
@@ -47,12 +53,35 @@ public class XmlTextDeserializer
         _valueInstantiator = delegate.getValueInstantiator();
     }
 
+    /**
+     * @deprecated Since 3.2; no longer used internally. Use
+     *   {@link #XmlTextDeserializer(ValueDeserializer, BeanDeserializerBase, int)}
+     *   so the deserializer can compose with {@link WrapperHandlingDeserializer}.
+     */
+    @Deprecated
     public XmlTextDeserializer(BeanDeserializerBase delegate, int textPropIndex)
     {
         super(delegate);
         _xmlTextPropertyIndex = textPropIndex;
         _valueInstantiator = delegate.getValueInstantiator();
         _xmlTextProperty = delegate.findProperty(textPropIndex);
+    }
+
+    /**
+     * Constructor that allows {@code delegate} to be any {@link ValueDeserializer}
+     * that (transitively) wraps a {@link BeanDeserializerBase}; used to compose
+     * with {@link WrapperHandlingDeserializer} when the bean has both
+     * {@code @JacksonXmlText} and unwrapped collection properties.
+     *
+     * @since 3.2
+     */
+    public XmlTextDeserializer(ValueDeserializer<?> delegate,
+            BeanDeserializerBase inner, int textPropIndex)
+    {
+        super(delegate);
+        _xmlTextPropertyIndex = textPropIndex;
+        _valueInstantiator = inner.getValueInstantiator();
+        _xmlTextProperty = inner.findProperty(textPropIndex);
     }
     
     /*
@@ -76,7 +105,10 @@ public class XmlTextDeserializer
         JavaType vt = ctxt.constructType(_delegatee.handledType());
         ValueDeserializer<?> del = ctxt.handleSecondaryContextualization(_delegatee,
                 property, vt);
-        return new XmlTextDeserializer(_verifyDeserType(del), _xmlTextPropertyIndex);
+        // Delegate may be a BeanDeserializerBase directly, or a DelegatingDeserializer
+        // (e.g. WrapperHandlingDeserializer) that (transitively) wraps one.
+        BeanDeserializerBase inner = _findBeanDeserializer(ctxt, del, vt);
+        return new XmlTextDeserializer(del, inner, _xmlTextPropertyIndex);
     }
 
     /*
@@ -128,13 +160,19 @@ public class XmlTextDeserializer
     /**********************************************************************
      */
 
-    protected BeanDeserializerBase _verifyDeserType(ValueDeserializer<?> deser)
+    private static BeanDeserializerBase _findBeanDeserializer(DeserializationContext ctxt,
+            ValueDeserializer<?> deser, JavaType type)
     {
-        if (!(deser instanceof BeanDeserializerBase)) {
-            throw new IllegalArgumentException("Can not change delegate to be of type "
-                    +deser.getClass().getName());
+        ValueDeserializer<?> d = deser;
+        while (d instanceof DelegatingDeserializer dd) {
+            d = dd.getDelegatee();
         }
-        return (BeanDeserializerBase) deser;
+        if (d instanceof BeanDeserializerBase bdb) {
+            return bdb;
+        }
+        return ctxt.reportBadDefinition(type,
+                "Can not find BeanDeserializerBase in delegate chain; innermost: "
+                        + (d == null ? "null" : d.getClass().getName()));
     }
 
     /**

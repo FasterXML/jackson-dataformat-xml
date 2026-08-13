@@ -3,12 +3,16 @@ package tools.jackson.dataformat.xml.ser;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.exc.StreamWriteException;
 
 import tools.jackson.databind.*;
 import tools.jackson.databind.cfg.GeneratorInitializer;
+
+import tools.jackson.dataformat.xml.XmlWriteFeature;
 
 /**
  * Default {@link GeneratorInitializer} implementation to use with
@@ -20,7 +24,11 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
  *  </li>
  * <li>Comments (in Document prolog, before the root element)
  *  </li>
+ * <li>Namespace bindings (prefix to URI mappings)
+ *  </li>
  * <li>Processing Instructions (PIs; in Document prolog, before the root element)
+ *  </li>
+ * <li>XML Declaration (with custom version, encoding and/or standalone value)
  *  </li>
  * </ul>
  *<p>
@@ -31,7 +39,27 @@ import tools.jackson.databind.cfg.GeneratorInitializer;
 public class XmlGeneratorInitializer
     implements GeneratorInitializer
 {
+    /**
+     * Prolog Directives to pass for generator to write.
+     */
     protected List<PrologDirective> _directives;
+
+    /**
+     * Namespace bindings (prefix to URI) to register with generator.
+     */
+    protected List<NamespaceBinding> _namespaceBindings;
+
+    /**
+     * Attributes to add to root element (if any).
+     *
+     * @since 3.2
+     */
+    protected List<RootAttribute> _rootAttributes;
+
+    /**
+     * Custom XML declaration to write.
+     */
+    protected XmlDeclaration _xmlDeclaration;
 
     protected boolean _addLfBetweenPrologDirectives = true;
 
@@ -40,7 +68,9 @@ public class XmlGeneratorInitializer
     @Override
     public void initialize(SerializationConfig config, JsonGenerator g) throws JacksonException {
         if (g instanceof ToXmlGenerator xg) {
-            xg.initProlog(_addLfBetweenPrologDirectives, _directives);
+            xg.initDocument(_xmlDeclaration,
+                    _addLfBetweenPrologDirectives, _directives,
+                    _namespaceBindings, _rootAttributes);
         }
     }
 
@@ -122,6 +152,140 @@ public class XmlGeneratorInitializer
      */
     public XmlGeneratorInitializer addPI(String target, String data) {
         return _add(new PrologPI(target, data));
+    }
+
+    /**
+     * Method for specifying namespace URI to preferentially bind to the
+     * "default namespace" (one used when element has no prefix).
+     * This will guide underlying generator to add necessary
+     * declarations when actually writing elements with matching
+     * namespace URI.
+     *
+     * @param namespaceURI URI of the default namespace
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addDefaultNamespace(String namespaceURI) {
+        return addNamespace(null, namespaceURI);
+    }
+
+    /**
+     * Method for adding a mapping (binding) between given prefix and matching
+     * namespace URI. This will guide underlying generator to add necessary
+     * declarations when actually writing namespaced attributes and elements.
+     *
+     * @param prefix Prefix to use for namespace
+     * @param namespaceURI URI of the namespace
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addNamespace(String prefix, String namespaceURI) {
+        if (_namespaceBindings == null) {
+            _namespaceBindings = new ArrayList<>();
+        }
+        _namespaceBindings.add(new NamespaceBinding(prefix, namespaceURI));
+        return this;
+    }
+
+    /**
+     * Method for adding an attribute to be written on the root element of
+     * the output document. Attributes are emitted in the order added,
+     * after the root element's start tag is written and before any
+     * content from the value being serialized.
+     *<p>
+     * Typical use case is adding XML Schema instance attributes such as
+     * {@code xsi:schemaLocation} or {@code xsi:noNamespaceSchemaLocation}.
+     *<p>
+     * NOTE: root attributes are only emitted when the root value being
+     * serialized produces a structured (object) start element; scalar
+     * root values do not currently get root attributes attached.
+     *
+     * @param name Attribute name (with optional namespace and prefix)
+     * @param value Attribute value (null is coerced to empty String)
+     *
+     * @return This initializer for call chaining
+     *
+     * @since 3.2
+     */
+    public XmlGeneratorInitializer addRootAttribute(QName name, String value) {
+        if (_rootAttributes == null) {
+            _rootAttributes = new ArrayList<>();
+        }
+        _rootAttributes.add(new RootAttribute(name, value));
+        return this;
+    }
+
+    /**
+     * Convenience overload of {@link #addRootAttribute(QName, String)} for
+     * adding non-namespaced attribute by local name.
+     *
+     * @param localName Attribute local name (must be non-empty) in default
+     *   namespace (one with URI of "")
+     * @param value Attribute value (if {@code null}, coerced to empty String)
+     *
+     * @return This initializer for call chaining
+     *
+     * @since 3.2
+     */
+    public XmlGeneratorInitializer addRootAttribute(String localName, String value) {
+        return addRootAttribute(new QName(localName), value);
+    }
+
+    /**
+     * Method for specifying custom XML declaration to write.
+     *<p>
+     * When a custom XML declaration is registered it fully replaces output
+     * that would otherwise be produced by
+     * {@link XmlWriteFeature#WRITE_XML_DECLARATION},
+     * {@link XmlWriteFeature#WRITE_XML_1_1} and
+     * {@link XmlWriteFeature#WRITE_STANDALONE_YES_TO_XML_DECLARATION}:
+     * those format features are ignored. Note that caller is responsible
+     * for ensuring the declared encoding matches the encoding the
+     * underlying {@code Writer} or {@code OutputStream} actually uses.
+     *
+     * @param version XML version: either "1.0" or "1.1"
+     * @param encoding {@code encoding} content will be encoded in: usually "UTF-8"
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addXmlDeclaration(String version, String encoding) {
+        return addXmlDeclaration(new XmlDeclaration(version, encoding, null));
+    }
+
+    /**
+     * Method for specifying custom XML declaration to write.
+     *<p>
+     * See {@link #addXmlDeclaration(String, String)} for details on how
+     * this interacts with {@link XmlWriteFeature} flags.
+     *
+     * @param version XML version: either "1.0" or "1.1"
+     * @param encoding {@code encoding} content will be encoded in: usually "UTF-8"
+     * @param standalone {@code standalone} pseudo-attribute value to write
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addXmlDeclaration(String version, String encoding,
+            boolean standalone) {
+        return addXmlDeclaration(new XmlDeclaration(version, encoding, standalone));
+    }
+
+    /**
+     * Method for specifying custom XML declaration to write.
+     *<p>
+     * See {@link #addXmlDeclaration(String, String)} for details on how
+     * this interacts with {@link XmlWriteFeature} flags.
+     *
+     * @param xmlDeclaration declaration to write
+     *
+     * @return This initializer for call chaining
+     */
+    public XmlGeneratorInitializer addXmlDeclaration(XmlDeclaration xmlDeclaration) {
+        if (_xmlDeclaration != null) {
+            throw new StreamWriteException(null,
+                    "Cannot add another XML Declaration, initializer already has one");
+        }
+        _xmlDeclaration = xmlDeclaration;
+        return this;
     }
 
     protected XmlGeneratorInitializer _add(PrologDirective d) {
