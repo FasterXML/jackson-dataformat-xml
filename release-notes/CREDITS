@@ -175,3 +175,5 @@ Christian Beikov (@beikov)
   (3.3.0)
  * Fixed #888: Honor `xsi:nil` in any attribute position and `xs:boolean` form
   (3.3.0)
+ * Fixed #890: Count 19-digit `long` coercion in `isExpectedNumberIntToken()`
+  (3.3.0)
