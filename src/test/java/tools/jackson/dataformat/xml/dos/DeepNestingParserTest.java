@@ -16,12 +16,14 @@ public class DeepNestingParserTest extends XmlTestUtil
 {
     // Default StreamReadConstraints.maxNestingDepth (500) is now enforced by
     // FromXmlParser itself, before the underlying Stax implementation's own
-    // element-depth limit would kick in
+    // element-depth limit would kick in. Depth chosen just past 500 (rather
+    // than e.g. 1050) so the test pins the actual enforced boundary instead
+    // of merely confirming failure somewhere past both limits.
     @Test
     public void testDeepDoc() throws Exception
     {
         final XmlMapper xmlMapper = newMapper();
-        final String XML = createDeepNestedDoc(1050);
+        final String XML = createDeepNestedDoc(510);
         try (JsonParser p = xmlMapper.createParser(XML)) {
             while (p.nextToken() != null) { }
             fail("expected StreamConstraintsException");

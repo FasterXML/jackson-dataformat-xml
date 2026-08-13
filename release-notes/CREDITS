@@ -22,3 +22,9 @@ PJ Fanning (@pjfanning)
 * Fixed #793: `XmlSerializationContext`: NPE _writeCapabilities not set for
   `SerializationContext`
  (3.0.4)
+
+Sahana (@Sahana2524)
+
+* Contributed #891: Enforce `StreamReadConstraints.maxNestingDepth` in
+  `FromXmlParser`
+ (3.1.6)
