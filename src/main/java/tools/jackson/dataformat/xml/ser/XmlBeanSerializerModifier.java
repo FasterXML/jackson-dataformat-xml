@@ -90,7 +90,7 @@ public class XmlBeanSerializerModifier
             }
             // no local name? Just double the wrapped name for wrapper
             String localName = wrapperName.getSimpleName();
-            if (localName == null || localName.length() == 0) {
+            if (localName == null || localName.isEmpty()) {
                 wrapperName = wrappedName;
             }
             // [dataformat-xml#8]: for Object-typed properties, use dynamic wrapping
@@ -108,9 +108,9 @@ public class XmlBeanSerializerModifier
         // First things first: we can only handle real BeanSerializers; question
         // is, what to do if it's not one: throw exception or bail out?
         // For now let's do latter.
-        if (!(serializer instanceof BeanSerializerBase)) {
+        if (!(serializer instanceof BeanSerializerBase base)) {
             return serializer;
         }
-        return new XmlBeanSerializer((BeanSerializerBase) serializer);
+        return new XmlBeanSerializer(base);
     }
 }

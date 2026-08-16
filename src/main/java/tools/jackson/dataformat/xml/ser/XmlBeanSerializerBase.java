@@ -167,11 +167,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
-        if (!(gen0 instanceof ToXmlGenerator)) {
+        if (!(gen0 instanceof ToXmlGenerator xgen)) {
             super._serializeProperties(bean, gen0, ctxt);
             return;
         }
-        final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         final BeanPropertyWriter[] props;
         if (_filteredProps != null && ctxt.getActiveView() != null) {
             props = _filteredProps;
@@ -233,12 +232,10 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         throws JacksonException
     {
         // 19-Aug-2013, tatu: During 'convertValue()', need to skip
-        if (!(gen0 instanceof ToXmlGenerator)) {
+        if (!(gen0 instanceof ToXmlGenerator xgen)) {
             super._serializePropertiesFiltered(bean, gen0, ctxt, filterId);
             return;
         }
-        
-        final ToXmlGenerator xgen = (ToXmlGenerator) gen0;
         
         final BeanPropertyWriter[] props;
         if (_filteredProps != null && ctxt.getActiveView() != null) {

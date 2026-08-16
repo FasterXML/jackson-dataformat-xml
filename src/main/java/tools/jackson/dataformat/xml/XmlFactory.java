@@ -413,11 +413,11 @@ public class XmlFactory
             return null;
         }
         // Ideally should catch earlier, but just in case....
-        if (!(pp instanceof XmlPrettyPrinter)) {
+        if (!(pp instanceof XmlPrettyPrinter xmlPp)) {
             throw new IllegalStateException("Configured PrettyPrinter not of type `XmlPrettyPrinter` but `"
                     +pp.getClass().getName()+"`");
         }
-        return (XmlPrettyPrinter) pp;
+        return xmlPp;
     }
 
     /**

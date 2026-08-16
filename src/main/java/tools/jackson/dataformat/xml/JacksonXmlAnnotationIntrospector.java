@@ -82,7 +82,7 @@ public class JacksonXmlAnnotationIntrospector
             }
             // also: need to ensure we use marker:
             String localName = w.localName();
-            if (localName == null || localName.length() == 0) {
+            if (localName == null || localName.isEmpty()) {
                 return PropertyName.USE_DEFAULT;
             }
             return PropertyName.construct(w.localName(), w.namespace());
@@ -104,7 +104,7 @@ public class JacksonXmlAnnotationIntrospector
             String local = root.localName();
             String ns = root.namespace();
 
-            if (local.length() == 0 && ns.length() == 0) {
+            if (local.isEmpty() && ns.isEmpty()) {
                 return PropertyName.USE_DEFAULT;
             }
             return new PropertyName(local, ns);

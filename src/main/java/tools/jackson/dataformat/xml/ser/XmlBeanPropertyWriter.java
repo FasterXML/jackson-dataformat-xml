@@ -177,7 +177,7 @@ public class XmlBeanPropertyWriter
             }
         }
 
-        final ToXmlGenerator xmlGen = (g instanceof ToXmlGenerator) ? (ToXmlGenerator) g : null;
+        final ToXmlGenerator xmlGen = (g instanceof ToXmlGenerator x) ? x : null;
         // Ok then; addition we want to do is to add wrapper element, and that's what happens here
         // 19-Aug-2013, tatu: ... except for those nasty 'convertValue()' calls...
         if (xmlGen != null) {

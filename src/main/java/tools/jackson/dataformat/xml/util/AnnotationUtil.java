@@ -21,8 +21,8 @@ public class AnnotationUtil
     {
         if (prop != null) {
             for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                    String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, prop);
+                if (intr instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                    String ns = xmlExt.findNamespace(config, prop);
                     if (ns != null) {
                         return ns;
                     }
@@ -38,8 +38,8 @@ public class AnnotationUtil
     {
         if (prop != null) {
             for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                    Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsAttribute(config, prop);
+                if (intr instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                    Boolean b = xmlExt.isOutputAsAttribute(config, prop);
                     if (b != null) {
                         return b;
                     }
@@ -55,8 +55,8 @@ public class AnnotationUtil
     {
         if (prop != null) {
             for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                    Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsText(config, prop);
+                if (intr instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                    Boolean b = xmlExt.isOutputAsText(config, prop);
                     if (b != null) {
                         return b;
                     }
@@ -72,8 +72,8 @@ public class AnnotationUtil
     {
         if (prop != null) {
             for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                    Boolean b = ((AnnotationIntrospector.XmlExtensions) intr).isOutputAsCData(config, prop);
+                if (intr instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                    Boolean b = xmlExt.isOutputAsCData(config, prop);
                     if (b != null) {
                         return b;
                     }
@@ -93,8 +93,8 @@ public class AnnotationUtil
     {
         if (prop != null) {
             for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-                if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                    PropertyName name = ((AnnotationIntrospector.XmlExtensions) intr).findXmlPropertyInnerName(config, prop);
+                if (intr instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                    PropertyName name = xmlExt.findXmlPropertyInnerName(config, prop);
                     if (name != null) {
                         return name;
                     }

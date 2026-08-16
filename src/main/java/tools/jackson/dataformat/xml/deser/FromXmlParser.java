@@ -245,17 +245,17 @@ public class FromXmlParser
             _xmlTokens.markAsStreamEnd();
         } else {
             switch (firstToken) {
-            case XmlTokenStream.XML_START_ELEMENT:
-            // Removed from 2.14:
-            // case XmlTokenStream.XML_DELAYED_START_ELEMENT:
+            case XmlTokenStream.XML_START_ELEMENT -> {
+                // Removed from 2.14:
+                // case XmlTokenStream.XML_DELAYED_START_ELEMENT:
                 // [dataformat-xml#484]: in wrap mode, suppress queuing the
                 // (inner) START_OBJECT here; the wrap state machine queues it
                 // explicitly after delivering outer START + PROPERTY_NAME.
                 if (!wrapRoot) {
                     _nextToken = JsonToken.START_OBJECT;
                 }
-                break;
-            case XmlTokenStream.XML_ROOT_TEXT:
+            }
+            case XmlTokenStream.XML_ROOT_TEXT -> {
                 _currText = _xmlTokens.getText();
                 // [dataformat-xml#435]: may get `null` from empty element...
                 // It's complicated.
@@ -264,9 +264,8 @@ public class FromXmlParser
                 } else {
                     _nextToken = JsonToken.VALUE_STRING;
                 }
-                break;
-            default:
-                _reportError("Internal problem: invalid starting state (%s)", _xmlTokens._currentStateDesc());
+            }
+            default -> _reportError("Internal problem: invalid starting state (%s)", _xmlTokens._currentStateDesc());
             }
         }
         // [dataformat-xml#484]: activate wrap state machine if feature enabled
@@ -607,17 +606,10 @@ public class FromXmlParser
             _nextToken = null;
 
             switch (t) {
-            case START_OBJECT:
-                _createChildObjectContext();
-                break;
-            case START_ARRAY:
-                _createChildArrayContext();
-                break;
-            case END_OBJECT:
-            case END_ARRAY:
-                _streamReadContext = _streamReadContext.getParent();
-                break;
-            case PROPERTY_NAME:
+            case START_OBJECT -> _createChildObjectContext();
+            case START_ARRAY -> _createChildArrayContext();
+            case END_OBJECT, END_ARRAY -> _streamReadContext = _streamReadContext.getParent();
+            case PROPERTY_NAME -> {
                 // 29-Mar-2021, tatu: [dataformat-xml#442]: special case of leading
                 //    mixed text added
                 if (_nextIsLeadingMixed) {
@@ -627,8 +619,8 @@ public class FromXmlParser
                 } else {
                     _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
                 }
-                break;
-            default: // VALUE_STRING, VALUE_NULL
+            }
+            default -> { // VALUE_STRING, VALUE_NULL
                 // 13-May-2020, tatu: [dataformat-xml#397]: advance `index` anyway; not
                 //    used for Object contexts, updated automatically by "createChildXxxContext"
                 _streamReadContext.valueStarted();
@@ -636,6 +628,7 @@ public class FromXmlParser
                 if (_rootWrapStage == WRAP_OPEN_SCALAR) {
                     _rootWrapStage = WRAP_PENDING_OUTER_END;
                 }
+            }
             }
             return t;
         }
@@ -771,9 +764,9 @@ public class FromXmlParser
                         return _updateToken(JsonToken.VALUE_STRING);
                     }
                     if (token != XmlTokenStream.XML_START_ELEMENT) {
-                        throw _constructReadException(String.format(
-"Internal error: Expected END_ELEMENT (%d) or START_ELEMENT (%d), got event of type %d",
-XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
+                        throw _constructReadException(
+"Internal error: Expected END_ELEMENT (%d) or START_ELEMENT (%d), got event of type %d"
+                                .formatted(XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
                     }
                     // fall-through, except must create new context AND push back
                     // START_ELEMENT we just saw:
@@ -848,12 +841,13 @@ _currText);
      */
     private JsonToken _nextRootWrapToken()
     {
-        switch (_rootWrapStage) {
-        case WRAP_PENDING_OUTER_START:
+        return switch (_rootWrapStage) {
+        case WRAP_PENDING_OUTER_START -> {
             _rootWrapStage = WRAP_PENDING_NAME;
             _streamReadContext = _streamReadContext.createChildObjectContext(-1, -1);
-            return _updateToken(JsonToken.START_OBJECT);
-        case WRAP_PENDING_NAME:
+            yield _updateToken(JsonToken.START_OBJECT);
+        }
+        case WRAP_PENDING_NAME -> {
             // Object body case: queue inner START_OBJECT for normal flow to consume.
             // Scalar/null body case: _nextToken already holds the value.
             if (_nextToken == null) {
@@ -863,15 +857,18 @@ _currText);
                 _rootWrapStage = WRAP_OPEN_SCALAR;
             }
             _streamReadContext.setCurrentName(_xmlTokens.getRootName().getLocalPart());
-            return _updateToken(JsonToken.PROPERTY_NAME);
-        case WRAP_PENDING_OUTER_END:
+            yield _updateToken(JsonToken.PROPERTY_NAME);
+        }
+        case WRAP_PENDING_OUTER_END -> {
             _rootWrapStage = WRAP_INACTIVE;
             _streamReadContext = _streamReadContext.getParent();
-            return _updateToken(JsonToken.END_OBJECT);
-        default:
-            // WRAP_OPEN_OBJECT / WRAP_OPEN_SCALAR — caller should fall through.
-            return null;
+            yield _updateToken(JsonToken.END_OBJECT);
         }
+        default -> {
+            // WRAP_OPEN_OBJECT / WRAP_OPEN_SCALAR — caller should fall through.
+            yield null;
+        }
+        };
     }
 
     /*
@@ -1008,21 +1005,11 @@ _currText);
     private void _updateState(JsonToken t)
     {
         switch (t) {
-        case START_OBJECT:
-            _createChildObjectContext();
-            break;
-        case START_ARRAY:
-            _createChildArrayContext();
-            break;
-        case END_OBJECT:
-        case END_ARRAY:
-            _streamReadContext = _streamReadContext.getParent();
-            break;
-        case PROPERTY_NAME:
-            _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
-            break;
-        default:
-            _internalErrorUnknownToken(t);
+        case START_OBJECT -> _createChildObjectContext();
+        case START_ARRAY -> _createChildArrayContext();
+        case END_OBJECT, END_ARRAY -> _streamReadContext = _streamReadContext.getParent();
+        case PROPERTY_NAME -> _streamReadContext.setCurrentName(_xmlTokens.getLocalName());
+        default -> _internalErrorUnknownToken(t);
         }
     }
 
@@ -1053,14 +1040,11 @@ _currText);
         if (_currToken == null) {
             return null;
         }
-        switch (_currToken) {
-        case PROPERTY_NAME:
-            return currentName();
-        case VALUE_STRING:
-            return _currText;
-        default:
-            return _currToken.asString();
-        }
+        return switch (_currToken) {
+        case PROPERTY_NAME -> currentName();
+        case VALUE_STRING -> _currText;
+        default -> _currToken.asString();
+        };
     }
 
     @Override
@@ -1403,9 +1387,9 @@ _currText);
     {
         if (!_streamReadContext.inRoot()) {
             String marker = _streamReadContext.inArray() ? "Array" : "Object";
-            _reportInvalidEOF(String.format(
-                    ": expected close marker for %s (start marker at %s)",
-                    marker,
+            _reportInvalidEOF(
+                    ": expected close marker for %s (start marker at %s)"
+                            .formatted(marker,
                     _streamReadContext.startLocation(_ioContext.contentReference())),
                     null);
         }

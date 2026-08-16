@@ -26,8 +26,8 @@ public class Stax2JacksonReaderAdapter
 
     public static XMLStreamReader2 wrapIfNecessary(XMLStreamReader sr)
     {
-        if (sr instanceof XMLStreamReader2) {
-            return (XMLStreamReader2) sr;
+        if (sr instanceof XMLStreamReader2 xmlStreamReader2) {
+            return xmlStreamReader2;
         }
         return new Stax2JacksonReaderAdapter(sr);
     }
