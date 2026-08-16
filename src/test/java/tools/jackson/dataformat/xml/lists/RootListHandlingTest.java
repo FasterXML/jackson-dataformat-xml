@@ -135,8 +135,7 @@ public class RootListHandlingTest extends XmlTestUtil
 
 //      System.err.println("XML -> "+xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ob));
         
-        assertTrue(ob instanceof List);
-        List<?> resultList = (List<?>) ob;
+        List<?> resultList = assertInstanceOf(List.class, ob);
         assertEquals(2, resultList.size());
         assertEquals(SampleResource.class, resultList.get(0).getClass());
         assertEquals(SampleResource.class, resultList.get(1).getClass());
