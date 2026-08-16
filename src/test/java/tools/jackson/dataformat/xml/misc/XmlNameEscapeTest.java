@@ -10,6 +10,7 @@ import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,6 +89,31 @@ public class XmlNameEscapeTest extends XmlTestUtil
         ).build();
 
         final String res = mapper.writeValueAsString(dto);
+        DTO reversed = mapper.readValue(res, DTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    // base64url's alphabet includes digits, but a digit can not start an XML name.
+    // Names whose first character is U+0400 or above encode to a leading digit, so
+    // the "always on" processor has to keep the encoded name a valid NameStartChar
+    // and still round-trip.
+    @Test
+    public void testAlwaysOnBase64NonAsciiKeysRoundTrip() throws Exception {
+        DTO dto = new DTO();
+        // U+4E2D U+6587 (Chinese) encodes to a name starting with a digit
+        dto.badMap.put(new String(new int[] { 0x4E2D, 0x6587 }, 0, 2), "cjk");
+        // U+043F U+0440 U+0438 U+0432 (Cyrillic)
+        dto.badMap.put(new String(new int[] { 0x43F, 0x440, 0x438, 0x432 }, 0, 4), "cyrillic");
+        dto.badMap.put("abc", "ascii"); // starts with a letter, unchanged
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // no encoded element/attribute name may start with a digit
+        assertFalse(res.matches("(?s).*<[0-9].*"), res);
+
         DTO reversed = mapper.readValue(res, DTO.class);
         assertEquals(dto, reversed);
     }
