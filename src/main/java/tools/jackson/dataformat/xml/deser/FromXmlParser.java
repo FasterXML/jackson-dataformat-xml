@@ -996,6 +996,7 @@ _currText);
             break;
         case XmlTokenStream.XML_END:
             _updateTokenToNull();
+            break;
         default:
             return _internalErrorUnknownToken(token);
         }
