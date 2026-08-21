@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlTestUtil;
 import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class XmlParserNextXxxTest extends XmlTestUtil
 {
@@ -55,6 +56,28 @@ public class XmlParserNextXxxTest extends XmlTestUtil
         assertEquals("9", xp.getText());
 
         assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </data>
+        xp.close();
+    }
+
+    // [dataformat-xml#899]: nextTextValue() must honor the JsonParser contract
+    // at end of input: return null, same as nextToken() does, instead of leaking
+    // an unchecked IllegalStateException from the internal XML_END branch.
+    @Test
+    public void testNextTextValueAtEndOfInput() throws Exception
+    {
+        final String XML = "<data max=\"7\" offset=\"9\"/>";
+
+        FromXmlParser xp = (FromXmlParser) _xmlFactory.createParser(new StringReader(XML));
+
+        assertToken(JsonToken.START_OBJECT, xp.nextToken()); // <data>
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // max
+        assertEquals("7", xp.nextTextValue());
+        assertToken(JsonToken.FIELD_NAME, xp.nextToken()); // offset
+        assertEquals("9", xp.nextTextValue());
+        assertToken(JsonToken.END_OBJECT, xp.nextToken()); // </data>
+
+        // One more call past the end: should quietly report end-of-input
+        assertNull(xp.nextTextValue());
         xp.close();
     }
 }

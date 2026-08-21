@@ -1052,6 +1052,7 @@ XmlTokenStream.XML_END_ELEMENT, XmlTokenStream.XML_START_ELEMENT, token));
             break;
         case XmlTokenStream.XML_END:
             _updateTokenToNull();
+            break;
         default:
             return _internalErrorUnknownToken(token);
         }
