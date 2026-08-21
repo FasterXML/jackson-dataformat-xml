@@ -45,9 +45,9 @@ public class XmlParserNextXxxTest extends XmlTestUtil
         xp.close();
     }
 
-    // nextStringValue() must honor the JsonParser contract at end of input:
-    // return null, same as nextToken() does, instead of leaking an unchecked
-    // IllegalStateException from the internal XML_END branch.
+    // [dataformat-xml#899]: nextStringValue() must honor the JsonParser contract
+    // at end of input: return null, same as nextToken() does, instead of leaking
+    // an unchecked IllegalStateException from the internal XML_END branch.
     @Test
     public void testNextStringValueAtEndOfInput() throws Exception
     {
