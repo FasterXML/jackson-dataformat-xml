@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.deser;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -220,7 +221,7 @@ public class XmlTokenStream
         String rootPrefix = _xmlReader.getPrefix();
         _decodeElementName(_xmlReader.getNamespaceURI(), _xmlReader.getLocalName());
         _rootName = new QName(_namespaceURI, _localName,
-                (rootPrefix == null) ? "" : rootPrefix);
+                Objects.requireNonNullElse(rootPrefix, ""));
 
         // 02-Jul-2020, tatu: Two choices: if child elements OR attributes, expose
         //    as Object value; otherwise expose as Text
@@ -334,9 +335,9 @@ public class XmlTokenStream
     {
         int type = next();
         if (type != XML_END_ELEMENT) {
-            throw new IOException(String.format(
-                    "Internal error: Expected END_ELEMENT, got event of type %s",
-                    _stateDesc(type)));
+            throw new IOException(
+                    "Internal error: Expected END_ELEMENT, got event of type %s"
+                    .formatted(_stateDesc(type)));
         }
     }
 
@@ -455,26 +456,22 @@ public class XmlTokenStream
     {
 //System.out.println(" XmlTokenStream.skipAttributes(), state: "+_currentStateDesc());
         switch (_currentState) {
-        case XML_ATTRIBUTE_NAME:
+        case XML_ATTRIBUTE_NAME -> {
             _attributeCount = 0;
             _currentState = XML_START_ELEMENT;
-            break;
-        case XML_START_ELEMENT:
+        }
+        case XML_START_ELEMENT, XML_TEXT -> {
             // 06-Jan-2012, tatu: As per [#47] it looks like we should NOT do anything
             //   in this particular case, because it occurs when original element had
             //   no attributes and we now point to the first child element.
 //              _attributeCount = 0;
-            break;
-        case XML_TEXT:
-            break; // nothing to do... is it even legal?
-
+        }
             /*
         case XML_DELAYED_START_ELEMENT:
             // 03-Jul-2020, tatu: and here nothing to do either... ?
             break;
             */
-        default:
-            throw new IllegalStateException(
+        default -> throw new IllegalStateException(
 "Current state not XML_START_ELEMENT or XML_ATTRIBUTE_NAME but "+_currentStateDesc());
         }
     }
@@ -712,8 +709,8 @@ public class XmlTokenStream
             return r.getText();
         } catch (RuntimeException e) {
             Throwable cause = e.getCause();
-            if (cause instanceof XMLStreamException) {
-                throw (XMLStreamException) cause;
+            if (cause instanceof XMLStreamException xse) {
+                throw xse;
             }
             throw e;
         }
@@ -855,8 +852,8 @@ public class XmlTokenStream
             _nameProcessor.decodeName(name);
         } catch (IllegalArgumentException e) {
             throw new StreamReadException(null,
-                    String.format("Failed to decode XML name \"%s\": %s",
-                            name.localPart, e.getMessage()),
+                    "Failed to decode XML name \"%s\": %s"
+                            .formatted(name.localPart, e.getMessage()),
                     getCurrentLocation(), e);
         }
     }
@@ -961,25 +958,18 @@ public class XmlTokenStream
     }
 
     protected String _stateDesc(int state) {
-        switch (state) {
-        case XML_START_ELEMENT:
-            return "XML_START_ELEMENT";
-        case XML_END_ELEMENT:
-            return "XML_END_ELEMENT";
-        case XML_ATTRIBUTE_NAME:
-            return "XML_ATTRIBUTE_NAME";
-        case XML_ATTRIBUTE_VALUE:
-            return "XML_ATTRIBUTE_VALUE";
-        case XML_TEXT:
-            return "XML_TEXT";
+        return switch (state) {
+        case XML_START_ELEMENT -> "XML_START_ELEMENT";
+        case XML_END_ELEMENT -> "XML_END_ELEMENT";
+        case XML_ATTRIBUTE_NAME -> "XML_ATTRIBUTE_NAME";
+        case XML_ATTRIBUTE_VALUE -> "XML_ATTRIBUTE_VALUE";
+        case XML_TEXT -> "XML_TEXT";
         // case XML_DELAYED_START_ELEMENT:
         //    return "XML_START_ELEMENT_DELAYED";
-        case XML_ROOT_TEXT:
-            return "XML_ROOT_TEXT";
-        case XML_END:
-            return "XML_END";
-        }
-        return "N/A ("+_currentState+")";
+        case XML_ROOT_TEXT -> "XML_ROOT_TEXT";
+        case XML_END -> "XML_END";
+        default -> "N/A ("+_currentState+")";
+        };
     }
 
     // for DEBUGGING

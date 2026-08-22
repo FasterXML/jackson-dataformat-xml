@@ -287,3 +287,6 @@ Sahana (@Sahana2524)
 * Contributed #891: Enforce `StreamReadConstraints.maxNestingDepth` in
   `FromXmlParser`
  (2.18.10)
+* Fixed #899: Return `null` from `nextTextValue()` at end-of-input (instead of
+  throwing `IllegalStateException`)
+ (2.23.0)

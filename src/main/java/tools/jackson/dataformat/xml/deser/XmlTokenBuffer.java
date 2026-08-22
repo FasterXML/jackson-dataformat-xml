@@ -267,15 +267,15 @@ public class XmlTokenBuffer extends TokenBuffer
         }
 
         private JsonToken _nextTokenWrapping() throws JacksonException {
-            switch (_wrapState) {
-            case STATE_EMIT_START_ARRAY:
+            return switch (_wrapState) {
+            case STATE_EMIT_START_ARRAY -> {
                 _wrapState = STATE_WRAPPING;
                 _wrapDepth = 0;
                 _virtualToken = JsonToken.START_ARRAY;
                 _virtualName = null;
-                return JsonToken.START_ARRAY;
-
-            case STATE_EMIT_PENDING:
+                yield JsonToken.START_ARRAY;
+            }
+            case STATE_EMIT_PENDING -> {
                 JsonToken pt = _pendingToken;
                 String pn = _pendingName;
                 _pendingToken = null;
@@ -289,14 +289,11 @@ public class XmlTokenBuffer extends TokenBuffer
                 } else {
                     _wrapState = STATE_NORMAL;
                 }
-                return pt;
-
-            case STATE_WRAPPING:
-                return _nextWrapping();
-
-            default: // STATE_NORMAL
-                return _nextNormal();
+                yield pt;
             }
+            case STATE_WRAPPING -> _nextWrapping();
+            default -> _nextNormal(); // STATE_NORMAL
+            };
         }
 
         private JsonToken _nextNormal() throws JacksonException {

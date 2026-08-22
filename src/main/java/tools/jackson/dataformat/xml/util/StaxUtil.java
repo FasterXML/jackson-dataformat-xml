@@ -31,8 +31,8 @@ public class StaxUtil
         while (t.getCause() != null) {
             t = t.getCause();
         }
-        if (t instanceof Error) throw (Error) t;
-        if (t instanceof RuntimeException) throw (RuntimeException) t;
+        if (t instanceof Error e) throw e;
+        if (t instanceof RuntimeException re) throw re;
         return t;
     }
 

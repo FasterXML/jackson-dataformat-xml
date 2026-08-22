@@ -35,14 +35,14 @@ public interface XmlAnnotationIntrospector
         public Pair(AnnotationIntrospector p, AnnotationIntrospector s)
         {
             super(p, s);
-            if (p instanceof AnnotationIntrospector.XmlExtensions) {
-                _xmlPrimary = (AnnotationIntrospector.XmlExtensions) p;
+            if (p instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                _xmlPrimary = xmlExt;
             } else {
                 _xmlPrimary = null;
             }
 
-            if (s instanceof AnnotationIntrospector.XmlExtensions) {
-                _xmlSecondary = (AnnotationIntrospector.XmlExtensions) s;
+            if (s instanceof AnnotationIntrospector.XmlExtensions xmlExt) {
+                _xmlSecondary = xmlExt;
             } else {
                 _xmlSecondary = null;
             }

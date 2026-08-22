@@ -155,7 +155,7 @@ public class XmlValueInstantiators
                 PropertyName wrapperName = propDef.getWrapperName();
                 if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                     String localName = wrapperName.getSimpleName();
-                    if (localName != null && localName.length() > 0
+                    if (localName != null && !localName.isEmpty()
                             && !localName.equals(origName)) {
                         renamed = localName;
                     }

@@ -202,7 +202,7 @@ public final class XmlReadContext
     {
         if (dd.isDup(name)) {
             Object src = dd.getSource();
-            throw new StreamReadException(((src instanceof JsonParser) ? ((JsonParser) src) : null),
+            throw new StreamReadException(((src instanceof JsonParser jsonParser) ? jsonParser : null),
                     "Duplicate Object property \""+name+"\"");
         }
     }
@@ -234,15 +234,13 @@ public final class XmlReadContext
     {
         StringBuilder sb = new StringBuilder(64);
         switch (_type) {
-        case TYPE_ROOT:
-            sb.append("/");
-            break;
-        case TYPE_ARRAY:
+        case TYPE_ROOT -> sb.append("/");
+        case TYPE_ARRAY -> {
             sb.append('[');
             sb.append(getCurrentIndex());
             sb.append(']');
-            break;
-        case TYPE_OBJECT:
+        }
+        case TYPE_OBJECT -> {
             sb.append('{');
             if (_currentName != null) {
                 sb.append('"');
@@ -252,7 +250,7 @@ public final class XmlReadContext
                 sb.append('?');
             }
             sb.append('}');
-            break;
+        }
         }
         return sb.toString();
     }
