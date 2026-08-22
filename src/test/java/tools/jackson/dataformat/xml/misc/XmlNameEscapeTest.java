@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -113,9 +114,61 @@ public class XmlNameEscapeTest extends XmlTestUtil
         final String res = mapper.writeValueAsString(dto);
         // no encoded element/attribute name may start with a digit
         assertFalse(res.matches("(?s).*<[0-9].*"), res);
+        // digit-leading encodings carry the `_` marker...
+        assertTrue(res.contains("<_5Lit5paH>cjk</_5Lit5paH>"), res);
+        assertTrue(res.contains("<_0L_RgNC40LI>cyrillic</_0L_RgNC40LI>"), res);
+        // ... and letter-leading ones are written exactly as before
+        assertTrue(res.contains("<YWJj>ascii</YWJj>"), res);
 
         DTO reversed = mapper.readValue(res, DTO.class);
         assertEquals(dto, reversed);
+    }
+
+    // U+0400 is the first code point whose base64url encoding begins with a digit
+    // (lead byte 0xD0 -> index 52 -> '0'), so it is the exact boundary at which the
+    // `_` marker starts being needed; U+03FF just below it still encodes to a letter.
+    @Test
+    public void testAlwaysOnBase64NameStartBoundary() throws Exception {
+        DTO dto = new DTO();
+        dto.badMap.put(new String(new int[] { 0x3FF }, 0, 1), "below");
+        dto.badMap.put(new String(new int[] { 0x400 }, 0, 1), "at");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // U+03FF -> "z78", already a valid name start: left alone
+        assertTrue(res.contains("<z78>below</z78>"), res);
+        // U+0400 -> "0IA", needs the marker
+        assertTrue(res.contains("<_0IA>at</_0IA>"), res);
+
+        DTO reversed = mapper.readValue(res, DTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    public static class AttrDTO {
+        // U+0400 U+0066 U+0069 U+0072 U+0073 U+0074 ("first" prefixed with Cyrillic IE)
+        @JacksonXmlProperty(localName = "\u0400first", isAttribute = true)
+        public String attr;
+
+        protected AttrDTO() { }
+        public AttrDTO(String a) { attr = a; }
+    }
+
+    // Attribute names have the same NameStartChar rule as element names and go
+    // through the same processor, so the marker has to apply there too.
+    @Test
+    public void testAlwaysOnBase64AttributeNameRoundTrip() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(new AttrDTO("x"));
+        assertTrue(res.contains("_0IBmaXJzdA=\"x\""), res);
+
+        AttrDTO reversed = mapper.readValue(res, AttrDTO.class);
+        assertEquals("x", reversed.attr);
     }
 
     @Test
