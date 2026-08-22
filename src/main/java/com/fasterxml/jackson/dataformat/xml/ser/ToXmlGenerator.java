@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.base.GeneratorBase;
 import com.fasterxml.jackson.core.io.IOContext;
 import com.fasterxml.jackson.core.json.JsonWriteContext;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
@@ -1023,24 +1024,30 @@ public class ToXmlGenerator
             handleMissingName();
         }
         final org.codehaus.stax2.typed.Base64Variant stax2base64v = StaxUtil.toStax2Base64Variant(b64variant);
+        // 22-Aug-2026, sahana: negative `dataLength` means "unknown, read to the end";
+        //   stream where we can, buffer only where Stax2 needs a full buffer
+        int written = dataLength;
         try {
             if (_nextIsAttribute) {
                 // Stax2 API only has 'full buffer' write method:
-                byte[] fullBuffer = toFullBuffer(data, dataLength);
+                byte[] fullBuffer = (dataLength < 0) ? toFullBuffer(data) : toFullBuffer(data, dataLength);
+                written = fullBuffer.length;
                 _xmlWriter.writeBinaryAttribute(stax2base64v,
                         "", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
             } else if (checkNextIsUnwrapped()) {
               // should we consider pretty-printing or not?
-                writeStreamAsBinary(stax2base64v, data, dataLength);
+                written = writeStreamAsBinary(stax2base64v, data, dataLength);
 
             } else {
                 if (_xmlPrettyPrinter != null) {
+                    byte[] fullBuffer = (dataLength < 0) ? toFullBuffer(data) : toFullBuffer(data, dataLength);
+                    written = fullBuffer.length;
                     _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                             _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                            stax2base64v, toFullBuffer(data, dataLength), 0, dataLength);
+                            stax2base64v, fullBuffer, 0, written);
                 } else {
                     _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                    writeStreamAsBinary(stax2base64v, data, dataLength);
+                    written = writeStreamAsBinary(stax2base64v, data, dataLength);
                     _xmlWriter.writeEndElement();
                 }
             }
@@ -1048,32 +1055,52 @@ public class ToXmlGenerator
             StaxUtil.throwAsGenerationException(e, this);
         }
 
-        return dataLength;
+        return written;
     }
 
-    private void writeStreamAsBinary(org.codehaus.stax2.typed.Base64Variant stax2base64v,
+    /**
+     * Helper method for encoding contents of given stream: at most {@code len}
+     * bytes if non-negative, or until end-of-stream if negative.
+     *
+     * @return Number of bytes read and encoded
+     */
+    private int writeStreamAsBinary(org.codehaus.stax2.typed.Base64Variant stax2base64v,
             InputStream data, int len) throws IOException, XMLStreamException 
     {
-        // base64 encodes up to 3 bytes into a 4 bytes string
-        byte[] tmp = new byte[3];
-        int offset = 0;
-        int read;
-        while((read = data.read(tmp, offset, Math.min(3 - offset, len))) != -1) {
-            offset += read;
-            len -= read;
-            if(offset == 3) {
-                offset = 0;
-                _xmlWriter.writeBinary(stax2base64v, tmp, 0, 3);
+        final byte[] buf = _ioContext.allocBase64Buffer();
+        int total = 0;
+        try {
+            int end = 0; // number of buffered bytes not yet written
+            while (true) {
+                int max = buf.length - end;
+                if (len >= 0 && len < max) {
+                    max = len;
+                }
+                int count = (max == 0) ? -1 : data.read(buf, end, max);
+                if (count < 0) { // end-of-stream, or requested length reached
+                    if (end > 0) {
+                        _xmlWriter.writeBinary(stax2base64v, buf, 0, end);
+                    }
+                    break;
+                }
+                end += count;
+                total += count;
+                if (len > 0) {
+                    len -= count;
+                }
+                // base64 encodes 3 bytes into 4 characters: write complete triplets,
+                // keep the remainder for the next round
+                int full = end - (end % 3);
+                if (full > 0) {
+                    _xmlWriter.writeBinary(stax2base64v, buf, 0, full);
+                    end -= full;
+                    System.arraycopy(buf, full, buf, 0, end);
+                }
             }
-            if (len == 0) {
-                break;
-            }
+        } finally {
+            _ioContext.releaseBase64Buffer(buf);
         }
-
-        // we still have < 3 bytes in the buffer
-        if(offset > 0) {
-            _xmlWriter.writeBinary(stax2base64v, tmp, 0, offset);
-        }
+        return total;
     }
 
     private byte[] toFullBuffer(byte[] data, int offset, int len)
@@ -1102,6 +1129,22 @@ public class ToXmlGenerator
             offset += count;
         }
         return result;
+    }
+
+    // Variant for "unknown length": read until end-of-stream
+    private byte[] toFullBuffer(InputStream data) throws IOException
+    {
+        final ByteArrayBuilder bb = new ByteArrayBuilder(_ioContext.bufferRecycler());
+        final byte[] tmp = _ioContext.allocBase64Buffer();
+        try {
+            int count;
+            while ((count = data.read(tmp)) >= 0) {
+                bb.write(tmp, 0, count);
+            }
+        } finally {
+            _ioContext.releaseBase64Buffer(tmp);
+        }
+        return bb.getClearAndRelease();
     }
 
     /*
