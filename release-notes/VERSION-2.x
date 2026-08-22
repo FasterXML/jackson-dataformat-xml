@@ -6,8 +6,11 @@ Project: jackson-dataformat-xml
 
 2.23.0 (not yet released)
 
-No changes since 2.22
+#899: Return `null` from `nextTextValue()` at end-of-input (instead of
+  throwing `IllegalStateException`)
+ (fix by @Sahana2524)
 
+2.22.2 (16-Aug-2026)
 2.22.1 (07-Jul-2026)
 
 No changes since 2.22.0
@@ -16,6 +19,7 @@ No changes since 2.22.0
 
 #863: Fix to support Woodstox 7.2.0
 
+2.21.6 (14-Aug-2026)
 2.21.5 (06-Jul-2026)
 
 No changes since 2.21.4
@@ -68,7 +72,11 @@ No changes since 2.19.1
  (contributed by @duoduobingbing)
 - Upgrade Woodstox to 7.1.0
 
-2.18.10 (not yet released)
+2.18.11 (not yet released)
+
+- Fix build to avoid past-JDK-8 bytecode generation
+
+2.18.10 (15-Aug-2026)
 
 #891: Enforce `StreamReadConstraints.maxNestingDepth` in `FromXmlParser`
  (contributed by @Sahana2524)

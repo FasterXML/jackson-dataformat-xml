@@ -211,8 +211,8 @@ public class XmlSerializationContext extends SerializationContextExt
         if (rootName == null) {
             rootName = XmlRootNameLookup.ROOT_NAME_FOR_NULL;
         }
-        if (gen instanceof ToXmlGenerator) {
-            _initWithRootName((ToXmlGenerator) gen, rootName);
+        if (gen instanceof ToXmlGenerator xgen) {
+            _initWithRootName(xgen, rootName);
         }
         super.serializeValue(gen, null);
     }
@@ -239,7 +239,7 @@ public class XmlSerializationContext extends SerializationContextExt
         // [dataformat-xml#26] If we just try writing root element with namespace,
         // we will get an explicit prefix. But we'd rather use the default
         // namespace, so let's try to force that.
-        if (ns != null && ns.length() > 0) {
+        if (ns != null && !ns.isEmpty()) {
             try {
                 xgen.getStaxWriter().setDefaultNamespace(ns);
             } catch (XMLStreamException e) {
@@ -264,8 +264,8 @@ public class XmlSerializationContext extends SerializationContextExt
     protected boolean _shouldUnwrapObjectNode(ToXmlGenerator xgen, Object value)
     {
         return xgen.isEnabled(XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE)
-                && (value instanceof ObjectNode)
-                && (((ObjectNode) value).size() == 1);
+                && (value instanceof ObjectNode objectNode)
+                && (objectNode.size() == 1);
     }
 
     protected void _serializeUnwrappedObjectNode(ToXmlGenerator xgen, Object value,
@@ -288,7 +288,7 @@ public class XmlSerializationContext extends SerializationContextExt
 
     protected ToXmlGenerator _asXmlGenerator(JsonGenerator gen)
     {
-        if (!(gen instanceof ToXmlGenerator)) {
+        if (!(gen instanceof ToXmlGenerator xgen)) {
             // [dataformat-xml#71]: We sometimes get TokenBuffer, which is fine
             if (gen instanceof TokenBuffer) {
                 return null;
@@ -298,18 +298,18 @@ public class XmlSerializationContext extends SerializationContextExt
                     "XmlMapper does not work with generators of type other than `ToXmlGenerator`; got: `"
                             +gen.getClass().getName()+"`");
         }
-        return (ToXmlGenerator) gen;
+        return xgen;
     }    
 
     protected JacksonException _wrapAsJacksonE(JsonGenerator g, Exception e)
     {
-        if (e instanceof IOException) {
-            return JacksonIOException.construct((IOException) e);
+        if (e instanceof IOException ioException) {
+            return JacksonIOException.construct(ioException);
         }
         // 17-Jan-2021, tatu: Should we do something else here? Presumably
         //    this exception has map set up
-        if (e instanceof DatabindException) {
-            throw (DatabindException) e;
+        if (e instanceof DatabindException databindException) {
+            throw databindException;
         }
         String msg = e.getMessage();
         if (msg == null) {
