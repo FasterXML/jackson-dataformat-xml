@@ -28,6 +28,8 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @Sahana2524)
 #893: Decode element name before matching virtual wrapper in `_initStartElement`
  (fix by @Sahana2524)
+#895: Avoid leading digit in `AlwaysOnBase64NameProcessor`-encoded XML names
+ (fix by @Sahana2524)
 #899: Return `null` from `nextStringValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
  (fix by @Sahana2524)

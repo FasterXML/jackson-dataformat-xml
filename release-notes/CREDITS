@@ -183,6 +183,9 @@ Christian Beikov (@beikov)
  * Fixed #893: Decode element name before matching virtual wrapper in
    `_initStartElement`
   (3.3.0)
+ * Fixed #895: Avoid leading digit in `AlwaysOnBase64NameProcessor`-encoded
+   XML names
+  (3.3.0)
  * Fixed #899: Return `null` from `nextStringValue()` at end-of-input (instead
    of throwing `IllegalStateException`)
   (3.3.0)
