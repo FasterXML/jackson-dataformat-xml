@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.misc;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,6 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 // For [dataformat-xml#531]
 public class XmlNameEscapeTest extends XmlTestUtil
 {
+    // XML 1.0 `Name` production, limited to characters the base64 processors can
+    // produce: only letters, `_` and `:` may START a name, digits and `-` may not.
+    private final static Pattern VALID_XML_NAME = Pattern.compile("[a-zA-Z_:][a-zA-Z0-9_:.-]*");
+
     public static class DTO {
         public Map<String, String> badMap = new HashMap<>();
 
@@ -112,8 +116,6 @@ public class XmlNameEscapeTest extends XmlTestUtil
         ).build();
 
         final String res = mapper.writeValueAsString(dto);
-        // no encoded element/attribute name may start with a digit
-        assertFalse(res.matches("(?s).*<[0-9].*"), res);
         // digit-leading encodings carry the `_` marker...
         assertTrue(res.contains("<_5Lit5paH>cjk</_5Lit5paH>"), res);
         assertTrue(res.contains("<_0L_RgNC40LI>cyrillic</_0L_RgNC40LI>"), res);
@@ -169,6 +171,44 @@ public class XmlNameEscapeTest extends XmlTestUtil
 
         AttrDTO reversed = mapper.readValue(res, AttrDTO.class);
         assertEquals("x", reversed.attr);
+    }
+
+    // Whatever the name, the "always on" processor has to hold two invariants:
+    // what it emits is a valid XML name, and decoding gives back exactly what was
+    // encoded. Checked directly on the processor since some of these names (the
+    // empty one in particular) can not be produced through a Map key.
+    @Test
+    public void testAlwaysOnBase64NameInvariants() throws Exception {
+        final String[] names = new String[] {
+                "", // degenerate, but must not fail
+                "abc", // encodes to a letter: no marker needed
+                "123",
+                "$ I am <fancy>! &;",
+                new String(new int[] { 0x3FF }, 0, 1), // last code point encoding to a letter
+                new String(new int[] { 0x400 }, 0, 1), // first code point encoding to a digit
+                new String(new int[] { 0x43F, 0x440, 0x438, 0x432 }, 0, 4), // Cyrillic
+                new String(new int[] { 0x4E2D, 0x6587 }, 0, 2), // CJK
+                new String(new int[] { 0x1F600 }, 0, 1), // emoji, 4-byte UTF-8
+        };
+        final XmlNameProcessor proc = XmlNameProcessors.newAlwaysOnBase64Processor();
+
+        for (String name : names) {
+            XmlNameProcessor.XmlName xmlName = new XmlNameProcessor.XmlName();
+            xmlName.localPart = name;
+
+            proc.encodeName(xmlName);
+            final String encoded = xmlName.localPart;
+            if (name.isEmpty()) {
+                assertEquals("", encoded, "Empty name should encode to empty name");
+            } else {
+                assertTrue(VALID_XML_NAME.matcher(encoded).matches(),
+                        "Invalid XML name '"+encoded+"' encoded from '"+name+"'");
+            }
+
+            proc.decodeName(xmlName);
+            assertEquals(name, xmlName.localPart,
+                    "Failed round-trip of '"+name+"' (encoded as '"+encoded+"')");
+        }
     }
 
     @Test
