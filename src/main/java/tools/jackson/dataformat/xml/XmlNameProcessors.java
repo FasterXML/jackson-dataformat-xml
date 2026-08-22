@@ -142,6 +142,26 @@ public final class XmlNameProcessors
      * <b>always</b> be escaped with base64. No magic prefix is required
      * for this case, since adding one would be redundant because all names
      * will be base64 encoded.
+     * <p>
+     * With this processor set, a map with the key {@code "abc"} and a CJK
+     * key (code points U+4E2D, U+6587) will be written as:
+     *
+     * <pre>{@code
+     * <DTO>
+     *     <YmFkTWFw>
+     *         <YWJj>xyz</YWJj>
+     *         <_5Lit5paH>bar</_5Lit5paH>
+     *     </YmFkTWFw>
+     * </DTO>
+     * }</pre>
+     *<p>
+     * NOTE: base64url's alphabet includes digits, but a digit can not start an
+     * XML name: names starting with a character U+0400 or above encode to a
+     * leading digit. Such encodings get a single {@code _} prepended (see
+     * {@code <_5Lit5paH>} above) to restore a valid name start character, and
+     * it is stripped again when decoding. Encoding of UTF-8 bytes never itself
+     * begins with {@code _}, so the marker stays unambiguous and names that
+     * already encode to a leading letter are written unchanged.
      */
     public static XmlNameProcessor newAlwaysOnBase64Processor() {
         return new AlwaysOnBase64NameProcessor();
