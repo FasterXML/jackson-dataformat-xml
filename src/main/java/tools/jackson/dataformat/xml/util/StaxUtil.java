@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.xml.stream.*;
 
+import org.codehaus.stax2.XMLStreamWriter2;
+
 import tools.jackson.core.*;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.core.exc.StreamWriteException;
@@ -34,6 +36,46 @@ public class StaxUtil
         if (t instanceof Error e) throw e;
         if (t instanceof RuntimeException re) throw re;
         return t;
+    }
+
+    /**
+     * Writes {@code text} as one or more CDATA sections. XML does not allow the
+     * sequence {@code "]]>"} inside a CDATA block, so where it occurs the value is
+     * split: the {@code "]]"} ends one section and the {@code ">"} starts the next.
+     * A coalescing reader (the default for this module) reads the pieces back as
+     * the original text, so a value containing {@code "]]>"} round-trips instead of
+     * making the underlying Stax writer reject it.
+     */
+    public static void writeCData(XMLStreamWriter2 sw, String text)
+        throws XMLStreamException
+    {
+        int ix = text.indexOf("]]>");
+        if (ix < 0) {
+            sw.writeCData(text);
+            return;
+        }
+        int start = 0;
+        do {
+            // keep the "]]" in this section, push the ">" into the next one
+            sw.writeCData(text.substring(start, ix + 2));
+            start = ix + 2;
+            ix = text.indexOf("]]>", start);
+        } while (ix >= 0);
+        sw.writeCData(text.substring(start));
+    }
+
+    public static void writeCData(XMLStreamWriter2 sw, char[] buffer, int offset, int len)
+        throws XMLStreamException
+    {
+        // Common case has no "]]>" in range, so avoid allocating a String for it
+        final int end = offset + len;
+        for (int i = offset; i < end - 2; ++i) {
+            if (buffer[i] == ']' && buffer[i + 1] == ']' && buffer[i + 2] == '>') {
+                writeCData(sw, new String(buffer, offset, len));
+                return;
+            }
+        }
+        sw.writeCData(buffer, offset, len);
     }
 
     private static String _message(Throwable t1, Throwable t2) {
