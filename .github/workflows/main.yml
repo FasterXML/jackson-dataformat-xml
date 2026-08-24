@@ -70,7 +70,7 @@ jobs:
         retention-days: 30
     - name: Download base branch coverage
       if: ${{ matrix.release_build && github.event_name == 'pull_request' }}
-      uses: dawidd6/action-download-artifact@b6e2e70617bc3265edd6dab6c906732b2f1ae151 # v21
+      uses: dawidd6/action-download-artifact@d63b86af1b34672e53c440b1b83979861906bad7 # v24
       continue-on-error: true
       with:
         workflow: main.yml
