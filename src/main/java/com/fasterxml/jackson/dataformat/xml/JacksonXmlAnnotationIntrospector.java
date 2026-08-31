@@ -3,6 +3,7 @@ package com.fasterxml.jackson.dataformat.xml;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JavaType;
@@ -220,6 +221,28 @@ public class JacksonXmlAnnotationIntrospector
         return pn;
     }
 
+    /*
+    /**********************************************************************
+    /* Overrides for JsonInclude, property detection
+    /**********************************************************************
+     */
+    
+    @Override
+    public JsonInclude.Value findPropertyInclusion(Annotated a)
+    {
+        JacksonXmlInclude xmlInclude = _findAnnotation(a, JacksonXmlInclude.class);
+        if (xmlInclude != null) {
+            return JsonInclude.Value.construct(
+                JsonInclude.Include.valueOf(xmlInclude.value().name()),
+                JsonInclude.Include.valueOf(xmlInclude.content().name()),
+                xmlInclude.valueFilter(),
+                xmlInclude.contentFilter()
+            );
+        } else { 
+        	return JsonInclude.Value.empty();    
+        }
+    }
+    
     /*
     /**********************************************************************
     /* Overrides for non-public helper methods
