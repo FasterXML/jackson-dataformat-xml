@@ -193,6 +193,17 @@ public class ToXmlGenerator
     protected boolean _nextIsCData = false;
 
     /**
+     * Marker set by {@link #writeName(String)} when it forces attribute mode
+     * and the XSI namespace onto the next value to emit a synthetic
+     * {@code xsi:type} attribute. Bean serializers clear it by assigning the
+     * following name via {@link #setNextName}; for content-driven names
+     * (Map / JsonNode / {@code @JsonAnyGetter}) nothing else does, so the next
+     * {@link #writeName} clears it to keep the forced state from leaking onto a
+     * following sibling.
+     */
+    protected boolean _nextIsXsiType = false;
+
+    /**
      * To support proper serialization of arrays it is necessary to keep
      * stack of element names, so that we can "revert" to earlier 
      */
@@ -502,6 +513,8 @@ public class ToXmlGenerator
     public final void setNextName(QName name)
     {
         _nextName = name;
+        // Caller is taking over naming, so drop any pending xsi:type forcing
+        _nextIsXsiType = false;
     }
 
     /**
@@ -610,12 +623,26 @@ public class ToXmlGenerator
             _reportError("Can not write a property name, expecting a value");
         }
 
+        // A preceding synthetic "xsi:type" name forces attribute mode and the XSI
+        // namespace onto _nextName so the type-id value can be written as an
+        // attribute. Bean serializers reset that by assigning the next name via
+        // setNextName(); content-driven names (Map/JsonNode/@JsonAnyGetter) do not,
+        // so clear it here. Otherwise the following sibling inherits attribute-ness
+        // and the XSI namespace, producing xsi:-prefixed attributes (or a duplicate
+        // xsi:type) that this module can no longer read back.
+        if (_nextIsXsiType) {
+            _nextIsXsiType = false;
+            _nextIsAttribute = false;
+            _nextName = null;
+        }
+
         // 30-Jan-2024, tatu: Surprise!
         if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)
                 && "xsi:type".equals(name)) {
             setNextName(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                     "type", "xsi"));
             setNextIsAttribute(true);
+            _nextIsXsiType = true;
         } else if (name.equals(_cfgNameForTextElement)) {
             // [dataformat-xml#629]: Name matching the "unnamed text property" marker
             //   (FromXmlParser.DEFAULT_UNNAMED_TEXT_PROPERTY, default "") represents
