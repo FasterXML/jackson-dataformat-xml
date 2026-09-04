@@ -19,6 +19,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 // [dataformat-xml#894]: `JsonGenerator.writeBinary(InputStream, dataLength)` documents a
 // negative `dataLength` as "length unknown, read to end" (the JSON backend honors it);
@@ -122,21 +123,35 @@ public class BinaryUnknownLengthWriteTest extends XmlTestUtil
     @Test
     public void testLargePayloadUnknownLength() throws Exception
     {
+        _testLargePayload(Base64Variants.MIME_NO_LINEFEEDS, Integer.MAX_VALUE);
+        // and same for a variant that does use linefeeds: chunk boundaries must
+        // align with line boundaries, or lines would end up longer than allowed
+        _testLargePayload(Base64Variants.MIME, 76);
+        _testLargePayload(Base64Variants.PEM, 64);
+    }
+
+    private void _testLargePayload(Base64Variant b64v, int maxLineLength) throws Exception
+    {
         final byte[] big = new byte[7001];
         for (int i = 0; i < big.length; i++) {
             big[i] = (byte) i;
         }
-        // Use variant without line feeds: the Stax2 writer starts a new line counter
-        // for each chunk written, so with MIME only the line break positions would differ
-        final Base64Variant b64v = Base64Variants.MIME_NO_LINEFEEDS;
+        // Streaming output must match what the `byte[]` overload produces
         final String expected = _writeElement(b64v, big);
         final String actual = _writeElement(b64v, big, -1);
         assertEquals(expected, actual);
         assertEquals(expected, _writeElement(b64v, big, big.length));
         assertEquals(_writeAttribute(b64v, big, big.length), _writeAttribute(b64v, big, -1));
 
-        // and finally, make sure it decodes back
+        // and no line may exceed the maximum length variant specifies
         String encoded = actual.substring("<root><bin>".length(), actual.length() - "</bin></root>".length());
+        for (String line : encoded.split("\n", -1)) {
+            if (line.length() > maxLineLength) {
+                fail("Line length "+line.length()+" exceeds max "+maxLineLength+" for "+b64v.getName());
+            }
+        }
+
+        // and finally, make sure it decodes back
         assertArrayEquals(big, b64v.decode(encoded));
     }
 

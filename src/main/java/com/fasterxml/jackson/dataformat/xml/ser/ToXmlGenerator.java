@@ -1068,6 +1068,7 @@ public class ToXmlGenerator
             InputStream data, int len) throws IOException, XMLStreamException 
     {
         final byte[] buf = _ioContext.allocBase64Buffer();
+        final int unit = _base64ChunkUnit(stax2base64v, buf.length);
         int total = 0;
         try {
             int end = 0; // number of buffered bytes not yet written
@@ -1088,9 +1089,8 @@ public class ToXmlGenerator
                 if (len > 0) {
                     len -= count;
                 }
-                // base64 encodes 3 bytes into 4 characters: write complete triplets,
-                // keep the remainder for the next round
-                int full = end - (end % 3);
+                // Write out complete chunks, keep the remainder for the next round
+                int full = end - (end % unit);
                 if (full > 0) {
                     _xmlWriter.writeBinary(stax2base64v, buf, 0, full);
                     end -= full;
@@ -1101,6 +1101,34 @@ public class ToXmlGenerator
             _ioContext.releaseBase64Buffer(buf);
         }
         return total;
+    }
+
+    /**
+     * Helper method for figuring out granularity of chunks to pass to Stax2
+     * {@code writeBinary()}: Base64 encodes 3 bytes into 4 characters so chunk
+     * length must be a multiple of 3. Further, if variant uses linefeeds, chunks
+     * must also align with Base64 line boundaries: Stax2 encoder restarts its
+     * line-length counter for every call, so unaligned chunks would produce
+     * lines longer than the variant allows.
+     *
+     * @param b64v Base64 variant used for encoding
+     * @param bufferLength Length of the read buffer chunks are taken from
+     *
+     * @return Chunk length granularity to use; always a multiple of 3
+     */
+    private static int _base64ChunkUnit(org.codehaus.stax2.typed.Base64Variant b64v,
+            int bufferLength)
+    {
+        final int maxLineLength = b64v.getMaxLineLength();
+        if (maxLineLength > 0 && maxLineLength < Integer.MAX_VALUE) {
+            // 4 encoded characters per each 3 bytes of input
+            final int lineBytes = (maxLineLength >> 2) * 3;
+            // But cannot align if a single line won't fit in the read buffer
+            if (lineBytes >= 3 && lineBytes <= bufferLength) {
+                return lineBytes;
+            }
+        }
+        return 3;
     }
 
     private byte[] toFullBuffer(byte[] data, int offset, int len)
