@@ -19,6 +19,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 // [dataformat-xml#894]: `JsonGenerator.writeBinary(InputStream, dataLength)` documents a
@@ -34,6 +35,31 @@ public class BinaryUnknownLengthWriteTest extends XmlTestUtil
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
             return super.read(b, off, Math.min(len, 1));
+        }
+    }
+
+    // Stream that fails partway through, to verify buffers are recycled properly
+    static class FailingInputStream extends InputStream
+    {
+        private int _left;
+
+        FailingInputStream(int okBytes) { _left = okBytes; }
+
+        @Override
+        public int read() throws IOException {
+            byte[] b = new byte[1];
+            int count = read(b, 0, 1);
+            return (count < 0) ? -1 : (b[0] & 0xFF);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            if (_left <= 0) {
+                throw new IOException("Test-induced read failure");
+            }
+            int count = Math.min(len, _left);
+            _left -= count;
+            return count;
         }
     }
 
@@ -168,6 +194,29 @@ public class BinaryUnknownLengthWriteTest extends XmlTestUtil
             gen.writeEndObject();
         }
         assertEquals("<root><bin>" + ENCODED + "</bin></root>", removeSjsxpNamespace(out.toString()));
+    }
+
+    // Failure partway through an unknown-length read must not leave recycled buffers
+    // in a bad state: following writes must still produce correct output
+    @Test
+    public void testFailingStreamReleasesBuffers() throws Exception
+    {
+        for (int i = 0; i < 3; ++i) {
+            StringWriter out = new StringWriter();
+            try (ToXmlGenerator gen = (ToXmlGenerator) MAPPER.createGenerator(out)) {
+                gen.setNextName(new QName("root"));
+                gen.writeStartObject();
+                gen.setNextIsAttribute(true);
+                gen.writeFieldName("bin");
+                assertThrows(IOException.class, () -> gen.writeBinary(Base64Variants.MIME,
+                        new FailingInputStream(5000), -1));
+            } catch (IOException e) {
+                // close() may fail due to incomplete output; ignore
+            }
+            // and then verify that buffer recycling still works as expected
+            assertEquals("<root><bin>" + ENCODED + "</bin></root>", _writeElement(
+                    Base64Variants.MIME, DATA, -1));
+        }
     }
 
     /*

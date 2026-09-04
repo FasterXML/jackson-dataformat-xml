@@ -1012,6 +1012,18 @@ public class ToXmlGenerator
         }
     }
 
+    /**
+     * Implementation follows the {@link JsonGenerator} contract in which negative
+     * {@code dataLength} means "length unknown": stream is then read until end-of-stream.
+     *<p>
+     * NOTE: values written as XML elements are streamed in fixed-size chunks, but values
+     * written as attributes (or with a pretty-printer) have to be buffered in memory in
+     * full, since Stax2 API only offers "full buffer" methods for those cases.
+     *
+     * @param dataLength Number of bytes to write, if known; negative value if unknown
+     *
+     * @return Number of bytes read from {@code data} and written as binary payload
+     */
     @Override
     public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException
     {
@@ -1060,7 +1072,9 @@ public class ToXmlGenerator
 
     /**
      * Helper method for encoding contents of given stream: at most {@code len}
-     * bytes if non-negative, or until end-of-stream if negative.
+     * bytes if non-negative, or until end-of-stream if negative. Content is read
+     * and encoded in fixed-size chunks so memory usage does not depend on its length;
+     * preferred over {@link #toFullBuffer} where Stax2 API allows it.
      *
      * @return Number of bytes read and encoded
      */
@@ -1105,14 +1119,9 @@ public class ToXmlGenerator
 
     /**
      * Helper method for figuring out granularity of chunks to pass to Stax2
-     * {@code writeBinary()}: Base64 encodes 3 bytes into 4 characters so chunk
-     * length must be a multiple of 3. Further, if variant uses linefeeds, chunks
-     * must also align with Base64 line boundaries: Stax2 encoder restarts its
-     * line-length counter for every call, so unaligned chunks would produce
-     * lines longer than the variant allows.
-     *
-     * @param b64v Base64 variant used for encoding
-     * @param bufferLength Length of the read buffer chunks are taken from
+     * {@code writeBinary()}: Base64 encodes 3 bytes into 4 characters so chunks must
+     * be multiples of 3 -- and if variant uses linefeeds, must also align with line
+     * boundaries, since Stax2 encoder restarts its line-length counter on every call.
      *
      * @return Chunk length granularity to use; always a multiple of 3
      */
@@ -1144,6 +1153,11 @@ public class ToXmlGenerator
         return result;
     }
 
+    /**
+     * Helper method for reading exactly {@code len} bytes into a newly allocated
+     * buffer, for cases where Stax2 API requires the full value; fails if stream
+     * does not contain that many bytes.
+     */
     private byte[] toFullBuffer(InputStream data, final int len) throws IOException 
     {
         byte[] result = new byte[len];
@@ -1159,20 +1173,33 @@ public class ToXmlGenerator
         return result;
     }
 
-    // Variant for "unknown length": read until end-of-stream
+    /**
+     * Variant of {@link #toFullBuffer(InputStream, int)} for unknown length: reads
+     * until end-of-stream.
+     *<p>
+     * NOTE: since length is not known in advance no allocation limit can be applied,
+     * and an arbitrarily large stream is accumulated until exhausted (or memory runs
+     * out); prefer {@link #writeStreamAsBinary} wherever streaming is possible.
+     */
     private byte[] toFullBuffer(InputStream data) throws IOException
     {
-        final ByteArrayBuilder bb = new ByteArrayBuilder(_ioContext.bufferRecycler());
         final byte[] tmp = _ioContext.allocBase64Buffer();
+        final ByteArrayBuilder bb = new ByteArrayBuilder(_ioContext.bufferRecycler());
+        byte[] result = null;
         try {
             int count;
             while ((count = data.read(tmp)) >= 0) {
                 bb.write(tmp, 0, count);
             }
+            result = bb.getClearAndRelease();
         } finally {
             _ioContext.releaseBase64Buffer(tmp);
+            // If read failed, builder still holds on to a recycled buffer: return it
+            if (result == null) {
+                bb.release();
+            }
         }
-        return bb.getClearAndRelease();
+        return result;
     }
 
     /*
