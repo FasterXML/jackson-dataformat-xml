@@ -37,6 +37,17 @@ public class EntityReferenceReadTest extends XmlTestUtil
             "<!DOCTYPE root [<!ENTITY e 'xx'>]>\n"
             +"<root><a>1</a>foo&e;bar<b>2</b></root>";
 
+    // System id deliberately points nowhere: a non-replacing reader must never
+    // try to resolve it
+    private final static String DOC_EXTERNAL_ENTITY =
+            "<!DOCTYPE root [<!ENTITY ext SYSTEM 'file:///nonexistent/entity.txt'>]>\n"
+            +"<root><a>foo&ext;bar</a></root>";
+
+    // Replacement text of `b` refers to another entity
+    private final static String DOC_NESTED_ENTITY =
+            "<!DOCTYPE root [<!ENTITY a 'x'><!ENTITY b '&a;&a;'>]>\n"
+            +"<root><a>foo&b;bar</a></root>";
+
     private final XmlMapper NON_REPLACING_MAPPER = _nonReplacingMapper(true);
 
     private final XmlMapper NON_REPLACING_NO_DTD_MAPPER = _nonReplacingMapper(false);
@@ -73,6 +84,27 @@ public class EntityReferenceReadTest extends XmlTestUtil
         StreamReadException e = assertThrows(StreamReadException.class,
                 () -> NON_REPLACING_NO_DTD_MAPPER.readValue(DOC_UNDECLARED_ENTITY, Map.class));
         verifyException(e, "Unexpanded entity reference '&e;'");
+    }
+
+    @Test
+    public void testExternalEntityNotReplacedByReader() throws Exception
+    {
+        // A non-replacing reader reports an external entity reference without
+        // replacement text (it does not resolve the system id): must fail the
+        // same way as an undeclared one, never exposing the referenced content
+        StreamReadException e = assertThrows(StreamReadException.class,
+                () -> NON_REPLACING_MAPPER.readValue(DOC_EXTERNAL_ENTITY, Map.class));
+        verifyException(e, "Unexpanded entity reference '&ext;'");
+    }
+
+    @Test
+    public void testNestedEntityNotExpandedByTokenStream() throws Exception
+    {
+        // Only the reader's own (one level) replacement text is used, verbatim:
+        // the token stream expands nothing itself, so there is no amplification
+        // beyond what the reader already does
+        Map<?,?> result = NON_REPLACING_MAPPER.readValue(DOC_NESTED_ENTITY, Map.class);
+        assertEquals("foo&a;&a;bar", result.get("a"));
     }
 
     @Test
