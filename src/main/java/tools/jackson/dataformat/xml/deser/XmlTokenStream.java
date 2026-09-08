@@ -644,6 +644,9 @@ public class XmlTokenStream
                 // note: SPACE is ignorable (and seldom seen), not to be included
                 case XMLStreamConstants.CHARACTERS:
                 case XMLStreamConstants.CDATA:
+                // Only reported if the reader does not replace entity references
+                // (or could not expand this one): still part of text content
+                case XMLStreamConstants.ENTITY_REFERENCE:
                     // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
                     {
                         String str = _getText(_xmlReader);
@@ -684,6 +687,7 @@ public class XmlTokenStream
             // note: SPACE is ignorable (and seldom seen), not to be included
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
+            case XMLStreamConstants.ENTITY_REFERENCE:
                 {
                     String str = _getText(_xmlReader);
                     if (chars == null) {
@@ -705,8 +709,9 @@ public class XmlTokenStream
 
     private final String _getText(XMLStreamReader2 r) throws XMLStreamException
     {
+        final String text;
         try {
-            return r.getText();
+            text = r.getText();
         } catch (RuntimeException e) {
             Throwable cause = e.getCause();
             if (cause instanceof XMLStreamException xse) {
@@ -714,6 +719,14 @@ public class XmlTokenStream
             }
             throw e;
         }
+        // An entity reference the reader did not (or could not) expand has no
+        // replacement text to offer: fail rather than silently drop it from content
+        if (text == null && r.getEventType() == XMLStreamConstants.ENTITY_REFERENCE) {
+            throw new XMLStreamException("Unexpanded entity reference '&"+r.getLocalName()
+                    +";' in text content (entity not declared, or not replaced by XMLStreamReader)",
+                    r.getLocation());
+        }
+        return text;
     }
 
     /*
