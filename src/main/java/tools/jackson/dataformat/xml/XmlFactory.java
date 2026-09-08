@@ -247,13 +247,28 @@ public class XmlFactory
             // would have set, otherwise a securely-built factory comes back with
             // external entity + DTD processing re-enabled (see [dataformat-xml#190], [dataformat-xml#211]).
             inf = XmlFactoryBuilder.secureXmlInputFactory(
-                    (XMLInputFactory) Class.forName(_jdkXmlInFactory).getDeclaredConstructor().newInstance());
-            outf = (XMLOutputFactory) Class.forName(_jdkXmlOutFactory).getDeclaredConstructor().newInstance();
+                    _staxFactoryForName(XMLInputFactory.class, _jdkXmlInFactory));
+            outf = _staxFactoryForName(XMLOutputFactory.class, _jdkXmlOutFactory);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
         return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
                 inf, outf, _nameProcessor, _cfgNameForTextElement);
+    }
+
+    // The Stax factory class names come off a JDK-serialized stream, which may be
+    // attacker-controlled. The old code passed each straight to
+    // `Class.forName(name).getDeclaredConstructor().newInstance()`, which loads,
+    // static-initializes and instantiates ANY class named there before checking its
+    // type -- so a tampered stream could run the static initializer and no-arg
+    // constructor of an arbitrary class on the classpath. Load without initializing,
+    // confirm the class really is the expected Stax factory type, and only then
+    // initialize and construct it. Legitimate factory class names are unaffected.
+    private static <T> T _staxFactoryForName(Class<T> expType, String className)
+        throws ReflectiveOperationException
+    {
+        final Class<?> raw = Class.forName(className, false, XmlFactory.class.getClassLoader());
+        return raw.asSubclass(expType).getDeclaredConstructor().newInstance();
     }
 
     /**
