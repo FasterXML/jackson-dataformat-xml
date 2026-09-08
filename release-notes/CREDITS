@@ -193,3 +193,6 @@ Christian Beikov (@beikov)
  * Fixed #899: Return `null` from `nextStringValue()` at end-of-input (instead
    of throwing `IllegalStateException`)
   (3.3.0)
+ * Fixed #910: Verify Stax factory type before instantiating in
+   `XmlFactory.readResolve()`
+  (3.3.0)
