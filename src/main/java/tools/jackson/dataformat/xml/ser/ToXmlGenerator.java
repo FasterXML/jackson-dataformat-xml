@@ -857,7 +857,7 @@ public class ToXmlGenerator
                 //   but for now, let's just make sure structure is correct
                 //if (_xmlPrettyPrinter != null) { ... }
                 if(_nextIsCData) {
-                    _xmlWriter.writeCData(text);
+                    StaxUtil.writeCData(_xmlWriter, text);
                 } else {
                     _xmlWriter.writeCharacters(text);
                 }
@@ -868,7 +868,7 @@ public class ToXmlGenerator
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
                 if(_nextIsCData) {
-                    _xmlWriter.writeCData(text);
+                    StaxUtil.writeCData(_xmlWriter, text);
                 } else {
                     _xmlWriter.writeCharacters(text);
                 }
@@ -893,7 +893,7 @@ public class ToXmlGenerator
             } else if (checkNextIsUnwrapped()) {
             	// should we consider pretty-printing or not?
                 if(_nextIsCData) {
-                    _xmlWriter.writeCData(text, offset, len);
+                    StaxUtil.writeCData(_xmlWriter, text, offset, len);
                 } else {
                     _xmlWriter.writeCharacters(text, offset, len);
                 }
@@ -904,7 +904,7 @@ public class ToXmlGenerator
             } else {
                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
                 if(_nextIsCData) {
-                    _xmlWriter.writeCData(text, offset, len);
+                    StaxUtil.writeCData(_xmlWriter, text, offset, len);
                 } else {
                     _xmlWriter.writeCharacters(text, offset, len);
                 }
