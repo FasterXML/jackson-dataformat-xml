@@ -256,20 +256,30 @@ public class XmlFactory
                 inf, outf, _nameProcessor, _cfgNameForTextElement);
     }
 
-    // The Stax factory class names come off a JDK-serialized stream, which may be
-    // attacker-controlled. The old code passed each straight to
-    // `Class.forName(name).getDeclaredConstructor().newInstance()`, which loads,
-    // static-initializes and instantiates ANY class named there before checking its
-    // type -- so a tampered stream could run the static initializer and no-arg
-    // constructor of an arbitrary class on the classpath. Load without initializing,
-    // confirm the class really is the expected Stax factory type, and only then
-    // initialize and construct it. Legitimate factory class names are unaffected.
+    // Stax factory class names are read back from a JDK-serialized stream and used
+    // to reconstruct the factories. Passing a name straight to
+    // `Class.forName(name).getDeclaredConstructor().newInstance()` would load,
+    // static-initialize and instantiate whatever class is named before its type is
+    // ever checked, so a name that is not actually a Stax factory (from a stream
+    // written by a different version or configuration, or otherwise damaged in
+    // transit) would still get its static initializer and no-arg constructor run
+    // before being rejected. Cheap to avoid, so: load without initializing, confirm
+    // the class really is the expected Stax factory type, and only then initialize
+    // and construct it. Valid factory class names are unaffected.
     //
     // @since 3.3
     private static <T> T _staxFactoryForName(Class<T> expType, String className)
         throws ReflectiveOperationException
     {
         final Class<?> raw = Class.forName(className, false, XmlFactory.class.getClassLoader());
+        // NOTE: could just use `Class.asSubclass()` but its `ClassCastException` only
+        // names the offending class, not the type we expected; construct our own so
+        // that an honest classpath/configuration problem is actually diagnosable
+        if (!expType.isAssignableFrom(raw)) {
+            throw new ClassCastException(String.format(
+                    "Class `%s` (read from JDK-serialized `XmlFactory`) not of expected type `%s`",
+                    className, expType.getName()));
+        }
         return raw.asSubclass(expType).getDeclaredConstructor().newInstance();
     }
 
