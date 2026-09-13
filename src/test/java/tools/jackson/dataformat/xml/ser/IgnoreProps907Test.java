@@ -13,7 +13,7 @@ import tools.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IgnorePropsXmlInfoAlignmentTest extends XmlTestUtil
+public class IgnoreProps907Test extends XmlTestUtil
 {
     @JsonPropertyOrder({ "attr", "e1", "e2" })
     static class AttrInner {

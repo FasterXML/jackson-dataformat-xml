@@ -91,7 +91,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             Set<String> toIgnore, Set<String> toInclude)
     {
         super(src, toIgnore, toInclude);
-        // 30-Aug-2026: `super(...)` drops the ignored/non-included writers and
+        // 13-Sep-2026, tatu: `super(...)` drops the ignored/non-included writers and
         // re-indexes `_props`, so the per-index XML metadata can not be copied
         // from `src`; recompute it against the new property array.
         XmlInfoInternal info = _resolveXmlInfo(_props, _filteredProps);
@@ -104,10 +104,15 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     public XmlBeanSerializerBase(XmlBeanSerializerBase src, NameTransformer transformer)
     {
         super(src, transformer);
-        _attributeCount = src._attributeCount;
-        _textPropertyIndex = src._textPropertyIndex;
-        _xmlNames = src._xmlNames;
-        _cdata = src._cdata;
+        // `super(...)` renames writers (count and order unchanged), so copying
+        // from `src` would leave stale local names in `_xmlNames`; recompute for
+        // consistency with the other rebuilding constructors. Attribute
+        // re-ordering is a no-op here since `src` arrays are already ordered.
+        XmlInfoInternal info = _resolveXmlInfo(_props, _filteredProps);
+        _attributeCount = info.attributeCount;
+        _textPropertyIndex = info.textPropertyIndex;
+        _xmlNames = info.xmlNames;
+        _cdata = info.cdata;
     }
 
     protected XmlBeanSerializerBase(XmlBeanSerializerBase src,
