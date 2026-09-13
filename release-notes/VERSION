@@ -33,6 +33,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #899: Return `null` from `nextStringValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
  (fix by @Sahana2524)
+#901: Include `ENTITY_REFERENCE` replacement text in element values (instead of
+  silently dropping it)
+ (fix by @Sahana2524)
 #903: Split embedded `]]>` across CDATA sections when serializing
  (fix by @Sahana2524)
 #905: Fix `ClassCastException` from `valueToTree()`/`convertValue()` of
