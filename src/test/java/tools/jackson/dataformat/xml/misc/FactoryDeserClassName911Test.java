@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-// [dataformat-xml#910]: the Stax factory class names read back during JDK
+// [dataformat-xml#911]: the Stax factory class names read back during JDK
 // deserialization of `XmlFactory` must be verified to be actual Stax factory
 // types before the named class is initialized/instantiated. A stream that names
 // something other than a Stax factory must be rejected without that class being
 // initialized or constructed; here we substitute such a name into the stream to
 // check that.
-public class FactoryDeserClassName910Test extends XmlTestUtil
+public class FactoryDeserClassName911Test extends XmlTestUtil
 {
     // A real `XMLInputFactory`, used only so the serialized class name has a
     // known length we can substitute without disturbing the stream framing.
