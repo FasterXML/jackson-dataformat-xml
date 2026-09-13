@@ -166,3 +166,6 @@ Sahana (@Sahana2524)
    with `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown
    (negative) length
   (3.1.7)
+ * Fixed #911: Verify Stax factory type before instantiating in
+   `XmlFactory.readResolve()`
+  (3.1.7)
