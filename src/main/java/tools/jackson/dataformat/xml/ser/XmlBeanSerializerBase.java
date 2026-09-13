@@ -125,8 +125,20 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
 
     /**
      * Derives the XML-specific, index-parallel metadata from the given property
-     * arrays. Attributes are re-ordered to the front of {@code props} (and
-     * {@code filteredProps}) as a side effect, matching prior behavior.
+     * arrays.
+     *<p>
+     * NOTE: mutates the given arrays. If any attribute is found, attributes are
+     * re-ordered to the front of {@code props} -- and, in lock-step, of
+     * {@code filteredProps} -- matching prior behavior. Since
+     * {@link BeanSerializerBase} keeps the arrays passed to its
+     * {@code (src, properties, filteredProperties)} constructor as-is, this
+     * re-ordering is visible to callers of {@code withProperties(...)}: a caller
+     * that keeps using the arrays it handed in should pass copies.
+     *
+     * @param props Properties to derive metadata from; re-ordered in place
+     * @param filteredProps View-filtered counterpart of {@code props} (entries
+     *    may be {@code null}), kept in the same order; may be {@code null}, but
+     *    if not, must be at least as long as {@code props}
      *
      * @since 3.3
      */
