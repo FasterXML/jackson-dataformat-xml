@@ -9,6 +9,9 @@ Project: jackson-dataformat-xml
 #899: Return `null` from `nextTextValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
  (fix by @Sahana2524)
+#894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
+  `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
+ (fix by @Sahana2524)
 
 2.22.2 (16-Aug-2026)
 2.22.1 (07-Jul-2026)
