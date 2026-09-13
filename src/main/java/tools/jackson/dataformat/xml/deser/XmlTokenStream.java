@@ -525,6 +525,9 @@ public class XmlTokenStream
 //System.out.println(" XmlTokenStream._next(): Got attr(s)!");
                 _decodeAttributeName(_xmlReader.getAttributeNamespace(_nextAttributeIndex),
                         _xmlReader.getAttributeLocalName(_nextAttributeIndex));
+                // NOTE: unlike element text (see `_getText()`), attribute values offer
+                // no entity-level events, so unexpanded entity references cannot be
+                // detected here -- value is taken as the reader assembled it
                 _textValue = _xmlReader.getAttributeValue(_nextAttributeIndex);
                 return (_currentState = XML_ATTRIBUTE_NAME);
             }
@@ -707,6 +710,26 @@ public class XmlTokenStream
         throw new IllegalStateException("Expected to find a tag, instead reached end of input");
     }
 
+    /**
+     * Accessor for textual content of the current event, used for the event types
+     * collected as element text: {@code CHARACTERS}, {@code CDATA} and
+     * {@code ENTITY_REFERENCE}.
+     *<p>
+     * The last of these is only reported by readers that do not replace entity
+     * references themselves (see {@link XMLInputFactory#IS_REPLACING_ENTITY_REFERENCES}),
+     * in which case the reader's replacement text -- expanded one level only, exactly
+     * as the reader gives it -- becomes part of the value. If the reader has no
+     * replacement text to offer (entity not declared, or external and not resolved),
+     * reading fails instead of silently dropping the reference from content.
+     *<p>
+     * NOTE: this only covers element text. Attribute values are read through
+     * {@link XMLStreamReader#getAttributeValue(int)}, which exposes no per-entity events
+     * and returns the value as the reader chose to assemble it: with a non-replacing
+     * reader an unexpanded entity reference in an attribute value may still be
+     * dropped without error, and this class has no way to detect that.
+     *
+     * @since 3.3
+     */
     private final String _getText(XMLStreamReader2 r) throws XMLStreamException
     {
         final String text;
