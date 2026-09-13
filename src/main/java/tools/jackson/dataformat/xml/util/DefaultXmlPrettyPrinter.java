@@ -290,7 +290,7 @@ public class DefaultXmlPrettyPrinter
         }
         sw.writeStartElement(nsURI, localName);
         if(isCData) {
-            sw.writeCData(text);
+            StaxUtil.writeCData(sw, text);
         } else {
             sw.writeCharacters(text);
         }
@@ -309,7 +309,7 @@ public class DefaultXmlPrettyPrinter
         }
         sw.writeStartElement(nsURI, localName);
         if(isCData) {
-            sw.writeCData(buffer, offset, len);
+            StaxUtil.writeCData(sw, buffer, offset, len);
         } else {
             sw.writeCharacters(buffer, offset, len);
         }
