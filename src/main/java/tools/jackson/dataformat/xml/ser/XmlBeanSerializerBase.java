@@ -315,9 +315,11 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             return;
         }
         // Ok: let's serialize type id as attribute, but if (and only if!)
-        // we are using AS_PROPERTY
-        if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
-            ToXmlGenerator xgen = (ToXmlGenerator)gen;
+        // we are using AS_PROPERTY -- and only when writing real XML. During
+        // convertValue()/valueToTree() `gen` is a TokenBuffer/tree generator,
+        // so skip the attribute handling (as `_serializeProperties` does).
+        if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY
+                && gen instanceof ToXmlGenerator xgen) {
             xgen.setNextIsAttribute(true);
             super.serializeWithType(bean, gen, ctxt, typeSer);
             if (_attributeCount == 0) { // if no attributes, need to reset
@@ -333,9 +335,11 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             TypeSerializer typeSer, WritableObjectId objectId)
         throws JacksonException
     {
-        // Ok: let's serialize type id as attribute, but if (and only if!) we are using AS_PROPERTY
-        if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY) {
-            ToXmlGenerator xgen = (ToXmlGenerator)gen;
+        // Ok: let's serialize type id as attribute, but if (and only if!) we are
+        // using AS_PROPERTY -- and only when writing real XML (not a TokenBuffer
+        // from convertValue()/valueToTree()).
+        if (typeSer.getTypeInclusion() == JsonTypeInfo.As.PROPERTY
+                && gen instanceof ToXmlGenerator xgen) {
             xgen.setNextIsAttribute(true);
             super._serializeObjectId(bean, gen, ctxt, typeSer, objectId);
             if (_attributeCount == 0) { // if no attributes, need to reset

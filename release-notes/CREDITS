@@ -195,6 +195,9 @@ Christian Beikov (@beikov)
   (3.3.0)
  * Fixed #903: Split embedded `]]>` across CDATA sections when serializing
   (3.3.0)
+ * Fixed #905: `ClassCastException` from `valueToTree()`/`convertValue()` of
+   polymorphic (`@JsonTypeInfo`) values
+  (3.3.0)
  * Fixed #911: Verify Stax factory type before instantiating in
    `XmlFactory.readResolve()`
   (3.1.7)
