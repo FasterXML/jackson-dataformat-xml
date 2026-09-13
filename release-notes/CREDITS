@@ -189,3 +189,7 @@ Christian Beikov (@beikov)
  * Fixed #899: Return `null` from `nextStringValue()` at end-of-input (instead
    of throwing `IllegalStateException`)
   (3.3.0)
+ * Fixed #907: Recompute XML metadata for filtered properties in
+   `XmlBeanSerializerBase` (wrong attribute/text/CDATA handling after
+   `@JsonIgnoreProperties`)
+  (3.3.0)

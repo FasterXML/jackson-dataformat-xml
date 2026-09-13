@@ -62,7 +62,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     public XmlBeanSerializerBase(BeanSerializerBase src)
     {
         super(src);
-        XmlInfoArrays info = _resolveXmlInfo(_props, _filteredProps);
+        XmlInfoInternal info = _resolveXmlInfo(_props, _filteredProps);
         _attributeCount = info.attributeCount;
         _textPropertyIndex = info.textPropertyIndex;
         _xmlNames = info.xmlNames;
@@ -94,7 +94,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         // 30-Aug-2026: `super(...)` drops the ignored/non-included writers and
         // re-indexes `_props`, so the per-index XML metadata can not be copied
         // from `src`; recompute it against the new property array.
-        XmlInfoArrays info = _resolveXmlInfo(_props, _filteredProps);
+        XmlInfoInternal info = _resolveXmlInfo(_props, _filteredProps);
         _attributeCount = info.attributeCount;
         _textPropertyIndex = info.textPropertyIndex;
         _xmlNames = info.xmlNames;
@@ -116,7 +116,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
         // A modifier may hand us a different (re-ordered or filtered) set of
         // writers, so the per-index XML metadata has to be recomputed to stay
         // aligned rather than copied from `src`.
-        XmlInfoArrays info = _resolveXmlInfo(_props, _filteredProps);
+        XmlInfoInternal info = _resolveXmlInfo(_props, _filteredProps);
         _attributeCount = info.attributeCount;
         _textPropertyIndex = info.textPropertyIndex;
         _xmlNames = info.xmlNames;
@@ -124,32 +124,13 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
     }
 
     /**
-     * Holder for the four index-parallel structures that describe XML output of
-     * a set of properties: number of leading attributes, index of the text
-     * ("unwrapped") property, per-index element/attribute {@link QName}s, and the
-     * set of indexes to write as CDATA.
-     */
-    private static final class XmlInfoArrays {
-        final int attributeCount;
-        final int textPropertyIndex;
-        final QName[] xmlNames;
-        final BitSet cdata;
-
-        XmlInfoArrays(int attributeCount, int textPropertyIndex,
-                QName[] xmlNames, BitSet cdata) {
-            this.attributeCount = attributeCount;
-            this.textPropertyIndex = textPropertyIndex;
-            this.xmlNames = xmlNames;
-            this.cdata = cdata;
-        }
-    }
-
-    /**
      * Derives the XML-specific, index-parallel metadata from the given property
      * arrays. Attributes are re-ordered to the front of {@code props} (and
      * {@code filteredProps}) as a side effect, matching prior behavior.
+     *
+     * @since 3.3
      */
-    private static XmlInfoArrays _resolveXmlInfo(BeanPropertyWriter[] props,
+    private static XmlInfoInternal _resolveXmlInfo(BeanPropertyWriter[] props,
             BeanPropertyWriter[] filteredProps)
     {
         // Then make sure attributes are sorted before elements, keep track
@@ -189,7 +170,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             }
             xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
         }
-        return new XmlInfoArrays(attrCount, textIndex, xmlNames, cdata);
+        return new XmlInfoInternal(attrCount, textIndex, xmlNames, cdata);
     }
 
     /*
@@ -435,5 +416,34 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
             ++attrCount;
         }
         return attrCount;
+    }
+
+    /*
+    /**********************************************************************
+    /* Helper classes
+    /**********************************************************************
+     */
+
+    /**
+     * Holder for the four index-parallel structures that describe XML output of
+     * a set of properties: number of leading attributes, index of the text
+     * ("unwrapped") property, per-index element/attribute {@link QName}s, and the
+     * set of indexes to write as CDATA.
+     *
+     * @since 3.3
+     */
+    private static final class XmlInfoInternal {
+        final int attributeCount;
+        final int textPropertyIndex;
+        final QName[] xmlNames;
+        final BitSet cdata;
+
+        XmlInfoInternal(int attributeCount, int textPropertyIndex,
+                QName[] xmlNames, BitSet cdata) {
+            this.attributeCount = attributeCount;
+            this.textPropertyIndex = textPropertyIndex;
+            this.xmlNames = xmlNames;
+            this.cdata = cdata;
+        }
     }
 }
