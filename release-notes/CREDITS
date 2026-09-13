@@ -34,6 +34,6 @@ Sahana (@Sahana2524)
   (negative) length
  (3.1.7)
 
-* Fixed #910: Verify Stax factory type before instantiating in
+* Fixed #911: Verify Stax factory type before instantiating in
   `XmlFactory.readResolve()`
  (3.1.7)
