@@ -264,6 +264,8 @@ public class XmlFactory
     // constructor of an arbitrary class on the classpath. Load without initializing,
     // confirm the class really is the expected Stax factory type, and only then
     // initialize and construct it. Legitimate factory class names are unaffected.
+    //
+    // @since 3.3
     private static <T> T _staxFactoryForName(Class<T> expType, String className)
         throws ReflectiveOperationException
     {
