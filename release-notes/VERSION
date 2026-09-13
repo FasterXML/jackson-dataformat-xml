@@ -14,6 +14,8 @@ No changes since 3.1
 #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
   `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
  (fix by @Sahana2524)
+#910: Verify Stax factory type before instantiating in `XmlFactory.readResolve()`
+ (fix by @Sahana2524)
 
 3.1.6 (14-Aug-2026)
 
