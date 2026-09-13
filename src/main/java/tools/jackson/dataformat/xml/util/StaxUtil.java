@@ -45,6 +45,8 @@ public class StaxUtil
      * A coalescing reader (the default for this module) reads the pieces back as
      * the original text, so a value containing {@code "]]>"} round-trips instead of
      * making the underlying Stax writer reject it.
+     *
+     * @since 3.3
      */
     public static void writeCData(XMLStreamWriter2 sw, String text)
         throws XMLStreamException
@@ -64,6 +66,13 @@ public class StaxUtil
         sw.writeCData(text.substring(start));
     }
 
+    /**
+     * Variant of {@link #writeCData(XMLStreamWriter2, String)} that takes content
+     * as a {@code char[]} range: splits the same way if the range contains the
+     * {@code "]]>"} sequence.
+     *
+     * @since 3.3
+     */
     public static void writeCData(XMLStreamWriter2 sw, char[] buffer, int offset, int len)
         throws XMLStreamException
     {
