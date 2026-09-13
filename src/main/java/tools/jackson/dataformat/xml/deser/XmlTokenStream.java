@@ -645,10 +645,10 @@ public class XmlTokenStream
                     return chars.toString();
 
                 // note: SPACE is ignorable (and seldom seen), not to be included
+                // note: ENTITY_REFERENCE only reported by readers that do not replace
+                //   entity references themselves; text is part of content (see `_getText()`)
                 case XMLStreamConstants.CHARACTERS:
                 case XMLStreamConstants.CDATA:
-                // Only reported if the reader does not replace entity references
-                // (or could not expand this one): still part of text content
                 case XMLStreamConstants.ENTITY_REFERENCE:
                     // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
                     {
@@ -688,6 +688,8 @@ public class XmlTokenStream
                 _textValue = (chars == null) ? "" : chars.toString();
                 return type;
             // note: SPACE is ignorable (and seldom seen), not to be included
+            // note: ENTITY_REFERENCE only reported by readers that do not replace
+            //   entity references themselves; text is part of content (see `_getText()`)
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
             case XMLStreamConstants.ENTITY_REFERENCE:
