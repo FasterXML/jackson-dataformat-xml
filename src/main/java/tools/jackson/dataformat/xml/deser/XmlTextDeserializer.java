@@ -4,6 +4,7 @@ import tools.jackson.core.*;
 import tools.jackson.databind.*;
 import tools.jackson.databind.deser.*;
 import tools.jackson.databind.deser.bean.BeanDeserializerBase;
+import tools.jackson.databind.deser.bean.BuilderBasedDeserializer;
 import tools.jackson.databind.deser.std.DelegatingDeserializer;
 import tools.jackson.databind.jsontype.TypeDeserializer;
 import tools.jackson.databind.util.TokenBuffer;
@@ -33,6 +34,12 @@ public class XmlTextDeserializer
 
     protected final ValueInstantiator _valueInstantiator;
 
+    /**
+     * A flag indicating the ValueInstantiator.createUsingDefault()
+     * will return an instance (and specifically not a builder)
+     */
+    protected final boolean _canCreateUsingDefault;
+
     /*
     /**********************************************************************
     /* Construction
@@ -51,6 +58,8 @@ public class XmlTextDeserializer
         _xmlTextProperty = prop;
         _xmlTextPropertyIndex = prop.getPropertyIndex();
         _valueInstantiator = delegate.getValueInstantiator();
+        _canCreateUsingDefault = _valueInstantiator.canCreateUsingDefault() &&
+                                     !(delegate instanceof BuilderBasedDeserializer);
     }
 
     /**
@@ -65,6 +74,8 @@ public class XmlTextDeserializer
         _xmlTextPropertyIndex = textPropIndex;
         _valueInstantiator = delegate.getValueInstantiator();
         _xmlTextProperty = delegate.findProperty(textPropIndex);
+        _canCreateUsingDefault = _valueInstantiator.canCreateUsingDefault() &&
+                                     !(delegate instanceof BuilderBasedDeserializer);
     }
 
     /**
@@ -82,6 +93,8 @@ public class XmlTextDeserializer
         _xmlTextPropertyIndex = textPropIndex;
         _valueInstantiator = inner.getValueInstantiator();
         _xmlTextProperty = inner.findProperty(textPropIndex);
+        _canCreateUsingDefault = _valueInstantiator.canCreateUsingDefault() &&
+                                     !(inner instanceof BuilderBasedDeserializer);
     }
     
     /*
@@ -122,7 +135,7 @@ public class XmlTextDeserializer
         throws JacksonException
     {
         if (p.currentToken() == JsonToken.VALUE_STRING) {
-            if (_valueInstantiator.canCreateUsingDefault()) {
+            if (_canCreateUsingDefault) {
                 Object bean = _valueInstantiator.createUsingDefault(ctxt);
                 _xmlTextProperty.deserializeAndSet(p, ctxt, bean);
                 return bean;
