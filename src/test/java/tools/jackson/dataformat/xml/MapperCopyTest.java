@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml;
 
 import java.io.*;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,24 @@ public class MapperCopyTest extends XmlTestUtil
     static class Pojo282
     {
         public int a = 3;
+    }
+
+    // [dataformat-xml#913]: separate types per test so that no cached
+    // (de)serializer can hide effects of introspector changes
+    static class ListBean913A {
+        public List<String> values = new ArrayList<>(Arrays.asList("a", "b"));
+    }
+
+    static class ListBean913B {
+        public List<String> values = new ArrayList<>(Arrays.asList("a", "b"));
+    }
+
+    static class ListBean913C {
+        public List<String> values = new ArrayList<>(Arrays.asList("a", "b"));
+    }
+
+    static class CustomIntrospector913 extends JacksonXmlAnnotationIntrospector {
+        private static final long serialVersionUID = 1L;
     }
 
     @Test
@@ -92,5 +111,65 @@ public class MapperCopyTest extends XmlTestUtil
                 || xml2.contains("AnnotatedName")) {
             fail("Should NOT use name 'AnnotatedName' but 'Pojo282', xml = "+xml1);
         }
+    }
+
+    // [dataformat-xml#913]: `defaultUseWrapper()` of builder from `rebuild()` must
+    // not change the (immutable) mapper that builder was created from
+    @Test
+    public void testRebuildWithDefaultUseWrapper() throws Exception
+    {
+        final String WRAPPED = "<ListBean913A><values><values>a</values><values>b</values></values></ListBean913A>";
+        final String UNWRAPPED = "<ListBean913A><values>a</values><values>b</values></ListBean913A>";
+
+        final XmlMapper mapper1 = newMapper();
+        final XmlMapper mapper2 = mapper1.rebuild()
+                .defaultUseWrapper(false)
+                .build();
+
+        assertEquals(UNWRAPPED, mapper2.writeValueAsString(new ListBean913A()));
+        assertEquals(Arrays.asList("a", "b"),
+                mapper2.readValue(UNWRAPPED, ListBean913A.class).values);
+
+        // original mapper must keep using wrapping, for writing and reading
+        assertEquals(WRAPPED, mapper1.writeValueAsString(new ListBean913A()));
+        assertEquals(Arrays.asList("a", "b"),
+                mapper1.readValue(WRAPPED, ListBean913A.class).values);
+    }
+
+    // [dataformat-xml#913]: ... nor mapper that builder itself built earlier
+    @Test
+    public void testDefaultUseWrapperAfterBuild() throws Exception
+    {
+        final XmlMapper.Builder b = mapperBuilder();
+        final XmlMapper mapper1 = b.build();
+        final XmlMapper mapper2 = b.defaultUseWrapper(false).build();
+
+        assertEquals("<ListBean913B><values><values>a</values><values>b</values></values></ListBean913B>",
+                mapper1.writeValueAsString(new ListBean913B()));
+        assertEquals("<ListBean913B><values>a</values><values>b</values></ListBean913B>",
+                mapper2.writeValueAsString(new ListBean913B()));
+    }
+
+    // [dataformat-xml#913]: copy used must retain introspector (sub-)type, and
+    // other introspectors it may be paired with
+    @Test
+    public void testDefaultUseWrapperWithCustomIntrospectors() throws Exception
+    {
+        final CustomIntrospector913 xmlIntr = new CustomIntrospector913();
+        final AnnotationIntrospector jaxbIntr = jakartaXMLBindAnnotationIntrospector();
+        final XmlMapper mapper = mapperBuilder()
+                .annotationIntrospector(XmlAnnotationIntrospector.Pair.instance(xmlIntr, jaxbIntr))
+                .defaultUseWrapper(false)
+                .build();
+
+        List<AnnotationIntrospector> all = new ArrayList<>(
+                mapper.serializationConfig().getAnnotationIntrospector().allIntrospectors());
+        assertEquals(2, all.size());
+        assertEquals(CustomIntrospector913.class, all.get(0).getClass());
+        assertNotSame(xmlIntr, all.get(0));
+        assertSame(jaxbIntr, all.get(1));
+
+        assertEquals("<ListBean913C><values>a</values><values>b</values></ListBean913C>",
+                mapper.writeValueAsString(new ListBean913C()));
     }
 }

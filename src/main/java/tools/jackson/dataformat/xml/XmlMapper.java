@@ -279,11 +279,24 @@ public class XmlMapper extends ObjectMapper
             if (_defaultUseWrapper != b) {
                 _defaultUseWrapper = b;
 
+                // Introspector may be shared with the mapper this builder was created
+                // from (see `XmlMapper.rebuild()`), as well as with mappers it has
+                // already built: so must not modify it in place but swap in
+                // re-configured copy (same as `nameForTextElement()` does for factory)
                 AnnotationIntrospector ai0 = annotationIntrospector();
+                AnnotationIntrospector newAi = null;
+                boolean changed = false;
                 for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
                     if (ai instanceof JacksonXmlAnnotationIntrospector xmlAi) {
-                        xmlAi.setDefaultUseWrapper(b);
+                        ai = xmlAi.withDefaultUseWrapper(b);
+                        changed |= (ai != xmlAi);
                     }
+                    // pairs are flattened (in precedence order) by `allIntrospectors()`
+                    newAi = (newAi == null) ? ai
+                            : XmlAnnotationIntrospector.Pair.instance(newAi, ai);
+                }
+                if (changed) {
+                    annotationIntrospector(newAi);
                 }
             }
             return this;

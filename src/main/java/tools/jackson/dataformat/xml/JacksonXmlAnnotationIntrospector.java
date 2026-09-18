@@ -19,7 +19,7 @@ import tools.jackson.dataformat.xml.annotation.*;
  */
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
-    implements XmlAnnotationIntrospector
+    implements XmlAnnotationIntrospector, Cloneable
 {
     private static final long serialVersionUID = 1L;
 
@@ -63,6 +63,31 @@ public class JacksonXmlAnnotationIntrospector
 
     public void setDefaultUseWrapper(boolean b) {
         _cfgDefaultUseWrapper = b;
+    }
+
+    /**
+     * Mutant factory for getting an introspector that uses given default for
+     * List wrapping: returns this instance if it already does, a re-configured
+     * copy otherwise. Unlike {@link #setDefaultUseWrapper} never modifies this
+     * instance, which matters as an introspector may be shared by multiple
+     * (immutable) mappers; see {@code XmlMapper.rebuild()}.
+     *<p>
+     * Copy retains the actual (sub-)type along with other settings.
+     *
+     * @since 3.3
+     */
+    public JacksonXmlAnnotationIntrospector withDefaultUseWrapper(boolean b) {
+        if (_cfgDefaultUseWrapper == b) {
+            return this;
+        }
+        final JacksonXmlAnnotationIntrospector copy;
+        try {
+            copy = (JacksonXmlAnnotationIntrospector) clone();
+        } catch (CloneNotSupportedException e) { // should never occur, we are `Cloneable`
+            throw new IllegalStateException(e);
+        }
+        copy._cfgDefaultUseWrapper = b;
+        return copy;
     }
 
     /*

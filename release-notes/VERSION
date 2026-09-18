@@ -44,6 +44,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #907: Recompute XML metadata for filtered properties in `XmlBeanSerializerBase`
   (wrong attribute/text/CDATA handling after `@JsonIgnoreProperties`)
  (fix by @Sahana2524)
+#913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that builder was
+  created from (via `rebuild()`), or has already built
+ (fix by @Sahana2524)
 
 3.2.3 (not yet released)
 
