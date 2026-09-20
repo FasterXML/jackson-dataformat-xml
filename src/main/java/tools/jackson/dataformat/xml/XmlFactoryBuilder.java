@@ -22,15 +22,9 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     /**********************************************************************
      */
 
-    /**
-     * Set of {@code FromXmlParser.Feature}s enabled, as bitmask.
-     */
-    protected int _formatParserFeatures;
-
-    /**
-     * Set of {@code ToXmlGenerator.Feature}s enabled, as bitmask.
-     */
-    protected int _formatGeneratorFeatures;
+    // NOTE: bitmasks of enabled `XmlReadFeature`s / `XmlWriteFeature`s are held by
+    // the base class (`_formatReadFeatures`, `_formatWriteFeatures`), which is where
+    // `XmlFactory` gets them from: no separate copies here.
 
     /**
      * Stax factory for creating underlying input stream readers;
@@ -163,27 +157,27 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     // // // Parser features
 
     public XmlFactoryBuilder enable(XmlReadFeature f) {
-        _formatParserFeatures |= f.getMask();
+        _formatReadFeatures |= f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder enable(XmlReadFeature first, XmlReadFeature... other) {
-        _formatParserFeatures |= first.getMask();
+        _formatReadFeatures |= first.getMask();
         for (XmlReadFeature f : other) {
-            _formatParserFeatures |= f.getMask();
+            _formatReadFeatures |= f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder disable(XmlReadFeature f) {
-        _formatParserFeatures &= ~f.getMask();
+        _formatReadFeatures &= ~f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder disable(XmlReadFeature first, XmlReadFeature... other) {
-        _formatParserFeatures &= ~first.getMask();
+        _formatReadFeatures &= ~first.getMask();
         for (XmlReadFeature f : other) {
-            _formatParserFeatures &= ~f.getMask();
+            _formatReadFeatures &= ~f.getMask();
         }
         return _this();
     }
@@ -195,27 +189,27 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     // // // Generator features
 
     public XmlFactoryBuilder enable(XmlWriteFeature f) {
-        _formatGeneratorFeatures |= f.getMask();
+        _formatWriteFeatures |= f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder enable(XmlWriteFeature first, XmlWriteFeature... other) {
-        _formatGeneratorFeatures |= first.getMask();
+        _formatWriteFeatures |= first.getMask();
         for (XmlWriteFeature f : other) {
-            _formatGeneratorFeatures |= f.getMask();
+            _formatWriteFeatures |= f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder disable(XmlWriteFeature f) {
-        _formatGeneratorFeatures &= ~f.getMask();
+        _formatWriteFeatures &= ~f.getMask();
         return _this();
     }
     
     public XmlFactoryBuilder disable(XmlWriteFeature first, XmlWriteFeature... other) {
-        _formatGeneratorFeatures &= ~first.getMask();
+        _formatWriteFeatures &= ~first.getMask();
         for (XmlWriteFeature f : other) {
-            _formatGeneratorFeatures &= ~f.getMask();
+            _formatWriteFeatures &= ~f.getMask();
         }
         return _this();
     }
