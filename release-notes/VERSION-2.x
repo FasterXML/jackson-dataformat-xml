@@ -13,6 +13,7 @@ Project: jackson-dataformat-xml
   `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
  (fix by @Sahana2524)
 
+2.22.3 (21-Sep-2026)
 2.22.2 (16-Aug-2026)
 2.22.1 (07-Jul-2026)
 
