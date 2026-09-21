@@ -37,7 +37,7 @@ No changes since 2.19.1
  (contributed by @duoduobingbing)
 - Upgrade Woodstox to 7.1.0
 
-2.18.11 (not yet released)
+2.18.11 (20-Sep-2026)
 
 - Fix build to avoid past-JDK-8 bytecode generation
 
