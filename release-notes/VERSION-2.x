@@ -22,6 +22,7 @@ No changes since 2.22.0
 
 #863: Fix to support Woodstox 7.2.0
 
+2.21.7 (21-Sep-2026)
 2.21.6 (14-Aug-2026)
 2.21.5 (06-Jul-2026)
 
