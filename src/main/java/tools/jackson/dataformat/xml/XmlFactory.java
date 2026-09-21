@@ -245,8 +245,14 @@ public class XmlFactory
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
-        return new XmlFactory(_formatReadFeatures, _formatWriteFeatures,
-                inf, outf, _nameProcessor, _cfgNameForTextElement);
+        // Rebuild via builder (and not constructor that only takes format features)
+        // so that settings held by base class -- read/write constraints, error
+        // report configuration, stream read/write features, decorators -- are
+        // retained instead of being reset to defaults
+        return new XmlFactoryBuilder(this)
+                .xmlInputFactory(inf)
+                .xmlOutputFactory(outf)
+                .build();
     }
 
     // Stax factory class names are read back from a JDK-serialized stream and used
