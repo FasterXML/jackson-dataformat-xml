@@ -8,6 +8,7 @@ Project: jackson-dataformat-xml
 
 No changes since 2.22
 
+2.22.3 (21-Sep-2026)
 2.22.2 (16-Aug-2026)
 2.22.1 (07-Jul-2026)
 
