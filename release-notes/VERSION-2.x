@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.18.11 (not yet released)
+2.18.11 (20-Sep-2026)
 
 - Fix build to avoid past-JDK-8 bytecode generation
 
