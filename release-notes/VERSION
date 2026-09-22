@@ -19,6 +19,8 @@ No changes since 3.1
 #914: `XmlFactoryBuilder` `enable()`/`disable()`/`configure()` for `XmlReadFeature`,
   `XmlWriteFeature` have no effect on `XmlFactory` built
  (fix by @Sahana2524)
+#915: Retain constraints and stream features in `XmlFactory.readResolve()`
+ (fix by @Sahana2524)
 
 3.1.6 (14-Aug-2026)
 
