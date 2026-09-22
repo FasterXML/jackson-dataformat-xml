@@ -36,6 +36,25 @@ Version: 3.x (for earlier see VERSION-2.x)
 #899: Return `null` from `nextStringValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
  (fix by @Sahana2524)
+#901: Include `ENTITY_REFERENCE` replacement text in element values (instead of
+  silently dropping it)
+ (fix by @Sahana2524)
+#903: Split embedded `]]>` across CDATA sections when serializing
+ (fix by @Sahana2524)
+#905: Fix `ClassCastException` from `valueToTree()`/`convertValue()` of
+  polymorphic (`@JsonTypeInfo`) values
+ (fix by @Sahana2524)
+#907: Recompute XML metadata for filtered properties in `XmlBeanSerializerBase`
+  (wrong attribute/text/CDATA handling after `@JsonIgnoreProperties`)
+ (fix by @Sahana2524)
+
+3.2.3 (not yet released)
+
+#894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
+  `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
+ (fix by @Sahana2524)
+#911: Verify Stax factory type before instantiating in `XmlFactory.readResolve()`
+ (fix by @Sahana2524)
 
 3.2.2 (14-Aug-2026)
 
@@ -200,6 +219,14 @@ Version: 3.x (for earlier see VERSION-2.x)
 #857: `@JacksonXmlText` with unwrapped Collection property fails to
   deserialize list (skips virtual wrapping)
  (fix by @cowtowncoder, w/ Claude code)
+
+3.1.7 (not yet released)
+
+#894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
+  `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
+ (fix by @Sahana2524)
+#911: Verify Stax factory type before instantiating in `XmlFactory.readResolve()`
+ (fix by @Sahana2524)
 
 3.1.6 (14-Aug-2026)
 

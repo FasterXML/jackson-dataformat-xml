@@ -290,3 +290,6 @@ Sahana (@Sahana2524)
 * Fixed #899: Return `null` from `nextTextValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
  (2.23.0)
+* Fixed #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
+  `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
+ (2.23.0)

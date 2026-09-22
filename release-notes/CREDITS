@@ -191,9 +191,28 @@ Lavender Shannon (@retrodaredevil)
  * Fixed #893: Decode element name before matching virtual wrapper in
    `_initStartElement`
   (3.3.0)
+ * Fixed #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails
+   with `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown
+   (negative) length
+  (3.1.7)
  * Fixed #895: Avoid leading digit in `AlwaysOnBase64NameProcessor`-encoded
    XML names
   (3.3.0)
  * Fixed #899: Return `null` from `nextStringValue()` at end-of-input (instead
    of throwing `IllegalStateException`)
   (3.3.0)
+ * Fixed #901: Include `ENTITY_REFERENCE` replacement text in element values
+   (instead of silently dropping it)
+  (3.3.0)
+ * Fixed #903: Split embedded `]]>` across CDATA sections when serializing
+  (3.3.0)
+ * Fixed #905: `ClassCastException` from `valueToTree()`/`convertValue()` of
+   polymorphic (`@JsonTypeInfo`) values
+  (3.3.0)
+ * Fixed #907: Recompute XML metadata for filtered properties in
+   `XmlBeanSerializerBase` (wrong attribute/text/CDATA handling after
+   `@JsonIgnoreProperties`)
+  (3.3.0)
+ * Fixed #911: Verify Stax factory type before instantiating in
+   `XmlFactory.readResolve()`
+  (3.1.7)
