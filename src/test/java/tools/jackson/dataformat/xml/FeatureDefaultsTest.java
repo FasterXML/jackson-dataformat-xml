@@ -198,6 +198,31 @@ public class FeatureDefaultsTest extends XmlTestUtil
                         +" xsi:type='x'>abc</root>"));
     }
 
+    // Guard against the two `configureForJackson2()` implementations drifting apart:
+    // `XmlFactoryBuilder` and `XmlMapper.Builder` must revert the exact same set of
+    // XML format features
+    @Test
+    void testJackson2DefaultsSameForFactoryAndMapper() throws Exception
+    {
+        XmlFactory f = XmlFactory.builderWithJackson2Defaults().build();
+        XmlMapper mapper = XmlMapper.builder().configureForJackson2().build();
+
+        for (XmlReadFeature feat : XmlReadFeature.values()) {
+            assertEquals(_enabled(f, feat), mapper.isEnabled(feat),
+                    "Mismatch between factory- and mapper-level Jackson 2 defaults for "+feat);
+        }
+        for (XmlWriteFeature feat : XmlWriteFeature.values()) {
+            assertEquals(_enabled(f, feat), mapper.isEnabled(feat),
+                    "Mismatch between factory- and mapper-level Jackson 2 defaults for "+feat);
+        }
+
+        // and, for good measure, at least one feature must actually differ from
+        // 3.x defaults, so the check above can not pass vacuously
+        assertTrue(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL.enabledIn(
+                XmlFactory.builder().build().getFormatWriteFeatures()));
+        assertFalse(_enabled(f, XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL));
+    }
+
     private static boolean _enabled(XmlFactory f, XmlReadFeature feat) {
         return feat.enabledIn(f.getFormatReadFeatures());
     }
