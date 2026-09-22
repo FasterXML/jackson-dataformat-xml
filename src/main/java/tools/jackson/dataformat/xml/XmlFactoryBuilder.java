@@ -218,6 +218,26 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
         return state ? enable(f) : disable(f);
     }
 
+    // // // Jackson 2.x compatibility
+
+    /**
+     * Overridden to also disable the XML format features whose defaults changed
+     * from Jackson 2.x to 3.x; needs to be kept in sync with
+     * {@code XmlMapper.Builder#configureForJackson2()}.
+     *<p>
+     * This method is still a work in progress and may not yet fully replicate the
+     * default settings of Jackson 2.x.
+     */
+    @Override
+    public XmlFactoryBuilder configureForJackson2() {
+        return super.configureForJackson2()
+                .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL,
+                        XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE,
+                        XmlWriteFeature.AUTO_DETECT_XSI_TYPE,
+                        XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                .disable(XmlReadFeature.AUTO_DETECT_XSI_TYPE);
+    }
+
     // // // Other config
 
     public XmlFactoryBuilder nameForTextElement(String name) {

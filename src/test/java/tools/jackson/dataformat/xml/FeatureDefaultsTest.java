@@ -170,6 +170,34 @@ public class FeatureDefaultsTest extends XmlTestUtil
                 f.getFormatWriteFeatures());
     }
 
+    // `XmlFactory.builderWithJackson2Defaults()` must also revert the XML format
+    // features whose defaults changed in 3.x (not just the `jackson-core` ones)
+    @Test
+    void testFactoryBuilderWithJackson2Defaults() throws Exception
+    {
+        XmlFactory f = XmlFactory.builderWithJackson2Defaults().build();
+
+        assertFalse(_enabled(f, XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL));
+        assertFalse(_enabled(f, XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE));
+        assertFalse(_enabled(f, XmlWriteFeature.AUTO_DETECT_XSI_TYPE));
+        assertFalse(_enabled(f, XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS));
+        assertFalse(_enabled(f, XmlReadFeature.AUTO_DETECT_XSI_TYPE));
+
+        // but defaults that did not change are left as-is
+        assertTrue(_enabled(f, XmlReadFeature.PROCESS_XSI_NIL));
+        assertFalse(_enabled(f, XmlWriteFeature.WRITE_XML_DECLARATION));
+
+        // and settings are in effect, both for mapper built on the factory...
+        assertEquals("<Map><a/></Map>",
+                XmlMapper.builder(f).build().writer().withRootName("Map")
+                    .writeValueAsString(Collections.singletonMap("a", null)));
+
+        // ... and for parser created directly by the factory
+        assertEquals("type",
+                _firstPropertyName(f, "<root xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                        +" xsi:type='x'>abc</root>"));
+    }
+
     private static boolean _enabled(XmlFactory f, XmlReadFeature feat) {
         return feat.enabledIn(f.getFormatReadFeatures());
     }
