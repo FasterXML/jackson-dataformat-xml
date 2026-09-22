@@ -35,3 +35,6 @@ Sahana (@Sahana2524)
 * Fixed #911: Verify Stax factory type before instantiating in
   `XmlFactory.readResolve()`
  (3.1.7)
+* Fixed #915: Retain constraints and stream features in
+  `XmlFactory.readResolve()`
+ (3.1.7)
