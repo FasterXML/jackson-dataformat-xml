@@ -45,7 +45,7 @@ Version: 3.x (for earlier see VERSION-2.x)
   (wrong attribute/text/CDATA handling after `@JsonIgnoreProperties`)
  (fix by @Sahana2524)
 
-3.2.3 (not yet released)
+3.2.3 (21-Sep-2026)
 
 #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
   `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
