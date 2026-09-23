@@ -61,6 +61,12 @@ public class JacksonXmlAnnotationIntrospector
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.3 use {@link #withDefaultUseWrapper} instead: modifying
+     *    an introspector in place also affects any mapper that is already using it
+     *    (including ones created via {@code XmlMapper.rebuild()})
+     */
+    @Deprecated // since 3.3
     public void setDefaultUseWrapper(boolean b) {
         _cfgDefaultUseWrapper = b;
     }
