@@ -208,3 +208,9 @@ Christian Beikov (@beikov)
  * Fixed #911: Verify Stax factory type before instantiating in
    `XmlFactory.readResolve()`
   (3.1.7)
+ * Fixed #914: `XmlFactoryBuilder` `enable()`/`disable()`/`configure()` for
+   `XmlReadFeature`, `XmlWriteFeature` have no effect on `XmlFactory` built
+  (3.1.7)
+ * Fixed #915: Retain constraints and stream features in
+   `XmlFactory.readResolve()`
+  (3.1.7)
