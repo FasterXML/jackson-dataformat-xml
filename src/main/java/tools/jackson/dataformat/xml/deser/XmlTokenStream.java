@@ -525,6 +525,9 @@ public class XmlTokenStream
 //System.out.println(" XmlTokenStream._next(): Got attr(s)!");
                 _decodeAttributeName(_xmlReader.getAttributeNamespace(_nextAttributeIndex),
                         _xmlReader.getAttributeLocalName(_nextAttributeIndex));
+                // NOTE: unlike element text (see `_getText()`), attribute values offer
+                // no entity-level events, so unexpanded entity references cannot be
+                // detected here -- value is taken as the reader assembled it
                 _textValue = _xmlReader.getAttributeValue(_nextAttributeIndex);
                 return (_currentState = XML_ATTRIBUTE_NAME);
             }
@@ -642,8 +645,11 @@ public class XmlTokenStream
                     return chars.toString();
 
                 // note: SPACE is ignorable (and seldom seen), not to be included
+                // note: ENTITY_REFERENCE only reported by readers that do not replace
+                //   entity references themselves; text is part of content (see `_getText()`)
                 case XMLStreamConstants.CHARACTERS:
                 case XMLStreamConstants.CDATA:
+                case XMLStreamConstants.ENTITY_REFERENCE:
                     // 17-Jul-2017, tatu: as per [dataformat-xml#236], need to try to...
                     {
                         String str = _getText(_xmlReader);
@@ -682,8 +688,11 @@ public class XmlTokenStream
                 _textValue = (chars == null) ? "" : chars.toString();
                 return type;
             // note: SPACE is ignorable (and seldom seen), not to be included
+            // note: ENTITY_REFERENCE only reported by readers that do not replace
+            //   entity references themselves; text is part of content (see `_getText()`)
             case XMLStreamConstants.CHARACTERS:
             case XMLStreamConstants.CDATA:
+            case XMLStreamConstants.ENTITY_REFERENCE:
                 {
                     String str = _getText(_xmlReader);
                     if (chars == null) {
@@ -703,10 +712,31 @@ public class XmlTokenStream
         throw new IllegalStateException("Expected to find a tag, instead reached end of input");
     }
 
+    /**
+     * Accessor for textual content of the current event, used for the event types
+     * collected as element text: {@code CHARACTERS}, {@code CDATA} and
+     * {@code ENTITY_REFERENCE}.
+     *<p>
+     * The last of these is only reported by readers that do not replace entity
+     * references themselves (see {@link XMLInputFactory#IS_REPLACING_ENTITY_REFERENCES}),
+     * in which case the reader's replacement text -- expanded one level only, exactly
+     * as the reader gives it -- becomes part of the value. If the reader has no
+     * replacement text to offer (entity not declared, or external and not resolved),
+     * reading fails instead of silently dropping the reference from content.
+     *<p>
+     * NOTE: this only covers element text. Attribute values are read through
+     * {@link XMLStreamReader#getAttributeValue(int)}, which exposes no per-entity events
+     * and returns the value as the reader chose to assemble it: with a non-replacing
+     * reader an unexpanded entity reference in an attribute value may still be
+     * dropped without error, and this class has no way to detect that.
+     *
+     * @since 3.3
+     */
     private final String _getText(XMLStreamReader2 r) throws XMLStreamException
     {
+        final String text;
         try {
-            return r.getText();
+            text = r.getText();
         } catch (RuntimeException e) {
             Throwable cause = e.getCause();
             if (cause instanceof XMLStreamException xse) {
@@ -714,6 +744,14 @@ public class XmlTokenStream
             }
             throw e;
         }
+        // An entity reference the reader did not (or could not) expand has no
+        // replacement text to offer: fail rather than silently drop it from content
+        if (text == null && r.getEventType() == XMLStreamConstants.ENTITY_REFERENCE) {
+            throw new XMLStreamException("Unexpanded entity reference '&"+r.getLocalName()
+                    +";' in text content (entity not declared, or not replaced by XMLStreamReader)",
+                    r.getLocation());
+        }
+        return text;
     }
 
     /*
