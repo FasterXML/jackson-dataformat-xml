@@ -277,27 +277,31 @@ public class XmlMapper extends ObjectMapper
          */
         public Builder defaultUseWrapper(boolean b) {
             if (_defaultUseWrapper != b) {
-                _defaultUseWrapper = b;
-
                 // Introspector may be shared with the mapper this builder was created
                 // from (see `XmlMapper.rebuild()`), as well as with mappers it has
                 // already built: so must not modify it in place but swap in
                 // re-configured copy (same as `nameForTextElement()` does for factory)
-                AnnotationIntrospector ai0 = annotationIntrospector();
-                AnnotationIntrospector newAi = null;
-                boolean changed = false;
-                for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-                    if (ai instanceof JacksonXmlAnnotationIntrospector xmlAi) {
-                        ai = xmlAi.withDefaultUseWrapper(b);
-                        changed |= (ai != xmlAi);
+                AnnotationIntrospector ai = annotationIntrospector();
+                if (ai instanceof XmlAnnotationIntrospector xmlAi) {
+                    AnnotationIntrospector newAi = (AnnotationIntrospector) xmlAi.withDefaultUseWrapper(b);
+                    if (newAi != ai) {
+                        annotationIntrospector(newAi);
                     }
-                    // pairs are flattened (in precedence order) by `allIntrospectors()`
-                    newAi = (newAi == null) ? ai
-                            : XmlAnnotationIntrospector.Pair.instance(newAi, ai);
+                } else {
+                    // Otherwise can not re-configure (without changing structure): must
+                    // fail if contained introspector (like one within databind-provided
+                    // `AnnotationIntrospectorPair`) would need change
+                    for (AnnotationIntrospector curr : ai.allIntrospectors()) {
+                        if ((curr instanceof XmlAnnotationIntrospector xmlAi)
+                                && (xmlAi.withDefaultUseWrapper(b) != xmlAi)) {
+                            throw new IllegalStateException(String.format(
+"Cannot change `defaultUseWrapper` of `%s` contained in `%s`: combine introspectors using `%s` instead",
+                                    curr.getClass().getName(), ai.getClass().getName(),
+                                    XmlAnnotationIntrospector.Pair.class.getName()));
+                        }
+                    }
                 }
-                if (changed) {
-                    annotationIntrospector(newAi);
-                }
+                _defaultUseWrapper = b;
             }
             return this;
         }

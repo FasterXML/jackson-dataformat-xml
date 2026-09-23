@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.databind.*;
+import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,6 +35,22 @@ public class MapperCopyTest extends XmlTestUtil
     }
 
     static class CustomIntrospector913 extends JacksonXmlAnnotationIntrospector {
+        private static final long serialVersionUID = 1L;
+
+        public CustomIntrospector913() { }
+
+        protected CustomIntrospector913(CustomIntrospector913 src, boolean defaultUseWrapper) {
+            super(src, defaultUseWrapper);
+        }
+
+        @Override
+        public JacksonXmlAnnotationIntrospector withDefaultUseWrapper(boolean b) {
+            return (_cfgDefaultUseWrapper == b) ? this : new CustomIntrospector913(this, b);
+        }
+    }
+
+    // sub-class that (incorrectly) does not override `withDefaultUseWrapper()`
+    static class NonOverridingIntrospector913 extends JacksonXmlAnnotationIntrospector {
         private static final long serialVersionUID = 1L;
     }
 
@@ -171,5 +188,40 @@ public class MapperCopyTest extends XmlTestUtil
 
         assertEquals("<ListBean913C><values>a</values><values>b</values></ListBean913C>",
                 mapper.writeValueAsString(new ListBean913C()));
+    }
+
+    // [dataformat-xml#913]: sub-class not overriding `withDefaultUseWrapper()` must
+    // fail, instead of silently losing its type (or modifying shared instance)
+    @Test
+    public void testDefaultUseWrapperWithNonOverridingIntrospector() throws Exception
+    {
+        final NonOverridingIntrospector913 intr = new NonOverridingIntrospector913();
+        final XmlMapper.Builder b = mapperBuilder().annotationIntrospector(intr);
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> b.defaultUseWrapper(false));
+        verifyException(e, "must override method 'withDefaultUseWrapper'");
+        // and neither introspector nor builder must have been modified
+        assertTrue(intr._cfgDefaultUseWrapper);
+        assertTrue(b.defaultUseWrapper());
+    }
+
+    // [dataformat-xml#913]: databind `AnnotationIntrospectorPair` cannot be re-configured,
+    // so must fail if it contains introspector that would need change
+    @Test
+    public void testDefaultUseWrapperWithDatabindPair() throws Exception
+    {
+        final JacksonXmlAnnotationIntrospector xmlIntr = new JacksonXmlAnnotationIntrospector();
+        final AnnotationIntrospector pair = AnnotationIntrospectorPair.create(xmlIntr,
+                jakartaXMLBindAnnotationIntrospector());
+        final XmlMapper.Builder b = mapperBuilder().annotationIntrospector(pair);
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> b.defaultUseWrapper(false));
+        verifyException(e, "Cannot change `defaultUseWrapper`");
+        verifyException(e, XmlAnnotationIntrospector.Pair.class.getName());
+        assertTrue(xmlIntr._cfgDefaultUseWrapper);
+        assertTrue(b.defaultUseWrapper());
+
+        // but no-change is fine
+        assertSame(b, b.defaultUseWrapper(true));
     }
 }

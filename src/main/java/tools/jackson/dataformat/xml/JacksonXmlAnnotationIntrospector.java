@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.*;
+import tools.jackson.databind.util.ClassUtil;
 import tools.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -19,7 +20,7 @@ import tools.jackson.dataformat.xml.annotation.*;
  */
 public class JacksonXmlAnnotationIntrospector
     extends JacksonAnnotationIntrospector
-    implements XmlAnnotationIntrospector, Cloneable
+    implements XmlAnnotationIntrospector
 {
     private static final long serialVersionUID = 1L;
 
@@ -55,6 +56,20 @@ public class JacksonXmlAnnotationIntrospector
         _cfgDefaultUseWrapper = defaultUseWrapper;
     }
 
+    /**
+     * Copy constructor for sub-classes to use when overriding
+     * {@link #withDefaultUseWrapper}: copies settings of {@code src} other
+     * than default for List wrapping, which is set to given value.
+     *
+     * @since 3.3
+     */
+    protected JacksonXmlAnnotationIntrospector(JacksonXmlAnnotationIntrospector src,
+            boolean defaultUseWrapper)
+    {
+        _cfgConstructorPropertiesImpliesCreator = src._cfgConstructorPropertiesImpliesCreator;
+        _cfgDefaultUseWrapper = defaultUseWrapper;
+    }
+
     /*
     /**********************************************************************
     /* Extended API XML format module requires
@@ -72,28 +87,21 @@ public class JacksonXmlAnnotationIntrospector
     }
 
     /**
-     * Mutant factory for getting an introspector that uses given default for
-     * List wrapping: returns this instance if it already does, a re-configured
-     * copy otherwise. Unlike {@link #setDefaultUseWrapper} never modifies this
-     * instance, which matters as an introspector may be shared by multiple
-     * (immutable) mappers; see {@code XmlMapper.rebuild()}.
-     *<p>
-     * Copy retains the actual (sub-)type along with other settings.
+     * Sub-classes MUST override this method (usually using copy constructor
+     * {@link #JacksonXmlAnnotationIntrospector(JacksonXmlAnnotationIntrospector, boolean)})
+     * to retain their type and settings; otherwise an {@link IllegalStateException}
+     * is thrown when a re-configured copy would be needed.
      *
      * @since 3.3
      */
+    @Override
     public JacksonXmlAnnotationIntrospector withDefaultUseWrapper(boolean b) {
         if (_cfgDefaultUseWrapper == b) {
             return this;
         }
-        final JacksonXmlAnnotationIntrospector copy;
-        try {
-            copy = (JacksonXmlAnnotationIntrospector) clone();
-        } catch (CloneNotSupportedException e) { // should never occur, we are `Cloneable`
-            throw new IllegalStateException(e);
-        }
-        copy._cfgDefaultUseWrapper = b;
-        return copy;
+        ClassUtil.verifyMustOverride(JacksonXmlAnnotationIntrospector.class, this,
+                "withDefaultUseWrapper");
+        return new JacksonXmlAnnotationIntrospector(this, b);
     }
 
     /*
