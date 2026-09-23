@@ -66,7 +66,7 @@ public class JacksonXmlAnnotationIntrospector
     protected JacksonXmlAnnotationIntrospector(JacksonXmlAnnotationIntrospector src,
             boolean defaultUseWrapper)
     {
-        _cfgConstructorPropertiesImpliesCreator = src._cfgConstructorPropertiesImpliesCreator;
+        super(src);
         _cfgDefaultUseWrapper = defaultUseWrapper;
     }
 
