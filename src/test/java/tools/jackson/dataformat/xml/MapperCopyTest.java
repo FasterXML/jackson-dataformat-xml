@@ -224,4 +224,24 @@ public class MapperCopyTest extends XmlTestUtil
         // but no-change is fine
         assertSame(b, b.defaultUseWrapper(true));
     }
+
+    // [dataformat-xml#913]: ... including when nested within `XmlAnnotationIntrospector.Pair`
+    @Test
+    public void testDefaultUseWrapperWithNestedDatabindPair() throws Exception
+    {
+        final JacksonXmlAnnotationIntrospector nestedIntr = new JacksonXmlAnnotationIntrospector();
+        final JacksonXmlAnnotationIntrospector otherIntr = new JacksonXmlAnnotationIntrospector();
+        final AnnotationIntrospector pair = XmlAnnotationIntrospector.Pair.instance(
+                AnnotationIntrospectorPair.create(nestedIntr, jakartaXMLBindAnnotationIntrospector()),
+                otherIntr);
+        final XmlMapper.Builder b = mapperBuilder().annotationIntrospector(pair);
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> b.defaultUseWrapper(false));
+        verifyException(e, "Cannot change `defaultUseWrapper`");
+        // neither introspectors nor builder modified
+        assertTrue(nestedIntr._cfgDefaultUseWrapper);
+        assertTrue(otherIntr._cfgDefaultUseWrapper);
+        assertSame(pair, b.annotationIntrospector());
+        assertTrue(b.defaultUseWrapper());
+    }
 }

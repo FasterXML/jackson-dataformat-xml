@@ -24,6 +24,11 @@ public interface XmlAnnotationIntrospector
      *<p>
      * Default implementation returns {@code this}, for introspectors that have
      * no such setting.
+     *<p>
+     * NOTE: implementations are expected to extend {@link AnnotationIntrospector},
+     * and value returned MUST also be an {@link AnnotationIntrospector} (since it
+     * is used as the replacement introspector by
+     * {@code XmlMapper.Builder.defaultUseWrapper()}).
      *
      * @param defaultUseWrapper Whether to use wrapping by default or not
      *

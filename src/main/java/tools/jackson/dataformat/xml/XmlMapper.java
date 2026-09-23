@@ -282,24 +282,23 @@ public class XmlMapper extends ObjectMapper
                 // already built: so must not modify it in place but swap in
                 // re-configured copy (same as `nameForTextElement()` does for factory)
                 AnnotationIntrospector ai = annotationIntrospector();
-                if (ai instanceof XmlAnnotationIntrospector xmlAi) {
-                    AnnotationIntrospector newAi = (AnnotationIntrospector) xmlAi.withDefaultUseWrapper(b);
-                    if (newAi != ai) {
-                        annotationIntrospector(newAi);
-                    }
-                } else {
-                    // Otherwise can not re-configure (without changing structure): must
-                    // fail if contained introspector (like one within databind-provided
-                    // `AnnotationIntrospectorPair`) would need change
-                    for (AnnotationIntrospector curr : ai.allIntrospectors()) {
-                        if ((curr instanceof XmlAnnotationIntrospector xmlAi)
-                                && (xmlAi.withDefaultUseWrapper(b) != xmlAi)) {
-                            throw new IllegalStateException(String.format(
+                AnnotationIntrospector newAi = (ai instanceof XmlAnnotationIntrospector xmlAi)
+                        ? (AnnotationIntrospector) xmlAi.withDefaultUseWrapper(b)
+                        : ai;
+                // But not all introspectors can be re-configured (without changing
+                // structure), like ones within databind-provided `AnnotationIntrospectorPair`:
+                // must fail if any of those would still need change
+                for (AnnotationIntrospector curr : newAi.allIntrospectors()) {
+                    if ((curr instanceof XmlAnnotationIntrospector xmlAi)
+                            && (xmlAi.withDefaultUseWrapper(b) != xmlAi)) {
+                        throw new IllegalStateException(String.format(
 "Cannot change `defaultUseWrapper` of `%s` contained in `%s`: combine introspectors using `%s` instead",
-                                    curr.getClass().getName(), ai.getClass().getName(),
-                                    XmlAnnotationIntrospector.Pair.class.getName()));
-                        }
+                                curr.getClass().getName(), ai.getClass().getName(),
+                                XmlAnnotationIntrospector.Pair.class.getName()));
                     }
+                }
+                if (newAi != ai) {
+                    annotationIntrospector(newAi);
                 }
                 _defaultUseWrapper = b;
             }
