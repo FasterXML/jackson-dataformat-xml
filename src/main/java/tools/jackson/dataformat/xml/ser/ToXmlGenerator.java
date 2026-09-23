@@ -630,10 +630,12 @@ public class ToXmlGenerator
         // so clear it here. Otherwise the following sibling inherits attribute-ness
         // and the XSI namespace, producing xsi:-prefixed attributes (or a duplicate
         // xsi:type) that this module can no longer read back.
+        // Revert to enclosing element name (if any) so the following sibling inherits
+        // its namespace, same as it would without the preceding "xsi:type".
         if (_nextIsXsiType) {
             _nextIsXsiType = false;
             _nextIsAttribute = false;
-            _nextName = null;
+            _nextName = _elementNameStack.peekLast();
         }
 
         // 30-Jan-2024, tatu: Surprise!

@@ -1,5 +1,9 @@
 package tools.jackson.dataformat.xml.ser;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.*;
@@ -10,6 +14,7 @@ import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,6 +31,11 @@ public class XsiTypeWriteTest extends XmlTestUtil
     @JsonTypeInfo(use = Id.SIMPLE_NAME, include = As.PROPERTY, property="xsi:type")
     static class PolyBean {
         public int value = 42;
+    }
+
+    static class NsMapBean {
+        @JacksonXmlProperty(namespace = "urn:x")
+        public Map<String, Object> map = new LinkedHashMap<>();
     }
 
     private final XmlMapper NO_XSI_MAPPER = XmlMapper.builder()
@@ -106,5 +116,43 @@ public class XsiTypeWriteTest extends XmlTestUtil
         // previously the leaked attribute mode emitted xsi:nil='true', collapsing
         // the whole document to null on read
         assertEquals(tree, mapper.readTree(xml));
+    }
+
+    // Same for a plain Map; repeated (List-valued) sibling used to become
+    // duplicate "xsi:list" attributes
+    @Test
+    public void testXsiTypeMapKeyFollowedByList() throws Exception
+    {
+        XmlMapper mapper = newMapper();
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("xsi:type", "T");
+        map.put("list", List.of(1, 2));
+        assertEquals(
+                a2q("<LinkedHashMap xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                        +" xsi:type='T'><list>1</list><list>2</list></LinkedHashMap>"),
+                a2q(mapper.writeValueAsString(map)));
+    }
+
+    // Sibling following "xsi:type" must still inherit enclosing element's namespace,
+    // same as it would without the "xsi:type" key
+    @Test
+    public void testXsiTypeMapKeyKeepsEnclosingNamespace() throws Exception
+    {
+        XmlMapper mapper = newMapper();
+        NsMapBean bean = new NsMapBean();
+        bean.map.put("b", 2);
+        assertEquals(
+                a2q("<NsMapBean><wstxns1:map xmlns:wstxns1='urn:x'>"
+                        +"<wstxns1:b>2</wstxns1:b></wstxns1:map></NsMapBean>"),
+                a2q(mapper.writeValueAsString(bean)));
+
+        bean = new NsMapBean();
+        bean.map.put("xsi:type", "T");
+        bean.map.put("b", 2);
+        assertEquals(
+                a2q("<NsMapBean><wstxns1:map xmlns:wstxns1='urn:x'"
+                        +" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:type='T'>"
+                        +"<wstxns1:b>2</wstxns1:b></wstxns1:map></NsMapBean>"),
+                a2q(mapper.writeValueAsString(bean)));
     }
 }
