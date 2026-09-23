@@ -205,6 +205,10 @@ Christian Beikov (@beikov)
    `XmlBeanSerializerBase` (wrong attribute/text/CDATA handling after
    `@JsonIgnoreProperties`)
   (3.3.0)
+ * Fixed #909: Clear forced `xsi:type` attribute state in
+   `ToXmlGenerator.writeName()` (`Map`/`JsonNode` key `xsi:type` leaked
+   attribute mode onto following siblings)
+  (3.3.0)
  * Fixed #911: Verify Stax factory type before instantiating in
    `XmlFactory.readResolve()`
   (3.1.7)
