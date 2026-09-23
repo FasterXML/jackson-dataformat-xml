@@ -212,6 +212,9 @@ Christian Beikov (@beikov)
  * Fixed #911: Verify Stax factory type before instantiating in
    `XmlFactory.readResolve()`
   (3.1.7)
+ * Fixed #913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that
+   builder was created from (via `rebuild()`), or has already built
+  (3.3.0)
  * Fixed #914: `XmlFactoryBuilder` `enable()`/`disable()`/`configure()` for
    `XmlReadFeature`, `XmlWriteFeature` have no effect on `XmlFactory` built
   (3.1.7)

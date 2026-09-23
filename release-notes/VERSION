@@ -47,6 +47,9 @@ Version: 3.x (for earlier see VERSION-2.x)
 #909: Clear forced `xsi:type` attribute state in `ToXmlGenerator.writeName()`
   (`Map`/`JsonNode` key `xsi:type` leaked attribute mode onto following siblings)
  (fix by @Sahana2524)
+#913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that builder was
+  created from (via `rebuild()`), or has already built
+ (fix by @Sahana2524)
 
 3.2.3 (21-Sep-2026)
 

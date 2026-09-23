@@ -276,16 +276,33 @@ public class XmlMapper extends ObjectMapper
          * Jackson annotations have different default due to backwards compatibility.
          */
         public Builder defaultUseWrapper(boolean b) {
-            if (_defaultUseWrapper != b) {
-                _defaultUseWrapper = b;
-
-                AnnotationIntrospector ai0 = annotationIntrospector();
-                for (AnnotationIntrospector ai : ai0.allIntrospectors()) {
-                    if (ai instanceof JacksonXmlAnnotationIntrospector xmlAi) {
-                        xmlAi.setDefaultUseWrapper(b);
-                    }
+            // Introspector may be shared with the mapper this builder was created
+            // from (see `XmlMapper.rebuild()`), as well as with mappers it has
+            // already built: so must not modify it in place but swap in
+            // re-configured copy (same as `nameForTextElement()` does for factory).
+            // NOTE: done even if builder setting is unchanged, since introspector
+            // may have been replaced with one that uses a different setting
+            AnnotationIntrospector ai = annotationIntrospector();
+            AnnotationIntrospector newAi = (ai instanceof XmlAnnotationIntrospector xmlAi)
+                    ? (AnnotationIntrospector) xmlAi.withDefaultUseWrapper(b)
+                    : ai;
+            // But not all introspectors can be re-configured (without changing
+            // structure), like ones within databind-provided `AnnotationIntrospectorPair`:
+            // must fail if any of those would still need change
+            for (AnnotationIntrospector curr : newAi.allIntrospectors()) {
+                if ((curr instanceof XmlAnnotationIntrospector xmlAi)
+                        && (xmlAi.withDefaultUseWrapper(b) != xmlAi)) {
+                    throw new IllegalStateException(String.format(
+"Cannot change `defaultUseWrapper` of `%s`: it is contained in a pair other than `%s` (like databind `AnnotationIntrospectorPair`); combine all introspectors using `%s` instead",
+                            curr.getClass().getName(),
+                            XmlAnnotationIntrospector.Pair.class.getName(),
+                            XmlAnnotationIntrospector.Pair.class.getName()));
                 }
             }
+            if (newAi != ai) {
+                annotationIntrospector(newAi);
+            }
+            _defaultUseWrapper = b;
             return this;
         }
 
