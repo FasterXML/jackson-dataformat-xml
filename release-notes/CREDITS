@@ -221,3 +221,7 @@ Christian Beikov (@beikov)
  * Fixed #915: Retain constraints and stream features in
    `XmlFactory.readResolve()`
   (3.1.7)
+ * Fixed #918: Encode collection wrapper element name via configured
+   `XmlNameProcessor` (wrapper name written verbatim while item names encoded,
+   breaking round-trip / well-formedness)
+  (3.3.0)

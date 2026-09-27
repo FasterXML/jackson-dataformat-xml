@@ -334,4 +334,68 @@ public class XmlNameEscapeTest extends XmlTestUtil
     protected XmlFactory xmlFactory(XmlNameProcessor proc) {
         return XmlFactory.builder().xmlNameProcessor(proc).build();
     }
+
+    // [dataformat-xml] Collection wrapper element name has to go through the same
+    // processor as the wrapped item names. The wrapper is written directly (not via
+    // `writeName()`), so it used to be emitted verbatim while the items were encoded;
+    // the reader decodes every element name, so the round trip threw on read.
+    public static class WrappedListDTO {
+        public List<String> values = new ArrayList<>();
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            return Objects.equals(values, ((WrappedListDTO) o).values);
+        }
+
+        @Override
+        public int hashCode() { return Objects.hash(values); }
+    }
+
+    @Test
+    public void testAlwaysOnBase64WrappedCollectionRoundTrip() throws Exception {
+        WrappedListDTO dto = new WrappedListDTO();
+        dto.values.add("a");
+        dto.values.add("b");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // wrapper and item share the name "values", so both must be encoded the same
+        assertTrue(res.contains("<dmFsdWVz><dmFsdWVz>a</dmFsdWVz>"), res);
+
+        WrappedListDTO reversed = mapper.readValue(res, WrappedListDTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    public static class InvalidWrapperNameDTO {
+        @tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper(localName = "we ird")
+        @JacksonXmlProperty(localName = "it em")
+        public List<String> vals = new ArrayList<>();
+    }
+
+    @Test
+    public void testReplacementInvalidWrapperNameStaysWellFormed() throws Exception {
+        InvalidWrapperNameDTO dto = new InvalidWrapperNameDTO();
+        dto.vals.add("a");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // the space (invalid in an XML name) must have been replaced in the wrapper too,
+        // the same way it already was for the item name
+        assertTrue(res.contains("<we_ird>"), res);
+        assertTrue(res.contains("<it_em>a</it_em>"), res);
+        assertTrue(res.indexOf("we ird") < 0, res);
+
+        // ReplacementProcessor is not a reversible transform, so we do not assert a
+        // value round-trip here; the guarantee that broke was well-formedness -- the
+        // output must parse back without a "space in element name" error
+        assertNotNull(new XmlMapper().readTree(res));
+    }
 }
