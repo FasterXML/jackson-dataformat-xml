@@ -313,12 +313,14 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 xgen.setNextName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
+                    // [databind#6136]: let writer route filtering (any-getter
+                    // filters per entry; view-based writers check view first)
                     if ((cdata != null) && cdata.get(i)) {
                         xgen.setNextIsCData(true);
-                        filter.serializeAsProperty(bean, xgen, ctxt, prop);
+                        prop.serializeFilteredAsProperty(bean, xgen, ctxt, filter);
                         xgen.setNextIsCData(false);
                     } else {
-                        filter.serializeAsProperty(bean, xgen, ctxt, prop);
+                        prop.serializeFilteredAsProperty(bean, xgen, ctxt, filter);
                     }
                 }
                 // Reset to avoid next value being written as unwrapped,
