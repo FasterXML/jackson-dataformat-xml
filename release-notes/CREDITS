@@ -221,3 +221,7 @@ Christian Beikov (@beikov)
  * Fixed #915: Retain constraints and stream features in
    `XmlFactory.readResolve()`
   (3.1.7)
+ * Fixed #921: Escape colon in XML names written by `XmlNameProcessors` escaping
+   processors (`<a:b>` written for name "a:b" has an undeclared prefix, can not
+   be read back)
+  (3.3.0)
