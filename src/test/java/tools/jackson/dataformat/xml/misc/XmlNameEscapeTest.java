@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
@@ -339,6 +341,12 @@ public class XmlNameEscapeTest extends XmlTestUtil
     // processor as the wrapped item names. The wrapper is written directly (not via
     // `writeName()`), so it used to be emitted verbatim while the items were encoded;
     // the reader decodes every element name, so the round trip threw on read.
+    // Root element names are not (yet) passed through the processor, so with
+    // AlwaysOn the reader would try to decode the raw class name -- which fails for
+    // many names (e.g. any whose length % 4 == 1). Pin the root to a name that is
+    // already a valid encoding ("cm9vdA" == base64url("root")) so this test does not
+    // depend on the class name; see tofix/RootNameEncodingTest for the root-name gap.
+    @JsonRootName("cm9vdA")
     public static class WrappedListDTO {
         public List<String> values = new ArrayList<>();
 
@@ -364,6 +372,7 @@ public class XmlNameEscapeTest extends XmlTestUtil
         ).build();
 
         final String res = mapper.writeValueAsString(dto);
+        assertTrue(res.startsWith("<cm9vdA>"), res);
         // wrapper and item share the name "values", so both must be encoded the same
         assertTrue(res.contains("<dmFsdWVz><dmFsdWVz>a</dmFsdWVz>"), res);
 
