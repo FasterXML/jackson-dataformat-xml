@@ -50,6 +50,8 @@ Version: 3.x (for earlier see VERSION-2.x)
 #913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that builder was
   created from (via `rebuild()`), or has already built
  (fix by @Sahana2524)
+#918: Encode collection wrapper element name via configured `XmlNameProcessor`
+ (fix by @Sahana2524)
 
 3.2.3 (21-Sep-2026)
 

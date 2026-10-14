@@ -561,12 +561,20 @@ public class ToXmlGenerator
     public void startWrappedValue(QName wrapperName, QName wrappedName) throws JacksonException
     {
         if (wrapperName != null) {
+            // The wrapper element is written directly here rather than via
+            // `writeName()`, so it must be run through the configured
+            // `XmlNameProcessor` explicitly -- otherwise the wrapper name is
+            // emitted verbatim while the wrapped item names (which do go through
+            // `writeName()`) are encoded, and the reader decodes every element
+            // name on read, breaking the round trip.
+            final QName encoded = encodeContentName(wrapperName.getNamespaceURI(),
+                    wrapperName.getLocalPart());
             try {
                 if (_xmlPrettyPrinter != null) {
                     _xmlPrettyPrinter.writeStartElement(_xmlWriter,
-                            wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                            encoded.getNamespaceURI(), encoded.getLocalPart());
                 } else {
-                    _xmlWriter.writeStartElement(wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                    _xmlWriter.writeStartElement(encoded.getNamespaceURI(), encoded.getLocalPart());
                 }
             } catch (XMLStreamException e) {
                 StaxUtil.throwAsWriteException(e, this);
