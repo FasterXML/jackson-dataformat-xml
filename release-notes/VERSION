@@ -223,6 +223,10 @@ Version: 3.x (for earlier see VERSION-2.x)
   deserialize list (skips virtual wrapping)
  (fix by @cowtowncoder, w/ Claude code)
 
+3.1.8 (17-Oct-2026)
+
+No changes since 3.1.7
+
 3.1.7 (21-Sep-2026)
 
 #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
