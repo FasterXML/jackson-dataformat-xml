@@ -66,7 +66,8 @@ public class EmptyListDeserTest extends XmlTestUtil
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#124]
-    public  void test124() throws Exception {
+    @Test
+    public void test124() throws Exception {
         TestList124 originalObject = new TestList124();
         originalObject.list = new ArrayList<Object>();
         String xml = MAPPER.writeValueAsString(originalObject);
