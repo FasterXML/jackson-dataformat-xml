@@ -65,19 +65,17 @@ public class EmptyListDeserTest extends XmlTestUtil
     private final XmlMapper MAPPER = newMapper();
 
     // [dataformat-xml#124]
-    public  void testEmptyList124() throws Exception {
-        final XmlMapper xmlMapper = XmlMapper.builder()
-                .build();
-
+    @Test
+    public void test124() throws Exception {
         TestList124 originalObject = new TestList124();
         originalObject.list = new ArrayList<Object>();
-        String xml = xmlMapper.writeValueAsString(originalObject);
+        String xml = MAPPER.writeValueAsString(originalObject);
 
-        TestList124 result = xmlMapper.readValue(xml, TestList124.class);
+        TestList124 result = MAPPER.readValue(xml, TestList124.class);
 
         assertNotNull(result.list);
         assertEquals(0, result.list.size());
-    }    
+    }
 
     // [dataformat-xml#177]
     @Test
