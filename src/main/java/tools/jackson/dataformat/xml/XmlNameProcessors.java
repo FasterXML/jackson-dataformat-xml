@@ -51,8 +51,6 @@ public final class XmlNameProcessors
      *   </li>
      * <li>Hyphen ({@code -}) in position OTHER than the first character
      *   </li>
-     * <li>Colon (only  exposed if underlying parser is in non-namespace-aware mode)
-     *   </li>
      * </ul>
      * in an
      * XML name with a replacement string. This is a one-way processor, since
@@ -63,6 +61,10 @@ public final class XmlNameProcessors
      * <p>
      * NOTE: this processor works for US-ASCII based element and attribute names
      * but is unlikely to work well for many "international" use cases.
+     *<p>
+     * NOTE: a colon is replaced too. Names are written namespace-aware, so a colon
+     * in one is read back as a prefix that nothing declares, leaving output this
+     * module can not read.
      *
      * <pre>{@code
      * <DTO>
@@ -99,8 +101,6 @@ public final class XmlNameProcessors
      *   </li>
      * <li>Hyphen ({@code -}) in position OTHER than the first character
      *   </li>
-     * <li>Colon (only  exposed if underlying parser is in non-namespace-aware mode)
-     *   </li>
      * </ul>
      * with a base64-encoded version. Here the
      * <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-5">base64url</a>
@@ -122,6 +122,11 @@ public final class XmlNameProcessors
      * NOTE: names that already start with {@code prefix} are escaped as well, even
      * though they are otherwise valid, so that decoding cannot confuse them with
      * names this processor encoded.
+     *<p>
+     * NOTE: a name containing a colon is escaped too. Names are written
+     * namespace-aware, so a colon in one is read back as a prefix that nothing
+     * declares, leaving output this module can not read; escaping keeps the colon
+     * in the decoded name instead.
      *
      * @param prefix The prefix to use for name that are escaped
      */
@@ -182,8 +187,10 @@ public final class XmlNameProcessors
     static class ReplaceNameProcessor implements XmlNameProcessor {
         private static final long serialVersionUID = 1L;
 
-        private static final Pattern BEGIN_MATCHER = Pattern.compile("^[^a-zA-Z_:]");
-        private static final Pattern MAIN_MATCHER = Pattern.compile("[^a-zA-Z0-9_:-]");
+        // A colon counts as invalid: the writer is namespace-aware and declares no
+        // prefix for one, so a name carrying it comes out non-well-formed
+        private static final Pattern BEGIN_MATCHER = Pattern.compile("^[^a-zA-Z_]");
+        private static final Pattern MAIN_MATCHER = Pattern.compile("[^a-zA-Z0-9_-]");
 
         private final String _replacement;
 
@@ -211,7 +218,10 @@ public final class XmlNameProcessors
 
         private static final Base64.Decoder BASE64_DECODER = Base64.getUrlDecoder();
         private static final Base64.Encoder BASE64_ENCODER = Base64.getUrlEncoder().withoutPadding();
-        private static final Pattern VALID_XML_NAME = Pattern.compile("[a-zA-Z_:]([a-zA-Z0-9_:.-])*");
+        // Colon excluded on purpose: see newBase64Processor(String). Only affects
+        // encoding; decodeName() keys off the prefix, so names read from a
+        // non-namespace-aware parser are still passed through untouched.
+        private static final Pattern VALID_XML_NAME = Pattern.compile("[a-zA-Z_]([a-zA-Z0-9_.-])*");
 
         private final String _prefix;
 

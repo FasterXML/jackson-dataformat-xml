@@ -228,6 +228,48 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertNotNull(reversed);
     }
 
+    // A colon in a content-derived name (here a Map key) is read back as a
+    // namespace prefix, and nothing declares one: both escaping processors used to
+    // treat it as already-valid and write it through, so the document they produced
+    // could not be read again. Names with more than one colon do not even parse.
+    @Test
+    public void testColonInNameRoundTrips() throws Exception {
+        final String[] keys = new String[] {
+                "a:b", ":leading", "a:b:c", "xmlns:x", "xsi:nil"
+        };
+        final XmlMapper[] mappers = new XmlMapper[] {
+                XmlMapper.builder(xmlFactory(XmlNameProcessors.newBase64Processor())).build(),
+                XmlMapper.builder(xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())).build(),
+        };
+
+        for (XmlMapper mapper : mappers) {
+            for (String key : keys) {
+                DTO dto = new DTO();
+                dto.badMap.put(key, "xyz");
+
+                final String res = mapper.writeValueAsString(dto);
+                assertEquals(dto, mapper.readValue(res, DTO.class),
+                        "Failed round-trip of key '"+key+"', written as: "+res);
+            }
+        }
+    }
+
+    // Replacement is one-way so the key does not survive, but what is written still
+    // has to be readable (and free of the colon that made it unreadable).
+    @Test
+    public void testColonInNameReplaced() throws Exception {
+        DTO dto = new DTO();
+        dto.badMap.put("a:b", "xyz");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        assertTrue(res.contains("<a_b>xyz</a_b>"), res);
+        assertNotNull(mapper.readValue(res, DTO.class));
+    }
+
     public static class BadVarNameDTO {
         public int $someVar$ = 5;
     }
