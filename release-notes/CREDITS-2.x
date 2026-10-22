@@ -281,3 +281,15 @@ Bas Passon (@bpasson)
 * Contributed #768: `FromXmlParser` lacks extension point for passing
   custom `XmlTokenStream`
  (2.20.0)
+
+Sahana (@Sahana2524)
+
+* Contributed #891: Enforce `StreamReadConstraints.maxNestingDepth` in
+  `FromXmlParser`
+ (2.18.10)
+* Fixed #899: Return `null` from `nextTextValue()` at end-of-input (instead of
+  throwing `IllegalStateException`)
+ (2.23.0)
+* Fixed #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
+  `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
+ (2.23.0)

@@ -18,6 +18,7 @@ import tools.jackson.core.base.GeneratorBase;
 import tools.jackson.core.exc.StreamWriteException;
 import tools.jackson.core.io.IOContext;
 import tools.jackson.core.json.DupDetector;
+import tools.jackson.core.util.ByteArrayBuilder;
 import tools.jackson.core.util.SimpleStreamWriteContext;
 import tools.jackson.dataformat.xml.XmlPrettyPrinter;
 import tools.jackson.dataformat.xml.XmlWriteFeature;
@@ -1155,6 +1156,18 @@ public class ToXmlGenerator
         return this;
     }
 
+    /**
+     * Implementation follows the {@link JsonGenerator} contract in which negative
+     * {@code dataLength} means "length unknown": stream is then read until end-of-stream.
+     *<p>
+     * NOTE: values written as XML elements are streamed in fixed-size chunks, but values
+     * written as attributes (or with a pretty-printer) have to be buffered in memory in
+     * full, since Stax2 API only offers "full buffer" methods for those cases.
+     *
+     * @param dataLength Number of bytes to write, if known; negative value if unknown
+     *
+     * @return Number of bytes read from {@code data} and written as binary payload
+     */
     @Override
     public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength)
         throws JacksonException
@@ -1168,24 +1181,30 @@ public class ToXmlGenerator
             handleMissingName();
         }
         final org.codehaus.stax2.typed.Base64Variant stax2base64v = StaxUtil.toStax2Base64Variant(b64variant);
+        // 22-Aug-2026, sahana: negative `dataLength` means "unknown, read to the end";
+        //   stream where we can, buffer only where Stax2 needs a full buffer
+        int written = dataLength;
         try {
             if (_nextIsAttribute) {
                 // Stax2 API only has 'full buffer' write method:
-                byte[] fullBuffer = toFullBuffer(data, dataLength);
+                byte[] fullBuffer = (dataLength < 0) ? toFullBuffer(data) : toFullBuffer(data, dataLength);
+                written = fullBuffer.length;
                 _xmlWriter.writeBinaryAttribute(stax2base64v,
                         "", _nextName.getNamespaceURI(), _nextName.getLocalPart(), fullBuffer);
             } else if (checkNextIsUnwrapped()) {
               // should we consider pretty-printing or not?
-                writeStreamAsBinary(stax2base64v, data, dataLength);
+                written = writeStreamAsBinary(stax2base64v, data, dataLength);
 
             } else {
                 if (_xmlPrettyPrinter != null) {
+                    byte[] fullBuffer = (dataLength < 0) ? toFullBuffer(data) : toFullBuffer(data, dataLength);
+                    written = fullBuffer.length;
                     _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
                             _nextName.getNamespaceURI(), _nextName.getLocalPart(),
-                            stax2base64v, toFullBuffer(data, dataLength), 0, dataLength);
+                            stax2base64v, fullBuffer, 0, written);
                 } else {
                     _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
-                    writeStreamAsBinary(stax2base64v, data, dataLength);
+                    written = writeStreamAsBinary(stax2base64v, data, dataLength);
                     _xmlWriter.writeEndElement();
                 }
             }
@@ -1195,33 +1214,77 @@ public class ToXmlGenerator
             throw _wrapIOFailure(e);
         }
 
-        return dataLength;
+        return written;
     }
 
-    private void writeStreamAsBinary(org.codehaus.stax2.typed.Base64Variant stax2base64v,
-            InputStream data, int len)
-        throws IOException, XMLStreamException 
+    /**
+     * Helper method for encoding contents of given stream: at most {@code len}
+     * bytes if non-negative, or until end-of-stream if negative. Content is read
+     * and encoded in fixed-size chunks so memory usage does not depend on its length;
+     * preferred over {@link #toFullBuffer} where Stax2 API allows it.
+     *
+     * @return Number of bytes read and encoded
+     */
+    private int writeStreamAsBinary(org.codehaus.stax2.typed.Base64Variant stax2base64v,
+            InputStream data, int len) throws IOException, XMLStreamException 
     {
-        // base64 encodes up to 3 bytes into a 4 bytes string
-        byte[] tmp = new byte[3];
-        int offset = 0;
-        int read;
-        while ((read = data.read(tmp, offset, Math.min(3 - offset, len))) != -1) {
-            offset += read;
-            len -= read;
-            if(offset == 3) {
-                offset = 0;
-                _xmlWriter.writeBinary(stax2base64v, tmp, 0, 3);
+        final byte[] buf = _ioContext.allocBase64Buffer();
+        final int unit = _base64ChunkUnit(stax2base64v, buf.length);
+        int total = 0;
+        try {
+            int end = 0; // number of buffered bytes not yet written
+            while (true) {
+                int max = buf.length - end;
+                if (len >= 0 && len < max) {
+                    max = len;
+                }
+                int count = (max == 0) ? -1 : data.read(buf, end, max);
+                if (count < 0) { // end-of-stream, or requested length reached
+                    if (end > 0) {
+                        _xmlWriter.writeBinary(stax2base64v, buf, 0, end);
+                    }
+                    break;
+                }
+                end += count;
+                total += count;
+                if (len > 0) {
+                    len -= count;
+                }
+                // Write out complete chunks, keep the remainder for the next round
+                int full = end - (end % unit);
+                if (full > 0) {
+                    _xmlWriter.writeBinary(stax2base64v, buf, 0, full);
+                    end -= full;
+                    System.arraycopy(buf, full, buf, 0, end);
+                }
             }
-            if (len == 0) {
-                break;
-            }
+        } finally {
+            _ioContext.releaseBase64Buffer(buf);
         }
+        return total;
+    }
 
-        // we still have < 3 bytes in the buffer
-        if (offset > 0) {
-            _xmlWriter.writeBinary(stax2base64v, tmp, 0, offset);
+    /**
+     * Helper method for figuring out granularity of chunks to pass to Stax2
+     * {@code writeBinary()}: Base64 encodes 3 bytes into 4 characters so chunks must
+     * be multiples of 3 -- and if variant uses linefeeds, must also align with line
+     * boundaries, since Stax2 encoder restarts its line-length counter on every call.
+     *
+     * @return Chunk length granularity to use; always a multiple of 3
+     */
+    private static int _base64ChunkUnit(org.codehaus.stax2.typed.Base64Variant b64v,
+            int bufferLength)
+    {
+        final int maxLineLength = b64v.getMaxLineLength();
+        if (maxLineLength > 0 && maxLineLength < Integer.MAX_VALUE) {
+            // 4 encoded characters per each 3 bytes of input
+            final int lineBytes = (maxLineLength >> 2) * 3;
+            // But cannot align if a single line won't fit in the read buffer
+            if (lineBytes >= 3 && lineBytes <= bufferLength) {
+                return lineBytes;
+            }
         }
+        return 3;
     }
 
     private byte[] toFullBuffer(byte[] data, int offset, int len)
@@ -1237,6 +1300,11 @@ public class ToXmlGenerator
         return result;
     }
 
+    /**
+     * Helper method for reading exactly {@code len} bytes into a newly allocated
+     * buffer, for cases where Stax2 API requires the full value; fails if stream
+     * does not contain that many bytes.
+     */
     private byte[] toFullBuffer(InputStream data, final int len) throws JacksonException 
     {
         byte[] result = new byte[len];
@@ -1253,6 +1321,35 @@ public class ToXmlGenerator
                 throw _constructWriteException("Too few bytes available: missing "+(len - offset)+" bytes (out of "+len+")");
             }
             offset += count;
+        }
+        return result;
+    }
+
+    /**
+     * Variant of {@link #toFullBuffer(InputStream, int)} for unknown length: reads
+     * until end-of-stream.
+     *<p>
+     * NOTE: since length is not known in advance no allocation limit can be applied,
+     * and an arbitrarily large stream is accumulated until exhausted (or memory runs
+     * out); prefer {@link #writeStreamAsBinary} wherever streaming is possible.
+     */
+    private byte[] toFullBuffer(InputStream data) throws IOException
+    {
+        final byte[] tmp = _ioContext.allocBase64Buffer();
+        final ByteArrayBuilder bb = new ByteArrayBuilder(_ioContext.bufferRecycler());
+        byte[] result = null;
+        try {
+            int count;
+            while ((count = data.read(tmp)) >= 0) {
+                bb.write(tmp, 0, count);
+            }
+            result = bb.getClearAndRelease();
+        } finally {
+            _ioContext.releaseBase64Buffer(tmp);
+            // If read failed, builder still holds on to a recycled buffer: return it
+            if (result == null) {
+                bb.release();
+            }
         }
         return result;
     }

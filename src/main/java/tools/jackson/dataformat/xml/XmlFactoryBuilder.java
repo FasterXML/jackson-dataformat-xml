@@ -22,15 +22,9 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     /**********************************************************************
      */
 
-    /**
-     * Set of {@code FromXmlParser.Feature}s enabled, as bitmask.
-     */
-    protected int _formatParserFeatures;
-
-    /**
-     * Set of {@code ToXmlGenerator.Feature}s enabled, as bitmask.
-     */
-    protected int _formatGeneratorFeatures;
+    // NOTE: bitmasks of enabled `XmlReadFeature`s / `XmlWriteFeature`s are held by
+    // the base class (`_formatReadFeatures`, `_formatWriteFeatures`), which is where
+    // `XmlFactory` gets them from: no separate copies here.
 
     /**
      * Stax factory for creating underlying input stream readers;
@@ -176,27 +170,27 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     // // // Parser features
 
     public XmlFactoryBuilder enable(XmlReadFeature f) {
-        _formatParserFeatures |= f.getMask();
+        _formatReadFeatures |= f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder enable(XmlReadFeature first, XmlReadFeature... other) {
-        _formatParserFeatures |= first.getMask();
+        _formatReadFeatures |= first.getMask();
         for (XmlReadFeature f : other) {
-            _formatParserFeatures |= f.getMask();
+            _formatReadFeatures |= f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder disable(XmlReadFeature f) {
-        _formatParserFeatures &= ~f.getMask();
+        _formatReadFeatures &= ~f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder disable(XmlReadFeature first, XmlReadFeature... other) {
-        _formatParserFeatures &= ~first.getMask();
+        _formatReadFeatures &= ~first.getMask();
         for (XmlReadFeature f : other) {
-            _formatParserFeatures &= ~f.getMask();
+            _formatReadFeatures &= ~f.getMask();
         }
         return _this();
     }
@@ -208,33 +202,53 @@ public class XmlFactoryBuilder extends DecorableTSFBuilder<XmlFactory, XmlFactor
     // // // Generator features
 
     public XmlFactoryBuilder enable(XmlWriteFeature f) {
-        _formatGeneratorFeatures |= f.getMask();
+        _formatWriteFeatures |= f.getMask();
         return _this();
     }
 
     public XmlFactoryBuilder enable(XmlWriteFeature first, XmlWriteFeature... other) {
-        _formatGeneratorFeatures |= first.getMask();
+        _formatWriteFeatures |= first.getMask();
         for (XmlWriteFeature f : other) {
-            _formatGeneratorFeatures |= f.getMask();
+            _formatWriteFeatures |= f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder disable(XmlWriteFeature f) {
-        _formatGeneratorFeatures &= ~f.getMask();
+        _formatWriteFeatures &= ~f.getMask();
         return _this();
     }
     
     public XmlFactoryBuilder disable(XmlWriteFeature first, XmlWriteFeature... other) {
-        _formatGeneratorFeatures &= ~first.getMask();
+        _formatWriteFeatures &= ~first.getMask();
         for (XmlWriteFeature f : other) {
-            _formatGeneratorFeatures &= ~f.getMask();
+            _formatWriteFeatures &= ~f.getMask();
         }
         return _this();
     }
 
     public XmlFactoryBuilder configure(XmlWriteFeature f, boolean state) {
         return state ? enable(f) : disable(f);
+    }
+
+    // // // Jackson 2.x compatibility
+
+    /**
+     * Overridden to also disable the XML format features whose defaults changed
+     * from Jackson 2.x to 3.x; needs to be kept in sync with
+     * {@code XmlMapper.Builder#configureForJackson2()}.
+     *<p>
+     * This method is still a work in progress and may not yet fully replicate the
+     * default settings of Jackson 2.x.
+     */
+    @Override
+    public XmlFactoryBuilder configureForJackson2() {
+        return super.configureForJackson2()
+                .disable(XmlWriteFeature.WRITE_NULLS_AS_XSI_NIL,
+                        XmlWriteFeature.UNWRAP_ROOT_OBJECT_NODE,
+                        XmlWriteFeature.AUTO_DETECT_XSI_TYPE,
+                        XmlWriteFeature.WRITE_XML_SCHEMA_CONFORMING_FLOATS)
+                .disable(XmlReadFeature.AUTO_DETECT_XSI_TYPE);
     }
 
     // // // Other config

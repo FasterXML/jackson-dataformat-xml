@@ -4,11 +4,34 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.22.0 (not yet released)
+2.23.0 (not yet released)
+
+#899: Return `null` from `nextTextValue()` at end-of-input (instead of
+  throwing `IllegalStateException`)
+ (fix by @Sahana2524)
+#894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
+  `NegativeArraySizeException`/`IndexOutOfBoundsException` for unknown (negative) length
+ (fix by @Sahana2524)
+
+2.22.4 (17-Oct-2026)
+2.22.3 (21-Sep-2026)
+2.22.2 (16-Aug-2026)
+2.22.1 (07-Jul-2026)
+
+No changes since 2.22.0
+
+2.22.0 (31-May-2026)
 
 #863: Fix to support Woodstox 7.2.0
 
-2.21.4 (not yet released)
+2.21.8 (17-Oct-2026)
+2.21.7 (21-Sep-2026)
+2.21.6 (14-Aug-2026)
+2.21.5 (06-Jul-2026)
+
+No changes since 2.21.4
+
+2.21.4 (28-May-2026)
 
 #863: Fix to support Woodstox 7.2.0 (but no dep version bump)
 
@@ -56,7 +79,24 @@ No changes since 2.19.1
  (contributed by @duoduobingbing)
 - Upgrade Woodstox to 7.1.0
 
-2.18.8 (not yet released)
+2.18.12 (17-Oct-2026)
+
+No changes since 2.18.11
+
+2.18.11 (20-Sep-2026)
+
+- Fix build to avoid past-JDK-8 bytecode generation
+
+2.18.10 (15-Aug-2026)
+
+#891: Enforce `StreamReadConstraints.maxNestingDepth` in `FromXmlParser`
+ (contributed by @Sahana2524)
+
+2.18.9 (07-Jul-2026)
+
+No changes since 2.18.8
+
+2.18.8 (28-May-2026)
 
 #863: Fix to support Woodstox 7.2.0 (but no dep version bump)
 
