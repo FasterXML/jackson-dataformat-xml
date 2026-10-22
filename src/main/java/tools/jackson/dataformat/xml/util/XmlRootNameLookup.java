@@ -73,7 +73,7 @@ public class XmlRootNameLookup
             ns = root.getNamespace();
         }
         // No answer so far? Let's just default to using simple class name
-        if (localName == null || localName.length() == 0) {
+        if (localName == null || localName.isEmpty()) {
             // Should we strip out enclosing class tho? For now, nope:
             // one caveat: array simple names end with "[]"; also, "$" needs replacing
             localName = StaxUtil.sanitizeXmlTypeName(rootType.getSimpleName());
@@ -98,8 +98,8 @@ public class XmlRootNameLookup
     {
         final MapperConfig<?> config = ctxt.getConfig();
         for (AnnotationIntrospector intr : ai.allIntrospectors()) {
-            if (intr instanceof AnnotationIntrospector.XmlExtensions) {
-                String ns = ((AnnotationIntrospector.XmlExtensions) intr).findNamespace(config, ann);
+            if (intr instanceof AnnotationIntrospector.XmlExtensions xmlExtensions) {
+                String ns = xmlExtensions.findNamespace(config, ann);
                 if (ns != null) {
                     return ns;
                 }

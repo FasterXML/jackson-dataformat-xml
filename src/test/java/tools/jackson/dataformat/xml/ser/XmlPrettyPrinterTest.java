@@ -305,7 +305,7 @@ public class XmlPrettyPrinterTest extends XmlTestUtil
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .build();
         try (JsonGenerator g = indentingMapper.createGenerator(new StringWriter())) {
-            assertTrue(g.getPrettyPrinter() instanceof DefaultXmlPrettyPrinter);
+            assertInstanceOf(DefaultXmlPrettyPrinter.class, g.getPrettyPrinter());
             _writeDoc(g);
         }
     }

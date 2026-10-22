@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.misc;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -18,6 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 // For [dataformat-xml#531]
 public class XmlNameEscapeTest extends XmlTestUtil
 {
+    // XML 1.0 `Name` production, limited to characters the base64 processors can
+    // produce: only letters, `_` and `:` may START a name, digits and `-` may not.
+    private final static Pattern VALID_XML_NAME = Pattern.compile("[a-zA-Z_:][a-zA-Z0-9_:.-]*");
+
     public static class DTO {
         public Map<String, String> badMap = new HashMap<>();
 
@@ -90,6 +96,119 @@ public class XmlNameEscapeTest extends XmlTestUtil
         final String res = mapper.writeValueAsString(dto);
         DTO reversed = mapper.readValue(res, DTO.class);
         assertEquals(dto, reversed);
+    }
+
+    // base64url's alphabet includes digits, but a digit can not start an XML name.
+    // Names whose first character is U+0400 or above encode to a leading digit, so
+    // the "always on" processor has to keep the encoded name a valid NameStartChar
+    // and still round-trip.
+    @Test
+    public void testAlwaysOnBase64NonAsciiKeysRoundTrip() throws Exception {
+        DTO dto = new DTO();
+        // U+4E2D U+6587 (Chinese) encodes to a name starting with a digit
+        dto.badMap.put(new String(new int[] { 0x4E2D, 0x6587 }, 0, 2), "cjk");
+        // U+043F U+0440 U+0438 U+0432 (Cyrillic)
+        dto.badMap.put(new String(new int[] { 0x43F, 0x440, 0x438, 0x432 }, 0, 4), "cyrillic");
+        dto.badMap.put("abc", "ascii"); // starts with a letter, unchanged
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // digit-leading encodings carry the `_` marker...
+        assertTrue(res.contains("<_5Lit5paH>cjk</_5Lit5paH>"), res);
+        assertTrue(res.contains("<_0L_RgNC40LI>cyrillic</_0L_RgNC40LI>"), res);
+        // ... and letter-leading ones are written exactly as before
+        assertTrue(res.contains("<YWJj>ascii</YWJj>"), res);
+
+        DTO reversed = mapper.readValue(res, DTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    // U+0400 is the first code point whose base64url encoding begins with a digit
+    // (lead byte 0xD0 -> index 52 -> '0'), so it is the exact boundary at which the
+    // `_` marker starts being needed; U+03FF just below it still encodes to a letter.
+    @Test
+    public void testAlwaysOnBase64NameStartBoundary() throws Exception {
+        DTO dto = new DTO();
+        dto.badMap.put(new String(new int[] { 0x3FF }, 0, 1), "below");
+        dto.badMap.put(new String(new int[] { 0x400 }, 0, 1), "at");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // U+03FF -> "z78", already a valid name start: left alone
+        assertTrue(res.contains("<z78>below</z78>"), res);
+        // U+0400 -> "0IA", needs the marker
+        assertTrue(res.contains("<_0IA>at</_0IA>"), res);
+
+        DTO reversed = mapper.readValue(res, DTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    public static class AttrDTO {
+        // U+0400 U+0066 U+0069 U+0072 U+0073 U+0074 ("first" prefixed with Cyrillic IE)
+        @JacksonXmlProperty(localName = "\u0400first", isAttribute = true)
+        public String attr;
+
+        protected AttrDTO() { }
+        public AttrDTO(String a) { attr = a; }
+    }
+
+    // Attribute names have the same NameStartChar rule as element names and go
+    // through the same processor, so the marker has to apply there too.
+    @Test
+    public void testAlwaysOnBase64AttributeNameRoundTrip() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(new AttrDTO("x"));
+        assertTrue(res.contains("_0IBmaXJzdA=\"x\""), res);
+
+        AttrDTO reversed = mapper.readValue(res, AttrDTO.class);
+        assertEquals("x", reversed.attr);
+    }
+
+    // Whatever the name, the "always on" processor has to hold two invariants:
+    // what it emits is a valid XML name, and decoding gives back exactly what was
+    // encoded. Checked directly on the processor since some of these names (the
+    // empty one in particular) can not be produced through a Map key.
+    @Test
+    public void testAlwaysOnBase64NameInvariants() throws Exception {
+        final String[] names = new String[] {
+                "", // degenerate, but must not fail
+                "abc", // encodes to a letter: no marker needed
+                "123",
+                "$ I am <fancy>! &;",
+                new String(new int[] { 0x3FF }, 0, 1), // last code point encoding to a letter
+                new String(new int[] { 0x400 }, 0, 1), // first code point encoding to a digit
+                new String(new int[] { 0x43F, 0x440, 0x438, 0x432 }, 0, 4), // Cyrillic
+                new String(new int[] { 0x4E2D, 0x6587 }, 0, 2), // CJK
+                new String(new int[] { 0x1F600 }, 0, 1), // emoji, 4-byte UTF-8
+        };
+        final XmlNameProcessor proc = XmlNameProcessors.newAlwaysOnBase64Processor();
+
+        for (String name : names) {
+            XmlNameProcessor.XmlName xmlName = new XmlNameProcessor.XmlName();
+            xmlName.localPart = name;
+
+            proc.encodeName(xmlName);
+            final String encoded = xmlName.localPart;
+            if (name.isEmpty()) {
+                assertEquals("", encoded, "Empty name should encode to empty name");
+            } else {
+                assertTrue(VALID_XML_NAME.matcher(encoded).matches(),
+                        "Invalid XML name '"+encoded+"' encoded from '"+name+"'");
+            }
+
+            proc.decodeName(xmlName);
+            assertEquals(name, xmlName.localPart,
+                    "Failed round-trip of '"+name+"' (encoded as '"+encoded+"')");
+        }
     }
 
     @Test

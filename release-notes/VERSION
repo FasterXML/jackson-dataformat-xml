@@ -28,6 +28,28 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @Sahana2524)
 #893: Decode element name before matching virtual wrapper in `_initStartElement`
  (fix by @Sahana2524)
+#895: Avoid leading digit in `AlwaysOnBase64NameProcessor`-encoded XML names
+ (fix by @Sahana2524)
+#899: Return `null` from `nextStringValue()` at end-of-input (instead of
+  throwing `IllegalStateException`)
+ (fix by @Sahana2524)
+#901: Include `ENTITY_REFERENCE` replacement text in element values (instead of
+  silently dropping it)
+ (fix by @Sahana2524)
+#903: Split embedded `]]>` across CDATA sections when serializing
+ (fix by @Sahana2524)
+#905: Fix `ClassCastException` from `valueToTree()`/`convertValue()` of
+  polymorphic (`@JsonTypeInfo`) values
+ (fix by @Sahana2524)
+#907: Recompute XML metadata for filtered properties in `XmlBeanSerializerBase`
+  (wrong attribute/text/CDATA handling after `@JsonIgnoreProperties`)
+ (fix by @Sahana2524)
+#909: Clear forced `xsi:type` attribute state in `ToXmlGenerator.writeName()`
+  (`Map`/`JsonNode` key `xsi:type` leaked attribute mode onto following siblings)
+ (fix by @Sahana2524)
+#913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that builder was
+  created from (via `rebuild()`), or has already built
+ (fix by @Sahana2524)
 
 3.2.4 (18-Oct-2026)
 

@@ -1,5 +1,7 @@
 package tools.jackson.dataformat.xml.util;
 
+import java.util.Objects;
+
 public abstract class ArgUtil
 {
     public static String emptyToNull(String str) {
@@ -7,7 +9,7 @@ public abstract class ArgUtil
     }
 
     public static String nullToEmpty(String str) {
-        return (str == null) ? "" : str;
+        return Objects.requireNonNullElse(str, "");
     }
 
     public static String nonEmptyNonNull(String prop, String str) {

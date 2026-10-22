@@ -65,7 +65,7 @@ public class XmlBeanDeserializerModifier
             
             if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
                 String localName = wrapperName.getSimpleName();
-                if ((localName != null && localName.length() > 0)
+                if ((localName != null && !localName.isEmpty())
                         && !localName.equals(prop.getName())) {
                     // make copy-on-write as necessary
                     if (changed == 0) {

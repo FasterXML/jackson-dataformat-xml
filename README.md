@@ -283,7 +283,7 @@ Currently, following limitations exist beyond general Jackson (JSON) limitations
     * Note: over time some level of support has been added, and `Collection`s, for example, often work.
 * Lists and arrays are "wrapped" by default, when using Jackson annotations, but unwrapped when using JAXB annotations (if supported, see below)
     * `@JacksonXmlElementWrapper.useWrapping` can be set to 'false' to disable wrapping
-    * `JacksonXmlModule.setDefaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
+    * `XmlMapper.builder().defaultUseWrapper()` can be used to specify whether "wrapped" or "unwrapped" setting is the default
 * Polymorphic Type Handling works, but only some inclusion mechanisms are supported (`WRAPPER_ARRAY`, for example is not supported due to problems with reference to mapping of XML, Arrays)
     * JAXB-style "compact" Type Id where property name is replaced with Type Id is not supported.
 * Mixed Content (elements and text in same element) is not supported in databinding: child content must be either text OR element(s) (attributes are fine)

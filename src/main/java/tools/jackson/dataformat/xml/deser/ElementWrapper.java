@@ -1,5 +1,7 @@
 package tools.jackson.dataformat.xml.deser;
 
+import java.util.Objects;
+
 /**
  * Helper class needed to keep track of virtual wrapper elements
  * added in the logical XML token stream.
@@ -27,7 +29,7 @@ class ElementWrapper
     {
         _parent = parent;
         _wrapperName = wrapperLocalName;
-        _wrapperNamespace = (wrapperNamespace == null) ? "" : wrapperNamespace;
+        _wrapperNamespace = Objects.requireNonNullElse(wrapperNamespace, "");
     }
 
     /**

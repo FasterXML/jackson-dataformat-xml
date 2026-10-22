@@ -142,6 +142,26 @@ public final class XmlNameProcessors
      * <b>always</b> be escaped with base64. No magic prefix is required
      * for this case, since adding one would be redundant because all names
      * will be base64 encoded.
+     * <p>
+     * With this processor set, a map with the key {@code "abc"} and a CJK
+     * key (code points U+4E2D, U+6587) will be written as:
+     *
+     * <pre>{@code
+     * <DTO>
+     *     <YmFkTWFw>
+     *         <YWJj>xyz</YWJj>
+     *         <_5Lit5paH>bar</_5Lit5paH>
+     *     </YmFkTWFw>
+     * </DTO>
+     * }</pre>
+     *<p>
+     * NOTE: base64url's alphabet includes digits, but a digit can not start an
+     * XML name: names starting with a character U+0400 or above encode to a
+     * leading digit. Such encodings get a single {@code _} prepended (see
+     * {@code <_5Lit5paH>} above) to restore a valid name start character, and
+     * it is stripped again when decoding. Encoding of UTF-8 bytes never itself
+     * begins with {@code _}, so the marker stays unambiguous and names that
+     * already encode to a leading letter are written unchanged.
      */
     public static XmlNameProcessor newAlwaysOnBase64Processor() {
         return new AlwaysOnBase64NameProcessor();
@@ -229,16 +249,38 @@ public final class XmlNameProcessors
         private static final Base64.Decoder BASE64_DECODER = Base64.getUrlDecoder();
         private static final Base64.Encoder BASE64_ENCODER = Base64.getUrlEncoder().withoutPadding();
 
+        // Marker used to restore a valid XML name start character; see encodeName().
+        private static final char START_MARKER = '_';
+
         public AlwaysOnBase64NameProcessor() { }
 
         @Override
         public void encodeName(XmlName name) {
-            name.localPart = new String(BASE64_ENCODER.encode(name.localPart.getBytes(UTF_8)), UTF_8);
+            String encoded = new String(BASE64_ENCODER.encode(name.localPart.getBytes(UTF_8)), UTF_8);
+            // base64url's alphabet contains digits and '-', but neither can begin an
+            // XML name (only letters, '_' and ':' are NameStartChars). A name whose
+            // first character is U+0400 or above encodes to a leading digit, which
+            // produces an invalid element/attribute name and breaks the round trip
+            // this processor is meant to guarantee. A base64url encoding of UTF-8 bytes
+            // never itself begins with '_', so prepending one restores a valid start
+            // character without making decoding ambiguous.
+            if (!encoded.isEmpty() && !_isNameStartChar(encoded.charAt(0))) {
+                encoded = START_MARKER + encoded;
+            }
+            name.localPart = encoded;
         }
 
         @Override
         public void decodeName(XmlName name) {
-            name.localPart = new String(BASE64_DECODER.decode(name.localPart), UTF_8);
+            String localName = name.localPart;
+            if (!localName.isEmpty() && localName.charAt(0) == START_MARKER) {
+                localName = localName.substring(1);
+            }
+            name.localPart = new String(BASE64_DECODER.decode(localName), UTF_8);
+        }
+
+        private static boolean _isNameStartChar(char c) {
+            return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_';
         }
     }
 }

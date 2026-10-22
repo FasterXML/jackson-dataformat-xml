@@ -56,9 +56,8 @@ public class AnySetterNestedXml629Test extends XmlTestUtil
 
         Object unmapped = pojo.others.get("unmapped");
         assertNotNull(unmapped, "unmapped should be captured by @JsonAnySetter");
-        assertTrue(unmapped instanceof Map, "Expected Map but got: " + unmapped.getClass());
         @SuppressWarnings("unchecked")
-        Map<String, Object> nested = (Map<String, Object>) unmapped;
+        Map<String, Object> nested = (Map<String, Object>) assertInstanceOf(Map.class, unmapped);
         assertEquals("1", nested.get("a"));
         assertEquals("2", nested.get("b"));
 

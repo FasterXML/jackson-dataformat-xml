@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.*;
+import tools.jackson.databind.util.ClassUtil;
 import tools.jackson.dataformat.xml.annotation.*;
 
 /**
@@ -55,14 +56,52 @@ public class JacksonXmlAnnotationIntrospector
         _cfgDefaultUseWrapper = defaultUseWrapper;
     }
 
+    /**
+     * Copy constructor for sub-classes to use when overriding
+     * {@link #withDefaultUseWrapper}: copies settings of {@code src} other
+     * than default for List wrapping, which is set to given value.
+     *
+     * @since 3.3
+     */
+    protected JacksonXmlAnnotationIntrospector(JacksonXmlAnnotationIntrospector src,
+            boolean defaultUseWrapper)
+    {
+        super(src);
+        _cfgDefaultUseWrapper = defaultUseWrapper;
+    }
+
     /*
     /**********************************************************************
     /* Extended API XML format module requires
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.3 use {@link #withDefaultUseWrapper} instead: modifying
+     *    an introspector in place also affects any mapper that is already using it
+     *    (including ones created via {@code XmlMapper.rebuild()})
+     */
+    @Deprecated // since 3.3
     public void setDefaultUseWrapper(boolean b) {
         _cfgDefaultUseWrapper = b;
+    }
+
+    /**
+     * Sub-classes MUST override this method (usually using copy constructor
+     * {@link #JacksonXmlAnnotationIntrospector(JacksonXmlAnnotationIntrospector, boolean)})
+     * to retain their type and settings; otherwise an {@link IllegalStateException}
+     * is thrown when a re-configured copy would be needed.
+     *
+     * @since 3.3
+     */
+    @Override
+    public JacksonXmlAnnotationIntrospector withDefaultUseWrapper(boolean b) {
+        if (_cfgDefaultUseWrapper == b) {
+            return this;
+        }
+        ClassUtil.verifyMustOverride(JacksonXmlAnnotationIntrospector.class, this,
+                "withDefaultUseWrapper");
+        return new JacksonXmlAnnotationIntrospector(this, b);
     }
 
     /*
@@ -82,7 +121,7 @@ public class JacksonXmlAnnotationIntrospector
             }
             // also: need to ensure we use marker:
             String localName = w.localName();
-            if (localName == null || localName.length() == 0) {
+            if (localName == null || localName.isEmpty()) {
                 return PropertyName.USE_DEFAULT;
             }
             return PropertyName.construct(w.localName(), w.namespace());
@@ -104,7 +143,7 @@ public class JacksonXmlAnnotationIntrospector
             String local = root.localName();
             String ns = root.namespace();
 
-            if (local.length() == 0 && ns.length() == 0) {
+            if (local.isEmpty() && ns.isEmpty()) {
                 return PropertyName.USE_DEFAULT;
             }
             return new PropertyName(local, ns);

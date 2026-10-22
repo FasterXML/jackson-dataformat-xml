@@ -60,16 +60,13 @@ public class XmlTypeResolverBuilder extends StdTypeResolverBuilder
             return _customIdResolver;
         }
         // Only override handlers of class, minimal class; name is good as is
-        switch (_idType) {
-        case CLASS:
-            return new XmlClassNameIdResolver(baseType, subtypes,
-                    subTypeValidator(ctxt));
-        case MINIMAL_CLASS:
-            return new XmlMinimalClassNameIdResolver(baseType, subtypes,
-                    subTypeValidator(ctxt));
-        default:
-        }
-        return super.idResolver(ctxt, baseType, subtypeValidator, subtypes, forSer, forDeser);
+        return switch (_idType) {
+        case CLASS -> new XmlClassNameIdResolver(baseType, subtypes,
+                subTypeValidator(ctxt));
+        case MINIMAL_CLASS -> new XmlMinimalClassNameIdResolver(baseType, subtypes,
+                subTypeValidator(ctxt));
+        default -> super.idResolver(ctxt, baseType, subtypeValidator, subtypes, forSer, forDeser);
+        };
     }
 
     /*
