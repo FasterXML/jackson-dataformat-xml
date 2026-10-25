@@ -1,12 +1,20 @@
 package tools.jackson.dataformat.xml.dos;
 
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.Map;
+
+import javax.xml.stream.XMLStreamReader;
+
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.exc.StreamConstraintsException;
+import tools.jackson.core.io.ContentReference;
 
 import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.deser.XmlTokenStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -105,6 +113,36 @@ public class StringAndNameLengthTest extends XmlTestUtil
             assertTrue(e.getMessage().contains("Name length (5000) exceeds the maximum allowed"),
                     "Unexpected message: " + e.getMessage());
         }
+    }
+
+    // Name limit must apply to decoded name, not the (longer) encoded one:
+    // otherwise XML written with a name processor could not be read back.
+    @Test
+    public void testNameLengthCheckedAfterDecoding() throws Exception
+    {
+        final XmlMapper mapper = mapperBuilder(XmlFactory.builder()
+                .xmlNameProcessor(XmlNameProcessors.newBase64Processor())
+                .streamReadConstraints(StreamReadConstraints.builder()
+                        .maxNameLength(100).build())
+                .build()).build();
+        // Space makes it an invalid XML name, so it gets base64-encoded
+        final String key = "k " + "n".repeat(88);
+        final Map<String, String> input = Collections.singletonMap(key, "v");
+        final String xml = mapper.writeValueAsString(input);
+        assertTrue(xml.length() > 2 * 100 + key.length(),
+                "Encoded name expected to exceed limit: " + xml);
+        Map<?, ?> result = mapper.readValue(xml, Map.class);
+        assertEquals(input, result);
+    }
+
+    @Test
+    public void testNullConstraintsRejected() throws Exception
+    {
+        XMLStreamReader sr = XmlFactory.builder().build().getXMLInputFactory()
+                .createXMLStreamReader(new StringReader("<a/>"));
+        assertThrows(NullPointerException.class,
+                () -> new XmlTokenStream(sr, ContentReference.unknown(), 0,
+                        XmlNameProcessors.newPassthroughProcessor(), null));
     }
 
     // Values within the configured limits must parse unchanged.

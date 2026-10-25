@@ -227,7 +227,8 @@ public class XmlTokenStream
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
-        _streamReadConstraints = streamReadConstraints;
+        _streamReadConstraints = Objects.requireNonNull(streamReadConstraints,
+                "streamReadConstraints");
     }
 
     /**
@@ -881,8 +882,6 @@ public class XmlTokenStream
      * @since 2.14
      */
     protected void _decodeElementName(String namespaceURI, String localName) {
-        // Honor `StreamReadConstraints.maxNameLength` for element names
-        _streamReadConstraints.validateNameLength(localName.length());
         // 31-Jan-2024, tatu: [dataformat-xml#634] Need to convert 'xsi:type'?
         //    (not 100% sure if needed for elements but let's do for now)
         if (_cfgProcessXsiType) {
@@ -897,14 +896,15 @@ public class XmlTokenStream
         _decodeName(_nameToDecode);
         _namespaceURI = _nameToDecode.namespace;
         _localName = _nameToDecode.localPart;
+        // Honor `StreamReadConstraints.maxNameLength`: check decoded name (the one
+        // exposed), not encoded one, to keep round-trip with name processors working
+        _streamReadConstraints.validateNameLength(_localName.length());
     }
 
     /**
      * @since 2.14
      */
     protected void _decodeAttributeName(String namespaceURI, String localName) {
-        // Honor `StreamReadConstraints.maxNameLength` for attribute names
-        _streamReadConstraints.validateNameLength(localName.length());
         // 31-Jan-2024, tatu: [dataformat-xml#634] Need to convert 'xsi:type'?
         if (_cfgProcessXsiType) {
             if (localName.equals("type") && XSI_NAMESPACE.equals(namespaceURI)) {
@@ -918,6 +918,9 @@ public class XmlTokenStream
         _decodeName(_nameToDecode);
         _namespaceURI = _nameToDecode.namespace;
         _localName = _nameToDecode.localPart;
+        // Honor `StreamReadConstraints.maxNameLength`: check decoded name (the one
+        // exposed), not encoded one, to keep round-trip with name processors working
+        _streamReadConstraints.validateNameLength(_localName.length());
     }
 
     // Name processors (e.g. base64) may reject malformed input with an
