@@ -201,6 +201,10 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.3 use variant that takes {@link StreamReadConstraints}
+     */
+    @Deprecated // since 3.3
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, XmlNameProcessor nameProcessor)
     {
