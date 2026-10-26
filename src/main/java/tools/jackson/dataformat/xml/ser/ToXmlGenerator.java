@@ -173,7 +173,7 @@ public class ToXmlGenerator
      * Contains name as written: names given by callers are encoded using
      * {@link #_nameProcessor} (see {@link #_encodeName(QName)}); fixed names
      * (like {@code xsi:type} and text-element name) are used as-is.
-     * Exception: name set by bean serializers via {@link #_setNextPropertyName}
+     * Exception: name set by bean serializers via {@link #setNextPropertyName}
      * is unencoded until the following {@link #writeName} call encodes it.
      */
     protected QName _nextName = null;
@@ -181,7 +181,7 @@ public class ToXmlGenerator
     /**
      * Unencoded name that {@link #_nextNameEncoded} was encoded from, by
      * {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName}
-     * (or, pending encoding, set by {@link #_setNextPropertyName}).
+     * (or, pending encoding, set by {@link #setNextPropertyName}).
      * Only valid while {@link #_nextName} still refers to that encoded (or pending)
      * name (see {@link #_validNextNameRaw()}): so direct assignments to
      * {@link #_nextName} need not (and do not) update it.
@@ -223,7 +223,7 @@ public class ToXmlGenerator
      * Marker set by {@link #writeName(String)} when it forces attribute mode
      * and the XSI namespace onto the next value to emit a synthetic
      * {@code xsi:type} attribute. Bean serializers clear it by assigning the
-     * following name via {@link #setNextName}; for content-driven names
+     * following name via {@link #setNextPropertyName}; for content-driven names
      * (Map / JsonNode / {@code @JsonAnyGetter}) nothing else does, so the next
      * {@link #writeName} clears it to keep the forced state from leaking onto a
      * following sibling.
@@ -565,9 +565,13 @@ public class ToXmlGenerator
     }
 
     private void _setNextNameRaw(QName raw) {
-        _nextNameRaw = raw;
         // null allowed, to clear name
-        _nextName = _nextNameEncoded = (raw == null) ? null : _encodeName(raw);
+        _setNextName(raw, (raw == null) ? null : _encodeName(raw));
+    }
+
+    private void _setNextName(QName raw, QName encoded) {
+        _nextNameRaw = raw;
+        _nextName = _nextNameEncoded = encoded;
     }
 
     /**
@@ -577,7 +581,7 @@ public class ToXmlGenerator
      * namespace of this name. This avoids encoding names of properties that
      * end up not being written (nulls, filtered out).
      */
-    void _setNextPropertyName(QName name)
+    void setNextPropertyName(QName name)
     {
         _nextName = _nextNameRaw = name;
         _nextNameEncoded = null;
@@ -591,8 +595,10 @@ public class ToXmlGenerator
      * @since 3.3
      */
     protected QName _validNextNameRaw() {
-        if ((_nextName == _nextNameEncoded)
-                || ((_nextNameEncoded == null) && (_nextName == _nextNameRaw))) {
+        // (null `_nextName` would match if cleared by direct assignment)
+        if ((_nextName != null)
+                && ((_nextName == _nextNameEncoded)
+                    || ((_nextNameEncoded == null) && (_nextName == _nextNameRaw)))) {
             return _nextNameRaw;
         }
         return null;
@@ -658,13 +664,12 @@ public class ToXmlGenerator
             }
         }
         // Common case: same name for wrapper and items, no need to encode again
-        if (wrappedName.equals(wrapperName)) {
-            _nextNameRaw = wrappedName;
-            _nextName = _nextNameEncoded = encoded;
-            _nextIsXsiType = false;
+        if ((encoded != null) && wrapperName.equals(wrappedName)) {
+            _setNextName(wrappedName, encoded);
         } else {
-            setNextName(wrappedName);
+            _setNextNameRaw(wrappedName);
         }
+        _nextIsXsiType = false;
     }
 
     /**

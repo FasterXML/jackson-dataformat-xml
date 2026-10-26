@@ -238,7 +238,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (i == textIndex) {
                     xgen.setNextIsUnwrapped(true);
                 }
-                xgen._setNextPropertyName(xmlNames[i]);
+                xgen.setNextPropertyName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
                     if ((cdata != null) && cdata.get(i)) {
@@ -310,7 +310,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
                 if (i == textIndex) {
                     xgen.setNextIsUnwrapped(true);
                 }
-                xgen._setNextPropertyName(xmlNames[i]);
+                xgen.setNextPropertyName(xmlNames[i]);
                 BeanPropertyWriter prop = props[i];
                 if (prop != null) { // can have nulls in filtered list
                     // [databind#6136]: let writer route filtering (any-getter

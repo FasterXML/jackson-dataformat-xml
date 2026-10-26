@@ -576,6 +576,21 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertNotNull(mapper.readTree(xml));
     }
 
+    // `startWrappedValue()` with null item name used to just clear the name
+    @Test
+    public void testStartWrappedValueNullItemName() throws Exception {
+        StringWriter sw = new StringWriter();
+        try (ToXmlGenerator gen = (ToXmlGenerator) newMapper().createGenerator(sw)) {
+            gen.setNextName(new QName("root"));
+            gen.writeStartObject();
+            final QName wrapper = new QName("w");
+            gen.startWrappedValue(wrapper, null);
+            gen.finishWrappedValue(wrapper, null);
+            gen.writeEndObject();
+        }
+        assertEquals("<root><w/></root>", sw.toString());
+    }
+
     // `setNextName(null)` has always been allowed, to clear name
     @Test
     public void testSetNextNameNull() throws Exception {
