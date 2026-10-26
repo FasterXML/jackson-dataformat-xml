@@ -5,6 +5,7 @@ import tools.jackson.databind.PropertyName;
 import tools.jackson.databind.cfg.MapperConfig;
 import tools.jackson.databind.introspect.Annotated;
 import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
+import tools.jackson.databind.util.ClassUtil;
 
 /**
  * Additional extension interface used above and beyond
@@ -13,6 +14,32 @@ import tools.jackson.databind.introspect.AnnotationIntrospectorPair;
 public interface XmlAnnotationIntrospector
     extends AnnotationIntrospector.XmlExtensions
 {
+    /**
+     * Mutant factory for getting an introspector that uses given default for
+     * List wrapping (for Lists and arrays without explicit wrapper annotation):
+     * returns this instance if there is no change (or no such setting), a
+     * re-configured copy otherwise. Must never modify this instance, as an
+     * introspector may be shared by multiple (immutable) mappers; see
+     * {@code XmlMapper.rebuild()}.
+     *<p>
+     * Default implementation returns {@code this}, for introspectors that have
+     * no such setting.
+     *<p>
+     * NOTE: implementations are expected to extend {@link AnnotationIntrospector},
+     * and value returned MUST also be an {@link AnnotationIntrospector} (since it
+     * is used as the replacement introspector by
+     * {@code XmlMapper.Builder.defaultUseWrapper()}).
+     *
+     * @param defaultUseWrapper Whether to use wrapping by default or not
+     *
+     * @return Introspector that uses given default for wrapping
+     *
+     * @since 3.3
+     */
+    default XmlAnnotationIntrospector withDefaultUseWrapper(boolean defaultUseWrapper) {
+        return this;
+    }
+
     /*
     /**********************************************************************
     /* Replacement of 'AnnotationIntrospector.Pair' to use when combining
@@ -50,6 +77,35 @@ public interface XmlAnnotationIntrospector
 
         public static XmlAnnotationIntrospector.Pair instance(AnnotationIntrospector a1, AnnotationIntrospector a2) {
             return new XmlAnnotationIntrospector.Pair(a1, a2);
+        }
+
+        /**
+         * Sub-classes MUST override this method to retain their type; otherwise
+         * an {@link IllegalStateException} is thrown when a re-configured copy
+         * would be needed.
+         *
+         * @since 3.3
+         */
+        @Override
+        public XmlAnnotationIntrospector withDefaultUseWrapper(boolean defaultUseWrapper)
+        {
+            AnnotationIntrospector p = _withDefaultUseWrapper(_primary, defaultUseWrapper);
+            AnnotationIntrospector s = _withDefaultUseWrapper(_secondary, defaultUseWrapper);
+            if ((p == _primary) && (s == _secondary)) {
+                return this;
+            }
+            ClassUtil.verifyMustOverride(XmlAnnotationIntrospector.Pair.class, this,
+                    "withDefaultUseWrapper");
+            return new XmlAnnotationIntrospector.Pair(p, s);
+        }
+
+        protected static AnnotationIntrospector _withDefaultUseWrapper(AnnotationIntrospector ai,
+                boolean defaultUseWrapper)
+        {
+            if (ai instanceof XmlAnnotationIntrospector xmlAi) {
+                return (AnnotationIntrospector) xmlAi.withDefaultUseWrapper(defaultUseWrapper);
+            }
+            return ai;
         }
         
         @Override

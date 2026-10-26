@@ -1,7 +1,11 @@
 package tools.jackson.dataformat.xml.ser;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -30,6 +34,21 @@ public class SerializationWithFilterTest extends XmlTestUtil
         public int a;
         public int b;
         public int c;
+    }
+
+    // [databind#6136]: any-getter entries must be filtered per entry
+    @JsonFilter("filter")
+    static class AnyBean
+    {
+        public String name = "bob";
+
+        @JsonAnyGetter
+        public Map<String, String> anyProperties() {
+            Map<String, String> m = new LinkedHashMap<>();
+            m.put("a", "1");
+            m.put("secret", "s3cr3t");
+            return m;
+        }
     }
 
     @Test
@@ -61,5 +80,29 @@ public class SerializationWithFilterTest extends XmlTestUtil
                 .filterProvider(filterProvider)
                 .build();
         assertEquals(exp, xmlMapper.writeValueAsString(bean));
+    }
+
+    // [databind#6136]
+    @Test
+    public void anyGetterWithExcludingFilter() throws Exception
+    {
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .filterProvider(new SimpleFilterProvider().addFilter("filter",
+                        SimpleBeanPropertyFilter.serializeAllExcept("secret")))
+                .build();
+        assertEquals("<AnyBean><name>bob</name><a>1</a></AnyBean>",
+                xmlMapper.writeValueAsString(new AnyBean()));
+    }
+
+    // [databind#6136]
+    @Test
+    public void anyGetterWithIncludingFilter() throws Exception
+    {
+        XmlMapper xmlMapper = XmlMapper.builder()
+                .filterProvider(new SimpleFilterProvider().addFilter("filter",
+                        SimpleBeanPropertyFilter.filterOutAllExcept("name", "a")))
+                .build();
+        assertEquals("<AnyBean><name>bob</name><a>1</a></AnyBean>",
+                xmlMapper.writeValueAsString(new AnyBean()));
     }
 }
