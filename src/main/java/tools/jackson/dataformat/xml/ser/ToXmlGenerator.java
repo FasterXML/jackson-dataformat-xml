@@ -180,7 +180,7 @@ public class ToXmlGenerator
      * Unencoded name that {@link #_nextNameEncoded} was encoded from, by
      * {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName}.
      * Only valid while {@link #_nextName} still refers to that encoded name
-     * (see {@link #_nextNameRaw()}): so direct assignments to {@link #_nextName}
+     * (see {@link #_validNextNameRaw()}): so direct assignments to {@link #_nextName}
      * need not (and do not) update it.
      * Used to avoid re-encoding same name and to carry over unencoded namespace.
      *
@@ -562,7 +562,21 @@ public class ToXmlGenerator
 
     private void _setNextNameRaw(QName raw) {
         _nextNameRaw = raw;
-        _nextName = _nextNameEncoded = _encodeName(raw);
+        // null allowed, to clear name
+        _nextName = _nextNameEncoded = (raw == null) ? null : _encodeName(raw);
+    }
+
+    /**
+     * Method called by bean serializers to set unencoded name of the next property:
+     * unlike {@link #setNextName}, does not encode name, as the following
+     * {@link #writeName} call (with the same local name) does that, using
+     * namespace of this name. This avoids encoding names of properties that
+     * end up not being written (nulls, filtered out).
+     */
+    void _setNextPropertyName(QName name)
+    {
+        _nextName = name;
+        _nextIsXsiType = false;
     }
 
     /**
@@ -571,7 +585,7 @@ public class ToXmlGenerator
      *
      * @since 3.3
      */
-    protected QName _nextNameRaw() {
+    protected QName _validNextNameRaw() {
         return (_nextName == _nextNameEncoded) ? _nextNameRaw : null;
     }
 
@@ -579,8 +593,8 @@ public class ToXmlGenerator
      * Helper method for running configured {@link XmlNameProcessor} over given
      * (unencoded) name. All element and attribute names passed by callers must go
      * through this method exactly once.
-     * Names in XSI namespace are standard names and never encoded (nor decoded
-     * on read).
+     * Names in XSI and {@code xml} namespaces are standard names and never encoded
+     * (nor decoded on read).
      *
      * @return Encoded name; {@code name} itself if processor did not change it
      *
@@ -589,7 +603,8 @@ public class ToXmlGenerator
     protected QName _encodeName(QName name)
     {
         final String ns = name.getNamespaceURI(); // never null for QName
-        if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(ns)) {
+        if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(ns)
+                || XMLConstants.XML_NS_URI.equals(ns)) {
             return name;
         }
         final String localName = name.getLocalPart();
@@ -655,7 +670,7 @@ public class ToXmlGenerator
     public JsonGenerator writeRepeatedPropertyName() throws JacksonException
     {
         // Stream context tracks unencoded names (same as `writeName()`)
-        final QName raw = _nextNameRaw();
+        final QName raw = _validNextNameRaw();
         final QName name = (raw == null) ? _nextName : raw;
         if (!_streamWriteContext.writeName(name.getLocalPart())) {
             _reportError("Can not write a property name, expecting a value");
@@ -719,7 +734,7 @@ public class ToXmlGenerator
         } else {
             // Bean serializers have already set the same name (with namespace) via
             // `setNextName()`, in which case it is already encoded
-            final QName raw = _nextNameRaw();
+            final QName raw = _validNextNameRaw();
             if ((raw == null) || !name.equals(raw.getLocalPart())) {
                 // Otherwise carry over namespace of previous name: unencoded if known
                 final QName prev = (raw == null) ? _nextName : raw;

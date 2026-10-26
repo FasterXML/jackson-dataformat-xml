@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -449,6 +450,10 @@ public class XmlNameEscapeTest extends XmlTestUtil
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @JacksonXmlProperty(isAttribute = true)
         public String label;
+
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JacksonXmlProperty(isAttribute = true)
+        public String lang;
     }
 
     @Test
@@ -461,17 +466,21 @@ public class XmlNameEscapeTest extends XmlTestUtil
                 .with(new XmlGeneratorInitializer()
                         .addNamespace("xsi", xsiNs)
                         .addRootAttribute("label", "x")
+                        .addRootAttribute(new QName(XMLConstants.XML_NS_URI, "lang", "xml"), "en")
                         .addRootAttribute(new QName(xsiNs, "noNamespaceSchemaLocation", "xsi"),
                                 "schema.xsd"))
                 .writeValueAsString(new RootAttrDTO());
         // "bGFiZWw" == base64url("label")
         assertTrue(xml.contains(" bGFiZWw=\"x\""), xml);
         assertTrue(xml.contains(" xsi:noNamespaceSchemaLocation=\"schema.xsd\""), xml);
+        // standard `xml:` names are not encoded either
+        assertTrue(xml.contains(" xml:lang=\"en\""), xml);
 
         RootAttrDTO result = mapper.readerFor(RootAttrDTO.class)
                 .with(XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES)
                 .readValue(xml);
         assertEquals("x", result.label);
+        assertEquals("en", result.lang);
 
         // XSI names are not decoded either, so reading also works without skipping
         // (XSI attribute being just an ignored unknown property)
@@ -479,9 +488,14 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertEquals("x", result.label);
     }
 
-    @JsonPropertyOrder({ "a", "b" })
+    @JsonPropertyOrder({ "a", "b", "c" })
+    @JsonRootName(namespace = "urn:x", value = "root")
     public static class TwoPropsDTO {
         public int a = 1, b = 2;
+
+        // not written, so should not be encoded
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        public String c;
     }
 
     // Each name should be encoded exactly once per write
@@ -498,10 +512,27 @@ public class XmlNameEscapeTest extends XmlTestUtil
             public void decodeName(XmlName name) { }
         };
         XmlMapper mapper = XmlMapper.builder(xmlFactory(counting)).build();
-        assertEquals("<TwoPropsDTO><a>1</a><b>2</b></TwoPropsDTO>",
+        assertEquals("<root xmlns=\"urn:x\"><a xmlns=\"\">1</a><b xmlns=\"\">2</b></root>",
                 mapper.writeValueAsString(new TwoPropsDTO()));
-        // root + 2 properties
+        // (namespaced) root + 2 written properties
         assertEquals(3, count.get());
+    }
+
+    // `setNextName(null)` has always been allowed, to clear name
+    @Test
+    public void testSetNextNameNull() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+        StringWriter sw = new StringWriter();
+        try (ToXmlGenerator gen = (ToXmlGenerator) mapper.createGenerator(sw)) {
+            gen.setNextName(new QName("a"));
+            gen.setNextName(null);
+            assertTrue(gen.setNextNameIfMissing(new QName("root")));
+            gen.writeStartObject();
+            gen.writeEndObject();
+        }
+        assertEquals("<cm9vdA/>", sw.toString());
     }
 
     public static class InvalidWrapperNameDTO {

@@ -228,18 +228,17 @@ public class XmlSerializationContext extends SerializationContextExt
     {
         // 28-Nov-2012, tatu: We should only initialize the root name if no name has been
         //   set, as per [dataformat-xml#42], to allow for custom serializers to work.
-        if (!xgen.setNextNameIfMissing(rootName)) {
+        boolean nameSet = xgen.setNextNameIfMissing(rootName);
+        if (!nameSet) {
             // however, if we are root, we... insist
             if (xgen.inRoot()) {
                 xgen.setNextName(rootName);
+                nameSet = true;
             }
         }
         xgen.initGenerator();
-        String ns = rootName.getNamespaceURI();
-        if (ns != null && !ns.isEmpty()) {
-            // Root element is written with encoded name, so default namespace must match
-            ns = xgen._encodeName(rootName).getNamespaceURI();
-        }
+        // Root element is written with encoded name, so default namespace must match
+        String ns = nameSet ? xgen._nextName.getNamespaceURI() : rootName.getNamespaceURI();
         // [dataformat-xml#26] If we just try writing root element with namespace,
         // we will get an explicit prefix. But we'd rather use the default
         // namespace, so let's try to force that.
