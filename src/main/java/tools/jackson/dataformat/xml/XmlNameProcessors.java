@@ -129,6 +129,10 @@ public final class XmlNameProcessors
      * in the decoded name instead.
      *
      * @param prefix The prefix to use for name that are escaped
+     *
+     * @throws IllegalArgumentException if {@code prefix} is not a valid XML name
+     *    (ASCII letter or underscore, followed by letters, digits, {@code _},
+     *    {@code .} or {@code -}; no colon)
      */
     public static XmlNameProcessor newBase64Processor(String prefix) {
         return new Base64NameProcessor(prefix);
@@ -229,6 +233,14 @@ public final class XmlNameProcessors
             // Both encodeName() and decodeName() test names against the prefix, so
             // a null one would only fail deep inside name handling: fail here instead
             _prefix = Objects.requireNonNull(prefix, "prefix cannot be null");
+            // Escaped names are the prefix followed by base64url characters (all valid
+            // after the first position), so the prefix alone decides whether they are
+            // valid names: one with a colon (or an empty one) would bring back the
+            // unreadable output escaping is meant to avoid
+            if (!VALID_XML_NAME.matcher(prefix).matches()) {
+                throw new IllegalArgumentException("Invalid prefix '"+prefix
+                        +"': must be a valid XML name without colon");
+            }
         }
 
         @Override

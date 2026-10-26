@@ -288,6 +288,17 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertEquals(Map.of("a_b", "xyz"), result.badMap);
     }
 
+    // Escaped names start with the prefix, so a prefix that is not itself a valid
+    // (colon-free) name would produce the same unreadable output as an unescaped one
+    @Test
+    public void testBase64InvalidPrefixRejected() throws Exception {
+        for (String prefix : new String[] { "b64:", ":", "", "1abc", "-x", "a b" }) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> XmlNameProcessors.newBase64Processor(prefix),
+                    "Should reject prefix '"+prefix+"'");
+        }
+    }
+
     public static class BadVarNameDTO {
         public int $someVar$ = 5;
     }
