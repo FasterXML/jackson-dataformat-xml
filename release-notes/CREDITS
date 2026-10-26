@@ -226,6 +226,5 @@ Christian Beikov (@beikov)
    breaking round-trip / well-formedness)
   (3.3.0)
  * Fixed #923: Escape colon in XML names written by `XmlNameProcessors` escaping
-   processors (`<a:b>` written for name "a:b" has an undeclared prefix, can not
-   be read back)
+   processors
   (3.3.0)

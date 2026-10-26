@@ -1,5 +1,7 @@
 package tools.jackson.dataformat.xml;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -71,9 +73,8 @@ public final class XmlNameProcessors
      * NOTE: this processor works for US-ASCII based element and attribute names
      * but is unlikely to work well for many "international" use cases.
      *<p>
-     * NOTE: a colon is replaced too. Names are written namespace-aware, so a colon
-     * in one is read back as a prefix that nothing declares, leaving output this
-     * module can not read.
+     * NOTE: colons are replaced as well: names are written namespace-aware, so a
+     * colon would be read back as an undeclared namespace prefix.
      *
      * @param replacement The replacement string to replace invalid characters with
      */
@@ -101,6 +102,8 @@ public final class XmlNameProcessors
      *   </li>
      * <li>Hyphen ({@code -}) in position OTHER than the first character
      *   </li>
+     * <li>Period ({@code .}) in position OTHER than the first character
+     *   </li>
      * </ul>
      * with a base64-encoded version. Here the
      * <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-5">base64url</a>
@@ -123,16 +126,13 @@ public final class XmlNameProcessors
      * though they are otherwise valid, so that decoding cannot confuse them with
      * names this processor encoded.
      *<p>
-     * NOTE: a name containing a colon is escaped too. Names are written
-     * namespace-aware, so a colon in one is read back as a prefix that nothing
-     * declares, leaving output this module can not read; escaping keeps the colon
-     * in the decoded name instead.
+     * NOTE: names containing a colon are escaped as well: names are written
+     * namespace-aware, so a colon would be read back as an undeclared namespace prefix.
      *
      * @param prefix The prefix to use for name that are escaped
      *
-     * @throws IllegalArgumentException if {@code prefix} is not a valid XML name
-     *    (ASCII letter or underscore, followed by letters, digits, {@code _},
-     *    {@code .} or {@code -}; no colon)
+     * @throws IllegalArgumentException if {@code prefix} is empty or would itself
+     *    need escaping (see above)
      */
     public static XmlNameProcessor newBase64Processor(String prefix) {
         return new Base64NameProcessor(prefix);
@@ -191,8 +191,7 @@ public final class XmlNameProcessors
     static class ReplaceNameProcessor implements XmlNameProcessor {
         private static final long serialVersionUID = 1L;
 
-        // A colon counts as invalid: the writer is namespace-aware and declares no
-        // prefix for one, so a name carrying it comes out non-well-formed
+        // No colon: see newReplacementProcessor(String)
         private static final Pattern BEGIN_MATCHER = Pattern.compile("^[^a-zA-Z_]");
         private static final Pattern MAIN_MATCHER = Pattern.compile("[^a-zA-Z0-9_-]");
 
@@ -222,9 +221,7 @@ public final class XmlNameProcessors
 
         private static final Base64.Decoder BASE64_DECODER = Base64.getUrlDecoder();
         private static final Base64.Encoder BASE64_ENCODER = Base64.getUrlEncoder().withoutPadding();
-        // Colon excluded on purpose: see newBase64Processor(String). Only affects
-        // encoding; decodeName() keys off the prefix, so names read from a
-        // non-namespace-aware parser are still passed through untouched.
+        // No colon: see newBase64Processor(String)
         private static final Pattern VALID_XML_NAME = Pattern.compile("[a-zA-Z_]([a-zA-Z0-9_.-])*");
 
         private final String _prefix;
@@ -233,13 +230,19 @@ public final class XmlNameProcessors
             // Both encodeName() and decodeName() test names against the prefix, so
             // a null one would only fail deep inside name handling: fail here instead
             _prefix = Objects.requireNonNull(prefix, "prefix cannot be null");
-            // Escaped names are the prefix followed by base64url characters (all valid
-            // after the first position), so the prefix alone decides whether they are
-            // valid names: one with a colon (or an empty one) would bring back the
-            // unreadable output escaping is meant to avoid
+            // Escaped names start with the prefix, so it must be a valid name itself
             if (!VALID_XML_NAME.matcher(prefix).matches()) {
                 throw new IllegalArgumentException("Invalid prefix '"+prefix
-                        +"': must be a valid XML name without colon");
+                        +"': must be ASCII letter or '_' followed by ASCII letters, digits, '_', '.' or '-'");
+            }
+        }
+
+        // JDK deserialization bypasses the constructor (and its prefix check)
+        private Object readResolve() throws ObjectStreamException {
+            try {
+                return new Base64NameProcessor(_prefix);
+            } catch (IllegalArgumentException | NullPointerException e) {
+                throw (InvalidObjectException) new InvalidObjectException(e.getMessage()).initCause(e);
             }
         }
 
