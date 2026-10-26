@@ -13,7 +13,9 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
@@ -341,7 +343,7 @@ public class XmlNameEscapeTest extends XmlTestUtil
         return XmlFactory.builder().xmlNameProcessor(proc).build();
     }
 
-    // [dataformat-xml] Collection wrapper element name has to go through the same
+    // [dataformat-xml#918] Collection wrapper element name has to go through the same
     // processor as the wrapped item names. The wrapper is written directly (not via
     // `writeName()`), so it used to be emitted verbatim while the items were encoded;
     // the reader decodes every element name, so the round trip threw on read.
@@ -381,6 +383,29 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertEquals(dto, reversed);
     }
 
+    // [dataformat-xml#918] Same as above but with pretty-printing, which writes the
+    // wrapper start element via `XmlPrettyPrinter` instead of directly
+    @Test
+    public void testAlwaysOnBase64WrappedCollectionRoundTripIndented() throws Exception {
+        WrappedListDTO dto = new WrappedListDTO();
+        dto.values.add("a");
+        dto.values.add("b");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).enable(SerializationFeature.INDENT_OUTPUT)
+        .build();
+
+        final String res = mapper.writeValueAsString(dto);
+        assertTrue(res.startsWith("<cm9vdA>"), res);
+        // wrapper + 2 items, start and end tags each, nothing left unencoded
+        assertEquals(6, res.split("dmFsdWVz>", -1).length - 1, res);
+        assertTrue(res.indexOf("values") < 0, res);
+
+        WrappedListDTO reversed = mapper.readValue(res, WrappedListDTO.class);
+        assertEquals(dto, reversed);
+    }
+
     // Names passed directly to generator (`setNextName()`, `startWrappedValue()`)
     // must be encoded the same as ones written via `writeName()`
     @Test
@@ -412,8 +437,15 @@ public class XmlNameEscapeTest extends XmlTestUtil
     }
 
     public static class InvalidWrapperNameDTO {
-        @tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper(localName = "we ird")
+        @JacksonXmlElementWrapper(localName = "we ird")
         @JacksonXmlProperty(localName = "it em")
+        public List<String> vals = new ArrayList<>();
+    }
+
+    // Replacement is one-way: reading back needs names declared in replaced form
+    public static class ReplacedWrapperNameDTO {
+        @JacksonXmlElementWrapper(localName = "we_ird")
+        @JacksonXmlProperty(localName = "it_em")
         public List<String> vals = new ArrayList<>();
     }
 
@@ -421,6 +453,7 @@ public class XmlNameEscapeTest extends XmlTestUtil
     public void testReplacementInvalidWrapperNameStaysWellFormed() throws Exception {
         InvalidWrapperNameDTO dto = new InvalidWrapperNameDTO();
         dto.vals.add("a");
+        dto.vals.add("b");
 
         XmlMapper mapper = XmlMapper.builder(
                 xmlFactory(XmlNameProcessors.newReplacementProcessor())
@@ -433,9 +466,10 @@ public class XmlNameEscapeTest extends XmlTestUtil
         assertTrue(res.contains("<it_em>a</it_em>"), res);
         assertTrue(res.indexOf("we ird") < 0, res);
 
-        // ReplacementProcessor is not a reversible transform, so we do not assert a
-        // value round-trip here; the guarantee that broke was well-formedness -- the
-        // output must parse back without a "space in element name" error
-        assertNotNull(new XmlMapper().readTree(res));
+        // ReplacementProcessor is not a reversible transform, so cannot read back into
+        // original DTO; but configured mapper must still read output (well-formed),
+        // and recognize replaced wrapper as wrapper (not as a single-element property)
+        ReplacedWrapperNameDTO result = mapper.readValue(res, ReplacedWrapperNameDTO.class);
+        assertEquals(dto.vals, result.vals);
     }
 }
