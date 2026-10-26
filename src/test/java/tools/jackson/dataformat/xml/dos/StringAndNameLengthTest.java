@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.junit.jupiter.api.Test;
 
 import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.exc.StreamConstraintsException;
 import tools.jackson.core.io.ContentReference;
@@ -143,6 +144,38 @@ public class StringAndNameLengthTest extends XmlTestUtil
         assertThrows(NullPointerException.class,
                 () -> new XmlTokenStream(sr, ContentReference.unknown(), 0,
                         XmlNameProcessors.newPassthroughProcessor(), null));
+    }
+
+    static class StringBean {
+        public String value;
+    }
+
+    // Data-binding path: limit must also apply via `readValue()`
+    @Test
+    public void testElementTextLengthViaDatabind() throws Exception
+    {
+        final XmlMapper mapper = mapperWithStringLimit(100);
+        final String xml = "<StringBean><value>" + "x".repeat(5000) + "</value></StringBean>";
+        StreamConstraintsException e = assertThrows(StreamConstraintsException.class,
+                () -> mapper.readValue(xml, StringBean.class));
+        assertTrue(e.getMessage().contains("String value length (5000) exceeds the maximum allowed"),
+                "Unexpected message: " + e.getMessage());
+    }
+
+    // `nextStringValue()` path (used by String collection deserializers)
+    @Test
+    public void testElementTextLengthViaNextStringValue() throws Exception
+    {
+        final XmlMapper mapper = mapperWithStringLimit(100);
+        final String xml = "<a><b>" + "x".repeat(5000) + "</b></a>";
+        try (JsonParser p = mapper.createParser(xml)) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
+            StreamConstraintsException e = assertThrows(StreamConstraintsException.class,
+                    () -> p.nextStringValue());
+            assertTrue(e.getMessage().contains("String value length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
     }
 
     // Values within the configured limits must parse unchanged.
