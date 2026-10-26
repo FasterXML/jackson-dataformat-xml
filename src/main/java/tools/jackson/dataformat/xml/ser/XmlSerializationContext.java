@@ -236,6 +236,10 @@ public class XmlSerializationContext extends SerializationContextExt
         }
         xgen.initGenerator();
         String ns = rootName.getNamespaceURI();
+        if (ns != null && !ns.isEmpty()) {
+            // Root element is written with encoded name, so default namespace must match
+            ns = xgen._encodeName(rootName).getNamespaceURI();
+        }
         // [dataformat-xml#26] If we just try writing root element with namespace,
         // we will get an explicit prefix. But we'd rather use the default
         // namespace, so let's try to force that.

@@ -170,10 +170,21 @@ public class ToXmlGenerator
      * Assigned by either code that initiates serialization
      * or bean serializer.
      *<p>
-     * Always contains name as written, that is, already encoded using
-     * {@link #_nameProcessor} (see {@link #_encodeName(QName)}).
+     * Contains name as written: names given by callers are encoded using
+     * {@link #_nameProcessor} (see {@link #_encodeName(QName)}); fixed names
+     * (like {@code xsi:type} and text-element name) are used as-is.
      */
     protected QName _nextName = null;
+
+    /**
+     * Unencoded name {@link #_nextName} was encoded from, if known (that is, set
+     * via {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName});
+     * {@code null} if not (fixed or restored names).
+     * Used to avoid re-encoding same name and to carry over unencoded namespace.
+     *
+     * @since 3.3
+     */
+    protected QName _nextNameRaw = null;
 
     /**
      * Marker flag that indicates whether next name to write
@@ -520,6 +531,7 @@ public class ToXmlGenerator
      */
     public final void setNextName(QName name)
     {
+        _nextNameRaw = name;
         _nextName = _encodeName(name);
         // Caller is taking over naming, so drop any pending xsi:type forcing
         _nextIsXsiType = false;
@@ -534,6 +546,7 @@ public class ToXmlGenerator
     public final boolean setNextNameIfMissing(QName name)
     {
         if (_nextName == null) {
+            _nextNameRaw = name;
             _nextName = _encodeName(name);
             return true;
         }
@@ -543,29 +556,24 @@ public class ToXmlGenerator
     /**
      * Helper method for running configured {@link XmlNameProcessor} over given
      * (unencoded) name. All element and attribute names passed by callers must go
-     * through this method exactly once: {@link #_nextName} (and so names in
-     * {@link #_elementNameStack}) always contain encoded names.
+     * through this method exactly once.
      *
      * @return Encoded name; {@code name} itself if processor did not change it
      *
      * @since 3.3
      */
-    protected QName _encodeName(QName name) {
-        return _encodeName(name.getNamespaceURI(), name.getLocalPart(), name);
-    }
-
-    protected QName _encodeName(String namespaceURI, String localName, QName unchanged)
+    protected QName _encodeName(QName name)
     {
-        final String ns = (namespaceURI == null) ? "" : namespaceURI;
+        final String ns = name.getNamespaceURI(); // never null for QName
+        final String localName = name.getLocalPart();
         _nameToEncode.namespace = ns;
         _nameToEncode.localPart = localName;
         _nameProcessor.encodeName(_nameToEncode);
-        if (unchanged != null
-                && ns.equals(_nameToEncode.namespace)
+        if (ns.equals(_nameToEncode.namespace)
                 && localName.equals(_nameToEncode.localPart)) {
-            return unchanged;
+            return name;
         }
-        return new QName(_nameToEncode.namespace, _nameToEncode.localPart);
+        return new QName(_nameToEncode.namespace, _nameToEncode.localPart, name.getPrefix());
     }
 
     /**
@@ -619,7 +627,9 @@ public class ToXmlGenerator
      */
     public JsonGenerator writeRepeatedPropertyName() throws JacksonException
     {
-        if (!_streamWriteContext.writeName(_nextName.getLocalPart())) {
+        // Stream context tracks unencoded names (same as `writeName()`)
+        final QName name = (_nextNameRaw == null) ? _nextName : _nextNameRaw;
+        if (!_streamWriteContext.writeName(name.getLocalPart())) {
             _reportError("Can not write a property name, expecting a value");
         }
         return this;
@@ -656,6 +666,7 @@ public class ToXmlGenerator
             _nextIsXsiType = false;
             _nextIsAttribute = false;
             _nextName = _elementNameStack.peekLast();
+            _nextNameRaw = null;
         }
 
         // 30-Jan-2024, tatu: Surprise!
@@ -664,6 +675,7 @@ public class ToXmlGenerator
             // Fixed XSI name: must not go through name processor
             _nextName = new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                     "type", "xsi");
+            _nextNameRaw = null;
             setNextIsAttribute(true);
             _nextIsXsiType = true;
         } else if (name.equals(_cfgNameForTextElement)) {
@@ -677,16 +689,17 @@ public class ToXmlGenerator
             // don't throw (they check _nextName == null before checkNextIsUnwrapped)
             if (_nextName == null) {
                 _nextName = _textElementQName;
+                _nextNameRaw = null;
             }
         } else {
-            // Namespace carried over from previously set name (bean serializers set
-            // it via `setNextName()`); reuse that name if encoding does not change it
-            final QName prev = _nextName;
-            if (prev == null) {
-                _nextName = _encodeName("", name, null);
-            } else {
-                _nextName = _encodeName(prev.getNamespaceURI(), name,
-                        name.equals(prev.getLocalPart()) ? prev : null);
+            // Bean serializers have already set the same name (with namespace) via
+            // `setNextName()`, in which case it is already encoded
+            final QName raw = _nextNameRaw;
+            if ((raw == null) || !name.equals(raw.getLocalPart())) {
+                // Otherwise carry over namespace of previous name: unencoded if known
+                final QName prev = (raw == null) ? _nextName : raw;
+                _nextNameRaw = new QName((prev == null) ? "" : prev.getNamespaceURI(), name);
+                _nextName = _encodeName(_nextNameRaw);
             }
         }
         return this;
@@ -872,6 +885,7 @@ public class ToXmlGenerator
             throw _constructWriteException("Can not write END_ELEMENT without open START_ELEMENT", this);
         }
         _nextName = _elementNameStack.removeLast();
+        _nextNameRaw = null;
         try {
             // note: since attributes don't nest, can only have one attribute active, so:
             _nextIsAttribute = false;

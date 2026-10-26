@@ -2,13 +2,17 @@ package tools.jackson.dataformat.xml.misc;
 
 import java.io.StringWriter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.core.TokenStreamLocation;
@@ -18,6 +22,7 @@ import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
+import tools.jackson.dataformat.xml.ser.XmlGeneratorInitializer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -422,6 +427,8 @@ public class XmlNameEscapeTest extends XmlTestUtil
             final QName name = new QName("values");
             gen.startWrappedValue(name, name);
             gen.writeRepeatedPropertyName();
+            // stream context tracks unencoded names, same as with `writeName()`
+            assertEquals("values", gen.streamWriteContext().currentName());
             gen.writeStartArray();
             gen.writeString("a");
             gen.writeString("b");
@@ -434,6 +441,62 @@ public class XmlNameEscapeTest extends XmlTestUtil
                 xml);
         WrappedListDTO result = mapper.readValue(xml, WrappedListDTO.class);
         assertEquals(Arrays.asList("a", "b"), result.values);
+    }
+
+    // Root attributes are read back like any other attribute, so their names
+    // must be encoded too; except XSI ones, meant for other tools
+    public static class RootAttrDTO {
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JacksonXmlProperty(isAttribute = true)
+        public String label;
+    }
+
+    @Test
+    public void testAlwaysOnBase64RootAttributeRoundTrip() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+        final String xsiNs = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+        final String xml = mapper.writer()
+                .with(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", xsiNs)
+                        .addRootAttribute("label", "x")
+                        .addRootAttribute(new QName(xsiNs, "noNamespaceSchemaLocation", "xsi"),
+                                "schema.xsd"))
+                .writeValueAsString(new RootAttrDTO());
+        // "bGFiZWw" == base64url("label")
+        assertTrue(xml.contains(" bGFiZWw=\"x\""), xml);
+        assertTrue(xml.contains(" xsi:noNamespaceSchemaLocation=\"schema.xsd\""), xml);
+
+        RootAttrDTO result = mapper.readerFor(RootAttrDTO.class)
+                .with(XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES)
+                .readValue(xml);
+        assertEquals("x", result.label);
+    }
+
+    @JsonPropertyOrder({ "a", "b" })
+    public static class TwoPropsDTO {
+        public int a = 1, b = 2;
+    }
+
+    // Each name should be encoded exactly once per write
+    @Test
+    public void testNamesEncodedOnce() throws Exception {
+        final AtomicInteger count = new AtomicInteger();
+        XmlNameProcessor counting = new XmlNameProcessor() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void encodeName(XmlName name) { count.incrementAndGet(); }
+
+            @Override
+            public void decodeName(XmlName name) { }
+        };
+        XmlMapper mapper = XmlMapper.builder(xmlFactory(counting)).build();
+        assertEquals("<TwoPropsDTO><a>1</a><b>2</b></TwoPropsDTO>",
+                mapper.writeValueAsString(new TwoPropsDTO()));
+        // root + 2 properties
+        assertEquals(3, count.get());
     }
 
     public static class InvalidWrapperNameDTO {
