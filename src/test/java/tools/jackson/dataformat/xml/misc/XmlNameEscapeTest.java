@@ -247,6 +247,8 @@ public class XmlNameEscapeTest extends XmlTestUtil
     // namespace prefix, and nothing declares one: both escaping processors used to
     // treat it as already-valid and write it through, so the document they produced
     // could not be read again. Names with more than one colon do not even parse.
+    // (Not covering newAlwaysOnBase64Processor(): it encodes every name, so its
+    // output never contained a colon in the first place.)
     @Test
     public void testColonInNameRoundTrips() throws Exception {
         final String[] keys = new String[] {
@@ -254,7 +256,7 @@ public class XmlNameEscapeTest extends XmlTestUtil
         };
         final XmlMapper[] mappers = new XmlMapper[] {
                 XmlMapper.builder(xmlFactory(XmlNameProcessors.newBase64Processor())).build(),
-                XmlMapper.builder(xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())).build(),
+                XmlMapper.builder(xmlFactory(XmlNameProcessors.newBase64Processor("b64_"))).build(),
         };
 
         for (XmlMapper mapper : mappers) {
@@ -282,7 +284,8 @@ public class XmlNameEscapeTest extends XmlTestUtil
 
         final String res = mapper.writeValueAsString(dto);
         assertTrue(res.contains("<a_b>xyz</a_b>"), res);
-        assertNotNull(mapper.readValue(res, DTO.class));
+        DTO result = mapper.readValue(res, DTO.class);
+        assertEquals(Map.of("a_b", "xyz"), result.badMap);
     }
 
     public static class BadVarNameDTO {

@@ -58,13 +58,6 @@ public final class XmlNameProcessors
      * <p>
      * With this processor set (and {@code "_"} as the replacement string), a map
      * with the keys {@code "123"} and {@code "$ I am <fancy>! &;"} will be written as:
-     * <p>
-     * NOTE: this processor works for US-ASCII based element and attribute names
-     * but is unlikely to work well for many "international" use cases.
-     *<p>
-     * NOTE: a colon is replaced too. Names are written namespace-aware, so a colon
-     * in one is read back as a prefix that nothing declares, leaving output this
-     * module can not read.
      *
      * <pre>{@code
      * <DTO>
@@ -74,6 +67,13 @@ public final class XmlNameProcessors
      *     </badMap>
      * </DTO>
      * }</pre>
+     * <p>
+     * NOTE: this processor works for US-ASCII based element and attribute names
+     * but is unlikely to work well for many "international" use cases.
+     *<p>
+     * NOTE: a colon is replaced too. Names are written namespace-aware, so a colon
+     * in one is read back as a prefix that nothing declares, leaving output this
+     * module can not read.
      *
      * @param replacement The replacement string to replace invalid characters with
      */
