@@ -173,15 +173,18 @@ public class ToXmlGenerator
      * Contains name as written: names given by callers are encoded using
      * {@link #_nameProcessor} (see {@link #_encodeName(QName)}); fixed names
      * (like {@code xsi:type} and text-element name) are used as-is.
+     * Exception: name set by bean serializers via {@link #_setNextPropertyName}
+     * is unencoded until the following {@link #writeName} call encodes it.
      */
     protected QName _nextName = null;
 
     /**
      * Unencoded name that {@link #_nextNameEncoded} was encoded from, by
-     * {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName}.
-     * Only valid while {@link #_nextName} still refers to that encoded name
-     * (see {@link #_validNextNameRaw()}): so direct assignments to {@link #_nextName}
-     * need not (and do not) update it.
+     * {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName}
+     * (or, pending encoding, set by {@link #_setNextPropertyName}).
+     * Only valid while {@link #_nextName} still refers to that encoded (or pending)
+     * name (see {@link #_validNextNameRaw()}): so direct assignments to
+     * {@link #_nextName} need not (and do not) update it.
      * Used to avoid re-encoding same name and to carry over unencoded namespace.
      *
      * @since 3.3
@@ -189,7 +192,8 @@ public class ToXmlGenerator
     protected QName _nextNameRaw = null;
 
     /**
-     * Encoded name produced from {@link #_nextNameRaw}.
+     * Encoded name produced from {@link #_nextNameRaw}; {@code null} if
+     * encoding is pending.
      *
      * @since 3.3
      */
@@ -575,26 +579,31 @@ public class ToXmlGenerator
      */
     void _setNextPropertyName(QName name)
     {
-        _nextName = name;
+        _nextName = _nextNameRaw = name;
+        _nextNameEncoded = null;
         _nextIsXsiType = false;
     }
 
     /**
-     * @return Unencoded name {@link #_nextName} was encoded from, if known;
-     *    {@code null} if not (fixed name, or one assigned directly)
+     * @return Unencoded name {@link #_nextName} was (or is pending to be) encoded
+     *    from, if known; {@code null} if not (fixed name, or one assigned directly)
      *
      * @since 3.3
      */
     protected QName _validNextNameRaw() {
-        return (_nextName == _nextNameEncoded) ? _nextNameRaw : null;
+        if ((_nextName == _nextNameEncoded)
+                || ((_nextNameEncoded == null) && (_nextName == _nextNameRaw))) {
+            return _nextNameRaw;
+        }
+        return null;
     }
 
     /**
      * Helper method for running configured {@link XmlNameProcessor} over given
      * (unencoded) name. All element and attribute names passed by callers must go
      * through this method exactly once.
-     * Names in XSI and {@code xml} namespaces are standard names and never encoded
-     * (nor decoded on read).
+     * Names in standard namespaces (XSI, {@code xml}, {@code xmlns}) are never
+     * encoded (nor decoded on read).
      *
      * @return Encoded name; {@code name} itself if processor did not change it
      *
@@ -603,8 +612,7 @@ public class ToXmlGenerator
     protected QName _encodeName(QName name)
     {
         final String ns = name.getNamespaceURI(); // never null for QName
-        if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(ns)
-                || XMLConstants.XML_NS_URI.equals(ns)) {
+        if (_isStandardNamespace(ns)) {
             return name;
         }
         final String localName = name.getLocalPart();
@@ -618,6 +626,12 @@ public class ToXmlGenerator
         return new QName(_nameToEncode.namespace, _nameToEncode.localPart, name.getPrefix());
     }
 
+    private static boolean _isStandardNamespace(String ns) {
+        return XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(ns)
+                || XMLConstants.XML_NS_URI.equals(ns)
+                || XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(ns);
+    }
+
     /**
      * Methdod called when a structured (collection, array, map) is being
      * output.
@@ -628,9 +642,10 @@ public class ToXmlGenerator
      */
     public void startWrappedValue(QName wrapperName, QName wrappedName) throws JacksonException
     {
+        QName encoded = null;
         if (wrapperName != null) {
             // Wrapper element written directly (not via `_nextName`), so encode here
-            final QName encoded = _encodeName(wrapperName);
+            encoded = _encodeName(wrapperName);
             try {
                 if (_xmlPrettyPrinter != null) {
                     _xmlPrettyPrinter.writeStartElement(_xmlWriter,
@@ -642,7 +657,14 @@ public class ToXmlGenerator
                 StaxUtil.throwAsWriteException(e, this);
             }
         }
-        this.setNextName(wrappedName);
+        // Common case: same name for wrapper and items, no need to encode again
+        if (wrappedName.equals(wrapperName)) {
+            _nextNameRaw = wrappedName;
+            _nextName = _nextNameEncoded = encoded;
+            _nextIsXsiType = false;
+        } else {
+            setNextName(wrappedName);
+        }
     }
 
     /**
@@ -732,13 +754,22 @@ public class ToXmlGenerator
                 _nextName = _textElementQName;
             }
         } else {
-            // Bean serializers have already set the same name (with namespace) via
-            // `setNextName()`, in which case it is already encoded
+            // Bean serializers have usually set the same name (with namespace) already:
+            // if so, encode it unless already encoded
             final QName raw = _validNextNameRaw();
-            if ((raw == null) || !name.equals(raw.getLocalPart())) {
-                // Otherwise carry over namespace of previous name: unencoded if known
+            if ((raw != null) && name.equals(raw.getLocalPart())) {
+                if (_nextName != _nextNameEncoded) {
+                    _setNextNameRaw(raw);
+                }
+            } else {
+                // Otherwise carry over namespace of previous name (unencoded if known);
+                // but not standard ones (XSI etc), meant for specific names only
                 final QName prev = (raw == null) ? _nextName : raw;
-                _setNextNameRaw(new QName((prev == null) ? "" : prev.getNamespaceURI(), name));
+                String ns = (prev == null) ? "" : prev.getNamespaceURI();
+                if (_isStandardNamespace(ns)) {
+                    ns = "";
+                }
+                _setNextNameRaw(new QName(ns, name));
             }
         }
         return this;

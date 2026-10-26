@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -498,11 +499,8 @@ public class XmlNameEscapeTest extends XmlTestUtil
         public String c;
     }
 
-    // Each name should be encoded exactly once per write
-    @Test
-    public void testNamesEncodedOnce() throws Exception {
-        final AtomicInteger count = new AtomicInteger();
-        XmlNameProcessor counting = new XmlNameProcessor() {
+    private static XmlNameProcessor _countingProcessor(AtomicInteger count) {
+        return new XmlNameProcessor() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -511,11 +509,71 @@ public class XmlNameEscapeTest extends XmlTestUtil
             @Override
             public void decodeName(XmlName name) { }
         };
-        XmlMapper mapper = XmlMapper.builder(xmlFactory(counting)).build();
+    }
+
+    // Each name should be encoded exactly once per write
+    @Test
+    public void testNamesEncodedOnce() throws Exception {
+        final AtomicInteger count = new AtomicInteger();
+        XmlMapper mapper = XmlMapper.builder(xmlFactory(_countingProcessor(count))).build();
         assertEquals("<root xmlns=\"urn:x\"><a xmlns=\"\">1</a><b xmlns=\"\">2</b></root>",
                 mapper.writeValueAsString(new TwoPropsDTO()));
         // (namespaced) root + 2 written properties
         assertEquals(3, count.get());
+    }
+
+    @Test
+    public void testWrappedCollectionNameEncodedOnce() throws Exception {
+        final AtomicInteger count = new AtomicInteger();
+        XmlMapper mapper = XmlMapper.builder(xmlFactory(_countingProcessor(count))).build();
+        WrappedListDTO dto = new WrappedListDTO();
+        dto.values.add("a");
+        assertEquals("<root><values><values>a</values></values></root>",
+                mapper.writeValueAsString(dto));
+        // root + wrapper (item name same as wrapper's)
+        assertEquals(2, count.get());
+    }
+
+    // Standard-namespace names must not be encoded
+    @Test
+    public void testAlwaysOnBase64StandardRootAttributesLiteral() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+        final String xml = mapper.writer()
+                .with(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+                        .addRootAttribute(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                                "schemaLocation", "xsi"), "foo")
+                        .addRootAttribute(new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "ns", "xmlns"),
+                                "urn:ns"))
+                .writeValueAsString(new RootAttrDTO());
+        assertTrue(xml.contains(" xsi:schemaLocation=\"foo\""), xml);
+        assertTrue(xml.contains(" xmlns:ns=\"urn:ns\""), xml);
+    }
+
+    // Content names following an XSI-namespaced property must not inherit that
+    // namespace (which would also skip encoding)
+    @JsonPropertyOrder({ "schemaLocation" })
+    public static class XsiThenAnyDTO {
+        @JacksonXmlProperty(isAttribute = true, localName = "schemaLocation",
+                namespace = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+        public String schemaLocation = "s";
+
+        @JsonAnyGetter
+        public Map<String, String> any() {
+            return Collections.singletonMap("a b", "x");
+        }
+    }
+
+    @Test
+    public void testReplacementNameAfterXsiProperty() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+        final String xml = mapper.writeValueAsString(new XsiThenAnyDTO());
+        assertTrue(xml.contains("<a_b>x</a_b>"), xml);
+        assertNotNull(mapper.readTree(xml));
     }
 
     // `setNextName(null)` has always been allowed, to clear name
