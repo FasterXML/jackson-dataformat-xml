@@ -1,15 +1,30 @@
 package tools.jackson.dataformat.xml.misc;
 
+import java.io.StringWriter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.SerializationFeature;
 import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
+import tools.jackson.dataformat.xml.ser.XmlGeneratorInitializer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -333,5 +348,300 @@ public class XmlNameEscapeTest extends XmlTestUtil
 
     protected XmlFactory xmlFactory(XmlNameProcessor proc) {
         return XmlFactory.builder().xmlNameProcessor(proc).build();
+    }
+
+    // [dataformat-xml#918] Collection wrapper element name has to go through the same
+    // processor as the wrapped item names. The wrapper is written directly (not via
+    // `writeName()`), so it used to be emitted verbatim while the items were encoded;
+    // the reader decodes every element name, so the round trip threw on read.
+    // (root name is encoded as well; see RootNameEncodingTest)
+    @JsonRootName("root")
+    public static class WrappedListDTO {
+        public List<String> values = new ArrayList<>();
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            return Objects.equals(values, ((WrappedListDTO) o).values);
+        }
+
+        @Override
+        public int hashCode() { return Objects.hash(values); }
+    }
+
+    @Test
+    public void testAlwaysOnBase64WrappedCollectionRoundTrip() throws Exception {
+        WrappedListDTO dto = new WrappedListDTO();
+        dto.values.add("a");
+        dto.values.add("b");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // "cm9vdA" == base64url("root")
+        assertTrue(res.startsWith("<cm9vdA>"), res);
+        // wrapper and item share the name "values", so both must be encoded the same
+        assertTrue(res.contains("<dmFsdWVz><dmFsdWVz>a</dmFsdWVz>"), res);
+
+        WrappedListDTO reversed = mapper.readValue(res, WrappedListDTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    // [dataformat-xml#918] Same as above but with pretty-printing, which writes the
+    // wrapper start element via `XmlPrettyPrinter` instead of directly
+    @Test
+    public void testAlwaysOnBase64WrappedCollectionRoundTripIndented() throws Exception {
+        WrappedListDTO dto = new WrappedListDTO();
+        dto.values.add("a");
+        dto.values.add("b");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).enable(SerializationFeature.INDENT_OUTPUT)
+        .build();
+
+        final String res = mapper.writeValueAsString(dto);
+        assertTrue(res.startsWith("<cm9vdA>"), res);
+        // wrapper + 2 items, start and end tags each, nothing left unencoded
+        assertEquals(6, res.split("dmFsdWVz>", -1).length - 1, res);
+        assertTrue(res.indexOf("values") < 0, res);
+
+        WrappedListDTO reversed = mapper.readValue(res, WrappedListDTO.class);
+        assertEquals(dto, reversed);
+    }
+
+    // Names passed directly to generator (`setNextName()`, `startWrappedValue()`)
+    // must be encoded the same as ones written via `writeName()`
+    @Test
+    public void testAlwaysOnBase64NamesSetDirectlyOnGenerator() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        StringWriter sw = new StringWriter();
+        try (ToXmlGenerator gen = (ToXmlGenerator) mapper.createGenerator(sw)) {
+            gen.setNextName(new QName("root"));
+            gen.writeStartObject();
+            // no `writeName()` for either wrapper or item name
+            final QName name = new QName("values");
+            gen.startWrappedValue(name, name);
+            gen.writeRepeatedPropertyName();
+            // stream context tracks unencoded names, same as with `writeName()`
+            assertEquals("values", gen.streamWriteContext().currentName());
+            gen.writeStartArray();
+            gen.writeString("a");
+            gen.writeString("b");
+            gen.writeEndArray();
+            gen.finishWrappedValue(name, name);
+            gen.writeEndObject();
+        }
+        final String xml = sw.toString();
+        assertEquals("<cm9vdA><dmFsdWVz><dmFsdWVz>a</dmFsdWVz><dmFsdWVz>b</dmFsdWVz></dmFsdWVz></cm9vdA>",
+                xml);
+        WrappedListDTO result = mapper.readValue(xml, WrappedListDTO.class);
+        assertEquals(Arrays.asList("a", "b"), result.values);
+    }
+
+    // Root attributes are read back like any other attribute, so their names
+    // must be encoded too; except XSI ones, meant for other tools
+    public static class RootAttrDTO {
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JacksonXmlProperty(isAttribute = true)
+        public String label;
+
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JacksonXmlProperty(isAttribute = true)
+        public String lang;
+    }
+
+    @Test
+    public void testAlwaysOnBase64RootAttributeRoundTrip() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+        final String xsiNs = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+        final String xml = mapper.writer()
+                .with(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", xsiNs)
+                        .addRootAttribute("label", "x")
+                        .addRootAttribute(new QName(XMLConstants.XML_NS_URI, "lang", "xml"), "en")
+                        .addRootAttribute(new QName(xsiNs, "noNamespaceSchemaLocation", "xsi"),
+                                "schema.xsd"))
+                .writeValueAsString(new RootAttrDTO());
+        // "bGFiZWw" == base64url("label")
+        assertTrue(xml.contains(" bGFiZWw=\"x\""), xml);
+        assertTrue(xml.contains(" xsi:noNamespaceSchemaLocation=\"schema.xsd\""), xml);
+        // standard `xml:` names are not encoded either
+        assertTrue(xml.contains(" xml:lang=\"en\""), xml);
+
+        RootAttrDTO result = mapper.readerFor(RootAttrDTO.class)
+                .with(XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES)
+                .readValue(xml);
+        assertEquals("x", result.label);
+        assertEquals("en", result.lang);
+
+        // XSI names are not decoded either, so reading also works without skipping
+        // (XSI attribute being just an ignored unknown property)
+        result = mapper.readValue(xml, RootAttrDTO.class);
+        assertEquals("x", result.label);
+    }
+
+    @JsonPropertyOrder({ "a", "b", "c" })
+    @JsonRootName(namespace = "urn:x", value = "root")
+    public static class TwoPropsDTO {
+        public int a = 1, b = 2;
+
+        // not written, so should not be encoded
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        public String c;
+    }
+
+    private static XmlNameProcessor _countingProcessor(AtomicInteger count) {
+        return new XmlNameProcessor() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void encodeName(XmlName name) { count.incrementAndGet(); }
+
+            @Override
+            public void decodeName(XmlName name) { }
+        };
+    }
+
+    // Each name should be encoded exactly once per write
+    @Test
+    public void testNamesEncodedOnce() throws Exception {
+        final AtomicInteger count = new AtomicInteger();
+        XmlMapper mapper = XmlMapper.builder(xmlFactory(_countingProcessor(count))).build();
+        assertEquals("<root xmlns=\"urn:x\"><a xmlns=\"\">1</a><b xmlns=\"\">2</b></root>",
+                mapper.writeValueAsString(new TwoPropsDTO()));
+        // (namespaced) root + 2 written properties
+        assertEquals(3, count.get());
+    }
+
+    @Test
+    public void testWrappedCollectionNameEncodedOnce() throws Exception {
+        final AtomicInteger count = new AtomicInteger();
+        XmlMapper mapper = XmlMapper.builder(xmlFactory(_countingProcessor(count))).build();
+        WrappedListDTO dto = new WrappedListDTO();
+        dto.values.add("a");
+        assertEquals("<root><values><values>a</values></values></root>",
+                mapper.writeValueAsString(dto));
+        // root + wrapper (item name same as wrapper's)
+        assertEquals(2, count.get());
+    }
+
+    // Standard-namespace names must not be encoded
+    @Test
+    public void testAlwaysOnBase64StandardRootAttributesLiteral() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+        final String xml = mapper.writer()
+                .with(new XmlGeneratorInitializer()
+                        .addNamespace("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+                        .addRootAttribute(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                                "schemaLocation", "xsi"), "foo")
+                        .addRootAttribute(new QName(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "ns", "xmlns"),
+                                "urn:ns"))
+                .writeValueAsString(new RootAttrDTO());
+        assertTrue(xml.contains(" xsi:schemaLocation=\"foo\""), xml);
+        assertTrue(xml.contains(" xmlns:ns=\"urn:ns\""), xml);
+    }
+
+    // Content names following an XSI-namespaced property must not inherit that
+    // namespace (which would also skip encoding)
+    @JsonPropertyOrder({ "schemaLocation" })
+    public static class XsiThenAnyDTO {
+        @JacksonXmlProperty(isAttribute = true, localName = "schemaLocation",
+                namespace = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+        public String schemaLocation = "s";
+
+        @JsonAnyGetter
+        public Map<String, String> any() {
+            return Collections.singletonMap("a b", "x");
+        }
+    }
+
+    @Test
+    public void testReplacementNameAfterXsiProperty() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+        final String xml = mapper.writeValueAsString(new XsiThenAnyDTO());
+        assertTrue(xml.contains("<a_b>x</a_b>"), xml);
+        assertNotNull(mapper.readTree(xml));
+    }
+
+    // `startWrappedValue()` with null item name used to just clear the name
+    @Test
+    public void testStartWrappedValueNullItemName() throws Exception {
+        StringWriter sw = new StringWriter();
+        try (ToXmlGenerator gen = (ToXmlGenerator) newMapper().createGenerator(sw)) {
+            gen.setNextName(new QName("root"));
+            gen.writeStartObject();
+            final QName wrapper = new QName("w");
+            gen.startWrappedValue(wrapper, null);
+            gen.finishWrappedValue(wrapper, null);
+            gen.writeEndObject();
+        }
+        assertEquals("<root><w/></root>", sw.toString());
+    }
+
+    // `setNextName(null)` has always been allowed, to clear name
+    @Test
+    public void testSetNextNameNull() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+        StringWriter sw = new StringWriter();
+        try (ToXmlGenerator gen = (ToXmlGenerator) mapper.createGenerator(sw)) {
+            gen.setNextName(new QName("a"));
+            gen.setNextName(null);
+            assertTrue(gen.setNextNameIfMissing(new QName("root")));
+            gen.writeStartObject();
+            gen.writeEndObject();
+        }
+        assertEquals("<cm9vdA/>", sw.toString());
+    }
+
+    public static class InvalidWrapperNameDTO {
+        @JacksonXmlElementWrapper(localName = "we ird")
+        @JacksonXmlProperty(localName = "it em")
+        public List<String> vals = new ArrayList<>();
+    }
+
+    // Replacement is one-way: reading back needs names declared in replaced form
+    public static class ReplacedWrapperNameDTO {
+        @JacksonXmlElementWrapper(localName = "we_ird")
+        @JacksonXmlProperty(localName = "it_em")
+        public List<String> vals = new ArrayList<>();
+    }
+
+    @Test
+    public void testReplacementInvalidWrapperNameStaysWellFormed() throws Exception {
+        InvalidWrapperNameDTO dto = new InvalidWrapperNameDTO();
+        dto.vals.add("a");
+        dto.vals.add("b");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        // the space (invalid in an XML name) must have been replaced in the wrapper too,
+        // the same way it already was for the item name
+        assertTrue(res.contains("<we_ird>"), res);
+        assertTrue(res.contains("<it_em>a</it_em>"), res);
+        assertTrue(res.indexOf("we ird") < 0, res);
+
+        // ReplacementProcessor is not a reversible transform, so cannot read back into
+        // original DTO; but configured mapper must still read output (well-formed),
+        // and recognize replaced wrapper as wrapper (not as a single-element property)
+        ReplacedWrapperNameDTO result = mapper.readValue(res, ReplacedWrapperNameDTO.class);
+        assertEquals(dto.vals, result.vals);
     }
 }

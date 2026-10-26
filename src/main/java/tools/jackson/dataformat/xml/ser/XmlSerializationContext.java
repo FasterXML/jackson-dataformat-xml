@@ -228,14 +228,17 @@ public class XmlSerializationContext extends SerializationContextExt
     {
         // 28-Nov-2012, tatu: We should only initialize the root name if no name has been
         //   set, as per [dataformat-xml#42], to allow for custom serializers to work.
-        if (!xgen.setNextNameIfMissing(rootName)) {
+        boolean nameSet = xgen.setNextNameIfMissing(rootName);
+        if (!nameSet) {
             // however, if we are root, we... insist
             if (xgen.inRoot()) {
                 xgen.setNextName(rootName);
+                nameSet = true;
             }
         }
         xgen.initGenerator();
-        String ns = rootName.getNamespaceURI();
+        // Root element is written with encoded name, so default namespace must match
+        String ns = nameSet ? xgen._nextName.getNamespaceURI() : rootName.getNamespaceURI();
         // [dataformat-xml#26] If we just try writing root element with namespace,
         // we will get an explicit prefix. But we'd rather use the default
         // namespace, so let's try to force that.
@@ -275,10 +278,8 @@ public class XmlSerializationContext extends SerializationContextExt
         Map.Entry<String, JsonNode> entry = root.properties().iterator().next();
         final JsonNode newRoot = entry.getValue();
 
-        // Name comes from content, so has to go through the same XmlNameProcessor
-        // the generator applies to other content-derived names.
-        // No namespace associated with JsonNode:
-        _initWithRootName(xgen, xgen.encodeContentName("", entry.getKey()));
+        // No namespace associated with JsonNode (name encoded by generator):
+        _initWithRootName(xgen, new QName(entry.getKey()));
         if (ser == null) {
             ser = findTypedValueSerializer(newRoot.getClass(), true);
         }
