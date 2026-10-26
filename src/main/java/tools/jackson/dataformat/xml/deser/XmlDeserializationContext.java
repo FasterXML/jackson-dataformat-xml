@@ -49,6 +49,25 @@ public class XmlDeserializationContext
     /**********************************************************************
      */
 
+    /**
+     * [dataformat-xml#892]: Pretty-printed XML with attribute-only beans/records
+     * exposes whitespace-only character data as the unnamed text property
+     * ({@code ""} by default). Skip that synthetic property when it is not
+     * mapped ({@code @JacksonXmlText}); mapped text still binds as usual.
+     */
+    @Override
+    public boolean handleUnknownProperty(JsonParser p, ValueDeserializer<?> deser,
+            Object instanceOrClass, String propName)
+        throws JacksonException
+    {
+        if (_xmlTextElementName.equals(propName)
+                && _isIgnorableWhitespaceXmlText(p)) {
+            p.skipChildren();
+            return true;
+        }
+        return super.handleUnknownProperty(p, deser, instanceOrClass, propName);
+    }
+
     @Override
     public Object readRootValue(JsonParser p, JavaType valueType,
             ValueDeserializer<Object> deser, Object valueToUpdate)
@@ -119,6 +138,13 @@ public class XmlDeserializationContext
     /* Internal helper methods
     /**********************************************************************
      */
+
+    private static boolean _isIgnorableWhitespaceXmlText(JsonParser p)
+        throws JacksonException
+    {
+        return (p.currentToken() == JsonToken.VALUE_STRING)
+                && XmlTokenStream._allWs(p.getString());
+    }
 
     /**
      * Helper method for [dataformat-xml#247]: verify that the root element name

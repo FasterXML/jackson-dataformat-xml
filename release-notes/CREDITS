@@ -158,6 +158,14 @@ Christian Beikov (@beikov)
    with `@JsonIgnore`-annotated getter
   (3.2.2)
 
+Lavender Shannon (@retrodaredevil)
+ * Reported #892: Whitespace-only element body treated as unknown property `""`
+  (3.3.0)
+
+@arimu1
+ * Fixed #892: Ignore whitespace-only unnamed XML text as unknown property
+  (3.3.0)
+
 @Sahana2524
  * Contributed #891: Enforce `StreamReadConstraints.maxNestingDepth` in
    `FromXmlParser`
