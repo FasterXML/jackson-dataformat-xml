@@ -50,9 +50,15 @@ Version: 3.x (for earlier see VERSION-2.x)
 #913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that builder was
   created from (via `rebuild()`), or has already built
  (fix by @Sahana2524)
+#918: Encode collection wrapper and root element names via configured `XmlNameProcessor`
+ (fix by @Sahana2524)
 #923: Escape colon in XML names written by `XmlNameProcessors` escaping processors
   (`<a:b>` written for name "a:b" has an undeclared prefix, can not be read back)
  (fix by @Sahana2524)
+
+3.2.4 (18-Oct-2026)
+
+No changes since 3.2.3
 
 3.2.3 (21-Sep-2026)
 
@@ -225,6 +231,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 #857: `@JacksonXmlText` with unwrapped Collection property fails to
   deserialize list (skips virtual wrapping)
  (fix by @cowtowncoder, w/ Claude code)
+
+3.1.8 (17-Oct-2026)
+
+No changes since 3.1.7
 
 3.1.7 (21-Sep-2026)
 
