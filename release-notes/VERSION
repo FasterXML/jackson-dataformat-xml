@@ -54,6 +54,10 @@ Version: 3.x (for earlier see VERSION-2.x)
   `FromXmlParser`
  (contributed by @Sahana2524)
 
+3.2.4 (18-Oct-2026)
+
+No changes since 3.2.3
+
 3.2.3 (21-Sep-2026)
 
 #894: `ToXmlGenerator.writeBinary(Base64Variant, InputStream, int)` fails with
@@ -225,6 +229,10 @@ Version: 3.x (for earlier see VERSION-2.x)
 #857: `@JacksonXmlText` with unwrapped Collection property fails to
   deserialize list (skips virtual wrapping)
  (fix by @cowtowncoder, w/ Claude code)
+
+3.1.8 (17-Oct-2026)
+
+No changes since 3.1.7
 
 3.1.7 (21-Sep-2026)
 
