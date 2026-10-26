@@ -1,6 +1,7 @@
 package tools.jackson.dataformat.xml.misc;
 
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -27,6 +28,7 @@ import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 import tools.jackson.dataformat.xml.ser.XmlGeneratorInitializer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -241,6 +243,96 @@ public class XmlNameEscapeTest extends XmlTestUtil
         final String res = mapper.writeValueAsString(dto);
         DTO reversed = mapper.readValue(res, DTO.class);
         assertNotNull(reversed);
+    }
+
+    // #923: a colon in a name is read back as an undeclared namespace prefix, so
+    // must be escaped. (newAlwaysOnBase64Processor() never wrote colons.)
+    @Test
+    public void testColonInNameRoundTrips() throws Exception {
+        final String[] keys = new String[] {
+                "a:b", ":leading", "a:b:c", "xmlns:x", "xsi:nil"
+        };
+        final XmlMapper[] mappers = new XmlMapper[] {
+                XmlMapper.builder(xmlFactory(XmlNameProcessors.newBase64Processor())).build(),
+                XmlMapper.builder(xmlFactory(XmlNameProcessors.newBase64Processor("b64_"))).build(),
+        };
+
+        for (XmlMapper mapper : mappers) {
+            for (String key : keys) {
+                DTO dto = new DTO();
+                dto.badMap.put(key, "xyz");
+
+                final String res = mapper.writeValueAsString(dto);
+                assertEquals(dto, mapper.readValue(res, DTO.class),
+                        "Failed round-trip of key '"+key+"', written as: "+res);
+            }
+        }
+    }
+
+    // Replacement is one-way, but output must still be readable
+    @Test
+    public void testColonInNameReplaced() throws Exception {
+        DTO dto = new DTO();
+        dto.badMap.put("a:b", "1");
+        dto.badMap.put(":leading", "2");
+        dto.badMap.put("a:b:c", "3");
+
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+
+        final String res = mapper.writeValueAsString(dto);
+        assertEquals(Map.of("a_b", "1", "_leading", "2", "a_b_c", "3"),
+                mapper.readValue(res, DTO.class).badMap, res);
+    }
+
+    @JsonRootName("Link")
+    public static class PrefixedAttrBean {
+        @JacksonXmlProperty(isAttribute = true, localName = "xlink:href")
+        public String href = "urn:x";
+    }
+
+    // Annotated prefixed names are escaped too (since #923; used to be written as-is)
+    @Test
+    public void testAnnotatedPrefixedNameEscaped() throws Exception {
+        XmlMapper base64 = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newBase64Processor())
+        ).build();
+        String res = base64.writeValueAsString(new PrefixedAttrBean());
+        assertFalse(res.contains("xlink:href"), res);
+        assertEquals("urn:x", base64.readValue(res, PrefixedAttrBean.class).href);
+
+        XmlMapper replace = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newReplacementProcessor())
+        ).build();
+        res = replace.writeValueAsString(new PrefixedAttrBean());
+        assertTrue(res.contains("xlink_href=\"urn:x\""), res);
+    }
+
+    @Test
+    public void testBase64InvalidPrefixRejected() throws Exception {
+        for (String prefix : new String[] { "b64:", ":", "", "1abc", "-x", "a b" }) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> XmlNameProcessors.newBase64Processor(prefix),
+                    "Should reject prefix '"+prefix+"'");
+        }
+    }
+
+    // Same check when restored via JDK deserialization: patch "b64_x" to "b64:x"
+    @Test
+    public void testBase64InvalidPrefixRejectedOnDeserialization() throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            out.writeObject(XmlNameProcessors.newBase64Processor("b64_x"));
+        }
+        byte[] data = bytes.toByteArray();
+        int ix = new String(data, StandardCharsets.ISO_8859_1).indexOf("b64_x");
+        assertTrue(ix >= 0);
+        data[ix + 3] = ':';
+
+        try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data))) {
+            assertThrows(InvalidObjectException.class, in::readObject);
+        }
     }
 
     public static class BadVarNameDTO {

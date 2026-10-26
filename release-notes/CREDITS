@@ -225,3 +225,6 @@ Christian Beikov (@beikov)
    `XmlNameProcessor` (wrapper name written verbatim while item names encoded,
    breaking round-trip / well-formedness)
   (3.3.0)
+ * Fixed #923: Escape colon in XML names written by `XmlNameProcessors` escaping
+   processors
+  (3.3.0)
