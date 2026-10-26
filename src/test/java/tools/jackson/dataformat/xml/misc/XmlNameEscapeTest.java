@@ -472,6 +472,11 @@ public class XmlNameEscapeTest extends XmlTestUtil
                 .with(XmlReadFeature.SKIP_UNKNOWN_XSI_ATTRIBUTES)
                 .readValue(xml);
         assertEquals("x", result.label);
+
+        // XSI names are not decoded either, so reading also works without skipping
+        // (XSI attribute being just an ignored unknown property)
+        result = mapper.readValue(xml, RootAttrDTO.class);
+        assertEquals("x", result.label);
     }
 
     @JsonPropertyOrder({ "a", "b" })

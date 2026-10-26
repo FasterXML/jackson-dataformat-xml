@@ -2,7 +2,6 @@ package tools.jackson.dataformat.xml.ser;
 
 import java.util.Objects;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
@@ -37,11 +36,9 @@ public record RootAttribute(QName name, String value)
 
     @Override
     public void write(ToXmlGenerator xmlGen, XMLStreamWriter2 sw) throws XMLStreamException {
-        // Encode name like other attribute names, so it can be read back; except
-        // for XSI attributes (like `xsi:schemaLocation`) that are meant for other
-        // XML tools (and are skipped on read with `SKIP_UNKNOWN_XSI_ATTRIBUTES`)
-        final QName name = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(this.name.getNamespaceURI())
-                ? this.name : xmlGen._encodeName(this.name);
+        // Encode name like other attribute names, so it can be read back
+        // (XSI names, like `xsi:schemaLocation`, are left as-is)
+        final QName name = xmlGen._encodeName(this.name);
         final String ns = name.getNamespaceURI();
         if (ns == null || ns.isEmpty()) {
             sw.writeAttribute(name.getLocalPart(), value);

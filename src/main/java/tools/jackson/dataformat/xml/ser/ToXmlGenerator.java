@@ -177,14 +177,23 @@ public class ToXmlGenerator
     protected QName _nextName = null;
 
     /**
-     * Unencoded name {@link #_nextName} was encoded from, if known (that is, set
-     * via {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName});
-     * {@code null} if not (fixed or restored names).
+     * Unencoded name that {@link #_nextNameEncoded} was encoded from, by
+     * {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName}.
+     * Only valid while {@link #_nextName} still refers to that encoded name
+     * (see {@link #_nextNameRaw()}): so direct assignments to {@link #_nextName}
+     * need not (and do not) update it.
      * Used to avoid re-encoding same name and to carry over unencoded namespace.
      *
      * @since 3.3
      */
     protected QName _nextNameRaw = null;
+
+    /**
+     * Encoded name produced from {@link #_nextNameRaw}.
+     *
+     * @since 3.3
+     */
+    protected QName _nextNameEncoded = null;
 
     /**
      * Marker flag that indicates whether next name to write
@@ -531,8 +540,7 @@ public class ToXmlGenerator
      */
     public final void setNextName(QName name)
     {
-        _nextNameRaw = name;
-        _nextName = _encodeName(name);
+        _setNextNameRaw(name);
         // Caller is taking over naming, so drop any pending xsi:type forcing
         _nextIsXsiType = false;
     }
@@ -546,17 +554,33 @@ public class ToXmlGenerator
     public final boolean setNextNameIfMissing(QName name)
     {
         if (_nextName == null) {
-            _nextNameRaw = name;
-            _nextName = _encodeName(name);
+            _setNextNameRaw(name);
             return true;
         }
         return false;
+    }
+
+    private void _setNextNameRaw(QName raw) {
+        _nextNameRaw = raw;
+        _nextName = _nextNameEncoded = _encodeName(raw);
+    }
+
+    /**
+     * @return Unencoded name {@link #_nextName} was encoded from, if known;
+     *    {@code null} if not (fixed name, or one assigned directly)
+     *
+     * @since 3.3
+     */
+    protected QName _nextNameRaw() {
+        return (_nextName == _nextNameEncoded) ? _nextNameRaw : null;
     }
 
     /**
      * Helper method for running configured {@link XmlNameProcessor} over given
      * (unencoded) name. All element and attribute names passed by callers must go
      * through this method exactly once.
+     * Names in XSI namespace are standard names and never encoded (nor decoded
+     * on read).
      *
      * @return Encoded name; {@code name} itself if processor did not change it
      *
@@ -565,6 +589,9 @@ public class ToXmlGenerator
     protected QName _encodeName(QName name)
     {
         final String ns = name.getNamespaceURI(); // never null for QName
+        if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(ns)) {
+            return name;
+        }
         final String localName = name.getLocalPart();
         _nameToEncode.namespace = ns;
         _nameToEncode.localPart = localName;
@@ -628,7 +655,8 @@ public class ToXmlGenerator
     public JsonGenerator writeRepeatedPropertyName() throws JacksonException
     {
         // Stream context tracks unencoded names (same as `writeName()`)
-        final QName name = (_nextNameRaw == null) ? _nextName : _nextNameRaw;
+        final QName raw = _nextNameRaw();
+        final QName name = (raw == null) ? _nextName : raw;
         if (!_streamWriteContext.writeName(name.getLocalPart())) {
             _reportError("Can not write a property name, expecting a value");
         }
@@ -666,7 +694,6 @@ public class ToXmlGenerator
             _nextIsXsiType = false;
             _nextIsAttribute = false;
             _nextName = _elementNameStack.peekLast();
-            _nextNameRaw = null;
         }
 
         // 30-Jan-2024, tatu: Surprise!
@@ -675,7 +702,6 @@ public class ToXmlGenerator
             // Fixed XSI name: must not go through name processor
             _nextName = new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                     "type", "xsi");
-            _nextNameRaw = null;
             setNextIsAttribute(true);
             _nextIsXsiType = true;
         } else if (name.equals(_cfgNameForTextElement)) {
@@ -689,17 +715,15 @@ public class ToXmlGenerator
             // don't throw (they check _nextName == null before checkNextIsUnwrapped)
             if (_nextName == null) {
                 _nextName = _textElementQName;
-                _nextNameRaw = null;
             }
         } else {
             // Bean serializers have already set the same name (with namespace) via
             // `setNextName()`, in which case it is already encoded
-            final QName raw = _nextNameRaw;
+            final QName raw = _nextNameRaw();
             if ((raw == null) || !name.equals(raw.getLocalPart())) {
                 // Otherwise carry over namespace of previous name: unencoded if known
                 final QName prev = (raw == null) ? _nextName : raw;
-                _nextNameRaw = new QName((prev == null) ? "" : prev.getNamespaceURI(), name);
-                _nextName = _encodeName(_nextNameRaw);
+                _setNextNameRaw(new QName((prev == null) ? "" : prev.getNamespaceURI(), name));
             }
         }
         return this;
@@ -885,7 +909,6 @@ public class ToXmlGenerator
             throw _constructWriteException("Can not write END_ELEMENT without open START_ELEMENT", this);
         }
         _nextName = _elementNameStack.removeLast();
-        _nextNameRaw = null;
         try {
             // note: since attributes don't nest, can only have one attribute active, so:
             _nextIsAttribute = false;
