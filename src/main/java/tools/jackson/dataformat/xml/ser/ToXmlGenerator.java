@@ -169,6 +169,9 @@ public class ToXmlGenerator
      * Element or attribute name to use for next output call.
      * Assigned by either code that initiates serialization
      * or bean serializer.
+     *<p>
+     * Always contains name as written, that is, already encoded using
+     * {@link #_nameProcessor} (see {@link #_encodeName(QName)}).
      */
     protected QName _nextName = null;
 
@@ -510,9 +513,14 @@ public class ToXmlGenerator
         _nextIsCData = isCData;
     }
     
+    /**
+     * Method for specifying name of the next element or attribute to write.
+     * Name is given as-is (unencoded): configured {@link XmlNameProcessor} is
+     * applied here.
+     */
     public final void setNextName(QName name)
     {
-        _nextName = name;
+        _nextName = _encodeName(name);
         // Caller is taking over naming, so drop any pending xsi:type forcing
         _nextIsXsiType = false;
     }
@@ -526,27 +534,37 @@ public class ToXmlGenerator
     public final boolean setNextNameIfMissing(QName name)
     {
         if (_nextName == null) {
-            _nextName = name;
+            _nextName = _encodeName(name);
             return true;
         }
         return false;
     }
-    
+
     /**
-     * Method for running configured {@link XmlNameProcessor} over a name that comes
-     * from content being written (like {@code ObjectNode} property names), as opposed
-     * to statically known POJO property names.
-     * Needed by callers that have to construct the {@link QName} themselves instead
-     * of going through {@link #writeName(String)} (which applies the processor for
-     * names it writes).
+     * Helper method for running configured {@link XmlNameProcessor} over given
+     * (unencoded) name. All element and attribute names passed by callers must go
+     * through this method exactly once: {@link #_nextName} (and so names in
+     * {@link #_elementNameStack}) always contain encoded names.
+     *
+     * @return Encoded name; {@code name} itself if processor did not change it
      *
      * @since 3.3
      */
-    public QName encodeContentName(String namespaceURI, String localName)
+    protected QName _encodeName(QName name) {
+        return _encodeName(name.getNamespaceURI(), name.getLocalPart(), name);
+    }
+
+    protected QName _encodeName(String namespaceURI, String localName, QName unchanged)
     {
-        _nameToEncode.namespace = (namespaceURI == null) ? "" : namespaceURI;
+        final String ns = (namespaceURI == null) ? "" : namespaceURI;
+        _nameToEncode.namespace = ns;
         _nameToEncode.localPart = localName;
         _nameProcessor.encodeName(_nameToEncode);
+        if (unchanged != null
+                && ns.equals(_nameToEncode.namespace)
+                && localName.equals(_nameToEncode.localPart)) {
+            return unchanged;
+        }
         return new QName(_nameToEncode.namespace, _nameToEncode.localPart);
     }
 
@@ -561,14 +579,8 @@ public class ToXmlGenerator
     public void startWrappedValue(QName wrapperName, QName wrappedName) throws JacksonException
     {
         if (wrapperName != null) {
-            // The wrapper element is written directly here rather than via
-            // `writeName()`, so it must be run through the configured
-            // `XmlNameProcessor` explicitly -- otherwise the wrapper name is
-            // emitted verbatim while the wrapped item names (which do go through
-            // `writeName()`) are encoded, and the reader decodes every element
-            // name on read, breaking the round trip.
-            final QName encoded = encodeContentName(wrapperName.getNamespaceURI(),
-                    wrapperName.getLocalPart());
+            // Wrapper element written directly (not via `_nextName`), so encode here
+            final QName encoded = _encodeName(wrapperName);
             try {
                 if (_xmlPrettyPrinter != null) {
                     _xmlPrettyPrinter.writeStartElement(_xmlWriter,
@@ -649,8 +661,9 @@ public class ToXmlGenerator
         // 30-Jan-2024, tatu: Surprise!
         if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)
                 && "xsi:type".equals(name)) {
-            setNextName(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-                    "type", "xsi"));
+            // Fixed XSI name: must not go through name processor
+            _nextName = new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    "type", "xsi");
             setNextIsAttribute(true);
             _nextIsXsiType = true;
         } else if (name.equals(_cfgNameForTextElement)) {
@@ -666,9 +679,15 @@ public class ToXmlGenerator
                 _nextName = _textElementQName;
             }
         } else {
-            // Should this ever get called?
-            String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-            setNextName(encodeContentName(ns, name));
+            // Namespace carried over from previously set name (bean serializers set
+            // it via `setNextName()`); reuse that name if encoding does not change it
+            final QName prev = _nextName;
+            if (prev == null) {
+                _nextName = _encodeName("", name, null);
+            } else {
+                _nextName = _encodeName(prev.getNamespaceURI(), name,
+                        name.equals(prev.getLocalPart()) ? prev : null);
+            }
         }
         return this;
     }

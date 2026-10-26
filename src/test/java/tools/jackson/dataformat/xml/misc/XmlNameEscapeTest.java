@@ -1,8 +1,11 @@
 package tools.jackson.dataformat.xml.misc;
 
+import java.io.StringWriter;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +15,7 @@ import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -375,6 +379,36 @@ public class XmlNameEscapeTest extends XmlTestUtil
 
         WrappedListDTO reversed = mapper.readValue(res, WrappedListDTO.class);
         assertEquals(dto, reversed);
+    }
+
+    // Names passed directly to generator (`setNextName()`, `startWrappedValue()`)
+    // must be encoded the same as ones written via `writeName()`
+    @Test
+    public void testAlwaysOnBase64NamesSetDirectlyOnGenerator() throws Exception {
+        XmlMapper mapper = XmlMapper.builder(
+                xmlFactory(XmlNameProcessors.newAlwaysOnBase64Processor())
+        ).build();
+
+        StringWriter sw = new StringWriter();
+        try (ToXmlGenerator gen = (ToXmlGenerator) mapper.createGenerator(sw)) {
+            gen.setNextName(new QName("root"));
+            gen.writeStartObject();
+            // no `writeName()` for either wrapper or item name
+            final QName name = new QName("values");
+            gen.startWrappedValue(name, name);
+            gen.writeRepeatedPropertyName();
+            gen.writeStartArray();
+            gen.writeString("a");
+            gen.writeString("b");
+            gen.writeEndArray();
+            gen.finishWrappedValue(name, name);
+            gen.writeEndObject();
+        }
+        final String xml = sw.toString();
+        assertEquals("<cm9vdA><dmFsdWVz><dmFsdWVz>a</dmFsdWVz><dmFsdWVz>b</dmFsdWVz></dmFsdWVz></cm9vdA>",
+                xml);
+        WrappedListDTO result = mapper.readValue(xml, WrappedListDTO.class);
+        assertEquals(Arrays.asList("a", "b"), result.values);
     }
 
     public static class InvalidWrapperNameDTO {
