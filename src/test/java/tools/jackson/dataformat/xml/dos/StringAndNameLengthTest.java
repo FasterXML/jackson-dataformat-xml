@@ -1,0 +1,188 @@
+package tools.jackson.dataformat.xml.dos;
+
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.Map;
+
+import javax.xml.stream.XMLStreamReader;
+
+import org.junit.jupiter.api.Test;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.core.StreamReadConstraints;
+import tools.jackson.core.exc.StreamConstraintsException;
+import tools.jackson.core.io.ContentReference;
+
+import tools.jackson.dataformat.xml.*;
+import tools.jackson.dataformat.xml.deser.XmlTokenStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+// Verifies that `StreamReadConstraints.maxStringLength` / `maxNameLength` are
+// honored when reading XML (element text, attribute values, and element /
+// attribute / root names), matching the JSON backend.
+public class StringAndNameLengthTest extends XmlTestUtil
+{
+    private XmlMapper mapperWithStringLimit(int max) {
+        return mapperBuilder(XmlFactory.builder()
+                .streamReadConstraints(StreamReadConstraints.builder()
+                        .maxStringLength(max).build())
+                .build()).build();
+    }
+
+    private XmlMapper mapperWithNameLimit(int max) {
+        return mapperBuilder(XmlFactory.builder()
+                .streamReadConstraints(StreamReadConstraints.builder()
+                        .maxNameLength(max).build())
+                .build()).build();
+    }
+
+    private void drain(XmlMapper mapper, String xml) throws Exception {
+        try (JsonParser p = mapper.createParser(xml)) {
+            while (p.nextToken() != null) {
+                p.getString();
+            }
+        }
+    }
+
+    @Test
+    public void testElementTextLength() throws Exception
+    {
+        final XmlMapper mapper = mapperWithStringLimit(100);
+        final String value = "x".repeat(5000);
+        try {
+            drain(mapper, "<a>" + value + "</a>");
+            fail("expected StreamConstraintsException");
+        } catch (StreamConstraintsException e) {
+            assertTrue(e.getMessage().contains("String value length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAttributeValueLength() throws Exception
+    {
+        final XmlMapper mapper = mapperWithStringLimit(100);
+        final String value = "x".repeat(5000);
+        try {
+            drain(mapper, "<a b='" + value + "'/>");
+            fail("expected StreamConstraintsException");
+        } catch (StreamConstraintsException e) {
+            assertTrue(e.getMessage().contains("String value length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testElementNameLength() throws Exception
+    {
+        final XmlMapper mapper = mapperWithNameLimit(50);
+        final String name = "n".repeat(5000);
+        try {
+            drain(mapper, "<a><" + name + ">v</" + name + "></a>");
+            fail("expected StreamConstraintsException");
+        } catch (StreamConstraintsException e) {
+            assertTrue(e.getMessage().contains("Name length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAttributeNameLength() throws Exception
+    {
+        final XmlMapper mapper = mapperWithNameLimit(50);
+        final String name = "n".repeat(5000);
+        try {
+            drain(mapper, "<a " + name + "='v'/>");
+            fail("expected StreamConstraintsException");
+        } catch (StreamConstraintsException e) {
+            assertTrue(e.getMessage().contains("Name length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testRootElementNameLength() throws Exception
+    {
+        final XmlMapper mapper = mapperWithNameLimit(50);
+        final String name = "n".repeat(5000);
+        try {
+            drain(mapper, "<" + name + ">v</" + name + ">");
+            fail("expected StreamConstraintsException");
+        } catch (StreamConstraintsException e) {
+            assertTrue(e.getMessage().contains("Name length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
+    }
+
+    // Name limit must apply to decoded name, not the (longer) encoded one:
+    // otherwise XML written with a name processor could not be read back.
+    @Test
+    public void testNameLengthCheckedAfterDecoding() throws Exception
+    {
+        final XmlMapper mapper = mapperBuilder(XmlFactory.builder()
+                .xmlNameProcessor(XmlNameProcessors.newBase64Processor())
+                .streamReadConstraints(StreamReadConstraints.builder()
+                        .maxNameLength(100).build())
+                .build()).build();
+        // Space makes it an invalid XML name, so it gets base64-encoded
+        final String key = "k " + "n".repeat(88);
+        final Map<String, String> input = Collections.singletonMap(key, "v");
+        final String xml = mapper.writeValueAsString(input);
+        assertTrue(xml.length() > 2 * 100 + key.length(),
+                "Encoded name expected to exceed limit: " + xml);
+        Map<?, ?> result = mapper.readValue(xml, Map.class);
+        assertEquals(input, result);
+    }
+
+    @Test
+    public void testNullConstraintsRejected() throws Exception
+    {
+        XMLStreamReader sr = XmlFactory.builder().build().getXMLInputFactory()
+                .createXMLStreamReader(new StringReader("<a/>"));
+        assertThrows(NullPointerException.class,
+                () -> new XmlTokenStream(sr, ContentReference.unknown(), 0,
+                        XmlNameProcessors.newPassthroughProcessor(), null));
+    }
+
+    static class StringBean {
+        public String value;
+    }
+
+    // Data-binding path: limit must also apply via `readValue()`
+    @Test
+    public void testElementTextLengthViaDatabind() throws Exception
+    {
+        final XmlMapper mapper = mapperWithStringLimit(100);
+        final String xml = "<StringBean><value>" + "x".repeat(5000) + "</value></StringBean>";
+        StreamConstraintsException e = assertThrows(StreamConstraintsException.class,
+                () -> mapper.readValue(xml, StringBean.class));
+        assertTrue(e.getMessage().contains("String value length (5000) exceeds the maximum allowed"),
+                "Unexpected message: " + e.getMessage());
+    }
+
+    // `nextStringValue()` path (used by String collection deserializers)
+    @Test
+    public void testElementTextLengthViaNextStringValue() throws Exception
+    {
+        final XmlMapper mapper = mapperWithStringLimit(100);
+        final String xml = "<a><b>" + "x".repeat(5000) + "</b></a>";
+        try (JsonParser p = mapper.createParser(xml)) {
+            assertToken(JsonToken.START_OBJECT, p.nextToken());
+            assertToken(JsonToken.PROPERTY_NAME, p.nextToken());
+            StreamConstraintsException e = assertThrows(StreamConstraintsException.class,
+                    () -> p.nextStringValue());
+            assertTrue(e.getMessage().contains("String value length (5000) exceeds the maximum allowed"),
+                    "Unexpected message: " + e.getMessage());
+        }
+    }
+
+    // Values within the configured limits must parse unchanged.
+    @Test
+    public void testWithinLimits() throws Exception
+    {
+        drain(mapperWithStringLimit(100), "<a b='short'>hello world</a>");
+        drain(mapperWithNameLimit(50), "<parent attr='v'><child>text</child></parent>");
+    }
+}
