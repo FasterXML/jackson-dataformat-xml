@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * against expected (from annotation or class name) when
  * {@link XmlReadFeature#ENFORCE_ROOT_ELEMENT_NAME} is enabled.
  */
+@SuppressWarnings("deprecation") // verifies still-supported, deprecated @JacksonXmlRootElement
 public class RootElementNameValidation247Test extends XmlTestUtil
 {
     static class Root {
