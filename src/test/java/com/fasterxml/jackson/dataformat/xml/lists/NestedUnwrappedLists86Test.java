@@ -85,7 +85,7 @@ public class NestedUnwrappedLists86Test extends XmlTestUtil
                         new Issue86("0.3.1", null)))));
     
         final XmlMapper mapper = new XmlMapper();
-        mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.setDefaultPropertyInclusion(Include.NON_NULL);
     
         final String xml = mapper.writeValueAsString(before);
         assertEquals(sourceCompact, xml);
