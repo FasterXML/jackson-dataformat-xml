@@ -209,7 +209,7 @@ public class FromXmlParser
                 parserFeatures, xmlFeatures,
                 xmlReader,
                 new XmlTokenStream(xmlReader, ioCtxt.contentReference(),
-                        xmlFeatures, nameProcessor),
+                        xmlFeatures, nameProcessor, ioCtxt.streamReadConstraints()),
                 nameProcessor,
                 nameForTextElement);
     }
