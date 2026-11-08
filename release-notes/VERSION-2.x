@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.23.0 (not yet released)
+2.23.0 (07-Nov-2026)
 
 #899: Return `null` from `nextTextValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
