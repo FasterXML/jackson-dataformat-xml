@@ -36,6 +36,9 @@ public record RootAttribute(QName name, String value)
 
     @Override
     public void write(ToXmlGenerator xmlGen, XMLStreamWriter2 sw) throws XMLStreamException {
+        // Encode name like other attribute names, so it can be read back
+        // (names in standard namespaces, like `xsi:schemaLocation`, are left as-is)
+        final QName name = xmlGen._encodeName(this.name);
         final String ns = name.getNamespaceURI();
         if (ns == null || ns.isEmpty()) {
             sw.writeAttribute(name.getLocalPart(), value);

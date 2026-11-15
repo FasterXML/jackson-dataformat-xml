@@ -267,7 +267,7 @@ public class XmlPrettyPrinterTest extends XmlTestUtil
     }
 
     @Test
-    public void testNewLine_UseSystemDefaultLineSeperatorOnNullCustomNewLine() throws Exception {
+    public void testNewLine_UseSystemDefaultLineSeparatorOnNullCustomNewLine() throws Exception {
         Company root = new Company();
         root.employee.add(new Employee("abc"));
 

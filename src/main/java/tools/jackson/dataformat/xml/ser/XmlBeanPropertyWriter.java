@@ -200,16 +200,6 @@ public class XmlBeanPropertyWriter
         }
     }
 
-    private void _serialize(Object value, JsonGenerator g, SerializationContext ctxt,
-            ValueSerializer<Object> ser)
-    {
-        if (_typeSerializer == null) {
-            ser.serialize(value, g, ctxt);
-        } else {
-            ser.serializeWithType(value, g, ctxt, _typeSerializer);
-        }
-    }
-
     /**
      * Check if the runtime value is a Collection, array, or Iterable
      * (i.e. something that should get wrapper element handling).

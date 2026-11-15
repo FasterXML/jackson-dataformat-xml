@@ -4,7 +4,7 @@ Project: jackson-dataformat-xml
 === Releases ===
 ------------------------------------------------------------------------
 
-2.23.0 (not yet released)
+2.23.0 (07-Nov-2026)
 
 #899: Return `null` from `nextTextValue()` at end-of-input (instead of
   throwing `IllegalStateException`)
@@ -477,7 +477,7 @@ No changes since 2.10.x
  (reported by Rohit N)
 #354: Support mapping `xsi:nil` marked elements as `null`s (`JsonToken.VALUE_NULL`)
 
-2.9.10 (21-Sep-2019)
+2.9.10 (not yet released)
 
 #336: WRITE_BIGDECIMAL_AS_PLAIN Not Used When Writing Pretty
  (fix contributed by Kevin D)

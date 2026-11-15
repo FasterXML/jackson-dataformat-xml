@@ -169,8 +169,35 @@ public class ToXmlGenerator
      * Element or attribute name to use for next output call.
      * Assigned by either code that initiates serialization
      * or bean serializer.
+     *<p>
+     * Contains name as written: names given by callers are encoded using
+     * {@link #_nameProcessor} (see {@link #_encodeName(QName)}); fixed names
+     * (like {@code xsi:type} and text-element name) are used as-is.
+     * Exception: name set by bean serializers via {@link #setNextPropertyName}
+     * is unencoded until the following {@link #writeName} call encodes it.
      */
     protected QName _nextName = null;
+
+    /**
+     * Unencoded name that {@link #_nextNameEncoded} was encoded from, by
+     * {@link #setNextName}, {@link #setNextNameIfMissing} or {@link #writeName}
+     * (or, pending encoding, set by {@link #setNextPropertyName}).
+     * Only valid while {@link #_nextName} still refers to that encoded (or pending)
+     * name (see {@link #_validNextNameRaw()}): so direct assignments to
+     * {@link #_nextName} need not (and do not) update it.
+     * Used to avoid re-encoding same name and to carry over unencoded namespace.
+     *
+     * @since 3.3
+     */
+    protected QName _nextNameRaw = null;
+
+    /**
+     * Encoded name produced from {@link #_nextNameRaw}; {@code null} if
+     * encoding is pending.
+     *
+     * @since 3.3
+     */
+    protected QName _nextNameEncoded = null;
 
     /**
      * Marker flag that indicates whether next name to write
@@ -196,7 +223,7 @@ public class ToXmlGenerator
      * Marker set by {@link #writeName(String)} when it forces attribute mode
      * and the XSI namespace onto the next value to emit a synthetic
      * {@code xsi:type} attribute. Bean serializers clear it by assigning the
-     * following name via {@link #setNextName}; for content-driven names
+     * following name via {@link #setNextPropertyName}; for content-driven names
      * (Map / JsonNode / {@code @JsonAnyGetter}) nothing else does, so the next
      * {@link #writeName} clears it to keep the forced state from leaking onto a
      * following sibling.
@@ -510,9 +537,14 @@ public class ToXmlGenerator
         _nextIsCData = isCData;
     }
     
+    /**
+     * Method for specifying name of the next element or attribute to write.
+     * Name is given as-is (unencoded): configured {@link XmlNameProcessor} is
+     * applied here.
+     */
     public final void setNextName(QName name)
     {
-        _nextName = name;
+        _setNextNameRaw(name);
         // Caller is taking over naming, so drop any pending xsi:type forcing
         _nextIsXsiType = false;
     }
@@ -526,28 +558,84 @@ public class ToXmlGenerator
     public final boolean setNextNameIfMissing(QName name)
     {
         if (_nextName == null) {
-            _nextName = name;
+            _setNextNameRaw(name);
             return true;
         }
         return false;
     }
-    
+
+    private void _setNextNameRaw(QName raw) {
+        // null allowed, to clear name
+        _setNextName(raw, (raw == null) ? null : _encodeName(raw));
+    }
+
+    private void _setNextName(QName raw, QName encoded) {
+        _nextNameRaw = raw;
+        _nextName = _nextNameEncoded = encoded;
+    }
+
     /**
-     * Method for running configured {@link XmlNameProcessor} over a name that comes
-     * from content being written (like {@code ObjectNode} property names), as opposed
-     * to statically known POJO property names.
-     * Needed by callers that have to construct the {@link QName} themselves instead
-     * of going through {@link #writeName(String)} (which applies the processor for
-     * names it writes).
+     * Method called by bean serializers to set unencoded name of the next property:
+     * unlike {@link #setNextName}, does not encode name, as the following
+     * {@link #writeName} call (with the same local name) does that, using
+     * namespace of this name. This avoids encoding names of properties that
+     * end up not being written (nulls, filtered out).
+     */
+    void setNextPropertyName(QName name)
+    {
+        _nextName = _nextNameRaw = name;
+        _nextNameEncoded = null;
+        _nextIsXsiType = false;
+    }
+
+    /**
+     * @return Unencoded name {@link #_nextName} was (or is pending to be) encoded
+     *    from, if known; {@code null} if not (fixed name, or one assigned directly)
      *
      * @since 3.3
      */
-    public QName encodeContentName(String namespaceURI, String localName)
+    protected QName _validNextNameRaw() {
+        // (null `_nextName` would match if cleared by direct assignment)
+        if ((_nextName != null)
+                && ((_nextName == _nextNameEncoded)
+                    || ((_nextNameEncoded == null) && (_nextName == _nextNameRaw)))) {
+            return _nextNameRaw;
+        }
+        return null;
+    }
+
+    /**
+     * Helper method for running configured {@link XmlNameProcessor} over given
+     * (unencoded) name. All element and attribute names passed by callers must go
+     * through this method exactly once.
+     * Names in standard namespaces (XSI, {@code xml}, {@code xmlns}) are never
+     * encoded (nor decoded on read).
+     *
+     * @return Encoded name; {@code name} itself if processor did not change it
+     *
+     * @since 3.3
+     */
+    protected QName _encodeName(QName name)
     {
-        _nameToEncode.namespace = (namespaceURI == null) ? "" : namespaceURI;
+        final String ns = name.getNamespaceURI(); // never null for QName
+        if (_isStandardNamespace(ns)) {
+            return name;
+        }
+        final String localName = name.getLocalPart();
+        _nameToEncode.namespace = ns;
         _nameToEncode.localPart = localName;
         _nameProcessor.encodeName(_nameToEncode);
-        return new QName(_nameToEncode.namespace, _nameToEncode.localPart);
+        if (ns.equals(_nameToEncode.namespace)
+                && localName.equals(_nameToEncode.localPart)) {
+            return name;
+        }
+        return new QName(_nameToEncode.namespace, _nameToEncode.localPart, name.getPrefix());
+    }
+
+    private static boolean _isStandardNamespace(String ns) {
+        return XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(ns)
+                || XMLConstants.XML_NS_URI.equals(ns)
+                || XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(ns);
     }
 
     /**
@@ -560,19 +648,28 @@ public class ToXmlGenerator
      */
     public void startWrappedValue(QName wrapperName, QName wrappedName) throws JacksonException
     {
+        QName encoded = null;
         if (wrapperName != null) {
+            // Wrapper element written directly (not via `_nextName`), so encode here
+            encoded = _encodeName(wrapperName);
             try {
                 if (_xmlPrettyPrinter != null) {
                     _xmlPrettyPrinter.writeStartElement(_xmlWriter,
-                            wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                            encoded.getNamespaceURI(), encoded.getLocalPart());
                 } else {
-                    _xmlWriter.writeStartElement(wrapperName.getNamespaceURI(), wrapperName.getLocalPart());
+                    _xmlWriter.writeStartElement(encoded.getNamespaceURI(), encoded.getLocalPart());
                 }
             } catch (XMLStreamException e) {
                 StaxUtil.throwAsWriteException(e, this);
             }
         }
-        this.setNextName(wrappedName);
+        // Common case: same name for wrapper and items, no need to encode again
+        if ((encoded != null) && wrapperName.equals(wrappedName)) {
+            _setNextName(wrappedName, encoded);
+        } else {
+            _setNextNameRaw(wrappedName);
+        }
+        _nextIsXsiType = false;
     }
 
     /**
@@ -599,7 +696,10 @@ public class ToXmlGenerator
      */
     public JsonGenerator writeRepeatedPropertyName() throws JacksonException
     {
-        if (!_streamWriteContext.writeName(_nextName.getLocalPart())) {
+        // Stream context tracks unencoded names (same as `writeName()`)
+        final QName raw = _validNextNameRaw();
+        final QName name = (raw == null) ? _nextName : raw;
+        if (!_streamWriteContext.writeName(name.getLocalPart())) {
             _reportError("Can not write a property name, expecting a value");
         }
         return this;
@@ -641,8 +741,9 @@ public class ToXmlGenerator
         // 30-Jan-2024, tatu: Surprise!
         if (XmlWriteFeature.AUTO_DETECT_XSI_TYPE.enabledIn(_formatFeatures)
                 && "xsi:type".equals(name)) {
-            setNextName(new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-                    "type", "xsi"));
+            // Fixed XSI name: must not go through name processor
+            _nextName = new QName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    "type", "xsi");
             setNextIsAttribute(true);
             _nextIsXsiType = true;
         } else if (name.equals(_cfgNameForTextElement)) {
@@ -658,9 +759,23 @@ public class ToXmlGenerator
                 _nextName = _textElementQName;
             }
         } else {
-            // Should this ever get called?
-            String ns = (_nextName == null) ? "" : _nextName.getNamespaceURI();
-            setNextName(encodeContentName(ns, name));
+            // Bean serializers have usually set the same name (with namespace) already:
+            // if so, encode it unless already encoded
+            final QName raw = _validNextNameRaw();
+            if ((raw != null) && name.equals(raw.getLocalPart())) {
+                if (_nextName != _nextNameEncoded) {
+                    _setNextNameRaw(raw);
+                }
+            } else {
+                // Otherwise carry over namespace of previous name (unencoded if known);
+                // but not standard ones (XSI etc), meant for specific names only
+                final QName prev = (raw == null) ? _nextName : raw;
+                String ns = (prev == null) ? "" : prev.getNamespaceURI();
+                if (_isStandardNamespace(ns)) {
+                    ns = "";
+                }
+                _setNextNameRaw(new QName(ns, name));
+            }
         }
         return this;
     }

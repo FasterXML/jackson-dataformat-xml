@@ -5,7 +5,7 @@ Version: 3.x (for earlier see VERSION-2.x)
 === Releases === 
 ------------------------------------------------------------------------
 
-3.3.0 (not yet released)
+3.3.0 (07-Nov-2026)
 
 #873: Fix handling of `@JsonApplyView`
  (fix by @cowtowncoder, w/ Claude code)
@@ -49,6 +49,11 @@ Version: 3.x (for earlier see VERSION-2.x)
  (fix by @Sahana2524)
 #913: `XmlMapper.Builder.defaultUseWrapper()` changes mapper that builder was
   created from (via `rebuild()`), or has already built
+ (fix by @Sahana2524)
+#918: Encode collection wrapper and root element names via configured `XmlNameProcessor`
+ (fix by @Sahana2524)
+#923: Escape colon in XML names written by `XmlNameProcessors` escaping processors;
+  `newBase64Processor(prefix)` now rejects a prefix that is not a valid XML name
  (fix by @Sahana2524)
 
 3.2.4 (18-Oct-2026)

@@ -886,6 +886,12 @@ public class XmlTokenStream
     // IllegalArgumentException; surface it as a located read error rather than
     // letting a raw runtime exception escape the parser.
     private void _decodeName(XmlNameProcessor.XmlName name) {
+        // XSI and `xml` names are standard names, never encoded on write (see
+        // `ToXmlGenerator._encodeName()`) so must not be decoded either
+        if (XSI_NAMESPACE.equals(name.namespace)
+                || XMLConstants.XML_NS_URI.equals(name.namespace)) {
+            return;
+        }
         try {
             _nameProcessor.decodeName(name);
         } catch (IllegalArgumentException e) {

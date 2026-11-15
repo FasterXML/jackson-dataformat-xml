@@ -5,6 +5,7 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonApplyView;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import tools.jackson.databind.JsonNode;
@@ -12,7 +13,6 @@ import tools.jackson.dataformat.xml.XmlMapper;
 import tools.jackson.dataformat.xml.XmlTestUtil;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import tools.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +37,7 @@ public class ListApplyView873Test extends XmlTestUtil
     }
 
     // Wrapped list with a forced View (Public)
-    @JacksonXmlRootElement(localName = "Bean")
+    @JsonRootName("Bean")
     static class WrappedForcedBean {
         @JsonApplyView(Views.Public.class)
         @JacksonXmlElementWrapper(localName = "items")
@@ -46,7 +46,7 @@ public class ListApplyView873Test extends XmlTestUtil
     }
 
     // Wrapped list with View processing explicitly disabled (NONE)
-    @JacksonXmlRootElement(localName = "Bean")
+    @JsonRootName("Bean")
     static class WrappedNoneBean {
         // `@JsonView` so the property itself survives an active Public view;
         // `@JsonApplyView(NONE)` then disables View filtering for the elements.
@@ -58,7 +58,7 @@ public class ListApplyView873Test extends XmlTestUtil
     }
 
     // Unwrapped list with a forced View (Public)
-    @JacksonXmlRootElement(localName = "Bean")
+    @JsonRootName("Bean")
     static class UnwrappedForcedBean {
         @JsonApplyView(Views.Public.class)
         @JacksonXmlElementWrapper(useWrapping = false)
