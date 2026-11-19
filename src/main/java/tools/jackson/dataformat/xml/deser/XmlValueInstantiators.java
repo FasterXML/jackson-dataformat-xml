@@ -150,6 +150,21 @@ public class XmlValueInstantiators
                 if (!_cfgNameForTextValue.equals(origName)) {
                     renamed = _cfgNameForTextValue;
                 }
+                // [dataformat-xml#559] For records with JAXB @XmlValue: the annotation
+                // introspector may assign an implicit name (e.g. "value") to the
+                // accessor, but the constructor parameter keeps the original declared
+                // Java name. Use the primary member's Java name (e.g. record accessor
+                // method name) to add a rename entry for the creator param.
+                if (member != null) {
+                    String memberName = member.getName();
+                    if (!memberName.equals(origName)
+                            && !_cfgNameForTextValue.equals(memberName)) {
+                        if (renames.isEmpty()) {
+                            renames = new HashMap<>();
+                        }
+                        renames.put(memberName, _cfgNameForTextValue);
+                    }
+                }
             } else {
                 // Check wrapper name (for Lists)
                 PropertyName wrapperName = propDef.getWrapperName();
