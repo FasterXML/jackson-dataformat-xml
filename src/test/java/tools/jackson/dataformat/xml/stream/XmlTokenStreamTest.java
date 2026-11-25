@@ -5,6 +5,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.junit.jupiter.api.Test;
 
+import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.io.ContentReference;
 import tools.jackson.dataformat.xml.*;
 import tools.jackson.dataformat.xml.deser.XmlTokenStream;
@@ -186,7 +187,8 @@ public class XmlTokenStreamTest extends XmlTestUtil
         // must point to START_ELEMENT, so:
         sr.nextTag();
         XmlTokenStream stream = new XmlTokenStream(sr, ContentReference.rawReference(doc), flags,
-                XmlNameProcessors.newPassthroughProcessor());
+                XmlNameProcessors.newPassthroughProcessor(),
+                StreamReadConstraints.defaults());
         stream.initialize();
         return stream;
     }

@@ -10,6 +10,7 @@ import javax.xml.stream.*;
 import org.codehaus.stax2.XMLStreamLocation2;
 import org.codehaus.stax2.XMLStreamReader2;
 
+import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.TokenStreamLocation;
 import tools.jackson.core.exc.StreamReadException;
 import tools.jackson.core.io.ContentReference;
@@ -85,6 +86,15 @@ public class XmlTokenStream
     protected final boolean _cfgSkipUnknownXsiAttributes;
 
     protected XmlNameProcessor _nameProcessor;
+
+    /**
+     * Read constraints used to enforce {@link StreamReadConstraints#validateStringLength}
+     * on element text / attribute values and {@link StreamReadConstraints#validateNameLength}
+     * on element / attribute names.
+     *
+     * @since 3.3
+     */
+    protected final StreamReadConstraints _streamReadConstraints;
 
     /*
     /**********************************************************************
@@ -191,8 +201,23 @@ public class XmlTokenStream
     /**********************************************************************
      */
 
+    /**
+     * @deprecated Since 3.3 use variant that takes {@link StreamReadConstraints}
+     */
+    @Deprecated // since 3.3
     public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
             int formatFeatures, XmlNameProcessor nameProcessor)
+    {
+        this(xmlReader, sourceRef, formatFeatures, nameProcessor,
+                StreamReadConstraints.defaults());
+    }
+
+    /**
+     * @since 3.3
+     */
+    public XmlTokenStream(XMLStreamReader xmlReader, ContentReference sourceRef,
+            int formatFeatures, XmlNameProcessor nameProcessor,
+            StreamReadConstraints streamReadConstraints)
     {
         _sourceReference = sourceRef;
         _formatFeatures = formatFeatures;
@@ -202,6 +227,8 @@ public class XmlTokenStream
         // 04-Dec-2023, tatu: [dataformat-xml#618] Need further customized adapter:
         _xmlReader = Stax2JacksonReaderAdapter.wrapIfNecessary(xmlReader);
         _nameProcessor = nameProcessor;
+        _streamReadConstraints = Objects.requireNonNull(streamReadConstraints,
+                "streamReadConstraints");
     }
 
     /**
@@ -343,7 +370,15 @@ public class XmlTokenStream
 
     public int getCurrentToken() { return _currentState; }
 
-    public String getText() { return _textValue; }
+    public String getText() {
+        // Honor `StreamReadConstraints.maxStringLength` for element text and
+        // attribute values (idempotent: cheap length check even when this accessor
+        // is called more than once for the same value)
+        if (_textValue != null) {
+            _streamReadConstraints.validateStringLength(_textValue.length());
+        }
+        return _textValue;
+    }
 
     /**
      * Accessor for local name of current named event (that is,
@@ -861,6 +896,9 @@ public class XmlTokenStream
         _decodeName(_nameToDecode);
         _namespaceURI = _nameToDecode.namespace;
         _localName = _nameToDecode.localPart;
+        // Honor `StreamReadConstraints.maxNameLength`: check decoded name (the one
+        // exposed), not encoded one, to keep round-trip with name processors working
+        _streamReadConstraints.validateNameLength(_localName.length());
     }
 
     /**
@@ -880,6 +918,9 @@ public class XmlTokenStream
         _decodeName(_nameToDecode);
         _namespaceURI = _nameToDecode.namespace;
         _localName = _nameToDecode.localPart;
+        // Honor `StreamReadConstraints.maxNameLength`: check decoded name (the one
+        // exposed), not encoded one, to keep round-trip with name processors working
+        _streamReadConstraints.validateNameLength(_localName.length());
     }
 
     // Name processors (e.g. base64) may reject malformed input with an
