@@ -17,6 +17,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 import tools.jackson.core.*;
 import tools.jackson.core.base.ParserMinimalBase;
 import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.core.io.ContentReference;
 import tools.jackson.core.io.IOContext;
 import tools.jackson.core.io.NumberInput;
 import tools.jackson.core.json.DupDetector;
@@ -199,6 +200,25 @@ public class FromXmlParser
     /**********************************************************************
      */
 
+    /**
+     * Content reference for {@link TokenStreamLocation}s: redacted (keeping line/column)
+     * unless {@link StreamReadFeature#INCLUDE_SOURCE_IN_LOCATION} is enabled.
+     * Same logic as {@code ParserBase._contentReferenceRedacted()}.
+     *
+     * @since 3.4
+     */
+    private static ContentReference _locationContentReference(ContentReference ref,
+            int streamReadFeatures)
+    {
+        if (StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.enabledIn(streamReadFeatures)) {
+            return ref;
+        }
+        final boolean textual = (ref != null) && ref.hasTextualContent();
+        return StreamReadFeature.INCLUDE_REDACTION_NOTE_IN_LOCATION.enabledIn(streamReadFeatures)
+                ? ContentReference.redacted(textual)
+                : ContentReference.redactedWithoutNote(textual);
+    }
+
     public FromXmlParser(ObjectReadContext readCtxt, IOContext ioCtxt,
             int parserFeatures, int xmlFeatures,
             XMLStreamReader xmlReader,
@@ -208,12 +228,20 @@ public class FromXmlParser
         this(readCtxt, ioCtxt,
                 parserFeatures, xmlFeatures,
                 xmlReader,
-                new XmlTokenStream(xmlReader, ioCtxt.contentReference(),
+                new XmlTokenStream(xmlReader,
+                        _locationContentReference(ioCtxt.contentReference(), parserFeatures),
                         xmlFeatures, nameProcessor),
                 nameProcessor,
                 nameForTextElement);
     }
 
+    /**
+     * Constructor that uses given {@link XmlTokenStream} as-is: its
+     * {@link ContentReference} is used for all locations parser reports, so caller
+     * must construct it with a redacted reference unless
+     * {@link StreamReadFeature#INCLUDE_SOURCE_IN_LOCATION} is enabled
+     * (as the other constructor does).
+     */
     public FromXmlParser(ObjectReadContext readCtxt, IOContext ioCtxt,
             int parserFeatures, int xmlFeatures,
             XMLStreamReader xmlReader,
@@ -1391,7 +1419,7 @@ _currText);
             _reportInvalidEOF(
                     ": expected close marker for %s (start marker at %s)"
                             .formatted(marker,
-                    _streamReadContext.startLocation(_ioContext.contentReference())),
+                    _streamReadContext.startLocation(_xmlTokens._sourceReference)),
                     null);
         }
     }

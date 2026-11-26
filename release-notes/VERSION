@@ -2,8 +2,14 @@ Project: jackson-dataformat-xml
 Version: 3.x (for earlier see VERSION-2.x)
 
 ------------------------------------------------------------------------
-=== Releases === 
+=== Releases ===
 ------------------------------------------------------------------------
+
+3.4.0 (not yet released)
+
+#938: Honor `StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` for error locations
+  (redact source content by default)
+ (fix by @cowtowncoder, w/ Claude code)
 
 3.3.0 (07-Nov-2026)
 
